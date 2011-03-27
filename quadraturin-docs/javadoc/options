@@ -1,0 +1,24 @@
+-classpath
+'F:/Development/Team/git-repo/quadraturin/target/classes;F:/Development/Team/git-repo/quadraturin/quadraturin-parent/target/classes;F:/Development/Team/git-repo/quadraturin/quadraturin-config/target/classes;F:/Development/Team/git-repo/quadraturin/quadraturin-core/target/classes;C:/Users/dveyarangi/.m2/repository/net/java/dev/gluegen/gluegen-rt/1.0b05/gluegen-rt-1.0b05.jar;C:/Users/dveyarangi/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar;C:/Users/dveyarangi/.m2/repository/javax/xml/bind/jaxb-api/2.0/jaxb-api-2.0.jar;C:/Users/dveyarangi/.m2/repository/commons-lang/commons-lang/2.4/commons-lang-2.4.jar;C:/Users/dveyarangi/.m2/repository/net/java/dev/jogl/jogl/1.1.1-rc6/jogl-1.1.1-rc6.jar;C:/Users/dveyarangi/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar;C:/Users/dveyarangi/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar;C:/Users/dveyarangi/.m2/repository/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar;C:/Users/dveyarangi/.m2/repository/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar;C:/Users/dveyarangi/.m2/repository/dve/yarangi/util/0.0.1-SNAPSHOT/util-0.0.1-SNAPSHOT.jar;C:/Users/dveyarangi/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar;C:/Users/dveyarangi/.m2/repository/commons-digester/commons-digester/1.8/commons-digester-1.8.jar;C:/Users/dveyarangi/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar;C:/Users/dveyarangi/.m2/repository/javax/xml/bind/jsr173_api/1.0/jsr173_api-1.0.jar;C:/Users/dveyarangi/.m2/repository/net/java/dev/jogl/jogl-windows-i586/1.1.1-rc6/jogl-windows-i586-1.1.1-rc6.jar;C:/Users/dveyarangi/.m2/repository/commons-configuration/commons-configuration/1.6/commons-configuration-1.6.jar;C:/Users/dveyarangi/.m2/repository/dve/yarangi/graphics/quadraturin-config/0.0.1/quadraturin-config-0.0.1.jar'
+-encoding
+'Cp1252'
+-private
+-sourcepath
+'F:/Development/Team/git-repo/quadraturin/quadraturin-core/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2011. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'F:/Development/Team/git-repo/quadraturin/quadraturin-docs/javadoc'
+-docencoding
+'UTF-8'
+-doctitle
+'Quadraturin 0.0.1 API'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-use
+-version
+-windowtitle
+'Quadraturin 0.0.1 API'

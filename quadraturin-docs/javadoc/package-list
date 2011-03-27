@@ -1,0 +1,15 @@
+yarangi.graphics.quadraturin
+yarangi.graphics.quadraturin.actions
+yarangi.graphics.quadraturin.config
+yarangi.graphics.quadraturin.debug
+yarangi.graphics.quadraturin.effects
+yarangi.graphics.quadraturin.events
+yarangi.graphics.quadraturin.interaction
+yarangi.graphics.quadraturin.interaction.spatial
+yarangi.graphics.quadraturin.objects
+yarangi.graphics.quadraturin.resources
+yarangi.graphics.quadraturin.thread
+yarangi.graphics.quadraturin.util.colors
+yarangi.graphics.quadraturin.util.meshy
+yarangi.graphics.quadraturin.util.scene
+yarangi.graphics.quadraturin.util.shaders
