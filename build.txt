@@ -1,0 +1,8 @@
+Make sure you have java.net maven repository added as <pluginRepository> (for JAXB tools)
+
+JOGL overview and links - http://download.java.net/media/jogl/builds/archive/jsr-231-1.1.0/jogl-1.1.0-windows-i586/Userguide.html
+
+Use -Dsun.awt.noerasebackground=true JVM parameter to disable flickering on aplication's frame resize.
+
+Windows:
+  * Use -Dsun.java2d.noddraw=true to disable DirectX (prevent graphic artifacts outside of the GLCanvas).  

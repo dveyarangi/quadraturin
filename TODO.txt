@@ -1,0 +1,99 @@
+TODOS:
+
+* Core
+	> Refactor mouse and keyboard events model. 
+		V Extract dispatching to separate loop.
+	
+	> The scene should be initiated on actualization, not on the engine init
+		V Initialization in display(GL)
+	> Animation
+		- Out-of-screen simplified behavior and physics?
+		- some default container for scene dynamics aggregation (scripted events, world AI)
+	> Graphics
+		- LOD 
+		- scene entity tree clipping 
+		- scene UI
+		- renderer interface instead of plain JOGL?
+		- import object "looks" from files
+		
+		
+* Resource loading
+	> JAXB
+		> configuration
+	> text
+		> ui labels
+		> dialogue
+		> shaders
+		> scripts
+	> binary
+		> meshes
+		> textures
+		> sounds
+		> saves
+	> Resource managers and bundles
+
+* Navigation
+	> Mouse to world coordinates conversion must be fixed
+	> Zoom out is broken (objects go out of GL clipping area)
+	> Strafing speed should be visually consistent on different zoom values.
+	> Limit scene dimensions and limit transposition to scene borders
+	
+* Physics
+	> Configurable engine (on/off for the starters)
+	> Invent interface.
+	> Interface for "interactive" entities
+		- Autodetect the interactive flag (or, maybe, separate functions in Scene)
+		- Containing sphere.
+		- Must not have overhead inside animation loop (currently there is (PhysicEntity) casting).
+	> Implement proximity and collision detection 
+		V Start with Quadtree. Optimize for rapid updates. 
+		- Check the BD-tree
+		V hash map
+	
+* Profiling/optimization
+	> replace JRE data structures with primitive-specific
+	> A memory manager
+	> Scene load/unload mechanizm.
+	> memory monitoring
+	> cpu monitoring 
+	> scene unloading
+	> performance management
+		- hardware capabilities bundle
+		- automatic reduction of behavior, physics and rendering quality?
+		
+//////////////////////////////////////////////////////////////////////////////////
+// Global items reference 	
+	
+		
+- A particle and effects utilities
+- Sound engine
+	
+- A way to handle, store and draw meshes
+- A way to draw the world (might be the same as the way you draw meshes)
+- An animation system
+- A frustum
+- A way to draw 2D stuff and text for the HUD and menus
+- A way to stream music and speech
+- A manager for smaller sounds to be loaded and played when you want them
+- Some kind of AI system
+- A generic state machine
+- A way to create states and fit them together
+- Pathfinding
+- player control
+- Some kind of raw input handler (keyboard? Mouse? Joypad?)
+- A way to turn the raw input into game actions
+- Collision and physics
+- A way to represent different collidable shapes (spheres, boxes, cylinders etc)
+- A way to collide with the world (BSP? Octree?)
+- A way for objects to collide with each other
+- A way to work out what's happened when collisions occur
+- A way to describe game objects
+- A structure you can fill in a variety of different ways to represent different things
+(Remember code reuse is the key here, so the game object shouldn't
+do much in itself, just draw together bits of other things)
+- A hierarchy? A group of hierarchies? Something totally different?
+- A manager to look after all the entities
+- A file loader, or a collection of file loaders
+- A common interface?
+
+- A memory manager

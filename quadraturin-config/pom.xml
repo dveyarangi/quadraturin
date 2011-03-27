@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<name>Quadraturin configuration package</name>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>dve.yarangi.graphics</groupId>
+	<artifactId>quadraturin-config</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>	
+	 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.sun.tools.xjc.maven2</groupId>
+				<artifactId>maven-jaxb-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<generatePackage>yarangi.graphics.quadraturin.config</generatePackage>
+					<includeSchemas>
+						<includeSchema>**/*.xsd</includeSchema>
+					</includeSchemas>
+					<strict>true</strict>
+					<verbose>true</verbose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>		
+		</plugins>
+	</build>
+
+
+	<parent>
+		<artifactId>quadraturin-parent</artifactId>
+		<groupId>dve.yarangi.graphics</groupId>
+		<version>0.0.1</version>
+		<relativePath>../quadraturin-parent</relativePath>
+	</parent>
+</project>
