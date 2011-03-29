@@ -5,8 +5,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import yarangi.graphics.quadraturin.events.CursorMotionEvent;
-import yarangi.graphics.quadraturin.events.CursorMotionListener;
+import yarangi.graphics.quadraturin.events.CursorEvent;
+import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 
 /**
@@ -20,7 +20,7 @@ public abstract class EventManager implements KeyListener, MouseListener, MouseM
 	 * Exposes {@link IViewPoint} for camera control. 
 	 * @return
 	 */
-	protected abstract IViewPoint getViewPoint();
+//	public abstract IViewPoint getViewPoint();
 
 	/**
 	 * Exposes mouse location within the canvas.
@@ -32,20 +32,21 @@ public abstract class EventManager implements KeyListener, MouseListener, MouseM
 	 * TODO: unworthy creation of event object.
 	 * @param event
 	 */
-	protected abstract void declare(CursorMotionEvent event);
+	protected abstract void declare(CursorEvent event);
 
 	/**
 	 * Register a user action listener.
 	 * @param action
 	 * @param listener
 	 */
-	public abstract void addUserActionListener(int action, UserActionListener listener);
-	public abstract void removeUserActionListener(int action);
+	public abstract void addUserActionListener(String action, UserActionListener listener);
+	
+	public abstract void removeUserActionListener(String action);
 	
 	/**
 	 * Register a cursor io listener.
 	 * @param listener
 	 */
-	public abstract void addCursorListener(CursorMotionListener listener);
-	public abstract void removeCursorListener(CursorMotionListener listener);
+	public abstract void addCursorListener(CursorListener listener);
+	public abstract void removeCursorListener(CursorListener listener);
 }

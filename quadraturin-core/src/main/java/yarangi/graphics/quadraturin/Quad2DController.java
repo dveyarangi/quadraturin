@@ -11,7 +11,7 @@ import javax.media.opengl.glu.GLU;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.events.CursorMotionEvent;
+import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.thread.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.thread.ThreadChain;
 import yarangi.graphics.quadraturin.util.shaders.ShaderFactory;
@@ -59,7 +59,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		this.voices = voices;
 
-		this.windowRatio = (float) ekranConfig.getXRes() / (float) ekranConfig.getYRes();
+		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
 	}
 
 	public void start() {
@@ -171,7 +171,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
-		ViewPoint2D viewPoint = (ViewPoint2D) voices.getViewPoint();
+		ViewPoint2D viewPoint = (ViewPoint2D) stage.getViewPoint();
 		glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -219,7 +219,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
-		ViewPoint2D viewPoint = (ViewPoint2D) voices.getViewPoint();
+		stage.getViewPoint();
+		ViewPoint2D viewPoint = (ViewPoint2D) stage.getViewPoint();
 		
 		gl.glTranslatef((float) viewPoint.getCenter().x,
 				(float) viewPoint.getCenter().y, -(float) viewPoint.getHeight());
@@ -234,7 +235,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		if (pickPoint != null) 
 			worldPickPoint = toWorldCoordinates(gl, pickPoint, viewPoint);
 
-		voices.declare(new CursorMotionEvent(worldPickPoint, pickPoint));
+		voices.declare(new CursorEvent(worldPickPoint, pickPoint));
 		
 		double frameLength = stage.getFrameLength();
 		

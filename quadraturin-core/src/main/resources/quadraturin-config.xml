@@ -8,12 +8,23 @@
 		<scroll-step>40</scroll-step>
 		<scale-step>0.9</scale-step>
 		<layout>
-			<binding key="37" action="quadraturin.navigation.scroll-left" />
-			<binding key="39" action="quadraturin.navigation.scroll-right" />
-			<binding key="38" action="quadraturin.navigation.scroll-up" />
-			<binding key="40" action="quadraturin.navigation.scroll-down" />
-			<binding key="33" action="quadraturin.navigation.zoom-in" />
-			<binding key="34" action="quadraturin.navigation.zoom-out" />
+		<!-- 
+		public static final int PRESSED = 1;
+		public static final int TAPPED = 2;
+		public static final int RELEASED = 3;
+		public static final int DRAGGED = 4;	
+	
+		public static final int MOUSE_LEFT_BUTTON = -1;
+		public static final int MOUSE_RIGHT_BUTTON = -2;
+		
+		* keyboard key values are identical to KeyEvent.getKeyCode() values.
+	 -->
+			<binding actionId="scroll-left"  buttonId="37" modeId="2" />
+			<binding actionId="scroll-right" buttonId="39" modeId="2" />
+			<binding actionId="scroll-up"    buttonId="38" modeId="2" />
+			<binding actionId="scroll-down"  buttonId="40" modeId="2" />
+			<binding actionId="zoom-in"      buttonId="33" modeId="2" />
+			<binding actionId="zoom-out"     buttonId="34" modeId="2" />
 		</layout>
 	</input>
 	<stage>

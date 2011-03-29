@@ -100,8 +100,8 @@ public class QuadContainer extends JFrame
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
 		
-		int xres = QuadConfigFactory.getEkranConfig().getXRes();
-		int yres = QuadConfigFactory.getEkranConfig().getYRes();
+		int xres = QuadConfigFactory.getEkranConfig().getXres();
+		int yres = QuadConfigFactory.getEkranConfig().getYres();
 		// TODO: full-screen
 		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
 		this.setMinimumSize(new Dimension(xres, yres));
@@ -155,7 +155,7 @@ public class QuadContainer extends JFrame
 			throw new IllegalArgumentException("Presentation mode " + mode + " is not supported yet.");
 	
 		log.debug("Creating Quadraturin voices...");
-		voices = new QuadVoices(viewPoint);
+		voices = new QuadVoices(QuadConfigFactory.getInputConfig());
 		chain.addThread(new LoopyChainedThread("q-echoes", chain, voices));
 		log.trace("Quadraturin voices created.");
 		

@@ -73,6 +73,7 @@ public class QuadConfigFactory
 		catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
+		log.debug("Using configuration [" + config.getName() + "].");
 		
 		this.stageConfig = config.getStage();
 		this.ekranConfig = config.getEkran();

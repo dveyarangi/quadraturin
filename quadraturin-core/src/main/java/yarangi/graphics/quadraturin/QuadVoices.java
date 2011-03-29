@@ -8,11 +8,7 @@
 
 package yarangi.graphics.quadraturin;
 
-import static yarangi.graphics.quadraturin.events.UserActionEvent.MOUSE_LEFT_BUTTON;
-import static yarangi.graphics.quadraturin.events.UserActionEvent.PRESSED;
-import static yarangi.graphics.quadraturin.events.UserActionEvent.RELEASED;
-import static yarangi.graphics.quadraturin.events.UserActionEvent.TAPPED;
-
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -22,8 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import yarangi.graphics.quadraturin.events.CursorMotionEvent;
-import yarangi.graphics.quadraturin.events.CursorMotionListener;
+import yarangi.graphics.quadraturin.config.ActionBinding;
+import yarangi.graphics.quadraturin.config.InputConfig;
+import yarangi.graphics.quadraturin.events.CursorEvent;
+import yarangi.graphics.quadraturin.events.CursorListener;
+import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
@@ -42,33 +41,36 @@ import yarangi.graphics.quadraturin.thread.Loopy;
  */
 public class QuadVoices extends EventManager implements Loopy
 {
-	
+	EventQueue queue;
 	/**
 	 * Holds last cursor motion event.
 	 */
-	private CursorMotionEvent cursorEvent = new CursorMotionEvent(null, null);
+	private CursorEvent cursorEvent = new CursorEvent(null, null);
 	
 	/**
 	 * List of listeners for the CursorMotionEvent-s
 	 */
-	private List <CursorMotionListener> cursorListeners = new LinkedList <CursorMotionListener> ();
+	private List <CursorListener> cursorListeners = new LinkedList <CursorListener> ();
+	
+	/**
+	 * Maps input code to action id. 
+	 */
+	private Map <InputHook, String> binding = new HashMap <InputHook, String> ();
+	
+	/**
+	 * User action listeners. 
+	 */
+	private HashMap <String, UserActionListener> userListeners = new HashMap <String, UserActionListener> ();
+	
 	
 	/**
 	 * User actions (key or mouse key hits)
 	 */
 	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
-	/**
-	 * User action listeners. 
-	 */
-	private HashMap <Integer, UserActionListener> userListeners = new HashMap <Integer, UserActionListener> ();
 	
-	private IViewPoint viewPoint;
 	
-	/**
-	 * Maps input code to action id. 
-	 */
-	private Map <Integer, Integer> binding;
+//	private IViewPoint viewPoint;
 	
 	private Scene scene;
 	/**
@@ -76,12 +78,15 @@ public class QuadVoices extends EventManager implements Loopy
 	 */
 	private Point mouseLocation;
 	
-	public QuadVoices(IViewPoint viewPoint) 
+	public QuadVoices(/*IViewPoint viewPoint, */InputConfig config) 
 	{
-		this.viewPoint = viewPoint;
+//		this.viewPoint = viewPoint;
+		
+		for(ActionBinding bind : config.getBinding())
+			binding.put(new InputHook(bind.getModeId(), bind.getButtonId()), bind.getActionId());
 	}
 	
-	public IViewPoint getViewPoint() { return viewPoint; }
+//	public IViewPoint getViewPoint() { return viewPoint; }
 	
 	public void runPreUnLock() { /* voice of the void? */ }
 
@@ -94,7 +99,7 @@ public class QuadVoices extends EventManager implements Loopy
 		cursorEvent.setSceneEntity(pickedEntity);
 		
 		// firing the cursor motion event:
-		for(CursorMotionListener l : cursorListeners)
+		for(CursorListener l : cursorListeners)
 			l.onCursorMotion(cursorEvent);
 		
 		// firing user actions info:
@@ -120,6 +125,11 @@ public class QuadVoices extends EventManager implements Loopy
 			sceneTime = -1;
 		}*/
 	}
+	
+	public void hookAction(InputHook input, int actionId)
+	{
+		
+	}
 
 	
 	public void runPostLock() { /* freedom of voice? */ }
@@ -127,31 +137,69 @@ public class QuadVoices extends EventManager implements Loopy
 	/** {@inheritDoc} */
 	public void keyPressed(KeyEvent ke) 
 	{
-		if(binding.containsKey(ke.getKeyCode()))
-			userEvents.add(new UserActionEvent(binding.get(ke.getKeyCode()), ke.getKeyCode(), PRESSED));
+		InputHook hook = new InputHook(InputHook.PRESSED, ke.getKeyCode());
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
 	}
 	
 	/** {@inheritDoc} */
 	public void keyReleased(KeyEvent ke) 
 	{ 
-		if(binding.containsKey(ke.getKeyCode()))
-			userEvents.add(new UserActionEvent(binding.get(ke.getKeyCode()), ke.getKeyCode(), RELEASED));
+		InputHook hook = new InputHook(InputHook.RELEASED, ke.getKeyCode());
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
 	}
 	
 	/** {@inheritDoc} */
 	public void keyTyped(KeyEvent ke) 
 	{ 
-		if(binding.containsKey(ke.getKeyCode()))
-			userEvents.add(new UserActionEvent(binding.get(ke.getKeyCode()), ke.getKeyCode(), TAPPED));
+		InputHook hook = new InputHook(InputHook.TAPPED, ke.getKeyCode());
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+	}
+	
+	/** {@inheritDoc} */
+	public void mousePressed(MouseEvent e) 
+	{ 
+		mouseLocation = e.getPoint();
+		InputHook hook = new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()));
+//		System.out.println(hook);
+		cursorEvent.setInput(hook);
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+	}
+	
+	/** {@inheritDoc} */
+	public void mouseReleased(MouseEvent e) 
+	{ 
+		mouseLocation = e.getPoint();
+		
+		InputHook hook = new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()));
+		cursorEvent.setInput(hook);
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
 	}
 	
 	/** {@inheritDoc} */
 	public void mouseClicked(MouseEvent e) 
 	{
 		mouseLocation = e.getPoint();
-		// TODO: mouse button should be separated.
-		if(binding.containsKey(MOUSE_LEFT_BUTTON))
-			userEvents.add(new UserActionEvent(binding.get(MOUSE_LEFT_BUTTON), MOUSE_LEFT_BUTTON, TAPPED));
+		
+		InputHook hook = new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()));
+		cursorEvent.setInput(hook);
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+	}
+
+	/** {@inheritDoc} */
+	public void mouseDragged(MouseEvent e) 
+	{ 
+		mouseLocation = e.getPoint();
+		
+		InputHook hook = new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()));
+		cursorEvent.setInput(hook);
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
 	}
 	
 	/** {@inheritDoc} */
@@ -166,22 +214,7 @@ public class QuadVoices extends EventManager implements Loopy
 		mouseLocation = null;
 	}
 	
-	/** {@inheritDoc} */
-	public void mousePressed(MouseEvent e) 
-	{ 
-		mouseLocation = e.getPoint();
-		// TODO: mouse button should be separated.
-		if(binding.containsKey(UserActionEvent.MOUSE_LEFT_BUTTON))
-			userEvents.add(new UserActionEvent(binding.get(MOUSE_LEFT_BUTTON), MOUSE_LEFT_BUTTON, PRESSED));
-	}
-	
-	/** {@inheritDoc} */
-	public void mouseReleased(MouseEvent e) 
-	{ 
-		mouseLocation = e.getPoint();
-		if(binding.containsKey(UserActionEvent.MOUSE_LEFT_BUTTON))
-			userEvents.add(new UserActionEvent(binding.get(MOUSE_LEFT_BUTTON), MOUSE_LEFT_BUTTON, RELEASED));
-	}
+
 	
 	/** {@inheritDoc} */
 	public void mouseMoved(MouseEvent e) 
@@ -189,15 +222,6 @@ public class QuadVoices extends EventManager implements Loopy
 		mouseLocation = e.getPoint();
 	}
 
-	/** {@inheritDoc} */
-	public void mouseDragged(MouseEvent e) 
-	{ 
-		mouseLocation = e.getPoint();
-		// TODO: mouse button should be separated.
-		if(binding.containsKey(UserActionEvent.MOUSE_LEFT_BUTTON))
-			userEvents.add(new UserActionEvent(binding.get(MOUSE_LEFT_BUTTON), MOUSE_LEFT_BUTTON, PRESSED));
-	}
-	
 	public Point getMouseLocation() 
 	{
 		return mouseLocation;
@@ -213,14 +237,14 @@ public class QuadVoices extends EventManager implements Loopy
 	 * @param entityId
 	 * @param listener
 	 */
-	public void addUserActionListener(int actionId, UserActionListener listener)
+	public void addUserActionListener(String actionId, UserActionListener listener)
 	{
 		if(userListeners.get(actionId) != null)
 			throw new IllegalStateException("Action " + actionId + " already has a registered listener.");
 		
 		userListeners.put(actionId, listener);
 	}
-	public void removeUserActionListener(int actionId)
+	public void removeUserActionListener(String actionId)
 	{
 		userListeners.remove(actionId);
 	}
@@ -229,11 +253,11 @@ public class QuadVoices extends EventManager implements Loopy
 	 * Removes listener for entity pick events. 
 	 * @param entityId
 	 */
-	public void addCursorListener(CursorMotionListener listener)
+	public void addCursorListener(CursorListener listener)
 	{
 		cursorListeners.add(listener);
 	}
-	public void removeCursorListener(CursorMotionListener listener)
+	public void removeCursorListener(CursorListener listener)
 	{
 		cursorListeners.remove(listener);
 	}
@@ -251,7 +275,7 @@ public class QuadVoices extends EventManager implements Loopy
 	 * Adds an environment event to the events queue.
 	 * @param event
 	 */
-	public void declare(CursorMotionEvent event)
+	public void declare(CursorEvent event)
 	{
 		cursorEvent = event;
 	}
@@ -273,7 +297,6 @@ public class QuadVoices extends EventManager implements Loopy
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.
-		binding = scene.bind(viewPoint, this);
 	}
 
 }

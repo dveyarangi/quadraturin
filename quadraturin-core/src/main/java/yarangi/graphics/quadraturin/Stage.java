@@ -37,7 +37,6 @@ public class Stage
 	 * Current scene
 	 */
 	private Scene scene;
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// service
 	
@@ -237,6 +236,10 @@ public class Stage
 
 	public String getSceneName() {
 		return scene.getName();
+	}
+
+	public IViewPoint getViewPoint() {
+		return scene.getViewPoint();
 	}
 
 }
