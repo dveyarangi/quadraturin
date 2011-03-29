@@ -52,6 +52,8 @@ public class Stage
 	
 	private boolean scenePending = false;
 	
+	private EventManager voices;
+	
 	/**
 	 * 
 	 */
@@ -65,7 +67,7 @@ public class Stage
 	{
 		this.frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
 		log.debug("Using sec/frame ratio of " + frameLength + ".");
-		
+		this.voices = voices;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,9 +101,11 @@ public class Stage
 	 */
 	public synchronized void setScene(int id)
 	{
-		clear();
+		scene.destroy(voices);
 		
 		this.scene = scenes.get(id);
+		scene.init(voices);
+		
 		this.scenePending = true;
 		
 		fireStageChanged();
@@ -226,19 +230,13 @@ public class Stage
 		changePending = true;
 	}
 
-	/**
-	 * 
-	 */
-	public void clear()
-	{
-//		uiDrawables.clear();
-	}
-
 	public String getSceneName() {
 		return scene.getName();
 	}
 
 	public IViewPoint getViewPoint() {
+		if(scene == null)
+			return null;
 		return scene.getViewPoint();
 	}
 

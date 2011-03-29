@@ -27,7 +27,7 @@ public abstract class Scene implements UserActionListener
 	 */
 	private String name;
 	
-	private EventManager voices;
+//	private EventManager voices;
 
 	private WorldVeil worldVeil;
 	
@@ -37,11 +37,10 @@ public abstract class Scene implements UserActionListener
 	private Map <String, Action> actions = new HashMap <String, Action> ();
 
 
-	public Scene(String sceneName, int width, int height, EventManager voices, WorldVeil worldVeil, UIVeil uiVeil)
+	public Scene(String sceneName, int width, int height, WorldVeil worldVeil, UIVeil uiVeil)
 	{
 		this.name = sceneName;
-		
-		this.voices = voices;
+
 		
 		this.worldVeil = worldVeil;
 		viewPoint = new ViewPoint2D(null, null, null, new Dimension(width, height));
@@ -55,13 +54,22 @@ public abstract class Scene implements UserActionListener
 			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
 	}
 	
+	public void init(EventManager voices)
+	{
+		bindSceneActions(voices);
+		for(String actionId : actions.keySet())
+			voices.addUserActionListener(actionId, this);
+	}
+	
+	public abstract void bindSceneActions(EventManager voices);
+
 	public IViewPoint getViewPoint() {
 		return viewPoint;
 	}
 
 	public String getName() { return name; }
 	
-	public EventManager getVoices() { return voices; }
+//	public EventManager getVoices() { return voices; }
 	
 	public void addEntity(SceneEntity entity)
 	{
@@ -115,7 +123,7 @@ public abstract class Scene implements UserActionListener
 		if(actions.containsKey(actionId))
 			throw new IllegalArgumentException("Action with id " + actionId + " already bound to method.");
 		actions.put(actionId, action);
-		voices.addUserActionListener(actionId, this);
+//		voices.addUserActionListener(actionId, this);
 	}
 	
 
@@ -129,7 +137,7 @@ public abstract class Scene implements UserActionListener
 		action.act(event);
 	}
 
-	public void destroy()
+	public void destroy(EventManager voices)
 	{
 		for(String actionId : actions.keySet())
 			voices.removeUserActionListener(actionId);

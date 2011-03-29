@@ -21,11 +21,10 @@ import yarangi.graphics.quadraturin.interaction.IPhysicsEngine;
 import yarangi.graphics.quadraturin.interaction.StupidInteractions;
 import yarangi.graphics.quadraturin.thread.LoopyChainedThread;
 import yarangi.graphics.quadraturin.thread.ThreadChain;
-import yarangi.math.RangedDouble;
-import yarangi.math.Vector2D;
 
 /**
- * The Quadraturin application frame.
+ * The Quadraturin application frame. Reads engine configuration, starts up the threads and creates AWT
+ * application elements. 
  *  
  * TODO: shall add option to set different closing listener.
  * 
@@ -147,24 +146,19 @@ public class QuadContainer extends JFrame
 		log.trace("Thread pool created.");
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// initializing controls and binding event listeners:
-		IViewPoint viewPoint;
-		if ( QuadMode.PRESENT_2D == mode ) 
-			viewPoint = new ViewPoint2D(new Vector2D(0,0), getSize(), new RangedDouble(1, 1), null);
-		else
-			throw new IllegalArgumentException("Presentation mode " + mode + " is not supported yet.");
-	
-		log.debug("Creating Quadraturin voices...");
-		voices = new QuadVoices(QuadConfigFactory.getInputConfig());
-		chain.addThread(new LoopyChainedThread("q-echoes", chain, voices));
-		log.trace("Quadraturin voices created.");
-		
+		// initializing event manager:
+		String eventModuleName = "q-voice";
+		log.debug("Creating Quadraturin event manager...");
+		voices = new QuadVoices(eventModuleName, QuadConfigFactory.getInputConfig());
+		chain.addThread(new LoopyChainedThread(eventModuleName, chain, voices));
+		log.trace("Quadraturin event manager created.");
 		
 		log.debug("Creating entity stage...");
 		stage = new Stage(voices);
 		log.trace("Entity stage created.");
 		
-		log.debug("Creating Quadraturin controller...");
+		
+		log.debug("Creating Quadraturin GL listener...");
 		if ( QuadMode.PRESENT_2D == mode ) 
 			{
 			controller = new Quad2DController("q-renderer", stage, voices, chain);
@@ -183,6 +177,7 @@ public class QuadContainer extends JFrame
 		canvas.addMouseMotionListener(voices);
 		canvas.addKeyListener(voices);
 		log.trace("Quadraturin controller created.");
+		
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
@@ -203,10 +198,10 @@ public class QuadContainer extends JFrame
 				interactions.setCollisionManager(scene.getWorldVeil().createCollisionManager());
 			}});
 		
-		stage.setInitialScene(new DummyScene("Loading...", voices));
+		stage.setInitialScene(new DummyScene("Loading..."));
 
 
-		log.info("Quadraturin, the fearsome engine, is ready!");
+		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
 	}
 	

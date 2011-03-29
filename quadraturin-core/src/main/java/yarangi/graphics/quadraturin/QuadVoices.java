@@ -8,7 +8,6 @@
 
 package yarangi.graphics.quadraturin;
 
-import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -17,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.ActionBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
@@ -29,19 +30,18 @@ import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.quadraturin.thread.Loopy;
 
 /**
- * Used to aggregate the regular AWT keyboard and mouse events, transformed mouse events, cursor hover and picking
- * events and whatever else that will become a requirement in the future. 
- * Runs as a separate thread. All accumulated event are dispatched at once.
+ * Used to aggregate the regular AWT keyboard and mouse events, transformed mouse events, 
+ * cursor hover and picking  events and whatever else that will become a requirement in 
+ * the future.  Runs in a separate thread. All accumulated event are dispatched at once.
  * 
  * TODO: add "TransfomationEvent" to adjust mouse-world conversion?
- * 
  * TODO: append CursorMotionEvent listener that fires GUIEvents?
+ * TODO: replacing the AWT event queue shall be more efficient.
  * 
  * @author Dve Yarangi
  */
 public class QuadVoices extends EventManager implements Loopy
 {
-	EventQueue queue;
 	/**
 	 * Holds last cursor motion event.
 	 */
@@ -69,21 +69,30 @@ public class QuadVoices extends EventManager implements Loopy
 	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
 	
-	
-//	private IViewPoint viewPoint;
-	
 	private Scene scene;
 	/**
 	 * Mouse location
 	 */
 	private Point mouseLocation;
 	
-	public QuadVoices(/*IViewPoint viewPoint, */InputConfig config) 
+	private Logger log;
+	
+	public QuadVoices(String name,/*IViewPoint viewPoint, */InputConfig config) 
 	{
-//		this.viewPoint = viewPoint;
+		this.log = Logger.getLogger(name);
 		
 		for(ActionBinding bind : config.getBinding())
-			binding.put(new InputHook(bind.getModeId(), bind.getButtonId()), bind.getActionId());
+		{
+			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
+			binding.put(hook, bind.getActionId());
+			log.debug("Attached hook [" + hook + "] for action [" + bind.getActionId() + "].");
+
+		}
+	}
+	
+	public void setLoggerName(String loggerName)
+	{
+		this.log = Logger.getLogger(loggerName);
 	}
 	
 //	public IViewPoint getViewPoint() { return viewPoint; }
@@ -93,7 +102,7 @@ public class QuadVoices extends EventManager implements Loopy
 	public void runBody() 
 	{
 
-		// TODO: move to rendering cycle?
+		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
 		SceneEntity pickedEntity = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		cursorEvent.setSceneEntity(pickedEntity);
@@ -103,9 +112,11 @@ public class QuadVoices extends EventManager implements Loopy
 			l.onCursorMotion(cursorEvent);
 		
 		// firing user actions info:
+//		log.debug("User action event in queue: " + userEvents.size());
 		while(userEvents.size() > 0)
 		{
 			UserActionEvent event = userEvents.poll();
+//			log.debug("Firing user action event: " + event.getActionId());
 			
 			// TODO: either prioritize query, so the picks order will be predictable,
 			// or revise to work with picks list: 
@@ -125,12 +136,6 @@ public class QuadVoices extends EventManager implements Loopy
 			sceneTime = -1;
 		}*/
 	}
-	
-	public void hookAction(InputHook input, int actionId)
-	{
-		
-	}
-
 	
 	public void runPostLock() { /* freedom of voice? */ }
 	
@@ -174,6 +179,7 @@ public class QuadVoices extends EventManager implements Loopy
 	{ 
 		mouseLocation = e.getPoint();
 		
+		// TODO: buggy, no button flag are lit on release, and thus input hook constructed incorrectly:
 		InputHook hook = new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
@@ -242,6 +248,7 @@ public class QuadVoices extends EventManager implements Loopy
 		if(userListeners.get(actionId) != null)
 			throw new IllegalStateException("Action " + actionId + " already has a registered listener.");
 		
+		log.debug("Registered listener [" + listener + "] for action [" + actionId + "].");
 		userListeners.put(actionId, listener);
 	}
 	public void removeUserActionListener(String actionId)

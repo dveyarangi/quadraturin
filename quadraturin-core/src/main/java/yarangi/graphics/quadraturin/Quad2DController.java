@@ -58,7 +58,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		this.stage = stage;
 		
 		this.voices = voices;
-
+		System.out.println(voices);
 		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
 	}
 
@@ -172,7 +172,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
 		ViewPoint2D viewPoint = (ViewPoint2D) stage.getViewPoint();
-		glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
+		if(viewPoint != null)
+			glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
@@ -229,6 +230,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		//updateViewPoint(gl, viewPoint);
 		
 		gl.glPushMatrix();
+
 		Point pickPoint = voices.getMouseLocation();
 		Vector2D worldPickPoint = null;
 		// TODO: OPTIMIZE: buffer the pick selection and do nothing if not changed
