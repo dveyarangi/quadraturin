@@ -52,10 +52,10 @@
 	</dependencies> 
 
 	<parent>
-		<artifactId>quadraturin-parent</artifactId>
+		<artifactId>quadraturin</artifactId>
 		<groupId>dve.yarangi.graphics</groupId>
 		<version>0.0.1</version>
-		<relativePath>../quadraturin-parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	
 </project>
