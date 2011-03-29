@@ -1,4 +1,4 @@
-<quadraturin>
+<quadraturin name="default">
 	<ekran>
 		<xres>640</xres>
 		<yres>480</yres>
@@ -7,7 +7,6 @@
 	<input>
 		<scroll-step>40</scroll-step>
 		<scale-step>0.9</scale-step>
-		<layout>
 		<!-- 
 		public static final int PRESSED = 1;
 		public static final int TAPPED = 2;
@@ -19,13 +18,12 @@
 		
 		* keyboard key values are identical to KeyEvent.getKeyCode() values.
 	 -->
-			<binding actionId="scroll-left"  buttonId="37" modeId="2" />
-			<binding actionId="scroll-right" buttonId="39" modeId="2" />
-			<binding actionId="scroll-up"    buttonId="38" modeId="2" />
-			<binding actionId="scroll-down"  buttonId="40" modeId="2" />
-			<binding actionId="zoom-in"      buttonId="33" modeId="2" />
-			<binding actionId="zoom-out"     buttonId="34" modeId="2" />
-		</layout>
+		<binding actionId="scroll-left"  buttonId="37" modeId="2" />
+		<binding actionId="scroll-right" buttonId="39" modeId="2" />
+		<binding actionId="scroll-up"    buttonId="38" modeId="2" />
+		<binding actionId="scroll-down"  buttonId="40" modeId="2" />
+		<binding actionId="zoom-in"      buttonId="33" modeId="2" />
+		<binding actionId="zoom-out"     buttonId="34" modeId="2" />
 	</input>
 	<stage>
 			<frame-length>1</frame-length>
