@@ -3,8 +3,8 @@
 
 	<xs:complexType name="EkranConfig">
 		<xs:sequence>
-			<xs:element name="xRes" type="xs:int" default="640" />
-			<xs:element name="yRes" type="xs:int" default="640" />
+			<xs:element name="xres" type="xs:int" default="640" />
+			<xs:element name="yres" type="xs:int" default="640" />
 			<xs:element name="antialiasing" type="xs:boolean" default="false" />
 		</xs:sequence>
 	</xs:complexType>
