@@ -1,5 +1,6 @@
 package yarangi.graphics.quadraturin.events;
 
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 public class InputHook 
@@ -20,10 +21,10 @@ public class InputHook
 	public static final int RELEASED = 3;
 	
 	/**
-	 * Button gragged flag
+	 * Button dragged flag
 	 */
-	
 	public static final int DRAGGED = 4;	
+	
 	
 	public static final int MOUSE_LEFT_BUTTON = -1;
 	public static final int MOUSE_RIGHT_BUTTON = -2;
@@ -77,9 +78,34 @@ public class InputHook
 	public String toString()
 	{
 		return new StringBuilder()
-			.append("button id: ").append(buttonId).append(", ")
-			.append("mode id: " ).append(modeId)
+			.append("button <").append(getButtonName(buttonId)).append(">, ")
+			.append("mode <" ).append(getModeName(modeId)).append(">")
 			.toString();
+	}
+	
+	private static String getButtonName(int buttonId)
+	{
+		if(buttonId > 0)
+			return KeyEvent.getKeyText(buttonId);
+		if(buttonId == MOUSE_LEFT_BUTTON)
+			return "Mouse Left";
+		if(buttonId == MOUSE_RIGHT_BUTTON)
+			return "Mouse Right";
+		
+		return "unknown id (" + buttonId + ")";
+	}
+	
+	private static String getModeName(int modeId)
+	{
+
+		switch(modeId)
+		{
+		case RELEASED: return "released";
+		case PRESSED:  return "pressed";
+		case TAPPED:   return "tapped";
+		case DRAGGED:  return "dragged";
+		}
+		return "unknown id (" + modeId + ")";
 	}
 
 }
