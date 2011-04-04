@@ -6,9 +6,10 @@
 
    <!--Included child modules-->
   <modules>
-	<module>quadraturin-parent</module>
+    <module>quadraturin-utils</module>
     <module>quadraturin-config</module>
     <module>quadraturin-core</module>
+    <module>quadraturin-graphics</module>
   </modules>
   
   <!--Project detail-->

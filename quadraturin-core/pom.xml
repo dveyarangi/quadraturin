@@ -40,9 +40,9 @@
         <version>1.6</version>
       </dependency>	
       <dependency>
-		<groupId>dve.yarangi</groupId>
-		<artifactId>util</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<groupId>dve.yarangi.graphics</groupId>
+		<artifactId>quadraturin-utils</artifactId>
+		<version>0.0.1</version>
 	  </dependency>
       <dependency>
 		<groupId>dve.yarangi.graphics</groupId>
