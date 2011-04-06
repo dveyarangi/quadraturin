@@ -142,17 +142,38 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	public Iterator<T> iterator() 
 	{ 
-		return iterator(-width/2, -height/2, width/2, height/2); 
+		return new HashMapIterator(-width/2, -height/2, width/2, height/2); 
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * TODO: resulting iterator may return same object repeatedly.
 	 */
-	public Iterator <T> iterator(double minx, double miny, double maxx, double maxy)
+	public SpatialProcessor <T> query(SpatialProcessor <T> processor, double xmin, double ymin, double xmax, double ymax)
 	{
+		
+		int minx = Math.max((int)(xmin/cellSize), -halfWidth);
+		int miny = Math.max((int)(ymin/cellSize), -halfHeight);
+		int maxx = Math.min((int)(xmax/cellSize), halfWidth);
+		int maxy = Math.min((int)(ymax/cellSize), halfHeight);
+		
+//		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
+		// removing the object from all overlapping buckets:
+		
+		Map <AABB, T> cell;
+		for(int x = minx; x <= maxx; x ++)
+			for(int y = miny; y <= maxy; y ++)
+			{
+				cell = map[hash(x, y)];
+				for(AABB aabb : cell.keySet())
+				{
+					if(aabb.overlaps(xmin, ymin, xmax, ymax))
+						processor.objectFound(cell.get(aabb));
+				}
 
-		return new HashMapIterator(minx, miny, maxx, maxy);
+			}
+		
+		return processor;
 	}
 
 	/**

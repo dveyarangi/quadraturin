@@ -1,7 +1,7 @@
 package yarangi.spatial;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Common interface for spatial indexing data structures.
@@ -59,7 +59,12 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 		updateObject(oldLocation, newLocation, object);
 	}
 	
-	public HashMap <K, AABB> getLocations() { return locations; }
+	/**
+	 * Retrieves set of indexed {@link ISpatialObject}s.
+	 * Note: The collection is backed up by the indexer and should not be modified. 
+	 * @return
+	 */
+	public Set <K> keySet() { return locations.keySet(); }
 	
 	/**
 	 * Adds an {@link AABB} box, containing the object.
@@ -90,6 +95,6 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 * @param maxx
 	 * @param maxy
 	 */
-	public abstract Iterator <K> iterator(double minx, double miny, double maxx, double maxy);
+	public abstract SpatialProcessor <K> query(SpatialProcessor <K> processor, double minx, double miny, double maxx, double maxy);
 
 }
