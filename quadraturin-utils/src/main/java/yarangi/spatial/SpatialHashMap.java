@@ -149,7 +149,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * {@inheritDoc}
 	 * TODO: resulting iterator may return same object repeatedly.
 	 */
-	public SpatialProcessor <T> query(SpatialProcessor <T> processor, double xmin, double ymin, double xmax, double ymax)
+	public ISpatialSensor <T> query(ISpatialSensor <T> processor, double xmin, double ymin, double xmax, double ymax)
 	{
 		
 		int minx = Math.max((int)(xmin/cellSize), -halfWidth);

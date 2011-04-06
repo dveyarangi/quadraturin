@@ -1,4 +1,4 @@
-package yarangi.graphics.quadraturin.interaction;
+package yarangi.graphics.quadraturin.simulations;
 
 /**
  * Dummy physics engine implementation for scenes that do not require any physics.
@@ -15,13 +15,13 @@ public class DummyInteractions implements IPhysicsEngine {
 	 * {@inheritDoc}
 	 * Does nothing.
 	 */
-	public void addEntity(PhysicalEntity entity) { }
+	public void addEntity(IPhysicalObject entity) { }
 
 	/**
 	 * {@inheritDoc}
 	 * Does nothing.
 	 */
-	public void removeEntity(PhysicalEntity entity) { }
+	public void removeEntity(IPhysicalObject entity) { }
 
 	/**
 	 * {@inheritDoc}
@@ -33,7 +33,7 @@ public class DummyInteractions implements IPhysicsEngine {
 	 * {@inheritDoc}
 	 * Also does nothing.
 	 */
-	public void updateEntity(PhysicalEntity entity) { }
+	public void updateEntity(IPhysicalObject entity) { }
 
 	public void runPreUnLock() {
 	}

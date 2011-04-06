@@ -1,13 +1,12 @@
-package yarangi.graphics.quadraturin.interaction;
+package yarangi.graphics.quadraturin.simulations;
 
-import yarangi.graphics.quadraturin.thread.Loopy;
 
 
 /**
  * Physics engine interface. See {@link StupidInteractions}
  * 
  */
-public interface IPhysicsEngine extends Loopy
+public interface IPhysicsEngine
 {
 	/**
 	 * Initializes whatever needs to be initialized.
