@@ -1,6 +1,5 @@
 package yarangi.graphics.utils.colors;
 
-import yarangi.numbers.RandomUtil;
 
 public class Color
 {

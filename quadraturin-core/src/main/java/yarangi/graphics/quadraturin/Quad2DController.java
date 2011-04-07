@@ -212,12 +212,12 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		if(isScenePending)
 		{
-			
-			prevScene.destroy(gl);
+			if(prevScene != null)
+				prevScene.destroy(gl);
 			// initializing stage components:
 			log.debug("Entering '" + currScene.getName() + "' scene...");
 
-				currScene.init(gl);
+			currScene.init(gl);
 			
 			isScenePending = false;
 		}

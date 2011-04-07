@@ -11,5 +11,7 @@ Use -Dsun.awt.noerasebackground=true JVM parameter to disable flickering on apli
 Windows:
   * Use -Dsun.java2d.noddraw=true to disable DirectX (prevent graphic artifacts outside of the GLCanvas).
 
+
+------------------------------
 Be free - god hates you!
 

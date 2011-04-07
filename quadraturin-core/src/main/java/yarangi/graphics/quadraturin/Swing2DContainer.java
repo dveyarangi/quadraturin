@@ -85,8 +85,6 @@ public class Swing2DContainer extends JFrame
 		setName(applicationName);
 		
 		log.info("/////////////////////////////////////////////////////////////");
-		log.info("// QUADRATURIN INIT /////////////////////////////////////////");
-		log.info("/////////////////////////////////////////////////////////////");
 		log.info(applicationName + " container is being expanded...");
 
 			if(Debug.ON) ;			
@@ -213,9 +211,6 @@ public class Swing2DContainer extends JFrame
 	 */
 	public void safeStop() 
 	{ 
-		log.info("/////////////////////////////////////////////////////////////");
-		log.info("// QUADRATURIN STOP /////////////////////////////////////////");
-		log.info("/////////////////////////////////////////////////////////////");
 		log.debug("Quadraturin container is being shrinked...");
 		this.removeMouseListener(voices);
 		this.removeMouseMotionListener(voices);
