@@ -11,6 +11,12 @@ import yarangi.spatial.ISpatialObject;
 public interface IPhysicalObject extends ISpatialObject
 {
 	
+	public Vector2D getForce();
+	
 	public Vector2D getVelocity();
+	
+	public double getMass();
+	
+	public void setImpactWith(IPhysicalObject e); 
 
 }

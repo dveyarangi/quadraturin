@@ -35,19 +35,10 @@ public class DummyInteractions implements IPhysicsEngine {
 	 */
 	public void updateEntity(IPhysicalObject entity) { }
 
-	public void runPreUnLock() {
-	}
-
-	
-	public void runBody() {
-	}
-
-	
-	public void runPostLock() {
-	}
-
-
-	public void setCollisionManager(ICollisionManager manager) {
-	}
+	/**
+	 * {@inheritDoc}
+	 * Does nothing.
+	 */	
+	public void setCollisionManager(ICollisionManager manager) { }
 
 }
