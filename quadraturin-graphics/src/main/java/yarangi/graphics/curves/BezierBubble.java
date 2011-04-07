@@ -1,4 +1,4 @@
-package yarangi.graphics.bezier;
+package yarangi.graphics.curves;
 
 public class BezierBubble {
 
