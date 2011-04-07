@@ -1,4 +1,5 @@
-Be free - god hates you!
+Quadraturin 2D graphic engine
+=============================
 
 Use Maven to build the project. The build is suited to work in Eclipse SDK environment. 
 
@@ -9,4 +10,6 @@ Use -Dsun.awt.noerasebackground=true JVM parameter to disable flickering on apli
 
 Windows:
   * Use -Dsun.java2d.noddraw=true to disable DirectX (prevent graphic artifacts outside of the GLCanvas).
+
+Be free - god hates you!
 
