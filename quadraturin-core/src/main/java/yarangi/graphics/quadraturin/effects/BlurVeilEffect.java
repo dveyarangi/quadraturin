@@ -6,8 +6,8 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
-import yarangi.graphics.quadraturin.util.shaders.IShader;
-import yarangi.graphics.quadraturin.util.shaders.ShaderFactory;
+import yarangi.graphics.utils.shaders.IShader;
+import yarangi.graphics.utils.shaders.ShaderFactory;
 
 public class BlurVeilEffect extends VeilEffectSkeleton 
 {

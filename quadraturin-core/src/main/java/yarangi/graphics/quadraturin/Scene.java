@@ -2,19 +2,19 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import javax.media.opengl.GL;
+
 import yarangi.graphics.quadraturin.actions.Action;
-import yarangi.graphics.quadraturin.config.InputConfig;
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.math.Vector2D;
+import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SetSensor;
 
 public abstract class Scene implements UserActionListener
 {
@@ -34,10 +34,12 @@ public abstract class Scene implements UserActionListener
 	private UIVeil uiVeil;
 	private IViewPoint viewPoint;
 	
-	private Map <String, Action> actions = new HashMap <String, Action> ();
+	private double frameLength;
+	
+//	private Map <String, Action> actions = new HashMap <String, Action> ();
 
 
-	public Scene(String sceneName, int width, int height, WorldVeil worldVeil, UIVeil uiVeil)
+	public Scene(String sceneName, WorldVeil worldVeil, UIVeil uiVeil,  int width, int height, double frameLength)
 	{
 		this.name = sceneName;
 
@@ -48,20 +50,17 @@ public abstract class Scene implements UserActionListener
 
 		this.uiVeil = uiVeil;
 		
+		this.frameLength = frameLength;
+		
 //		cursorPicks = new EntityList();
 		
 		if(Debug.ON)
 			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
 	}
 	
-	public void init(EventManager voices)
-	{
-		bindSceneActions(voices);
-		for(String actionId : actions.keySet())
-			voices.addUserActionListener(actionId, this);
-	}
+	public final double getFrameLength() { return frameLength; }
 	
-	public abstract void bindSceneActions(EventManager voices);
+	public abstract Map <String, Action> getActionsMap();
 
 	public IViewPoint getViewPoint() {
 		return viewPoint;
@@ -95,41 +94,30 @@ public abstract class Scene implements UserActionListener
 	
 	public UIVeil getUIVeil() { return uiVeil; }
 	
-	public SceneEntity pick(Vector2D worldLocation, Point canvasLocation)
+	public ISpatialObject pick(Vector2D worldLocation, Point canvasLocation)
 	{
 		// collecting picked entities:
-//		cursorPicks.clear();
-		Iterator <SceneEntity> iterator = null;
+		SetSensor <ISpatialObject> sensor = new SetSensor <ISpatialObject> ();
+		
 		if(canvasLocation != null)
-			iterator = uiVeil.getEntityIndex().iterator( 
+			uiVeil.getEntityIndex().query(sensor, 
 					canvasLocation.x-CURSOR_PICK_SPAN, canvasLocation.y-CURSOR_PICK_SPAN, 
 					canvasLocation.x+CURSOR_PICK_SPAN, canvasLocation.y+CURSOR_PICK_SPAN);
 		
-		if((iterator == null || !iterator.hasNext()) && worldLocation != null)
-			iterator = worldVeil.getEntityIndex().iterator( 
+		if(worldLocation != null && sensor.size() == 0)
+			worldVeil.getEntityIndex().query(sensor, 
 				worldLocation.x-CURSOR_PICK_SPAN, worldLocation.y-CURSOR_PICK_SPAN, 
 				worldLocation.x+CURSOR_PICK_SPAN, worldLocation.y+CURSOR_PICK_SPAN);
 		
-		if(iterator != null && iterator.hasNext())
-			return iterator.next();
+		if(sensor.size() != 0)
+			return sensor.iterator().next();
 		
 		return null;
 	}
 	
-	// public IViewPoint getViewPoint() { return manager.getViewPoint(); }
-	
-	public void bindAction(String actionId, Action action)
-	{
-		if(actions.containsKey(actionId))
-			throw new IllegalArgumentException("Action with id " + actionId + " already bound to method.");
-		actions.put(actionId, action);
-//		voices.addUserActionListener(actionId, this);
-	}
-	
-
 	public void onUserAction(UserActionEvent event) 
 	{
-		Action action = actions.get(event.getActionId());
+		Action action = getActionsMap().get(event.getActionId());
 
 		if(action == null)
 			throw new IllegalArgumentException("Action id " + event.getActionId() + " is not defined." );
@@ -137,43 +125,75 @@ public abstract class Scene implements UserActionListener
 		action.act(event);
 	}
 
-	public void destroy(EventManager voices)
+	/**
+	 * 
+	 * @param gl
+	 */
+	public void init(GL gl)
 	{
-		for(String actionId : actions.keySet())
-			voices.removeUserActionListener(actionId);
+		getWorldVeil().init(gl);
+		getUIVeil().init(gl);
 		
-		voices = null;
-		actions = null;
+	}
+	public void destroy(GL gl)
+	{
+		getWorldVeil().destroy(gl);
+		getUIVeil().destroy(gl);
+	}
+
+	
+	/**
+	 * Invoked before the drawing occurs.
+	 * @param gl
+	 */
+	public void preDisplay(GL gl, double time, boolean pushNames) 
+	{	
+		getWorldVeil().preDisplay(gl); 
 	}
 	
-	protected void bindNavigationActions()
+	/**
+	 * Renders this scene.
+	 * @param gl graphics object
+	 * @param time rendering time
+	 * @param pushNames if true, entities' names will be set when rendering 
+	 */
+	public void display(GL gl, double time, boolean pushNames)
 	{
-		final ViewPoint2D vp = (ViewPoint2D) viewPoint;
-		InputConfig config = QuadConfigFactory.getInputConfig();
-		
-		final double scrollStep = config.getScrollStep();
-		final double scaleStep = config.getScaleStep();
-		
-		bindAction("scroll-right", new Action() {
-				public void act(UserActionEvent event) { vp.getCenter().x += scrollStep/vp.getHeight(); }}
-			);
-		bindAction("scroll-left", new Action() {
-			public void act(UserActionEvent event) { vp.getCenter().x -= scrollStep/vp.getHeight(); }}
-		);
-		bindAction("scroll-up", new Action() {
-			public void act(UserActionEvent event) { vp.getCenter().y -= scrollStep/vp.getHeight(); }}
-		);
-		bindAction("scroll-down", new Action() {
-			public void act(UserActionEvent event) { vp.getCenter().y += scrollStep/vp.getHeight(); }}
-		);
-		bindAction("zoom-in", new Action() {
-			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() * scaleStep); }}
-		);
-		bindAction("zoom-out", new Action() {
-			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() / scaleStep); }}
-		);
-
+		getWorldVeil().display(gl, time, pushNames);
 	}
 
+	
+	/**
+	 * Invoked after the drawing is finished.
+	 * @param gl
+	 */
+	public void postDisplay(GL gl, double time, boolean pushNames) 
+	{ 
+		getWorldVeil().postDisplay(gl);
+		
+		getUIVeil().display(gl, time, pushNames);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SCENE ANIMATION
+	
+	public void preAnimate()
+	{
+		getWorldVeil().preAnimate();
+		getUIVeil().preAnimate();
+	}
+	
+	public void animate(double time)
+	{
+		getWorldVeil().animate(time);
+		getUIVeil().animate(time);
+	}
+	
+	public void postAnimate() 
+	{
+		getWorldVeil().postAnimate();
+		getUIVeil().postAnimate();
+	}
 
 }

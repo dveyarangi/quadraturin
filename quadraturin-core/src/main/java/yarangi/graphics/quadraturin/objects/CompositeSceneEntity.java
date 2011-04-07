@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
+import yarangi.spatial.AABB;
 
 /**
  * Used to organize {@link CompositeSceneEntity} objects into scene tree.

@@ -3,7 +3,7 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
+import yarangi.spatial.AABB;
 
 public abstract class Overlay extends SceneEntity 
 {

@@ -10,7 +10,7 @@ import yarangi.graphics.quadraturin.events.UserActionEvent;
 
 public class DefaultActionFactory 
 {
-	public static Map <String, Action> createNavigatationActions(Map <String, Action> actions, IViewPoint viewPoint)
+	public static Map <String, Action> fillNavigationActions(Map <String, Action> actions, IViewPoint viewPoint)
 	{
 		final ViewPoint2D vp = (ViewPoint2D) viewPoint;
 		InputConfig config = QuadConfigFactory.getInputConfig();

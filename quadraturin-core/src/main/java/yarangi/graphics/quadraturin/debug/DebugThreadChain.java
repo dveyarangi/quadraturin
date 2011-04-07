@@ -2,10 +2,10 @@ package yarangi.graphics.quadraturin.debug;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.thread.IChainedThread;
-import yarangi.graphics.quadraturin.thread.Loopy;
-import yarangi.graphics.quadraturin.thread.LoopyChainedThread;
-import yarangi.graphics.quadraturin.thread.ThreadChain;
+import yarangi.graphics.quadraturin.threads.IChainedThread;
+import yarangi.graphics.quadraturin.threads.Loopy;
+import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
+import yarangi.graphics.quadraturin.threads.ThreadChain;
 
 public class DebugThreadChain extends ThreadChain 
 {

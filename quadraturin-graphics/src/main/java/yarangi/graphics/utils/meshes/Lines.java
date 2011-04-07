@@ -1,4 +1,4 @@
-package yarangi.graphics.quadraturin.util.meshy;
+package yarangi.graphics.utils.meshes;
 
 import java.awt.Color;
 

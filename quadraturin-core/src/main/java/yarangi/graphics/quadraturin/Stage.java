@@ -3,8 +3,6 @@ package yarangi.graphics.quadraturin;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
@@ -46,15 +44,6 @@ public class Stage
 	private List <StageListener> listeners = new LinkedList <StageListener> ();
 	
 	/**
-	 * GL thread communication monitor. 
-	 */
-	private boolean changePending = true;
-	
-	private boolean scenePending = false;
-	
-	private EventManager voices;
-	
-	/**
 	 * 
 	 */
 	private Logger log = Logger.getLogger(this.getClass());
@@ -63,11 +52,10 @@ public class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	public Stage(EventManager voices)
+	public Stage()
 	{
 		this.frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
 		log.debug("Using sec/frame ratio of " + frameLength + ".");
-		this.voices = voices;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +80,7 @@ public class Stage
 	{
 		this.scene = scene;
 		
-		fireStageChanged();
+		fireStageChanged(null, scene);
 	}
 	
 	/**
@@ -101,14 +89,10 @@ public class Stage
 	 */
 	public synchronized void setScene(int id)
 	{
-		scene.destroy(voices);
-		
+		Scene prevScene = scene;
 		this.scene = scenes.get(id);
-		scene.init(voices);
 		
-		this.scenePending = true;
-		
-		fireStageChanged();
+		fireStageChanged(prevScene, scene);
 	}
 	
 	public void addListener(StageListener l)
@@ -124,120 +108,20 @@ public class Stage
 	/**
 	 * Informs listeners about scene changes.
 	 */
-	protected void fireStageChanged()
+	protected void fireStageChanged(Scene prevScene, Scene currScene)
 	{
 		for(StageListener l : listeners)
-			l.sceneSet(scene);
+			l.sceneChanged(prevScene, currScene);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENE RENDERING
 	
-	/**
-	 * 
-	 * @param gl
-	 */
-	public void init(GL gl) throws SceneException
-	{
-		scene.getWorldVeil().init(gl);
-		scene.getUIVeil().init(gl);
-		
-		scenePending = false;
-	}
-	
-	public boolean isScenePending() { return scenePending; }
-	
-	/**
-	 * Invoked before the drawing occurs.
-	 * @param gl
-	 */
-	public void preDisplay(GL gl, double time, boolean pushNames) {	scene.getWorldVeil().preDisplay(gl); }
-	
-	/**
-	 * Renders this scene.
-	 * @param gl graphics object
-	 * @param time rendering time
-	 * @param pushNames if true, entities' names will be set when rendering 
-	 */
-	public void display(GL gl, double time, boolean pushNames)
-	{
-		scene.getWorldVeil().display(gl, time, pushNames);
-	}
-
-	
-	/**
-	 * Invoked after the drawing is finished.
-	 * @param gl
-	 */
-	public void postDisplay(GL gl, double time, boolean pushNames) 
-	{ 
-		scene.getWorldVeil().postDisplay(gl);
-		
-		scene.getUIVeil().display(gl, time, pushNames);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// SCENE ANIMATION
-	
-	public void preAnimate()
-	{
-		scene.getWorldVeil().preAnimate();
-		scene.getUIVeil().preAnimate();
-	}
-	
-	public void animate(double time)
-	{
-		scene.getWorldVeil().animate(time);
-		scene.getUIVeil().animate(time);
-		setChanged();
-	}
-	
-	public void postAnimate() 
-	{
-		scene.getWorldVeil().postAnimate();
-		scene.getUIVeil().postAnimate();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SERVICE
 	
-	/**
-	 * Frame to time conversion coefficient
-	 * @return
-	 */
-	public double getFrameLength() { return frameLength; }
-	
-	/**
-	 * Queries if the stage has changed since the last query.
-	 * If there is, 
-	 * @return
-	 */
-	public boolean changePending()
-	{
-		if ( changePending )
-			return !(changePending = false); // flips and returns
-		return false;
-	}
-	
-	/**
-	 * 
-	 */
-	public void setChanged()
-	{
-		changePending = true;
-	}
-
-	public String getSceneName() {
-		return scene.getName();
-	}
-
-	public IViewPoint getViewPoint() {
-		if(scene == null)
-			return null;
-		return scene.getViewPoint();
-	}
 
 }

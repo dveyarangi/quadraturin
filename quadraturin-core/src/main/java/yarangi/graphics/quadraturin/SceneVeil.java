@@ -6,11 +6,12 @@ import java.util.Queue;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.effects.VeilEffect;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialIndexer;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
 import yarangi.graphics.quadraturin.objects.DummyEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SpatialIndexer;
 
 /**
  * Provides means to manage lifecycles of {@link SceneEntity} objects. 
@@ -30,7 +31,7 @@ public abstract class SceneVeil
 	/**
 	 * Indexes the object's locations
 	 */
-	private SpatialIndexer <SceneEntity> indexer;
+	private SpatialIndexer <ISpatialObject> indexer;
 
 	/**
 	 * Queue of entites waitong to be added to the veil.
@@ -45,14 +46,15 @@ public abstract class SceneVeil
 	private VeilEffect veilEffect;
 	
 	
-	private RenderingContext defaultContext = new RenderingContext() {
+	private RenderingContext defaultContext = new RenderingContext() 
+	{
 		public boolean doPushNames() { return false; }
 		public boolean isForEffect() { return false;}
 	};
 	/**
 	 * 
 	 */
-	public SceneVeil(SpatialIndexer <SceneEntity> indexer)
+	public SceneVeil(SpatialIndexer <ISpatialObject> indexer)
 	{
 		this.indexer = indexer;
 	}
@@ -63,7 +65,7 @@ public abstract class SceneVeil
 	}
 	
 
-	public SpatialIndexer <SceneEntity> getEntityIndex() { return indexer; }
+	public SpatialIndexer <ISpatialObject> getEntityIndex() { return indexer; }
 	
 	/**
 	 * 
@@ -79,12 +81,19 @@ public abstract class SceneVeil
 	 * @param gl
 	 * @throws SceneException
 	 */
-	public void init(GL gl) throws SceneException
+	public void init(GL gl)
 	{
 		root.init(gl);
 		
 		if(veilEffect != null)
 			veilEffect.init(gl, root);
+	}
+	
+	public void destroy(GL gl)
+	{
+		root.destroy(gl);
+		if(veilEffect != null)
+			veilEffect.destroy(gl, root);
 	}
 	
 	/**

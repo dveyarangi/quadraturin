@@ -2,5 +2,5 @@ package yarangi.graphics.quadraturin;
 
 public interface StageListener 
 {
-	public void sceneSet(Scene scene);
+	public void sceneChanged(Scene oldScene, Scene newScene);
 }

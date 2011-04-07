@@ -5,13 +5,12 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
-//import yarangi.graphics.quadraturin.interaction.spatial.QuadTree;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialHashMap;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialIndexer;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SpatialHashMap;
+import yarangi.spatial.SpatialIndexer;
 
 public class SceneDebugOverlay extends Overlay
 {
@@ -19,9 +18,9 @@ public class SceneDebugOverlay extends Overlay
 	@SuppressWarnings("rawtypes")
 	private Look spatialOverlay;
 	
-	SpatialIndexer <SceneEntity> indexer;
+	SpatialIndexer <ISpatialObject> indexer;
 	
-	public SceneDebugOverlay(SpatialIndexer <SceneEntity>indexer)
+	public SceneDebugOverlay(SpatialIndexer <ISpatialObject> indexer)
 	{
 		super(new AABB(0,0,0,0));
 			if(indexer instanceof SpatialHashMap)
@@ -44,8 +43,8 @@ public class SceneDebugOverlay extends Overlay
 		
 		AABB c;
 		gl.glColor4f(0.f, 0.f, 1.f, 0.5f);
-		Set <SceneEntity> entities = indexer.getLocations().keySet();
-		for(SceneEntity entity : entities)
+		Set <ISpatialObject> entities = indexer.keySet();
+		for(ISpatialObject entity : entities)
 		{
 			c = entity.getAABB();
 			if( c == null )

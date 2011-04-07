@@ -13,14 +13,13 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.QuadConstants.QuadMode;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
-import yarangi.graphics.quadraturin.interaction.IPhysicsEngine;
-import yarangi.graphics.quadraturin.interaction.StupidInteractions;
-import yarangi.graphics.quadraturin.thread.LoopyChainedThread;
-import yarangi.graphics.quadraturin.thread.ThreadChain;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.simulations.StupidInteractions;
+import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
+import yarangi.graphics.quadraturin.threads.ThreadChain;
 
 /**
  * The Quadraturin application frame. Reads engine configuration, starts up the threads and creates AWT
@@ -30,7 +29,7 @@ import yarangi.graphics.quadraturin.thread.ThreadChain;
  * 
  * @author Dve Yarangi
  */
-public class QuadContainer extends JFrame
+public class Swing2DContainer extends JFrame
 {
 
 	private static final long serialVersionUID = 5840442002396512390L;
@@ -67,10 +66,6 @@ public class QuadContainer extends JFrame
 	 */
 	private StageAnimator animator;
 
-	/**
-	 * Physics thread.
-	 */
-	private IPhysicsEngine interactions;
 	
 	/**
 	 * Logger
@@ -82,7 +77,7 @@ public class QuadContainer extends JFrame
 	 * @param title
 	 * @param model
 	 */
-	public QuadContainer(QuadMode mode)
+	public Swing2DContainer()
 	{
 		super();
 		
@@ -134,7 +129,6 @@ public class QuadContainer extends JFrame
 				System.exit(0);
 			}
 		});
-		log.trace("JOGL canvas created.");
 		
 		log.debug("Creating thread pool...");
 		if(Debug.ON)
@@ -143,31 +137,26 @@ public class QuadContainer extends JFrame
 		}
 		else
 			chain = new ThreadChain("q-chain");
-		log.trace("Thread pool created.");
+		
+			
+		
+		log.debug("Creating entity stage...");
+		stage = new Stage();
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
-		String eventModuleName = "q-voice";
 		log.debug("Creating Quadraturin event manager...");
-		voices = new QuadVoices(eventModuleName, QuadConfigFactory.getInputConfig());
-		chain.addThread(new LoopyChainedThread(eventModuleName, chain, voices));
+		voices = new QuadVoices(QuadConfigFactory.getInputConfig());
+		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
+		stage.addListener(voices);
 		log.trace("Quadraturin event manager created.");
 		
-		log.debug("Creating entity stage...");
-		stage = new Stage(voices);
-		log.trace("Entity stage created.");
-		
-		
 		log.debug("Creating Quadraturin GL listener...");
-		if ( QuadMode.PRESENT_2D == mode ) 
-			{
-			controller = new Quad2DController("q-renderer", stage, voices, chain);
-		}
+		controller = new Quad2DController("q-renderer", voices, chain);
 		
 		chain.addThread(controller);
 		
-		// TODO: this is the only listener, actually, so...
-		stage.addListener(voices);
+		stage.addListener(controller);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    log.trace("Registering Quadraturin controller...");
@@ -182,24 +171,18 @@ public class QuadContainer extends JFrame
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
 		log.debug("Creating entity stage animator...");
-	    animator = new StageAnimator(stage, canvas);
-		chain.addThread(new LoopyChainedThread("q-animator", chain, animator));
-		log.trace("Entity stage animator created.");
-	    
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // physics thread
-		log.debug("Creating entity physics engine...");
-	    interactions = new StupidInteractions();
-		chain.addThread(new LoopyChainedThread("q-interactions", chain, interactions));
-		log.trace("Entity physics engine created.");
-		
-		stage.addListener(new StageListener () {
-			public void sceneSet(Scene scene) {
-				interactions.setCollisionManager(scene.getWorldVeil().createCollisionManager());
-			}});
-		
-		stage.setInitialScene(new DummyScene("Loading..."));
+		IPhysicsEngine engine = new StupidInteractions();
 
+	    animator = new StageAnimator(canvas, engine);
+		chain.addThread(new LoopyChainedThread("q-animator", chain, animator));
+		stage.addListener(animator);
+		
+		
+		// TODO: configure:
+		stage.setInitialScene(new DummyScene("Intro scene"));
+		
+
+		log.trace("Entity stage animator created.");
 
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
@@ -211,6 +194,8 @@ public class QuadContainer extends JFrame
 	public void start()
 	{
 		chain.start();
+		
+		this.setVisible(true);
 	}
 
 	/**
@@ -243,15 +228,6 @@ public class QuadContainer extends JFrame
 		log.info("/////////////////////////////////////////////////////////////");
 	}
 
-	/**
-	 * TODO: injection of physical engine into Scene is not good.
-	 * @return
-	 */
-	public IPhysicsEngine getPhysicsEngine() 
-	{
-		return interactions;
-	}
-	
 	/**
 	 * TODO: injection of event dispatcher into Scene is not good.
 	 * @return

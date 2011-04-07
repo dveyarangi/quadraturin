@@ -3,8 +3,8 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialObjectSkeleton;
+import yarangi.spatial.AABB;
+import yarangi.spatial.SpatialObjectSkeleton;
 
 /**
  * SceneEntity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 

@@ -5,20 +5,23 @@ import javax.media.opengl.GLCanvas;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
-import yarangi.graphics.quadraturin.thread.Loopy;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
  * Invokes scene behavior.
  */
-public class StageAnimator implements Loopy 
+public class StageAnimator implements Loopy, StageListener 
 {
 	
 	/**
 	 * The engine object stage.
 	 */
-	private Stage stage;
+//	private Stage stage;
 	
 	private GLCanvas canvas;
+	
+	private IPhysicsEngine engine;
 	
 	/**
 	 * Minimal required length of frame step.
@@ -28,19 +31,21 @@ public class StageAnimator implements Loopy
 	private long frameStart;
 	private long frameTimeLeft;
 
-	
+	private Scene currScene;
 	/**
 	 * Animator's logger.
 	 */
 	private Logger log = Logger.getLogger(this.getClass());
+	
+	private double defaultFrameLength;
 
 	
-	public StageAnimator(Stage stage, GLCanvas canvas)
+	public StageAnimator(GLCanvas canvas, IPhysicsEngine engine)
 	{
 		
-		if ( stage == null)
-			throw new IllegalArgumentException("Stage cannot be null.");
-		this.stage = stage;
+		if ( engine == null)
+			throw new IllegalArgumentException("Engine cannot be null.");
+		this.engine = engine;
 		
 		if (canvas == null)
 			throw new IllegalArgumentException("Canvas cannot be null.");
@@ -55,6 +60,9 @@ public class StageAnimator implements Loopy
 		
 		log.debug("Max frame rate set to " + (maxFPS == 0 ? "'unbound'" : maxFPS) + " fps" +
 				" => frame length: " + minFrameLength + " ns.");
+		
+		
+		defaultFrameLength = QuadConfigFactory.getStageConfig().getFrameLength();
 		
 		frameStart = System.nanoTime();
 		
@@ -72,16 +80,18 @@ public class StageAnimator implements Loopy
 	{
 		//////////////////////////////////////////////////////////
 		// New entities are born here:
-		stage.preAnimate();
+		currScene.preAnimate();
 		
 		//////////////////////////////////////////////////////////
 		// Running scene behaviors:
 		// TODO: fix animation step for shorter frames
-		stage.animate(stage.getFrameLength());
+		currScene.animate(defaultFrameLength);
+		
+		engine.calculate(defaultFrameLength);
 		
 		//////////////////////////////////////////////////////////
 		// Clean up dead entities:
-		stage.postAnimate();
+		currScene.postAnimate();
 		
 		long newStart = System.nanoTime();
 //		int fps = (int)(1000000000l/(newStart-frameStart));
@@ -104,8 +114,16 @@ public class StageAnimator implements Loopy
 		// TODO: this invokes job in AWT event thread - understand what to do and do it.
 		// 
 //		try {
-			canvas.display();
+			canvas.repaint();
 //		}
 //		catch(java.lang.InterruptedException e) {	log.info("Animator thread display procedure was interrupted.");	}
+	}
+
+
+	public void sceneChanged(Scene prevScene, Scene currScene) 
+	{
+		this.currScene = currScene;
+		
+		engine.setCollisionManager(currScene.getWorldVeil().createCollisionManager());
 	}
 }

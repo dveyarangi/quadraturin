@@ -5,10 +5,10 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.interaction.spatial.AABB;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialHashMap;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.spatial.AABB;
+import yarangi.spatial.SpatialHashMap;
 
 public class DebugSpatialHashMapLook implements Look <SpatialHashMap<SceneEntity>>
 {

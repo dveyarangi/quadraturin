@@ -1,16 +1,12 @@
 package yarangi.graphics.quadraturin;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialHashMap;
-import yarangi.graphics.quadraturin.objects.ActionOverlay;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SpatialHashMap;
 
 public abstract class UIVeil extends SceneVeil
 {
 
-	private List <ActionOverlay> actionIOverlays = new LinkedList <ActionOverlay> ();
+//	private List <ActionOverlay> actionIOverlays = new LinkedList <ActionOverlay> ();
 
 	
 	protected IViewPoint viewPoint;
@@ -18,7 +14,7 @@ public abstract class UIVeil extends SceneVeil
 
 	public UIVeil(int width, int height)
 	{
-		super(new SpatialHashMap<SceneEntity>(100, 10, width, height));
+		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
 //		this.viewPoint = viewPoint;
 	}
 	

@@ -27,7 +27,8 @@ import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
-import yarangi.graphics.quadraturin.thread.Loopy;
+import yarangi.graphics.quadraturin.threads.Loopy;
+import yarangi.spatial.ISpatialObject;
 
 /**
  * Used to aggregate the regular AWT keyboard and mouse events, transformed mouse events, 
@@ -77,9 +78,11 @@ public class QuadVoices extends EventManager implements Loopy
 	
 	private Logger log;
 	
-	public QuadVoices(String name,/*IViewPoint viewPoint, */InputConfig config) 
+	public static final String NAME="q-voice"; 
+	
+	public QuadVoices(InputConfig config) 
 	{
-		this.log = Logger.getLogger(name);
+		this.log = Logger.getLogger(NAME);
 		
 		for(ActionBinding bind : config.getBinding())
 		{
@@ -90,11 +93,6 @@ public class QuadVoices extends EventManager implements Loopy
 		}
 	}
 	
-	public void setLoggerName(String loggerName)
-	{
-		this.log = Logger.getLogger(loggerName);
-	}
-	
 //	public IViewPoint getViewPoint() { return viewPoint; }
 	
 	public void runPreUnLock() { /* voice of the void? */ }
@@ -103,7 +101,9 @@ public class QuadVoices extends EventManager implements Loopy
 	{
 
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
-		SceneEntity pickedEntity = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+		ISpatialObject object = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+		
+		SceneEntity pickedEntity = (SceneEntity) object;
 		
 		cursorEvent.setSceneEntity(pickedEntity);
 		
@@ -269,15 +269,6 @@ public class QuadVoices extends EventManager implements Loopy
 		cursorListeners.remove(listener);
 	}
 	
-/*	public void addSceneListener(SceneListener listener)
-	{
-		sceneListeners.add(listener);
-	}
-	public void removeSceneListener(SceneListener listener)
-	{
-		sceneListeners.remove(listener);
-	}*/
-	
 	/**
 	 * Adds an environment event to the events queue.
 	 * @param event
@@ -298,9 +289,18 @@ public class QuadVoices extends EventManager implements Loopy
 	
 
 
-	public void sceneSet(Scene scene) 
+	public void sceneChanged(Scene prevScene, Scene nextScene) 
 	{
-		this.scene = scene;
+		if(prevScene != null)
+		for(String actionId : prevScene.getActionsMap().keySet())
+			removeUserActionListener(actionId);
+		
+		if(nextScene != null)
+			for(String actionId : nextScene.getActionsMap().keySet())
+				addUserActionListener(actionId, nextScene);
+		
+		scene = nextScene;
+		System.out.println("scene set: " + scene);
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.

@@ -1,11 +1,14 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.interaction.ICollisionManager;
+import yarangi.graphics.quadraturin.actions.Action;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.simulations.ICollisionManager;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
@@ -14,7 +17,7 @@ public class DummyScene extends Scene
 	
 	public DummyScene(String sceneName) 
 	{
-		super(sceneName, 0, 0, 
+		super(sceneName,
 			new WorldVeil(0,0)
 			{
 				public void preDisplay(GL gl) { }
@@ -26,12 +29,11 @@ public class DummyScene extends Scene
 					vp.setCenter(new Vector2D(0,0));
 					vp.setHeight(new RangedDouble(-1,-1,-1));
 				}
-				public void init(GL gl) throws SceneException {}
 			}, 
 			new UIVeil(0,0)
 			{
-				public void init(GL gl) throws SceneException {}
-			}
+			},
+			 0, 0, 0
 		);
 	}
 
@@ -41,5 +43,5 @@ public class DummyScene extends Scene
 	}
 
 	@Override
-	public void bindSceneActions(EventManager voices) { }
+	public Map<String, Action> getActionsMap() { return new HashMap <String, Action> (); }
 }

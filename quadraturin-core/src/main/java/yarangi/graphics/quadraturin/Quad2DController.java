@@ -12,9 +12,9 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
-import yarangi.graphics.quadraturin.thread.ChainedThreadSkeleton;
-import yarangi.graphics.quadraturin.thread.ThreadChain;
-import yarangi.graphics.quadraturin.util.shaders.ShaderFactory;
+import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
+import yarangi.graphics.quadraturin.threads.ThreadChain;
+import yarangi.graphics.utils.shaders.ShaderFactory;
 import yarangi.math.Vector2D;
 
 /**
@@ -24,7 +24,7 @@ import yarangi.math.Vector2D;
  * WGL_ARG_pbuffer
  * WGL_ARB_pixel_format
  */
-public class Quad2DController extends ChainedThreadSkeleton implements GLEventListener
+public class Quad2DController extends ChainedThreadSkeleton implements GLEventListener, StageListener
 {
 	
 	private static final long serialVersionUID = -7140406537457631569L;
@@ -42,7 +42,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * Stage controls entities' look and behaviors
 	 */
-	private Stage stage;
+	private Scene currScene, prevScene;
+	
+	private boolean isScenePending = false;
 	
 	private EventManager voices;
 
@@ -51,15 +53,17 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	private float windowRatio;
 	
-
-	public Quad2DController(String name, Stage stage, EventManager voices, ThreadChain chain) {
+	public Quad2DController(String name, EventManager voices, ThreadChain chain) {
 
 		super(name, chain);
-		this.stage = stage;
 		
 		this.voices = voices;
-		System.out.println(voices);
+//		System.out.println(voices);
 		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
+		
+
+//		frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
+
 	}
 
 	public void start() {
@@ -85,7 +89,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			log.info("GL core is in debug mode.");
 			drawable.setGL(new DebugGL(gl));
 		}
-
+		
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
 		
 		//////////////////////////////////////////////////////////////////
@@ -171,9 +175,12 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
-		ViewPoint2D viewPoint = (ViewPoint2D) stage.getViewPoint();
-		if(viewPoint != null)
-			glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
+		if(currScene != null)
+		{
+			ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
+			if(viewPoint != null)
+				glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
+		}
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
@@ -190,8 +197,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	public void display(GLAutoDrawable glDrawable) 
 	{
 
-		if (!stage.changePending())
-			return; // nothing changed, nothing to redraw
+//		if (!stage.changePending())
+//			return; // nothing changed, nothing to redraw
 	
 		try {
 			waitForRelease();
@@ -203,16 +210,16 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		GL gl = glDrawable.getGL();
 		
-		if(stage.isScenePending())
+		if(isScenePending)
 		{
+			
+			prevScene.destroy(gl);
 			// initializing stage components:
-			log.debug("Entering '" + stage.getSceneName() + "' scene...");
+			log.debug("Entering '" + currScene.getName() + "' scene...");
 
-			try {
-				stage.init(gl);
-			} catch (SceneException e) {
-				log.error("Failed to initialize '" + stage.getSceneName() + "' scene...");
-			}
+				currScene.init(gl);
+			
+			isScenePending = false;
 		}
 
 		// ////////////////////////////////////////////////////
@@ -220,8 +227,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
-		stage.getViewPoint();
-		ViewPoint2D viewPoint = (ViewPoint2D) stage.getViewPoint();
+		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 		
 		gl.glTranslatef((float) viewPoint.getCenter().x,
 				(float) viewPoint.getCenter().y, -(float) viewPoint.getHeight());
@@ -238,23 +244,22 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			worldPickPoint = toWorldCoordinates(gl, pickPoint, viewPoint);
 
 		voices.declare(new CursorEvent(worldPickPoint, pickPoint));
-		
-		double frameLength = stage.getFrameLength();
+
 		
 		// ////////////////////////////////////////////////////
 		// scene preprocessing:
 		gl.glLoadIdentity();
-		stage.preDisplay(gl, frameLength, false);
+		currScene.preDisplay(gl, currScene.getFrameLength(), false);
 		// ////////////////////////////////////////////////////
 		// scene rendering:
 		gl.glPopMatrix();
-		stage.display(gl, frameLength, false);
+		currScene.display(gl, currScene.getFrameLength(), false);
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
 		gl.glLoadIdentity();
 
-		stage.postDisplay(gl, frameLength, false);
+		currScene.postDisplay(gl, currScene.getFrameLength(), false);
 
 		gl.glFlush();
 		glDrawable.swapBuffers();
@@ -294,5 +299,14 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		realy = viewport[3] - (int) y;
 		glu.gluUnProject((double) x, (double) realy, 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, wcoord, 0);
 		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
+	}
+
+	
+	public void sceneChanged(Scene prevScene, Scene currScene) 
+	{
+		this.prevScene = prevScene;
+		this.currScene = currScene;
+		
+		this.isScenePending = true;
 	}
 }

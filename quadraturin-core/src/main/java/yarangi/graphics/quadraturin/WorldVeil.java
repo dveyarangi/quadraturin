@@ -2,16 +2,17 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.interaction.ICollisionManager;
-import yarangi.graphics.quadraturin.interaction.spatial.SpatialHashMap;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.simulations.ICollisionManager;
+import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SpatialHashMap;
 
 public abstract class WorldVeil extends SceneVeil 
 {
 
 	public WorldVeil(int width, int height) 
 	{
-		super(new SpatialHashMap<SceneEntity>(1000, 10, width, height));
+//		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
+		super(new SpatialHashMap<ISpatialObject>(1000, 10, width, height));
 			
 	}
 
