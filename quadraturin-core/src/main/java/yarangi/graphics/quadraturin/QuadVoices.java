@@ -300,7 +300,6 @@ public class QuadVoices extends EventManager implements Loopy
 				addUserActionListener(actionId, nextScene);
 		
 		scene = nextScene;
-		System.out.println("scene set: " + scene);
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.

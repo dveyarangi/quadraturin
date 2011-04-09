@@ -1,9 +1,7 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -121,10 +119,12 @@ public class Swing2DContainer extends JFrame
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
-				log.debug("Window closing event detected.");
-				voices.keyReleased(new KeyEvent((Component)e.getSource(), e.getID(), 0, 0, KeyEvent.VK_ESCAPE, KeyEvent.CHAR_UNDEFINED));
+				log.trace("Window closing event detected.");
 				safeStop();
-				System.exit(0);
+				
+				Swing2DContainer.this.dispose();
+				log.trace("Terminating JVM...");
+				System.exit(-1);
 			}
 		});
 		
@@ -172,7 +172,7 @@ public class Swing2DContainer extends JFrame
 		IPhysicsEngine engine = new StupidInteractions();
 
 	    animator = new StageAnimator(canvas, engine);
-		chain.addThread(new LoopyChainedThread("q-animator", chain, animator));
+		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
 		stage.addListener(animator);
 		
 		

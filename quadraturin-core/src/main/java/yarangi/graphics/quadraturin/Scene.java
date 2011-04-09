@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.actions.Action;
+import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
@@ -16,9 +16,24 @@ import yarangi.math.Vector2D;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SetSensor;
 
+/**
+ * Represents current engine task. 
+ * 
+ * Scene is composed of two layers: 
+ * <li> {@link UIVeil} responsible to draw and animate user interface control elements.
+ * <li> {@link WorldVeil} responsible to draw and animate game world.
+ * Veils provide a way to add and remove {@link SceneEntity} objects.
+ * 
+ * Scene class encapsulates veil handling and provides the engine and user a single point of entry.  
+ * 
+ * @author dveyarangi
+ */
 public abstract class Scene implements UserActionListener
 {
 	
+	/**
+	 * Picking area span (veil coordinates)
+	 */
 	public static final double CURSOR_PICK_SPAN = 5;
 	
 	
@@ -27,16 +42,25 @@ public abstract class Scene implements UserActionListener
 	 */
 	private String name;
 	
-//	private EventManager voices;
-
+	/**
+	 * Game world layer.
+	 */
 	private WorldVeil worldVeil;
 	
+	/**
+	 * User interface layer.
+	 */
 	private UIVeil uiVeil;
+	
+	/**
+	 * TODO: split?
+	 */
 	private IViewPoint viewPoint;
 	
+	/**
+	 * TODO: move
+	 */
 	private double frameLength;
-	
-//	private Map <String, Action> actions = new HashMap <String, Action> ();
 
 
 	public Scene(String sceneName, WorldVeil worldVeil, UIVeil uiVeil,  int width, int height, double frameLength)
@@ -52,15 +76,17 @@ public abstract class Scene implements UserActionListener
 		
 		this.frameLength = frameLength;
 		
-//		cursorPicks = new EntityList();
-		
 		if(Debug.ON)
 			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
 	}
 	
 	public final double getFrameLength() { return frameLength; }
 	
-	public abstract Map <String, Action> getActionsMap();
+	/**
+	 * Retrieves scene {@link IAction} mapping.
+	 * @return
+	 */
+	public abstract Map <String, IAction> getActionsMap();
 
 	public IViewPoint getViewPoint() {
 		return viewPoint;
@@ -117,7 +143,7 @@ public abstract class Scene implements UserActionListener
 	
 	public void onUserAction(UserActionEvent event) 
 	{
-		Action action = getActionsMap().get(event.getActionId());
+		IAction action = getActionsMap().get(event.getActionId());
 
 		if(action == null)
 			throw new IllegalArgumentException("Action id " + event.getActionId() + " is not defined." );

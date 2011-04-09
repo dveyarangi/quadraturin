@@ -33,20 +33,16 @@ public class BlurVeilEffect extends VeilEffectSkeleton
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 	}
 	
+	/**
+	 * TODO: there must be a way to do this without rendering the texture three times.
+	 */
 	public void render(GL gl, double time, CompositeSceneEntity entity, RenderingContext defaultContext) 
 	{
 		gl.glEnable(GL.GL_TEXTURE_2D);
-				// save viewport and set up new one
+		// save viewport and set up new one
 		IntBuffer viewport = IntBuffer.allocate(4);
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
 		
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-//		gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		
-//		gl.glViewport(0,0, viewport.get(2), viewport.get(3));
-
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		
@@ -57,7 +53,7 @@ public class BlurVeilEffect extends VeilEffectSkeleton
 		gl.glDisable(GL.GL_BLEND);
 		viewOrtho(gl);
 		fadeShader.begin(gl);
-		fadeShader.setFloat1Uniform(gl, "decay", 0.01f);
+		fadeShader.setFloat1Uniform(gl, "decay", 0.002f);
 		gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderTexture(gl);
 		fadeShader.end(gl);

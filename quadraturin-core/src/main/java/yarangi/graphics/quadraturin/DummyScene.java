@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.actions.Action;
+import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.quadraturin.simulations.ICollisionManager;
 import yarangi.math.RangedDouble;
@@ -43,5 +43,5 @@ public class DummyScene extends Scene
 	}
 
 	@Override
-	public Map<String, Action> getActionsMap() { return new HashMap <String, Action> (); }
+	public Map<String, IAction> getActionsMap() { return new HashMap <String, IAction> (); }
 }

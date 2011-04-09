@@ -10,7 +10,7 @@ import yarangi.graphics.quadraturin.events.UserActionEvent;
 
 public class DefaultActionFactory 
 {
-	public static Map <String, Action> fillNavigationActions(Map <String, Action> actions, IViewPoint viewPoint)
+	public static Map <String, IAction> fillNavigationActions(Map <String, IAction> actions, IViewPoint viewPoint)
 	{
 		final ViewPoint2D vp = (ViewPoint2D) viewPoint;
 		InputConfig config = QuadConfigFactory.getInputConfig();
@@ -20,22 +20,22 @@ public class DefaultActionFactory
 		
 		
 		
-		actions.put("scroll-right", new Action() {
-				public void act(UserActionEvent event) { vp.getCenter().x += scrollStep/vp.getHeight(); }}
+		actions.put("scroll-right", new IAction() {
+				public void act(UserActionEvent event) {vp.getCenter().x += scrollStep/vp.getHeight(); }}
 			);
-		actions.put("scroll-left", new Action() {
+		actions.put("scroll-left", new IAction() {
 			public void act(UserActionEvent event) { vp.getCenter().x -= scrollStep/vp.getHeight(); }}
 		);
-		actions.put("scroll-up", new Action() {
+		actions.put("scroll-up", new IAction() {
 			public void act(UserActionEvent event) { vp.getCenter().y -= scrollStep/vp.getHeight(); }}
 		);
-		actions.put("scroll-down", new Action() {
+		actions.put("scroll-down", new IAction() {
 			public void act(UserActionEvent event) { vp.getCenter().y += scrollStep/vp.getHeight(); }}
 		);
-		actions.put("zoom-in", new Action() {
+		actions.put("zoom-in", new IAction() {
 			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() * scaleStep); }}
 		);
-		actions.put("zoom-out", new Action() {
+		actions.put("zoom-out", new IAction() {
 			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() / scaleStep); }}
 		);
 

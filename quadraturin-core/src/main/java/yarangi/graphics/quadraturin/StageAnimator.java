@@ -35,14 +35,14 @@ public class StageAnimator implements Loopy, StageListener
 	/**
 	 * Animator's logger.
 	 */
-	private Logger log = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(NAME);
 	
 	private double defaultFrameLength;
 
+	public static final String NAME = "q-animus";
 	
 	public StageAnimator(GLCanvas canvas, IPhysicsEngine engine)
 	{
-		
 		if ( engine == null)
 			throw new IllegalArgumentException("Engine cannot be null.");
 		this.engine = engine;

@@ -77,8 +77,8 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	public void init(GL gl)
 	{
 		super.init(gl);
-		
-		
+		for(SceneEntity child : getChildren())
+			child.init(gl);
 	}
 	
 	public void destroy(GL gl)
