@@ -6,35 +6,48 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
 
-public class DebugSpatialHashMapLook implements Look <SpatialHashMap<SceneEntity>>
+public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObject>>
 {
+	
+	private int gridMeshId;
 
-
-	public void render(GL gl, double time, SpatialHashMap<SceneEntity> map, RenderingContext context) 
+	public void init(GL gl, SpatialHashMap<ISpatialObject> map) 
 	{
-		if(context.isForEffect())
-			return;
-
-		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.4f);
+		System.out.println("list");
+		gridMeshId=gl.glGenLists(1);
+	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
+//		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.3f);
+		float halfCellSize = map.getCellSize() / 2.f;
 		for(int y = -map.getHeight()/2; y < map.getHeight()/2; y += map.getCellSize())
 		{
 			gl.glBegin(GL.GL_LINE_STRIP);
-			gl.glVertex3f((float)-map.getWidth()/2, (float)y, 0f);
-			gl.glVertex3f((float)map.getWidth()/2, (float) y,0f);
+			gl.glVertex3f((float)-map.getWidth()/2, (float)y-halfCellSize, 0f);
+			gl.glVertex3f((float)map.getWidth()/2, (float) y-halfCellSize,0f);
 			gl.glEnd();
 		}
 		
 		for(int x = -map.getWidth()/2; x < map.getWidth()/2; x += map.getCellSize())
 		{
 			gl.glBegin(GL.GL_LINE_STRIP);
-			gl.glVertex3f((float)x,  (float)map.getHeight()/2, 0f);
-			gl.glVertex3f((float)x,  (float)-map.getHeight()/2,0f);
+			gl.glVertex3f((float)x-halfCellSize,  (float)map.getHeight()/2, 0f);
+			gl.glVertex3f((float)x-halfCellSize,  (float)-map.getHeight()/2,0f);
 			gl.glEnd();
 		}
+		
+		gl.glEndList();
+	}
+
+	public void render(GL gl, double time, SpatialHashMap<ISpatialObject> map, RenderingContext context) 
+	{
+		if(context.isForEffect())
+			return;
+
+		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.2f);
+		gl.glCallList(gridMeshId);
 		
 		int cellX, cellY;
 		float halfCellSize = map.getCellSize() / 2.f;
@@ -57,10 +70,10 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<SceneEntity
 				if(bucket.size() != 0)
 				{
 					if(isReal)		
-						gl.glColor4f(0.8f, 0.6f, 0.8f, 0.3f);
+						gl.glColor4f(0.8f, 0.6f, 0.8f, 0.2f);
 					else
 						gl.glColor4f(0.1f, 0.6f, 0.8f, 0.1f);
-					gl.glBegin(GL.GL_QUAD_STRIP);
+					gl.glBegin(GL.GL_QUADS);
 					gl.glVertex3f(x-halfCellSize, y-halfCellSize, 0f);
 					gl.glVertex3f(x-halfCellSize, y+halfCellSize, 0f);
 					gl.glVertex3f(x+halfCellSize, y+halfCellSize, 0f);
@@ -72,12 +85,7 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<SceneEntity
 		}
 	}
 
-	public void init(GL gl, SpatialHashMap<SceneEntity> entity) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void destroy(GL gl, SpatialHashMap<SceneEntity> entity) {
+	public void destroy(GL gl, SpatialHashMap<ISpatialObject> entity) {
 		// TODO Auto-generated method stub
 		
 	}

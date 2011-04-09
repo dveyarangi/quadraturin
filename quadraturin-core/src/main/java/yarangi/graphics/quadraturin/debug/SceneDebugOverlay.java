@@ -31,6 +31,13 @@ public class SceneDebugOverlay extends Overlay
 		this.indexer = indexer;
 
 	}
+	
+	public void init(GL gl)
+	{
+		super.init(gl);
+		
+		spatialOverlay.init(gl, indexer);
+	}
 
 	
 	@SuppressWarnings("unchecked")
