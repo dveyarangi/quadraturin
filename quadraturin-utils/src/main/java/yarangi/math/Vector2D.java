@@ -15,6 +15,11 @@ public class Vector2D extends IVector2D
 	/** y */
 	public double y;
 
+	public Vector2D()
+	{
+		x = 0;
+		y = 0;
+	}
 
 	/**
 	 * Create a new vector with specified values.
