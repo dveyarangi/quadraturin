@@ -183,9 +183,9 @@ public abstract class Scene implements UserActionListener
 	 * @param time rendering time
 	 * @param pushNames if true, entities' names will be set when rendering 
 	 */
-	public void display(GL gl, double time, boolean pushNames)
+	public void display(GL gl, double time, RenderingContext context)
 	{
-		getWorldVeil().display(gl, time, pushNames);
+		getWorldVeil().display(gl, time, context);
 	}
 
 	
@@ -193,11 +193,11 @@ public abstract class Scene implements UserActionListener
 	 * Invoked after the drawing is finished.
 	 * @param gl
 	 */
-	public void postDisplay(GL gl, double time, boolean pushNames) 
+	public void postDisplay(GL gl, double time, RenderingContext context) 
 	{ 
 		getWorldVeil().postDisplay(gl);
 		
-		getUIVeil().display(gl, time, pushNames);
+		getUIVeil().display(gl, time, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////

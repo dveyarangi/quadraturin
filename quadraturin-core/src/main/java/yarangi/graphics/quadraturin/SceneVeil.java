@@ -45,18 +45,13 @@ public abstract class SceneVeil
 	
 	private VeilEffect veilEffect;
 	
-	
-	private RenderingContext defaultContext = new RenderingContext() 
-	{
-		public boolean doPushNames() { return false; }
-		public boolean isForEffect() { return false;}
-	};
 	/**
 	 * 
 	 */
 	public SceneVeil(SpatialIndexer <ISpatialObject> indexer)
 	{
 		this.indexer = indexer;
+
 	}
 	
 	public void setOverlayEffect(VeilEffect effect)
@@ -102,7 +97,7 @@ public abstract class SceneVeil
 	 * @param time
 	 * @param pushNames
 	 */
-	public void display(GL gl, double time, boolean pushNames) 
+	public void display(GL gl, double time, RenderingContext context) 
 	{	
 		// injecting new entities
 		while(!bornEntities.isEmpty())
@@ -126,11 +121,11 @@ public abstract class SceneVeil
 		
 		if(veilEffect == null)
 		{
-			root.display(gl, time, defaultContext);
+			root.display(gl, time, context);
 		}
 		else
 		{
-			veilEffect.render(gl, time, root, defaultContext);
+			veilEffect.render(gl, time, root, context);
 		}
 	}
 

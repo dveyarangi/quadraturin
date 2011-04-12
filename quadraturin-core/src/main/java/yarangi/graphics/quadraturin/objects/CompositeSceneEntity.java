@@ -1,6 +1,8 @@
 package yarangi.graphics.quadraturin.objects;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.media.opengl.GL;
@@ -20,7 +22,7 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	/**
 	 * Entity children in entity tree
 	 */
-	private Set <SceneEntity> children = new HashSet <SceneEntity> ();
+	private List <SceneEntity> children = new ArrayList <SceneEntity> ();
 
 	/**
 	 * Entity parent in entity tree
@@ -63,7 +65,7 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	/**
 	 * @return List of children of this composite
 	 */
-	public Set <SceneEntity> getChildren()
+	public List <SceneEntity> getChildren()
 	{
 		return children;
 	}

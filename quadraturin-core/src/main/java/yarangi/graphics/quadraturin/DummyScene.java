@@ -29,9 +29,11 @@ public class DummyScene extends Scene
 					vp.setCenter(new Vector2D(0,0));
 					vp.setHeight(new RangedDouble(-1,-1,-1));
 				}
+
 			}, 
 			new UIVeil(0,0)
 			{
+
 			},
 			 0, 0, 0
 		);

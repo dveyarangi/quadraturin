@@ -19,5 +19,5 @@ public abstract class UIVeil extends SceneVeil
 	}
 	
 	public IViewPoint getViewPoint() { return viewPoint; }
-
+	
 }

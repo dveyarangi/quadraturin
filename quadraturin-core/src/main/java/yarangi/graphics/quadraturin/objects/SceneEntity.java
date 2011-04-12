@@ -90,7 +90,7 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	public void destroy(GL gl)
 	{
 		if(getLook() != null)
-		this.getLook().destroy(gl, this);
+			this.getLook().destroy(gl, this);
 	}
 	/**
 	 * Displays this entity using specified GL interface
@@ -122,7 +122,6 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 		
 		if(context.doPushNames()) // entity naming ends here
 			gl.glPopName();
-		
 		// restoring transformation matrix:
 		gl.glPopMatrix();
 	}

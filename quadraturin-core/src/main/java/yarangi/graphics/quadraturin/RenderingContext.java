@@ -5,4 +5,6 @@ public interface RenderingContext {
 	boolean doPushNames();
 
 	boolean isForEffect();
+	
+	public IViewPoint getViewPoint();
 }

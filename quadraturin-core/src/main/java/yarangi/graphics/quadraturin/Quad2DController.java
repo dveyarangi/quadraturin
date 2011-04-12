@@ -51,7 +51,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * Current canvas width/height ratio.
 	 */
-	private float windowRatio;
+//	private float windowRatio;
+	
+	private DefaultRenderingContext context;
 	
 	public Quad2DController(String name, EventManager voices, ThreadChain chain) {
 
@@ -59,9 +61,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		this.voices = voices;
 //		System.out.println(voices);
-		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
+//		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
 		
-
+		this.context = new DefaultRenderingContext();
 //		frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
 
 	}
@@ -171,7 +173,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		if (height <= 0) // avoid a divide by zero error!
 			height = 1;
 
-		windowRatio = (float) width / (float) height;
+//		windowRatio = (float) width / (float) height;
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -179,7 +181,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		{
 			ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 			if(viewPoint != null)
-				glu.gluPerspective(45.0f, windowRatio, 1, 2*viewPoint.getMaxHeight());
+			{
+				gl.glOrtho(-width/2, width/2, -height/2, height/2, -1, 1);
+				gl.glViewport(0, 0, width, height);
+			}
 		}
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -230,12 +235,11 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 		
 		gl.glTranslatef((float) viewPoint.getCenter().x,
-				(float) viewPoint.getCenter().y, -(float) viewPoint.getHeight());
+				(float) viewPoint.getCenter().y, 0/* -(float) viewPoint.getHeight()*/);
 		
 		// TODO: extract matrices to viewPoint for world coordinates calculation:
 		//updateViewPoint(gl, viewPoint);
 		
-		gl.glPushMatrix();
 
 		Point pickPoint = voices.getMouseLocation();
 		Vector2D worldPickPoint = null;
@@ -246,20 +250,22 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		voices.declare(new CursorEvent(worldPickPoint, pickPoint));
 
 		
+		context.setViewPoint(viewPoint);
 		// ////////////////////////////////////////////////////
 		// scene preprocessing:
+		gl.glPushMatrix();
 		gl.glLoadIdentity();
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
 		// ////////////////////////////////////////////////////
 		// scene rendering:
 		gl.glPopMatrix();
-		currScene.display(gl, currScene.getFrameLength(), false);
+		currScene.display(gl, currScene.getFrameLength(), context);
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
 		gl.glLoadIdentity();
 
-		currScene.postDisplay(gl, currScene.getFrameLength(), false);
+		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 
 		gl.glFlush();
 		glDrawable.swapBuffers();
@@ -298,7 +304,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		/* note viewport[3] is height of window in pixels */
 		realy = viewport[3] - (int) y;
 		glu.gluUnProject((double) x, (double) realy, 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, wcoord, 0);
-		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
+		return new Vector2D(wcoord[0], wcoord[1]);
+//		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
 	}
 
 	
@@ -309,4 +316,16 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		this.isScenePending = true;
 	}
+	
+	
+	protected class DefaultRenderingContext implements RenderingContext 
+	{
+		IViewPoint vp;
+		public boolean doPushNames() { return false; }
+		public boolean isForEffect() { return false; }
+		public IViewPoint getViewPoint() { return vp; }
+		
+		protected void setViewPoint(IViewPoint vp) { this.vp = vp; }
+	};
+	
 }

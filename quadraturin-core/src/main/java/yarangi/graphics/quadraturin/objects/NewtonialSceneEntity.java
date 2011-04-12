@@ -9,7 +9,7 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 	
 	private Vector2D force = new Vector2D(0,0);
 	private Vector2D velocity = new Vector2D(0,0);
-	private double mass;
+	private double mass = 1;
 	
 	protected NewtonialSceneEntity(AABB aabb) {
 		super(aabb);
