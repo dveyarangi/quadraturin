@@ -118,24 +118,43 @@ public class FileShader extends TextFileResource implements IShader
 		return programId;
 	}
 	
-	public void setFloat1Uniform( GL gl, String name, float integer)
+	public void setFloat1Uniform( GL gl, String name, float a)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
 		
 		int uniformId = gl.glGetUniformLocation(programId, name);
 //		System.out.println(uniformId);
-		gl.glUniform1f(uniformId, integer);
+		gl.glUniform1f(uniformId, a);
 	}
 	
-	public void setFloat2Uniform( GL gl, String name, float x, float y)
+	public void setFloat2Uniform( GL gl, String name, float a, float b)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
 		int uniformId = gl.glGetUniformLocation(programId, name);
 		
-		gl.glUniform2f(uniformId, x, y);
+		gl.glUniform2f(uniformId, a, b);
+	}
+	
+	public void setFloat3Uniform( GL gl, String name, float a, float b, float c)
+	{
+		if(!isInitialized())
+			throw new IllegalStateException("Shader is not initialized.");
+		int uniformId = gl.glGetUniformLocation(programId, name);
+		
+		gl.glUniform3f(uniformId, a, b, c);
 	}	
+
+	public void setFloat4Uniform( GL gl, String name, float a, float b, float c, float d)
+	{
+		if(!isInitialized())
+			throw new IllegalStateException("Shader is not initialized.");
+		int uniformId = gl.glGetUniformLocation(programId, name);
+		
+		gl.glUniform4f(uniformId, a, b, c, d);
+	}	
+
 	/**
 	 * Invokes the shader.
 	 * @param gl
