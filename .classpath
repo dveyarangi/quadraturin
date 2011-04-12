@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="quadraturin-config/src/main/resources"/>
+	<classpathentry kind="src" path="quadraturin-graphics/src/main/resources"/>
 	<classpathentry kind="src" path="quadraturin-graphics/src/main/java"/>
 	<classpathentry kind="src" path="quadraturin-utils/src/main/java"/>
 	<classpathentry kind="src" path="quadraturin-config/target/generated-sources/xjc"/>

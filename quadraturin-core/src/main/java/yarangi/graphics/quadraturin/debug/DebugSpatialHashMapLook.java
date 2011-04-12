@@ -17,10 +17,8 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 
 	public void init(GL gl, SpatialHashMap<ISpatialObject> map) 
 	{
-		System.out.println("list");
-		gridMeshId=gl.glGenLists(1);
+		gridMeshId = gl.glGenLists(1);
 	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
-//		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.3f);
 		float halfCellSize = map.getCellSize() / 2.f;
 		for(int y = -map.getHeight()/2; y < map.getHeight()/2; y += map.getCellSize())
 		{
@@ -85,9 +83,9 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 		}
 	}
 
-	public void destroy(GL gl, SpatialHashMap<ISpatialObject> entity) {
-		// TODO Auto-generated method stub
-		
+	public void destroy(GL gl, SpatialHashMap<ISpatialObject> entity) 
+	{
+		gl.glDeleteLists(gridMeshId, 1);
 	}
 
 }
