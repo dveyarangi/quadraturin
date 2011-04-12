@@ -6,6 +6,7 @@ import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
 import yarangi.math.BitUtils;
@@ -23,7 +24,8 @@ public class VeilEffectSkeleton implements VeilEffect
 	
 	protected RenderingContext effectContext = new RenderingContext() {
 		public boolean doPushNames() { return false; }
-		public boolean isForEffect() { return true;}
+		public boolean isForEffect() { return true; }
+		public IViewPoint getViewPoint() { return null; }
 	};
 
 	public VeilEffectSkeleton() {

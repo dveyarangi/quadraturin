@@ -53,7 +53,7 @@ public class BlurVeilEffect extends VeilEffectSkeleton
 		gl.glDisable(GL.GL_BLEND);
 		viewOrtho(gl);
 		fadeShader.begin(gl);
-		fadeShader.setFloat1Uniform(gl, "decay", 0.002f);
+		fadeShader.setFloat1Uniform(gl, "decay", 0.2f);
 		gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderTexture(gl);
 		fadeShader.end(gl);

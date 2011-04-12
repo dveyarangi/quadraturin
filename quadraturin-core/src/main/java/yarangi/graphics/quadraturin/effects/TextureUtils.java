@@ -26,11 +26,13 @@ public class TextureUtils
 		// filtering properties
 		// TODO: move to configuration?
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, mipmap ? GL.GL_LINEAR_MIPMAP_LINEAR : GL.GL_LINEAR);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, mipmap ? GL.GL_LINEAR_MIPMAP_LINEAR : GL.GL_LINEAR);
-//		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP);
-//		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP);
-
-//		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP, GL.GL_TRUE);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP);
+//		GL_GENERATE_MIPMAP_EXT
+//		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP_EXT, GL.GL_FALSE);
+//		gl.glColorMask(true, true, true, true);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP, mipmap ? GL.GL_TRUE : GL.GL_FALSE);
 		// associating the data array with the texture:
 		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, 
 				GL.GL_UNSIGNED_BYTE, colorBits);
@@ -39,5 +41,58 @@ public class TextureUtils
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 
 		return textureHandle;
+	}
+	
+	public static int createFBOTexture2D(GL gl, int width, int height)
+	{
+		IntBuffer textureHandleBuffer = IntBuffer.allocate(1);
+		
+	
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		
+		// creating texture:
+		gl.glGenTextures(1,textureHandleBuffer);
+		
+		  
+		gl.glBindTexture(GL.GL_TEXTURE_2D, textureHandleBuffer.get(0));
+		  
+		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);  
+		  
+		gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);  
+		gl.glTexParameterf(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);  
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);  
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);  
+		  
+		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+		
+		return textureHandleBuffer.get(0);
+	} 
+	
+	public static int createFBODepthBuffer(GL gl)
+	{
+		IntBuffer handleBuffer = IntBuffer.allocate(1);
+		gl.glGenRenderbuffersEXT(1, handleBuffer);   
+		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, handleBuffer.get(0)); // Bind the fbo_depth render buffer  
+//		...  
+		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0); // Unbind the render buffer
+		
+		return handleBuffer.get(0);
+	}
+	
+	public static int createFBO(GL gl, int textureId, int depthId)
+	{
+		IntBuffer handleBuffer = IntBuffer.allocate(1);
+		gl.glGenFramebuffersEXT(1, handleBuffer); // Generate one frame buffer and store the ID in fbo  
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, handleBuffer.get(0)); // Bind our frame buffer
+		
+		if(textureId != -1)
+		gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, textureId, 0);
+		
+		if(depthId != -1)
+			gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthId); // Attach the depth buffer fbo_depth to our frame buffer
+//		…  
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
+		int status = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
+		return handleBuffer.get(0);
 	}
 }
