@@ -25,7 +25,7 @@ import yarangi.spatial.ISpatialObject;
 public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 {
 	
-	private IShader shadowShader;
+	private IShader penumbraShader;
 	private IShader lightShader;
 	
 	private int textureSize;
@@ -51,12 +51,12 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 			lightShader = ShaderFactory.getShader("light");
 			lightShader.init(gl);
 		}
-		shadowShader = ShaderFactory.getShader("shadow");
-		if(shadowShader == null)
+		penumbraShader = ShaderFactory.getShader("penumbra");
+		if(penumbraShader == null)
 		{
-			ShaderFactory.registerShaderFile("shadow", "shaders/shadowmap.glsl");	
-			shadowShader = ShaderFactory.getShader("shadow");
-			shadowShader.init(gl);
+			ShaderFactory.registerShaderFile("penumbra", "shaders/penumbra.glsl");	
+			penumbraShader = ShaderFactory.getShader("penumbra");
+			penumbraShader.init(gl);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 			gl.glEnd();
 			
 			// drawing penumbra. the shader calculates penumbra gradient based on pixel angle:
-			shadowShader.begin(gl);
+			penumbraShader.begin(gl);
 			gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterLeftOutter.x),     (float)casterLeftOutter.y);
 			gl.glTexCoord2f(1, 1);gl.glVertex2f((float)(casterLeft.x+softLeft.x*textureSize),  (float)(casterLeft.y+softLeft.y*textureSize));
@@ -145,7 +145,7 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 			gl.glTexCoord2f(1, 0);gl.glVertex2f((float)(casterRight.x+fullRight.x*textureSize), (float)(casterRight.y+fullRight.y*textureSize));
 			gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterRight.x),    (float)casterRight.y);
 			gl.glEnd();
-			shadowShader.end(gl);
+			penumbraShader.end(gl);
 			
 		}
 
