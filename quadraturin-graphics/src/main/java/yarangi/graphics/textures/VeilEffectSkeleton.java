@@ -1,4 +1,4 @@
-package yarangi.graphics.quadraturin.effects;
+package yarangi.graphics.textures;
 
 import java.nio.IntBuffer;
 
@@ -9,13 +9,14 @@ import org.apache.log4j.Logger;
 import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
+import yarangi.graphics.quadraturin.objects.IVeilOverlay;
 import yarangi.math.BitUtils;
 
 /**
 
 
  */
-public class VeilEffectSkeleton implements VeilEffect  
+public class VeilEffectSkeleton implements IVeilOverlay  
 {
 	protected int width, height;
 	protected int textureHandle;

@@ -5,10 +5,10 @@ import java.util.Queue;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.effects.VeilEffect;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
 import yarangi.graphics.quadraturin.objects.DummyEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.objects.IVeilOverlay;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialIndexer;
@@ -43,7 +43,7 @@ public abstract class SceneVeil
 	 */
 	private Queue <SceneEntity> deadEntities = new LinkedList <SceneEntity> ();
 	
-	private VeilEffect veilEffect;
+	private IVeilOverlay veilEffect;
 	
 	/**
 	 * 
@@ -54,7 +54,7 @@ public abstract class SceneVeil
 
 	}
 	
-	public void setOverlayEffect(VeilEffect effect)
+	public void setOverlayEffect(IVeilOverlay effect)
 	{
 		this.veilEffect = effect;
 	}

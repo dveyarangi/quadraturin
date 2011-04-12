@@ -6,8 +6,8 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.effects.TextureUtils;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.utils.colors.Color;
 import yarangi.graphics.utils.shaders.IShader;
 import yarangi.graphics.utils.shaders.ShaderFactory;
@@ -17,7 +17,14 @@ import yarangi.math.Vector2D;
 import yarangi.spatial.ISpatialObject;
 
 /**
+ * 
+ * Generates a rough approximation of 2D shadows texture. 
+ * 
+ * TODO: generalize penumbrae shader to generate correct light distribution (should suply it a single large shadow polygon
+ * and light source coords and size. 
+ * 
  * TODO: add capabilities detection (FBO, fragment shaders)
+ * 
  * @author dveyarangi
  *
  * @param <K>
@@ -169,7 +176,7 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 		renderTexture(gl);
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
-		gl.glPopAttrib();		
+
 	}
 
 	private void renderTexture(GL gl)
@@ -189,6 +196,8 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 	public void destroy(GL gl, K entity) 
 	{
 		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);
+		gl.glDeleteFramebuffersEXT(GL.GL_FRAMEBUFFER_EXT, new int [] {fbo}, 0);
+//		gl.glDeleteRenderbuffersEXT(GL.GL_RENDERBUFFER_EXT, arg1)
 	}
 	
 }

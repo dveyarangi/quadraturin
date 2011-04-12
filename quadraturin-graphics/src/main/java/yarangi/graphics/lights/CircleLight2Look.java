@@ -8,8 +8,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.effects.TextureUtils;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.utils.shaders.IShader;
 import yarangi.graphics.utils.shaders.ShaderFactory;
 import yarangi.math.Angles;

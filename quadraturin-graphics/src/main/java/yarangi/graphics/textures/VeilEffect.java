@@ -1,4 +1,4 @@
-package yarangi.graphics.quadraturin.effects;
+package yarangi.graphics.textures;
 
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
 import yarangi.graphics.quadraturin.objects.Look;

@@ -35,7 +35,7 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 		velocity.y = y;
 	}
 	
-	protected void addForce(double x, double y)
+	public void addForce(double x, double y)
 	{
 		force.x += x;
 		force.y += y;

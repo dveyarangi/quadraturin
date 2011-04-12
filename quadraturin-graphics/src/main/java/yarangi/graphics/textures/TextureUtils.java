@@ -1,4 +1,4 @@
-package yarangi.graphics.quadraturin.effects;
+package yarangi.graphics.textures;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
