@@ -6,6 +6,7 @@ import yarangi.graphics.quadraturin.threads.IChainedThread;
 import yarangi.graphics.quadraturin.threads.Loopy;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
+import yarangi.math.Vector2D;
 
 public class DebugThreadChain extends ThreadChain 
 {
@@ -18,6 +19,8 @@ public class DebugThreadChain extends ThreadChain
 	
 	private long cycleLength;
 	
+	private int vectors;
+	
 	/**
 	 * Logger, yea, no doubt.
 	 */
@@ -28,7 +31,7 @@ public class DebugThreadChain extends ThreadChain
 	 */
 	public DebugThreadChain(int iterations)
 	{
-		super("debug-quadchain");
+		super("debug-q-chain");
 		this.debugInterations = iterations;
 	}
 	
@@ -78,6 +81,9 @@ public class DebugThreadChain extends ThreadChain
 			if(iterations > debugInterations)
 			{
 				log.debug("Average execution time of all threads is " + Math.round(cycleLength/1000000.) + " ms (" + 1000000000/cycleLength  + " cycles per second)");
+				int vectorsCreated = Vector2D.getCount()-vectors;
+				log.debug("Average vectors per frame: " + vectorsCreated/debugInterations);
+				vectors = Vector2D.getCount();
 				cycleLength = 0;
 				iterations = 0;
 			}			

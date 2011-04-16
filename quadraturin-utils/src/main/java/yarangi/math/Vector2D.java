@@ -14,12 +14,17 @@ public class Vector2D extends IVector2D
 	
 	/** y */
 	public double y;
+	
+	public static int count = 0;
 
 	public Vector2D()
 	{
 		x = 0;
 		y = 0;
+		count ++;
 	}
+	
+	public static int getCount() { return count; } 
 
 	/**
 	 * Create a new vector with specified values.
@@ -30,12 +35,14 @@ public class Vector2D extends IVector2D
 	{
 		this.x = x;
 		this.y = y;
+		count ++;
 	}
 	
 	public Vector2D(double x, double y, double r, double a)
 	{
 		this.x = x+r*Math.cos(a);
 		this.y = y+r*Math.sin(a);
+		count ++;
 	}
 	
 	public Vector2D(double a, double b, boolean radial)
@@ -50,6 +57,7 @@ public class Vector2D extends IVector2D
 			this.x = a;
 			this.y = b;
 		}
+		count ++;
 	}
 	
 	/**
@@ -60,6 +68,7 @@ public class Vector2D extends IVector2D
 	public Vector2D(Vector2D vector) 
 	{
 		this(vector.x, vector.y);
+		count ++;
 	}
 
 	/**
