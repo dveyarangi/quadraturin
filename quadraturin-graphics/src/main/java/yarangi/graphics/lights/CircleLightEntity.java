@@ -2,12 +2,13 @@ package yarangi.graphics.lights;
 
 import java.util.Set;
 
+import yarangi.graphics.quadraturin.objects.ISensorEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.utils.colors.Color;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
 
-public abstract class CircleLightEntity extends SceneEntity
+public abstract class CircleLightEntity extends SceneEntity implements ISensorEntity
 {
 	
 	private Set <ISpatialObject> entities; 
@@ -18,13 +19,11 @@ public abstract class CircleLightEntity extends SceneEntity
 	
 	private Color lightColor;
 
-	public CircleLightEntity(AABB aabb, double intensity, Color color) 
+	public CircleLightEntity(AABB aabb, double lightradius, Color color) 
 	{
 		super(aabb);
-		
-		this.intensity = intensity;
-		
-		this.radius = intensity / 0.01;
+			
+		this.radius = lightradius;
 		
 		this.lightColor = color;
 	}
@@ -40,5 +39,6 @@ public abstract class CircleLightEntity extends SceneEntity
 	
 //	public double getIntensity() { return intensity; }
 	
-	public double getLightRadius() { return radius; }
+	public double getSensorRadius() { return radius; }
+
 }

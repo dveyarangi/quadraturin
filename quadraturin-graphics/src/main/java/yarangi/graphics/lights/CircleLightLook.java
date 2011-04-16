@@ -1,7 +1,7 @@
 package yarangi.graphics.lights;
 
 import java.nio.IntBuffer;
-import java.util.Set;
+import java.util.Map;
 
 import javax.media.opengl.GL;
 
@@ -29,7 +29,7 @@ import yarangi.spatial.ISpatialObject;
  *
  * @param <K>
  */
-public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
+public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 {
 	
 	private IShader penumbraShader;
@@ -45,7 +45,7 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 	
 	public void init(GL gl, K entity) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getLightRadius()*2));
+		textureSize = BitUtils.po2Ceiling((int)(entity.getSensorRadius()*2));
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
 		fbo = TextureUtils.createFBO(gl, lightTexture, depthBuffer);
@@ -72,7 +72,7 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 		if(context.isForEffect())
 			return;
 		
-		Set <ISpatialObject> entities = entity.getEntities();
+		Map <ISpatialObject, Double> entities = entity.getEntities();
 		
 		if(entities == null)
 			return;
@@ -103,10 +103,11 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 
 		// drawing red polygones for full shadows and penumbra:
-		for(ISpatialObject caster : entities)
+		for(ISpatialObject caster : entities.keySet())
 		{
-			if(caster == entity)
+			if(caster == entity || (caster instanceof ICircleLightEntity))
 				continue;
+//			System.out.println(entities.size());
 			Vector2D distance = caster.getAABB().minus(entity.getAABB());
 			Vector2D dir = distance.normalize();
 			
@@ -165,26 +166,43 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 		gl.glPopAttrib();
 		
 		// setting blending mode for lights:
-		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
-		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_FUNC_ADD);
 		
+//		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_MAX);
+//		gl.glBlendFuncSeparate(GL.GL_SRC_COLOR, GL.GL_DST_COLOR, GL.GL_ZERO, GL.GL_ONE);
+//		gl.glBlendFuncSeparate(GL.GL_ONE, GL.GL_ONE, GL.GL_ONE, GL.GL_ONE);		
+		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
+//		System.out.println(textureSize);
 		// drawing shadow map:
 		gl.glBindTexture(GL.GL_TEXTURE_2D, lightTexture);
 		lightShader.begin(gl);
 		Color color = entity.getColor();
 		lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-		renderTexture(gl);
+		lightShader.setFloat1Uniform(gl, "size", 0.1f);
+		lightShader.setFloat1Uniform(gl, "cutoff", 20f);
+		renderTexture(gl, entity);
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+//		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_FUNC_ADD);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+/*		gl.glColor3f(1, 1, 1);
+		gl.glBegin(GL.GL_LINE_STRIP);
+		 gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
+		gl.glVertex2f((float)(+textureSize/2), (float)(-textureSize/2));
+		gl.glVertex2f((float)(+textureSize/2), (float)(+textureSize/2));
+		gl.glVertex2f((float)(-textureSize/2), (float)(+textureSize/2));
+		gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
+		gl.glEnd();*/
 
 	}
 
-	private void renderTexture(GL gl)
+	private void renderTexture(GL gl, K entity)
 	{
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		gl.glBegin(GL.GL_QUADS);
+//		System.out.println(textureSize/2);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)(+textureSize/2), (float)(-textureSize/2));
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)(+textureSize/2), (float)(+textureSize/2));
@@ -195,8 +213,8 @@ public class CircleLightLook <K extends CircleLightEntity> implements Look <K>
 
 	public void destroy(GL gl, K entity) 
 	{
-		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);
-		gl.glDeleteFramebuffersEXT(GL.GL_FRAMEBUFFER_EXT, new int [] {fbo}, 0);
+//		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 0);
+//		gl.glDeleteFramebuffersEXT(GL.GL_FRAMEBUFFER_EXT, new int [] {fbo}, 0);
 //		gl.glDeleteRenderbuffersEXT(GL.GL_RENDERBUFFER_EXT, arg1)
 	}
 	

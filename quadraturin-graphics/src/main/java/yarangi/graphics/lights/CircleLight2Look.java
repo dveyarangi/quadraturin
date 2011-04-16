@@ -39,7 +39,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 	DoubleBuffer res= DoubleBuffer.allocate(3);
 	public void init(GL gl, K entity) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getLightRadius()*2));
+		textureSize = BitUtils.po2Ceiling((int)(entity.getSensorRadius()*2));
 //		System.out.println(size + " : " + entity.getLightRadius()*2);
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		
@@ -162,7 +162,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 		gl.glBindTexture(GL.GL_TEXTURE_2D, lightTexture);
 		lightShader.begin(gl);
 		lightShader.setFloat2Uniform(gl, "light", (float)aabb.x, (float)aabb.y);
-		renderTexture(gl, lightTexture, entity.getLightRadius());
+		renderTexture(gl, lightTexture, entity.getSensorRadius());
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 //		gl.glEnable(GL.GL_BLEND);
