@@ -65,7 +65,10 @@ public class StupidInteractions implements IPhysicsEngine
 			// inert mass point
 			// TODO: add volume, rotation and collision response :) 
 			entity.getVelocity().x += entity.getForce().x / entity.getMass() * time;
-			entity.getVelocity().x += entity.getForce().y / entity.getMass() * time;
+			entity.getVelocity().y += entity.getForce().y / entity.getMass() * time;
+			
+//			if(entity.getVelocity().abs() > 1)
+				
 			
 			entity.getAABB().x += entity.getVelocity().x * time;
 			entity.getAABB().y += entity.getVelocity().y * time;
@@ -88,7 +91,7 @@ public class StupidInteractions implements IPhysicsEngine
 			this.manager = manager;
 		}
 		
-		public void objectFound(ISpatialObject target) {
+		public void objectFound(ISpatialObject target, double distance) {
 			manager.collide(source, target);
 		}
 
