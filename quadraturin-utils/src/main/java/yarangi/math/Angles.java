@@ -5,6 +5,9 @@ public class Angles
 	public static final double PI = Math.PI;
 	public static final double PI_2 = Math.PI*2;
 	public static final double PI_div_2 = Math.PI/2;
+	public static final double PI_div_3 = Math.PI/3;
+	public static final double PI_div_4 = Math.PI/4;
+	public static final double PI_div_5 = Math.PI/5;
 	public static final double PI_div_6 = Math.PI/6;
 	public static final double PI_div_10 = Math.PI/10;
 	public static final double PI_div_20 = Math.PI/20;
