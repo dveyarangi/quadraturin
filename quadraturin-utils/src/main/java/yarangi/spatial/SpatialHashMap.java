@@ -63,7 +63,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	
 	public SpatialHashMap(int width, int height, int averageAmount)
 	{
-		
+		throw new IllegalStateException("Not implemented yet.");
 	}
 	
 	public int getSize() { return size; }
@@ -147,7 +147,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	
 	/**
 	 * {@inheritDoc}
-	 * TODO: resulting iterator may return same object repeatedly.
+	 * TODO: result, reported to processor may be same object repeatedly.
 	 */
 	public ISpatialSensor <T> query(ISpatialSensor <T> processor, double xmin, double ymin, double xmax, double ymax)
 	{
@@ -168,7 +168,42 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 				for(AABB aabb : cell.keySet())
 				{
 					if(aabb.overlaps(xmin, ymin, xmax, ymax))
-						processor.objectFound(cell.get(aabb));
+						processor.objectFound(cell.get(aabb), 
+								Math.pow((xmax+xmin)/2 * aabb.x, 2) + Math.pow((ymax+ymin)/2 * aabb.y, 2));
+				}
+
+			}
+		
+		return processor;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * TODO: result, reported to processor may be same object repeatedly.
+	 */
+	public ISpatialSensor <T> query(ISpatialSensor <T> processor, double x, double y, double radius)
+	{
+		
+		int minx = Math.max((int)((x-radius)/cellSize), -halfWidth);
+		int miny = Math.max((int)((y-radius)/cellSize), -halfHeight);
+		int maxx = Math.min((int)((x+radius)/cellSize), halfWidth);
+		int maxy = Math.min((int)((y+radius)/cellSize), halfHeight);
+		
+//		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
+		// removing the object from all overlapping buckets:
+		
+		Map <AABB, T> cell;
+		for(int tx = minx; tx <= maxx; tx ++)
+			for(int ty = miny; ty <= maxy; ty ++)
+			{
+				cell = map[hash(tx, ty)];
+				for(AABB aabb : cell.keySet())
+				{
+					double distanceSquare = Math.pow(x - aabb.x, 2) + Math.pow(y - aabb.y, 2);
+					
+//					System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
+					if(aabb.r+radius >= Math.sqrt(distanceSquare))
+						processor.objectFound(cell.get(aabb), distanceSquare);
 				}
 
 			}

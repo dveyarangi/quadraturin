@@ -100,5 +100,15 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 * @param maxy
 	 */
 	public abstract ISpatialSensor <K> query(ISpatialSensor <K> sensor, double minx, double miny, double maxx, double maxy);
+	
+	/**
+	 * 
+	 * @param minx
+	 * @param miny
+	 * @param maxx
+	 * @param maxy
+	 */
+	public abstract ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radius);
+
 
 }

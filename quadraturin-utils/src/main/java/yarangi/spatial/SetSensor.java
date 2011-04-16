@@ -7,7 +7,7 @@ public class SetSensor <K extends ISpatialObject> extends HashSet <K> implements
 
 	private static final long serialVersionUID = 9025712177585233445L;
 
-	public void objectFound(K object) {
+	public void objectFound(K object, double distanceSquare) {
 		add(object);
 	}
 
