@@ -4,16 +4,23 @@
 
 uniform sampler2D sceneTex; // 0
 uniform vec4 color;
+
+uniform float size;
+uniform float height;
+uniform float cutoff;
 void main()
 {
-  
-  	vec4 tc = texture2D(sceneTex, gl_TexCoord[0].xy).rgba;
+    vec4 coord = gl_TexCoord[0];
+    vec4 tc = texture2D(sceneTex, gl_TexCoord[0].xy).rgba;
+    
 
-	float distance = (0.5-gl_TexCoord[0].x)* (0.5-gl_TexCoord[0].x) + (0.5-gl_TexCoord[0].y)*(0.5-gl_TexCoord[0].y);
-	float param = 1*exp(-distance*20);
-	float tc0 = (1-tc.r) * color.r * param; 
-	float tc1 = (1-tc.r) * color.g * param; 
-	float tc2 = (1-tc.r) * color.b * param; 
-	float tc3 = 0;//(tc.r) * color.a * param; 
-    gl_FragColor = vec4(tc0, tc1, tc2, tc3);
+    float distance = sqrt(pow(0.5-coord.x, 2) + pow(0.5-coord.y, 2));
+//  float a = atan(height/distance);
+//  float param = 1; //(1-tc.r) * 1/ cos(a) * 1.02 - 0.02;
+	float param = (1-tc.r) * (1 / (2*distance*cutoff+(1-size)/cutoff) - 1/cutoff);
+      
+    if(param > 1)
+     	param = 1;
+ 
+    gl_FragColor = vec4(color.r * param, color.g * param, color.b * param, 0);
 }
