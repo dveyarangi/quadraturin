@@ -16,6 +16,8 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 * TODO: switch to primitive int key hash (Trove?)
 	 */
 	private HashMap <K, AABB> locations = new HashMap <K, AABB> ();
+	
+//	private TIntObjectMap <AABB> locations = new TIntObjectHashMap <AABB> ();
 
 	/**
 	 * Adds an {@link AABB} box, containing the object.

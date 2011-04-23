@@ -165,6 +165,8 @@ public class Vector2D extends IVector2D
 		return new Vector2D(x*cosa - y*sina, x*sina + y*cosa );
 	}
 	
+	public double getAngle() { return Math.atan2(y, x); }
+	
 	/**
 	 * @return display string representation of this vector
 	 */
