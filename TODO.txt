@@ -39,7 +39,7 @@ TODOS:
 	> Limit scene dimensions and limit transposition to scene borders
 	
 * Physics
-	> Configurable engine (on/off for the starters)
+	> Configurable engine (on/off :)
 	> Invent interface.
 	> Interface for "interactive" entities
 		- Autodetect the interactive flag (or, maybe, separate functions in Scene)

@@ -79,11 +79,6 @@
         <artifactId>commons-configuration</artifactId>
         <version>1.6</version>
       </dependency>	
-      <dependency>
-		<groupId>dve.yarangi</groupId>
-		<artifactId>util</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	  </dependency>
 	</dependencies> 
   
 	
