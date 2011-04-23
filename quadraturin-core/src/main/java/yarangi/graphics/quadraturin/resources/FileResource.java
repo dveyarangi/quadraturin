@@ -1,6 +1,5 @@
 package yarangi.graphics.quadraturin.resources;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,7 +28,10 @@ public abstract class FileResource implements IResource
 	
 	public InputStream asStream() throws IOException 
 	{
-		return this.getClass().getClassLoader().getResourceAsStream(filename);
+		InputStream stream = this.getClass().getClassLoader().getResourceAsStream(filename);
+		if(stream == null)
+			throw new IOException("Cannot locate file [" + filename + "].");
+		return stream;
 	}
 
 	public String getFilename() 

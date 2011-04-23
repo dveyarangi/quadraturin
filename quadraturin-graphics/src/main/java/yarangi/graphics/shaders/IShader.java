@@ -1,4 +1,4 @@
-package yarangi.graphics.utils.shaders;
+package yarangi.graphics.shaders;
 
 import javax.media.opengl.GL;
 
