@@ -1,4 +1,4 @@
-package yarangi.graphics.utils.colors;
+package yarangi.graphics.colors;
 
 
 public class Color

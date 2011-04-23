@@ -1,4 +1,4 @@
-package yarangi.graphics.utils.scene;
+package yarangi.graphics.scene;
 
 import yarangi.graphics.quadraturin.objects.DummyEntity;
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;

@@ -1,4 +1,4 @@
-package yarangi.graphics.utils.meshes;
+package yarangi.graphics.meshes;
 
 import java.awt.Color;
 

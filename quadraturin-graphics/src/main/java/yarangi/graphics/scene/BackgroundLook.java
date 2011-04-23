@@ -1,4 +1,4 @@
-package yarangi.graphics.utils.scene;
+package yarangi.graphics.scene;
 
 import javax.media.opengl.GL;
 
@@ -55,7 +55,7 @@ public class BackgroundLook implements Look<BackgroundEntity>
 					if((x % 2) + (y % 2) == 1)
 						gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 					else
-						gl.glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+						gl.glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
 					
 					double realy = tileSize * y;
 					gl.glVertex3f((float)(realx-halfWidth), (float)(realy-halfHeight), (float)heights[x][y]);
