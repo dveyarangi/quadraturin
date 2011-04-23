@@ -2,9 +2,9 @@ package yarangi.graphics.lights;
 
 import java.util.Map;
 
+import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.objects.ISensorEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
-import yarangi.graphics.utils.colors.Color;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
 

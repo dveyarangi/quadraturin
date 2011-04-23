@@ -5,12 +5,12 @@ import java.util.Map;
 
 import javax.media.opengl.GL;
 
+import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.graphics.utils.colors.Color;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
