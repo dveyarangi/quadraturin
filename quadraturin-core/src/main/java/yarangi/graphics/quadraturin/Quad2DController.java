@@ -1,6 +1,8 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -12,9 +14,9 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
-import yarangi.graphics.utils.shaders.ShaderFactory;
 import yarangi.math.Vector2D;
 
 /**
@@ -46,7 +48,11 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	private boolean isScenePending = false;
 	
-	private EventManager voices;
+	private IEventManager voices;
+	
+	public List <IGraphicsPlugin> plugins = new LinkedList <IGraphicsPlugin> ();
+	
+	
 
 	/**
 	 * Current canvas width/height ratio.
@@ -55,7 +61,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	private DefaultRenderingContext context;
 	
-	public Quad2DController(String name, EventManager voices, ThreadChain chain) {
+	public Quad2DController(String name, IEventManager voices, ThreadChain chain) {
 
 		super(name, chain);
 		
@@ -137,14 +143,14 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		{
 			gl.glDisable(GL.GL_LINE_SMOOTH);
 		}
-		
-		log.trace("GL properties set.");
 
 		// shader factory initialization:
-		log.debug("Initializing shader factory...");
-		ShaderFactory.init(gl);
-		log.trace("Shader factory initialized.");
 		
+		for(IGraphicsPlugin plugin : plugins)
+		{
+			log.debug("Initializing plugin [" + plugin + "]...");
+			plugin.init(gl);
+		}
 		log.debug("/////////////////////////////////////////////////////////////");
 	}
 
@@ -328,4 +334,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		protected void setViewPoint(IViewPoint vp) { this.vp = vp; }
 	};
 	
+	public void registerPlugin(IGraphicsPlugin plugin)
+	{
+		this.plugins.add(plugin);
+	}
 }

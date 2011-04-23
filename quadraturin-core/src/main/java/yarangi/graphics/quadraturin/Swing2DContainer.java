@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.simulations.StupidInteractions;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
@@ -227,7 +228,7 @@ public class Swing2DContainer extends JFrame
 	 * TODO: injection of event dispatcher into Scene is not good.
 	 * @return
 	 */
-	public EventManager getEventManager() 
+	public IEventManager getEventManager() 
 	{
 		return voices; 
 	}
@@ -244,5 +245,10 @@ public class Swing2DContainer extends JFrame
 	public void activateScene(int sceneId) 
 	{
 		stage.setScene(sceneId);
+	}
+	
+	public void registerPlugin(IGraphicsPlugin plugin)
+	{
+		controller.registerPlugin(plugin);
 	}
 }
