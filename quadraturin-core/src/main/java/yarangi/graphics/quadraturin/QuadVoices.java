@@ -35,19 +35,18 @@ import yarangi.spatial.ISpatialObject;
  * cursor hover and picking  events and whatever else that will become a requirement in 
  * the future.  Runs in a separate thread. All accumulated event are dispatched at once.
  * 
- * TODO: add "TransfomationEvent" to adjust mouse-world conversion?
  * TODO: append CursorMotionEvent listener that fires GUIEvents?
  * TODO: replacing the AWT event queue shall be more efficient.
  * 
  * @author Dve Yarangi
  */
-public class QuadVoices extends EventManager implements Loopy
+public class QuadVoices implements IEventManager, Loopy
 {
 	/**
 	 * Holds last cursor motion event.
 	 */
 	private CursorEvent cursorEvent = new CursorEvent(null, null);
-	
+
 	/**
 	 * List of listeners for the CursorMotionEvent-s
 	 */
@@ -82,6 +81,7 @@ public class QuadVoices extends EventManager implements Loopy
 	
 	public QuadVoices(InputConfig config) 
 	{
+
 		this.log = Logger.getLogger(NAME);
 		
 		for(ActionBinding bind : config.getBinding())
@@ -291,11 +291,11 @@ public class QuadVoices extends EventManager implements Loopy
 
 	public void sceneChanged(Scene prevScene, Scene nextScene) 
 	{
-		if(prevScene != null)
+		if(prevScene != null && prevScene.getActionsMap() != null)
 		for(String actionId : prevScene.getActionsMap().keySet())
 			removeUserActionListener(actionId);
 		
-		if(nextScene != null)
+		if(nextScene != null && nextScene.getActionsMap() != null)
 			for(String actionId : nextScene.getActionsMap().keySet())
 				addUserActionListener(actionId, nextScene);
 		

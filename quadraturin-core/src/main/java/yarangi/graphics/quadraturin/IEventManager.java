@@ -13,7 +13,7 @@ import yarangi.graphics.quadraturin.events.UserActionListener;
  * User IO events manager interface.
  * 
  */
-public abstract class EventManager implements KeyListener, MouseListener, MouseMotionListener, StageListener
+public interface IEventManager extends KeyListener, MouseListener, MouseMotionListener, StageListener
 {
 
 	/**
@@ -26,27 +26,27 @@ public abstract class EventManager implements KeyListener, MouseListener, MouseM
 	 * Exposes mouse location within the canvas.
 	 * @return
 	 */
-	protected abstract Point getMouseLocation();
+	public Point getMouseLocation();
 	
 	/**
 	 * TODO: unworthy creation of event object.
 	 * @param event
 	 */
-	protected abstract void declare(CursorEvent event);
+	public void declare(CursorEvent event);
 
 	/**
 	 * Register a user action listener.
 	 * @param action
 	 * @param listener
 	 */
-	public abstract void addUserActionListener(String action, UserActionListener listener);
+	public void addUserActionListener(String action, UserActionListener listener);
 	
-	public abstract void removeUserActionListener(String action);
+	public void removeUserActionListener(String action);
 	
 	/**
 	 * Register a cursor io listener.
 	 * @param listener
 	 */
-	public abstract void addCursorListener(CursorListener listener);
-	public abstract void removeCursorListener(CursorListener listener);
+	public void addCursorListener(CursorListener listener);
+	public void removeCursorListener(CursorListener listener);
 }
