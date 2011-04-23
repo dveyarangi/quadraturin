@@ -1,6 +1,6 @@
 package yarangi.graphics.lights;
 
-import java.util.Set;
+import java.util.Map;
 
 import yarangi.graphics.quadraturin.objects.ISensorEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
@@ -11,7 +11,7 @@ import yarangi.spatial.ISpatialObject;
 public abstract class CircleLightEntity extends SceneEntity implements ISensorEntity
 {
 	
-	private Set <ISpatialObject> entities; 
+	private Map <ISpatialObject, Double>  entities; 
 	
 	private double intensity;
 	
@@ -28,12 +28,12 @@ public abstract class CircleLightEntity extends SceneEntity implements ISensorEn
 		this.lightColor = color;
 	}
 
-	public void setEntities(Set <ISpatialObject> entities)
+	public void setEntities(Map <ISpatialObject, Double>  entities)
 	{
 		this.entities = entities;
 	}
 	
-	public Set <ISpatialObject> getEntities() { return entities; }
+	public Map <ISpatialObject, Double>  getEntities() { return entities; }
 	
 	public Color getColor() { return lightColor; }
 	

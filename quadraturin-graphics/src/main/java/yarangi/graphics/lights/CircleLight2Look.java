@@ -2,16 +2,16 @@ package yarangi.graphics.lights;
 
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
-import java.util.Set;
+import java.util.Map;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.shaders.IShader;
+import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.graphics.utils.shaders.IShader;
-import yarangi.graphics.utils.shaders.ShaderFactory;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
@@ -58,7 +58,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 	{
 		if(context.isForEffect())
 			return;
-		Set <ISpatialObject> entities = entity.getEntities();
+		Map <ISpatialObject, Double>  entities = entity.getEntities();
 		
 		if(entities == null)
 			return;
@@ -88,7 +88,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 		//gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL.GL_ALPHA_TEST);
 		gl.glAlphaFunc(GL.GL_ALWAYS , 0);
-		for(ISpatialObject caster : entities)
+		for(ISpatialObject caster : entities.keySet())
 		{
 			Vector2D distance = caster.getAABB().minus(entity.getAABB());
 			Vector2D dir = distance.normalize();

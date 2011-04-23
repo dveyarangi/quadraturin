@@ -7,10 +7,10 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.shaders.IShader;
+import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.utils.colors.Color;
-import yarangi.graphics.utils.shaders.IShader;
-import yarangi.graphics.utils.shaders.ShaderFactory;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
@@ -54,7 +54,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		lightShader = ShaderFactory.getShader("light");
 		if(lightShader == null)
 		{
-			ShaderFactory.registerShaderFile("light", "shaders/light.glsl");	
+			ShaderFactory.registerShaderFile("light", "shaders/light1.glsl");	
 			lightShader = ShaderFactory.getShader("light");
 			lightShader.init(gl);
 		}
@@ -178,8 +178,9 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		lightShader.begin(gl);
 		Color color = entity.getColor();
 		lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-		lightShader.setFloat1Uniform(gl, "size", 0.1f);
-		lightShader.setFloat1Uniform(gl, "cutoff", 20f);
+		lightShader.setFloat1Uniform(gl, "height", 2f);
+		lightShader.setFloat1Uniform(gl, "size", 0.01f);
+		lightShader.setFloat1Uniform(gl, "cutoff",5f);
 		renderTexture(gl, entity);
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
