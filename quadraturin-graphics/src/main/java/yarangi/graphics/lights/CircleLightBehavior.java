@@ -5,7 +5,7 @@ import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.MapSensor;
 import yarangi.spatial.SpatialIndexer;
 
-public class CircleLightBehavior <K extends CircleLightEntity> implements Behavior <K>
+public class CircleLightBehavior <K extends ICircleLightEntity> implements Behavior <K>
 {
 	
 	private SpatialIndexer <ISpatialObject> indexer;

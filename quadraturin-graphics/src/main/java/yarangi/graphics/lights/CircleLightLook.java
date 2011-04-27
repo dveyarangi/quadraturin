@@ -14,6 +14,7 @@ import yarangi.graphics.textures.TextureUtils;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
+import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ISpatialObject;
 
 /**
@@ -41,6 +42,13 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 	private int fbo;
 	
 	private int lightTexture;
+	
+	private ISpatialFilter filter;
+	
+	public CircleLightLook(ISpatialFilter filter)
+	{
+		this.filter = filter;
+	}
 
 	
 	public void init(GL gl, K entity) {
@@ -106,6 +114,9 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		for(ISpatialObject caster : entities.keySet())
 		{
 			if(caster == entity || (caster instanceof ICircleLightEntity))
+				continue;
+			
+			if(filter != null && !filter.accept(caster))
 				continue;
 //			System.out.println(entities.size());
 			Vector2D distance = caster.getAABB().minus(entity.getAABB());
