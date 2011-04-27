@@ -135,6 +135,8 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	public boolean behave(double time, boolean isVisible)
 	{
 //		System.out.println(this.getId());
+		if(getBehavior() == null)
+			return false;
 		return getBehavior().behave(time, this, isVisible);
 	}
 
