@@ -210,6 +210,13 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 //		if (!stage.changePending())
 //			return; // nothing changed, nothing to redraw
+		
+		GL gl = glDrawable.getGL();
+		if(!this.isAlive())
+		{
+			currScene.destroy(gl);
+			return;
+		}
 	
 		try {
 			waitForRelease();
@@ -218,8 +225,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			// TODO: check for GLContext overriding
 			log.debug("Renderer thread was interrupted.");
 		}
-		
-		GL gl = glDrawable.getGL();
 		
 		if(isScenePending)
 		{
@@ -232,6 +237,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			
 			isScenePending = false;
 		}
+		
+
 
 		// ////////////////////////////////////////////////////
 		// TODO: viewpoint transformations
@@ -338,4 +345,5 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	{
 		this.plugins.add(plugin);
 	}
+
 }

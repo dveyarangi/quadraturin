@@ -53,8 +53,9 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 			try {
 				waitForRelease();
 			} 
-			catch (InterruptedException e) { log.debug("Thread interrupted."); break; }
-			
+			catch (InterruptedException e) {
+				log.debug("Thread interrupted.");
+			}
 			// executing body:
 			loopy.runBody();
 			
@@ -66,7 +67,12 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 			
 		}
 		
-		log.trace("Thread is stopped.");
+		log.debug("Thread is stopped.");
 	}
 
+	public void stop()
+	{
+		super.stop();
+		thread.interrupt();
+	}
 }

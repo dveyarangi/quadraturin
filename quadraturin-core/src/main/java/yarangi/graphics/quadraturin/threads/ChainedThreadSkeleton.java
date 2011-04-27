@@ -46,7 +46,7 @@ public abstract class ChainedThreadSkeleton implements IChainedThread
 	
 	public void waitForRelease() throws InterruptedException
 	{
-			parentChain.waitForRelease(this);
+		parentChain.waitForRelease(this);
 	}
 	
 	public void releaseNext()
@@ -59,10 +59,11 @@ public abstract class ChainedThreadSkeleton implements IChainedThread
 	 */
 	public void stop()
 	{
+		log.debug("Stopping...");
 		this.isAlive = false;
 
 		// just for lulz... maybe an interrupt is better? 
-//		sequential.release();
+		parentChain.releaseNext(this);
 	}
 	
 	

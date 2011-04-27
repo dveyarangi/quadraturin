@@ -1,9 +1,13 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
@@ -65,6 +69,7 @@ public class Swing2DContainer extends JFrame
 	 */
 	private StageAnimator animator;
 
+	private int loadingScreenId;
 	
 	/**
 	 * Logger
@@ -114,6 +119,9 @@ public class Swing2DContainer extends JFrame
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(canvas, BorderLayout.CENTER);
 		pack();
+		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+		getContentPane().setCursor(blankCursor);		
 		
 		log.trace("Linking shutdown hook...");
 		// TODO: add real JVM shutdown hook
@@ -122,7 +130,7 @@ public class Swing2DContainer extends JFrame
 			{
 				log.trace("Window closing event detected.");
 				safeStop();
-				
+					
 				Swing2DContainer.this.dispose();
 				log.trace("Terminating JVM...");
 				System.exit(-1);
@@ -178,7 +186,8 @@ public class Swing2DContainer extends JFrame
 		
 		
 		// TODO: configure:
-		stage.setInitialScene(new DummyScene("Intro scene"));
+		loadingScreenId = stage.addScene(new DummyScene("Intro scene"));
+		stage.setScene(loadingScreenId);
 		
 
 		log.trace("Entity stage animator created.");
@@ -213,12 +222,21 @@ public class Swing2DContainer extends JFrame
 	public void safeStop() 
 	{ 
 		log.debug("Quadraturin container is being shrinked...");
+//		stage.setScene(loadingScreenId);
+
+		chain.stop();
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		canvas.display();
+		
+		canvas.removeGLEventListener(controller);
 		this.removeMouseListener(voices);
 		this.removeMouseMotionListener(voices);
 		this.removeKeyListener(voices);
-		canvas.removeGLEventListener(controller);
-
-		chain.stop();
 		
 		log.info("Quadraturin have joined the ethernity of the stopped code.");
 		log.info("/////////////////////////////////////////////////////////////");

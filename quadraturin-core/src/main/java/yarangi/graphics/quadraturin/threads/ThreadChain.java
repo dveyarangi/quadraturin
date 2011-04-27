@@ -131,6 +131,7 @@ public class ThreadChain
 		for(IChainedThread thread : threads)
 		{
 			thread.stop();
+			releaseNext(thread);
 		}
 	}
 	
