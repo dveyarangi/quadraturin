@@ -43,7 +43,7 @@ public class GraphModel extends Scene
 				ViewPoint2D vp = (ViewPoint2D) viewPoint;
 				
 				vp.setCenter(new Vector2D(0,0));
-				vp.setHeight(new RangedDouble(1, 400, 500));
+				vp.setScale(new RangedDouble(0.1, 1, 2));
 			}
 			
 			@Override

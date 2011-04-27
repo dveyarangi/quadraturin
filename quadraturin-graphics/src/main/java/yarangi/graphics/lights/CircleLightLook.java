@@ -95,8 +95,12 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
 		gl.glScaled(((double)viewport.get(2)/(double)textureSize),( (double)viewport.get(3)/(double)textureSize), 0);
 		gl.glViewport(0, 0, textureSize, textureSize);
+		gl.glOrtho(-viewport.get(2)/2, viewport.get(2)/2, -viewport.get(3)/2, viewport.get(3)/2, -1, 1);
 		
 		// binding FBO:
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo);
@@ -172,6 +176,8 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
 
 		// restoring transformations and 
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glPopMatrix();
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glPopMatrix();
 		gl.glPopAttrib();
