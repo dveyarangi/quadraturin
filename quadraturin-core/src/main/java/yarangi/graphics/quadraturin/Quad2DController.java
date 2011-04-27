@@ -188,7 +188,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 			if(viewPoint != null)
 			{
-				gl.glOrtho(-width/2, width/2, -height/2, height/2, -1, 1);
+				gl.glOrtho(-width*viewPoint.getScale(), width*viewPoint.getScale(), -height*viewPoint.getScale(), height*viewPoint.getScale(), -1, 1);
 				gl.glViewport(0, 0, width, height);
 			}
 		}
@@ -247,9 +247,15 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 		
+		int viewport[] = new int[4];
+
+		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+		gl.glMatrixMode(GL.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
+		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glTranslatef((float) viewPoint.getCenter().x,
 				(float) viewPoint.getCenter().y, 0/* -(float) viewPoint.getHeight()*/);
-		
 		// TODO: extract matrices to viewPoint for world coordinates calculation:
 		//updateViewPoint(gl, viewPoint);
 		
@@ -258,7 +264,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		Vector2D worldPickPoint = null;
 		// TODO: OPTIMIZE: buffer the pick selection and do nothing if not changed
 		if (pickPoint != null) 
-			worldPickPoint = toWorldCoordinates(gl, pickPoint, viewPoint);
+			worldPickPoint = toWorldCoordinates(gl, pickPoint, viewPoint, viewport);
 
 		voices.declare(new CursorEvent(worldPickPoint, pickPoint));
 
@@ -299,9 +305,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) { }
 
 
-	private Vector2D toWorldCoordinates(GL gl, Point pickPoint, ViewPoint2D viewPoint) 
+	private Vector2D toWorldCoordinates(GL gl, Point pickPoint, ViewPoint2D viewPoint, int [] viewport) 
 	{
-		int viewport[] = new int[4];
 		double mvmatrix[] = new double[16];
 		double projmatrix[] = new double[16];
 		int realy = 0;// GL y coord pos
@@ -310,7 +315,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		double x = pickPoint.getX();
 		double y = pickPoint.getY();
 
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 		

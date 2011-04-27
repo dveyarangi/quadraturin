@@ -27,7 +27,7 @@ public class DummyScene extends Scene
 				{ 
 					ViewPoint2D vp = (ViewPoint2D)viewPoint;
 					vp.setCenter(new Vector2D(0,0));
-					vp.setHeight(new RangedDouble(-1,-1,-1));
+					vp.setScale(new RangedDouble(1,1,1));
 				}
 
 			}, 

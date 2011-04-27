@@ -21,22 +21,28 @@ public class DefaultActionFactory
 		
 		
 		actions.put("scroll-right", new IAction() {
-				public void act(UserActionEvent event) {vp.getCenter().x += scrollStep/vp.getHeight(); }}
+				public void act(UserActionEvent event) {vp.getCenter().x += scrollStep/vp.getScale(); }}
 			);
 		actions.put("scroll-left", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().x -= scrollStep/vp.getHeight(); }}
+			public void act(UserActionEvent event) { vp.getCenter().x -= scrollStep/vp.getScale(); }}
 		);
 		actions.put("scroll-up", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().y -= scrollStep/vp.getHeight(); }}
+			public void act(UserActionEvent event) { vp.getCenter().y -= scrollStep/vp.getScale(); }}
 		);
 		actions.put("scroll-down", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().y += scrollStep/vp.getHeight(); }}
+			public void act(UserActionEvent event) { vp.getCenter().y += scrollStep/vp.getScale(); }}
 		);
 		actions.put("zoom-in", new IAction() {
-			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() * scaleStep); }}
+			public void act(UserActionEvent event) {
+				double s = vp.getScale() * scaleStep;
+				vp.setScale(s > vp.getMinScale() ? s : vp.getMinScale()); 
+			}}
 		);
 		actions.put("zoom-out", new IAction() {
-			public void act(UserActionEvent event) { vp.setHeight(vp.getHeight() / scaleStep); }}
+			public void act(UserActionEvent event) {
+				double s = vp.getScale() / scaleStep;
+				vp.setScale(s < vp.getMaxScale() ? s : vp.getMaxScale());
+			 }}
 		);
 
 		return actions;

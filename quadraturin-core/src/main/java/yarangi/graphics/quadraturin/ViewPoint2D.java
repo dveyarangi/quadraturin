@@ -17,7 +17,7 @@ public class ViewPoint2D implements IViewPoint
 	
 	private Dimension window;
 	
-	private RangedDouble height;
+	private RangedDouble scale;
 	
 	private Dimension world;
 //	private Rectangle2D.Double viewWindow;
@@ -28,13 +28,13 @@ public class ViewPoint2D implements IViewPoint
 	{
 		this(new Vector2D(0,0), window);
 	}*/	
-	public ViewPoint2D(Vector2D center, Dimension window, RangedDouble height, Dimension world)
+	public ViewPoint2D(Vector2D center, Dimension window, RangedDouble scale, Dimension world)
 	{
 		this.center = center;
 		
 		this.window = window;
 
-		this.height = height;
+		this.scale = scale;
 		
 		this.world = world;
 //		transpose();
@@ -57,13 +57,13 @@ public class ViewPoint2D implements IViewPoint
 		this.center = center;
 	}
 	
-	public void setHeight(double height)
+	public void setScale(double scale)
 	{
-		this.height.setDouble(height);
+		this.scale.setDouble(scale);
 	}
-	public void setHeight(RangedDouble height)
+	public void setScale(RangedDouble scale)
 	{
-		this.height = height;
+		this.scale = scale;
 	}
 	public void setWindow(Dimension window)
 	{
@@ -83,7 +83,7 @@ public class ViewPoint2D implements IViewPoint
 	public Point getPoint(java.awt.geom.Point2D.Double p)
 	{
 		Point point = new Point();
-		double h = height.getDouble();
+		double h = scale.getDouble();
 		point.x = (int)Math.round(p.x*h - center.x*h - getPortWidth()/2);
 		point.y = (int)Math.round(p.y*h - center.y*h - getPortHeight()/2);
 		
@@ -92,7 +92,7 @@ public class ViewPoint2D implements IViewPoint
 	
 	public Vector2D toStagePoint(java.awt.Point p)
 	{
-		double h = height.getDouble();
+		double h = scale.getDouble();
 		return new Vector2D((p.x + center.x*h - window.width/2)/h, (p.y + center.y*h - window.height/2)/h);
 	}
 
@@ -107,10 +107,10 @@ public class ViewPoint2D implements IViewPoint
 
 	public Vector2D getCenter() { return center; }
 
-	public double getHeight() { return height.getDouble(); }
+	public double getScale() { return scale.getDouble(); }
 
-	public double getMinHeight() { return height.getMin(); }
-	public double getMaxHeight() { return height.getMax(); }
+	public double getMinScale() { return scale.getMin(); }
+	public double getMaxScale() { return scale.getMax(); }
 	
 	public void copyFrom(IViewPoint viewPoint)
 	{
@@ -120,7 +120,7 @@ public class ViewPoint2D implements IViewPoint
 		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
 		this.center = new Vector2D(vp.getCenter().x, vp.getCenter().y);
 		this.window = new Dimension(vp.getPortWidth(), vp.getPortHeight());
-		this.height = new RangedDouble(vp.getMinHeight(), vp.getHeight(), vp.getMaxHeight());
+		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
 		this.world = new Dimension(vp.world.width, vp.world.height);
 	}	
 
