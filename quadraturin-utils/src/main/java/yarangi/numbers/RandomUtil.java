@@ -20,4 +20,9 @@ public class RandomUtil
 	{
 		return center + scale * random.nextGaussian();
 	} 
+	
+	public static boolean oneOf(int num)
+	{
+		return getRandomInt(num) == 0;
+	}
 }
