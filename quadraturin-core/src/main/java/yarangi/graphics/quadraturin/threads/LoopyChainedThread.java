@@ -70,9 +70,4 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 		log.debug("Thread is stopped.");
 	}
 
-	public void stop()
-	{
-		super.stop();
-		thread.interrupt();
-	}
 }

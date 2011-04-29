@@ -59,7 +59,7 @@ public abstract class ChainedThreadSkeleton implements IChainedThread
 	 */
 	public void stop()
 	{
-		log.debug("Stopping...");
+		log.trace("Stopping...");
 		this.isAlive = false;
 
 		// just for lulz... maybe an interrupt is better? 
