@@ -28,6 +28,8 @@ public abstract class SceneVeil
 	 */
 	private CompositeSceneEntity root = new DummyEntity(new AABB(0,0,0,0));
 	
+	private int width, height;
+	
 	/**
 	 * Indexes the object's locations
 	 */
@@ -48,9 +50,12 @@ public abstract class SceneVeil
 	/**
 	 * 
 	 */
-	public SceneVeil(SpatialIndexer <ISpatialObject> indexer)
+	public SceneVeil(int width, int height, SpatialIndexer <ISpatialObject> indexer)
 	{
 		this.indexer = indexer;
+		
+		this.width = width;
+		this.height = height;
 
 	}
 	
@@ -186,5 +191,8 @@ public abstract class SceneVeil
 		deadEntities.add(entity);
 	}
 
-	
+
+	public int getWidth() {return width; }
+	public int getHeight() {return height; }
+
 }

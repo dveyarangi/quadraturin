@@ -14,7 +14,7 @@ public abstract class UIVeil extends SceneVeil
 
 	public UIVeil(int width, int height)
 	{
-		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
+		super(width, height, new SpatialHashMap<ISpatialObject>(100, 10, width, height));
 //		this.viewPoint = viewPoint;
 	}
 	
