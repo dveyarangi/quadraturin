@@ -21,10 +21,10 @@ public class DefaultActionFactory
 		
 		
 		actions.put("scroll-right", new IAction() {
-				public void act(UserActionEvent event) {vp.getCenter().x += scrollStep/vp.getScale(); }}
+				public void act(UserActionEvent event) {vp.getCenter().x -= scrollStep/vp.getScale(); }}
 			);
 		actions.put("scroll-left", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().x -= scrollStep/vp.getScale(); }}
+			public void act(UserActionEvent event) { vp.getCenter().x += scrollStep/vp.getScale(); }}
 		);
 		actions.put("scroll-up", new IAction() {
 			public void act(UserActionEvent event) { vp.getCenter().y -= scrollStep/vp.getScale(); }}
