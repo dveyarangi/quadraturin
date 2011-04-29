@@ -11,6 +11,7 @@ package yarangi.graphics.quadraturin;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -233,6 +234,21 @@ public class QuadVoices implements IEventManager, Loopy
 		return mouseLocation;
 	}
 	
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) 
+	{
+		mouseLocation = e.getPoint();
+		int notches = e.getWheelRotation();
+		if(notches == 0)
+			return;
+		
+		InputHook hook = new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL);
+//		System.out.println(hook);
+		cursorEvent.setInput(hook);
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////

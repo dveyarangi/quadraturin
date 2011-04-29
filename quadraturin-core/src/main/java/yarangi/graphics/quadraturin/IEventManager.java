@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
@@ -13,7 +14,7 @@ import yarangi.graphics.quadraturin.events.UserActionListener;
  * User IO events manager interface.
  * 
  */
-public interface IEventManager extends KeyListener, MouseListener, MouseMotionListener, StageListener
+public interface IEventManager extends KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, StageListener
 {
 
 	/**

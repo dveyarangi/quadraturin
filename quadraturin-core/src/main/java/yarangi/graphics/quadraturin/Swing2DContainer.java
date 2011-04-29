@@ -171,6 +171,7 @@ public class Swing2DContainer extends JFrame
 		
 		canvas.addMouseListener(voices);
 		canvas.addMouseMotionListener(voices);
+		canvas.addMouseWheelListener(voices);
 		canvas.addKeyListener(voices);
 		log.trace("Quadraturin controller created.");
 		

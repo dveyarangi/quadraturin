@@ -25,9 +25,12 @@ public class InputHook
 	 */
 	public static final int DRAGGED = 4;	
 	
+	public static final int FORWARD = 5;	
+	public static final int BACKWARD = 6;	
 	
 	public static final int MOUSE_LEFT_BUTTON = -1;
 	public static final int MOUSE_RIGHT_BUTTON = -2;
+	public static final int MOUSE_WHEEL = -3;
 	
 
 	
