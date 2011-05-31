@@ -19,7 +19,7 @@ public abstract class SpatialObjectSkeleton implements ISpatialObject
 	/** 
 	 * Scene entity geometry container 
 	 */
-	protected AABB aabb;
+	protected Area area;
 	
 	/**
 	 * Creates a new located and oriented entity.
@@ -27,11 +27,11 @@ public abstract class SpatialObjectSkeleton implements ISpatialObject
 	 * @param y
 	 * @param a
 	 */
-	protected SpatialObjectSkeleton(AABB aabb)
+	protected SpatialObjectSkeleton(Area area)
 	{
 //		if(aabb == null)
 //			throw new RuntimeException("Bounding box must not be null.");
-		this.aabb = aabb;
+		this.area = area;
 		id = (lastEntityId++);
 	}
 	
@@ -45,7 +45,7 @@ public abstract class SpatialObjectSkeleton implements ISpatialObject
 	 * Object volume
 	 * @return
 	 */
-	public final AABB getAABB() { return aabb; }
+	public final Area getArea() { return area; }
 
 
 	public int hashCode() { return id; }

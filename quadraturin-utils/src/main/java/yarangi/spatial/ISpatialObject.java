@@ -11,6 +11,6 @@ public interface ISpatialObject
 	 * Object volume
 	 * @return
 	 */
-	public AABB getAABB();
+	public Area getArea();
 
 }

@@ -8,16 +8,22 @@ import java.util.Set;
  * 
  * @param <T> stored element type.
  */
-public abstract class SpatialIndexer <K extends ISpatialObject>
+public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpatialIndex <K>
 {
 	
 	/**
 	 * Id to location mapping, to keep and eye on object updates.
 	 * TODO: switch to primitive int key hash (Trove?)
 	 */
-	private HashMap <K, AABB> locations = new HashMap <K, AABB> ();
+	private HashMap <K, Area> locations = new HashMap <K, Area> ();
 	
 //	private TIntObjectMap <AABB> locations = new TIntObjectHashMap <AABB> ();
+	
+	/**
+	 * @return Number of managed objects.
+	 */
+	public int size() { return locations.size(); }
+
 
 	/**
 	 * Adds an {@link AABB} box, containing the object.
@@ -26,7 +32,7 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 */
 	public void add(K object)
 	{
-		AABB center = new AABB(object.getAABB());
+		Area center = object.getArea().clone();
 		locations.put(object, center);
 		addObject(center, object);
 	}
@@ -38,7 +44,7 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 */
 	public K remove(K object)
 	{
-		AABB oldLocation = locations.get(object);
+		Area  oldLocation = locations.get(object);
 		if(oldLocation == null)
 			throw new IllegalArgumentException("The object [" + object + "] was not added to the indexer.");
 		locations.remove(object);
@@ -52,10 +58,10 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 */
 	public void update(K object)
 	{
-		AABB oldLocation = locations.get(object);
+		Area oldLocation = locations.get(object);
 		if(oldLocation == null)
 			throw new IllegalArgumentException("The object [" + object + "] was not added to the indexer.");
-		AABB newLocation = new AABB(object.getAABB());
+		Area newLocation = object.getArea().clone();
 		
 		locations.put(object, newLocation);
 		updateObject(oldLocation, newLocation, object);
@@ -73,44 +79,20 @@ public abstract class SpatialIndexer <K extends ISpatialObject>
 	 * @param aabb
 	 * @param object
 	 */
-	protected abstract void addObject(AABB aabb, K object);
+	protected abstract void addObject(Area area, K object);
 	
 	/**
 	 * Removes an {@link AABB} box, containing the object.
 	 * @param aabb
 	 * @param object
 	 */
-	protected abstract K removeObject(AABB aabb, K object);
+	protected abstract K removeObject(Area area, K object);
 	
 	/**
 	 * Updates an {@link AABB} box location.
 	 * @param aabb
 	 * @param object
 	 */
-	protected abstract void updateObject(AABB old, AABB aabb, K object);
-	
-	/**
-	 * Iterates over specified rectangle, reporting fully or partially fitting objects in index. 
-	 * {@link ISpatialSensor} must implement object observing logic. They can also modify 
-	 * the sensed objects, proving that measurements are just a set of observations that 
-	 * reduce uncertainty where the result is expressed as a quantity. One could also say that a 
-	 * measurement is the collapse of the wavefunction.
-	 * 
-	 * @param minx
-	 * @param miny
-	 * @param maxx
-	 * @param maxy
-	 */
-	public abstract ISpatialSensor <K> query(ISpatialSensor <K> sensor, double minx, double miny, double maxx, double maxy);
-	
-	/**
-	 * 
-	 * @param minx
-	 * @param miny
-	 * @param maxx
-	 * @param maxy
-	 */
-	public abstract ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radius);
-
+	protected abstract void updateObject(Area old, Area area, K object);
 
 }

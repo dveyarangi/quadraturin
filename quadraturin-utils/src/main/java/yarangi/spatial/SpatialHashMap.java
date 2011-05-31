@@ -3,19 +3,18 @@ package yarangi.spatial;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 /**
- * Straightforward implementation of spatial hash map. Keeps a 
+ * Straightforward implementation of spatial hash map.
  *
  * @param <T>
  */
-public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T> implements Iterable<T>
+public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 {
 	/**
 	 * buckets array.
 	 */
-	protected Map <AABB, T> [] map;
+	protected Map <IAreaChunk, T> [] map;
 	
 	/**
 	 * number of buckets
@@ -57,16 +56,25 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 
 		map = new Map [size];
 		for(int idx = 0; idx < size; idx ++)
-			map[idx] = new HashMap <AABB, T> ();
+			map[idx] = new HashMap <IAreaChunk, T> ();
 //		System.out.println(halfWidth + " : " + halfHeight);
 	}
 	
+	/**
+	 * TODO: Optimizing constructor
+	 * @param width
+	 * @param height
+	 * @param averageAmount
+	 */
 	public SpatialHashMap(int width, int height, int averageAmount)
 	{
 		throw new IllegalStateException("Not implemented yet.");
 	}
 	
-	public int getSize() { return size; }
+	/**
+	 * @return buckets number
+	 */
+	public int getBucketCount() { return size; }
 
 	/**
 	 * Calculates spatial hash value.
@@ -77,103 +85,100 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected int hash(int x, int y)
 	{
-		return ((x+halfWidth)*6184547 + (y+halfHeight)* 2221069)% size;
+		return ((x+halfWidth)*6184547 + (y+halfHeight)* 2221069) % size;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void addObject(AABB aabb, T object) 
+	protected void addObject(Area area, T object) 
 	{
-		// cropping to map coverage area:
-		int minx = (int)((aabb.x-aabb.r)/cellSize); if(minx < -halfWidth)  minx = -halfWidth;
-		int maxx = (int)((aabb.x+aabb.r)/cellSize);	if(maxx >  halfWidth)  maxx =  halfWidth;
-		int miny = (int)((aabb.y-aabb.r)/cellSize);	if(miny < -halfHeight) miny = -halfHeight;
-		int maxy = (int)((aabb.y+aabb.r)/cellSize);	if(maxy >  halfHeight) maxy =  halfHeight;
+		
+		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		IAreaChunk chunk;
+		int x, y;
 		
 		// adding the object to all overlapping buckets:
-		for(int x = minx; x <= maxx; x ++)
-			for(int y = miny; y <= maxy; y ++)
-			{
-//				System.out.println("bucket: [" + x + ":" + y + "] " + hash(x, y) + " (size: "  + map[hash(x, y)].size() + ")");
-				map[hash(x, y)].put(aabb, object);
-			}
-				
+		while(it.hasNext())
+		{
+			chunk = it.next();
+			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			
+			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+				continue;
+			
+//			System.out.println(x + ":" + y + " " + object.getArea());
+			map[hash(x, y)].put(chunk, object);
+		}		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected T removeObject(AABB aabb, T object) 
+	protected T removeObject(Area area, T object) 
 	{
-		// cropping to map coverage area:
-		int minx = (int)((aabb.x-aabb.r)/cellSize); if(minx < -halfWidth)  minx = -halfWidth;
-		int maxx = (int)((aabb.x+aabb.r)/cellSize); if(maxx >  halfWidth)  maxx =  halfWidth;
-		int miny = (int)((aabb.y-aabb.r)/cellSize); if(miny < -halfHeight) miny = -halfHeight;
-		int maxy = (int)((aabb.y+aabb.r)/cellSize); if(maxy >  halfHeight) maxy =  halfHeight;
-		
-//		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
-		// removing the object from all overlapping buckets:
-		for(int x = minx; x <= maxx; x ++)
-			for(int y = miny; y <= maxy; y ++)
+		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		IAreaChunk chunk;
+		int x, y;
+		while(it.hasNext())
+		{
+			chunk = it.next();
+			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			
+			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+				continue;
+			
+//			System.out.println(x + ":" + y);
+			if(map[hash(x, y)].remove(chunk) == null)
 			{
-				if(map[hash(x, y)].remove(aabb) == null)
-						throw new IllegalArgumentException("Bucket at location [" + x + "," + y + "] does not contain object [" + aabb + "|" + object + "].");
-				
-//				System.out.println("bucket: [" + x + ":" + y + "] " + hash(x, y) + " (size: "  + map[hash(x, y)].size() + ")");
-
+				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (area:" + area + "; obj:" + object + ").");
 			}
+		}		
+		
 		return object;
 	}
 
 	/**
 	 * {@inheritDoc}
+	 * TODO: not efficient for large polygons:
 	 */
-	protected void updateObject(AABB old, AABB aabb, T object) 
+	protected void updateObject(Area old, Area area, T object) 
 	{
 		removeObject(old, object);
-		addObject(aabb, object);
+		addObject(area, object);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * TODO: can return repeating elements.
-	 * TODO: {@link #iterator} not tested.
-	 */
-	public Iterator<T> iterator() 
-	{ 
-		return new HashMapIterator(-width/2, -height/2, width/2, height/2); 
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 * TODO: result, reported to processor may be same object repeatedly.
 	 */
-	public ISpatialSensor <T> query(ISpatialSensor <T> processor, double xmin, double ymin, double xmax, double ymax)
+	public ISpatialSensor <T> query(ISpatialSensor <T> processor, Area area)
 	{
-		
-		int minx = Math.max((int)(xmin/cellSize), -halfWidth);
-		int miny = Math.max((int)(ymin/cellSize), -halfHeight);
-		int maxx = Math.min((int)(xmax/cellSize), halfWidth);
-		int maxy = Math.min((int)(ymax/cellSize), halfHeight);
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		
-		Map <AABB, T> cell;
-		for(int x = minx; x <= maxx; x ++)
-			for(int y = miny; y <= maxy; y ++)
+		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		Map <IAreaChunk, T> cell;
+		IAreaChunk chunk;
+		int x, y;
+		while(it.hasNext())
+		{
+			chunk = it.next();
+			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			
+			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+				continue;
+			
+			cell = map[hash(x, y)];
+			for(IAreaChunk c : cell.keySet())
 			{
-				cell = map[hash(x, y)];
-				for(AABB aabb : cell.keySet())
-				{
-					if(aabb.overlaps(xmin, ymin, xmax, ymax))
-						processor.objectFound(cell.get(aabb), 
-								Math.pow((xmax+xmin)/2 * aabb.x, 2) + Math.pow((ymax+ymin)/2 * aabb.y, 2));
-				}
-
+				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
+					processor.objectFound(c, cell.get(c)/*, 
+							Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/);
 			}
-		
+		}
+
 		return processor;
 	}
 	
@@ -192,18 +197,20 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
 		
-		Map <AABB, T> cell;
+		Map <IAreaChunk, T> cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
 			{
 				cell = map[hash(tx, ty)];
-				for(AABB aabb : cell.keySet())
+				for(IAreaChunk chunk : cell.keySet())
 				{
-					double distanceSquare = Math.pow(x - aabb.x, 2) + Math.pow(y - aabb.y, 2);
+					double distanceSquare = Math.pow(x - chunk.getX(), 2) + Math.pow(y - chunk.getY(), 2);
 					
 //					System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
-					if(aabb.r+radius >= Math.sqrt(distanceSquare))
-						processor.objectFound(cell.get(aabb), distanceSquare);
+					
+					// TODO: make it strictier:
+					if(radius >= Math.sqrt(distanceSquare))
+						processor.objectFound(chunk, cell.get(chunk)/*, distanceSquare*/);
 				}
 
 			}
@@ -233,122 +240,10 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * @param y
 	 * @return
 	 */
-	public Map <AABB, T> getBucket(int x, int y)
+	public Map <IAreaChunk, T> getBucket(int x, int y)
 	{
 		return map[hash(x, y)];
 	}
 	
-	/**
-	 * {@link SpatialHashMap} query iterator.
-	 * TODO: can return repeating elements.
-	 */
-	private class HashMapIterator implements Iterator <T> 
-	{
-		/**
-		 * Border of spatial rectangle.
-		 */
-		protected double minx, miny, maxx, maxy;
-		
-		/**
-		 * Border of queried cell indices
-		 */
-		protected int xmin, ymin, xmax, ymax;
-		
-		/**
-		 * Current cell index.
-		 */
-		protected int xIdx, yIdx;
-		
-		/**
-		 * Iterator over current cell.
-		 */
-		protected Iterator <AABB> bucketIterator;
-		
-		/**
-		 * Next object.
-		 */
-		protected T next;
-		
-		/**
-		 * Bounding box of the next object.
-		 */
-		protected AABB aabb;
-		
-		public HashMapIterator(double minx, double miny, double maxx, double maxy) 
-		{
-			this.minx = minx; this.maxx = maxx;
-			this.miny = miny; this.maxy = maxy;
-			
-			xmin = (int) (minx/cellSize); if(xmin < -halfWidth)  xmin = -halfWidth;
-			ymin = (int) (miny/cellSize); if(ymin < -halfHeight) ymin = -halfHeight;
-			xmax = (int) (maxx/cellSize); if(xmax >  halfWidth)  xmax =  halfWidth;
-			ymax = (int) (maxy/cellSize); if(ymax >  halfHeight) ymax =  halfHeight;
-			
-			xIdx = xmin; yIdx = ymin;
-			
-			// pre-selecting next object:
-			bucketIterator = map[hash(xIdx,yIdx)].keySet().iterator();
-			next = _next();
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 */
-		public T next()
-		{
-			if(next == null)
-				throw new NoSuchElementException("No more elements answer the query.");
-			
-			T temp = next;
-			next = _next();
-			return temp;
-		}
-
-		/**
-		 * @return SNext object for this query; null, if none found.
-		 */
-		protected T _next() 
-		{
-//			AABB aabb = null;
-			while(true)
-			{
-				
-				while(!bucketIterator.hasNext()) // searching for next not empty cell
-				{
-					// advancing to next cell in the queried area:
-					if(++xIdx > xmax)
-					{
-						xIdx = xmin;
-						if(++yIdx > ymax)
-							return null;
-					}
-					
-					// selecting new bucket iterator:
-					bucketIterator = map[hash(xIdx,yIdx)].keySet().iterator();
-				}
-				
-				while(bucketIterator.hasNext())
-				{
-					aabb = bucketIterator.next();
-					// searching for fitting object: 
-					if(aabb.overlaps(minx, miny, maxx, maxy))
-						return map[hash(xIdx,yIdx)].get(aabb);
-				}
-				
-			}
-			
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean hasNext() { return next != null;	}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void remove() { bucketIterator.remove(); }
-		
-	}
 
 }
