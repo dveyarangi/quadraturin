@@ -8,7 +8,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
-import yarangi.graphics.quadraturin.simulations.ICollisionManager;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
@@ -22,13 +22,14 @@ public class DummyScene extends Scene
 			{
 				public void preDisplay(GL gl) { }
 				public void postDisplay(GL gl) { }
-				public ICollisionManager createCollisionManager() { return null; }
 				protected void initViewPoint(IViewPoint viewPoint) 
 				{ 
 					ViewPoint2D vp = (ViewPoint2D)viewPoint;
 					vp.setCenter(new Vector2D(0,0));
 					vp.setScale(new RangedDouble(1,1,1));
 				}
+				@Override
+				public IPhysicsEngine createPhysicsEngine() { return null; }
 
 			}, 
 			new UIVeil(0,0)

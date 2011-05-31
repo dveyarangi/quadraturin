@@ -5,7 +5,6 @@ import javax.media.opengl.GLCanvas;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
-import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
@@ -20,8 +19,6 @@ public class StageAnimator implements Loopy, StageListener
 //	private Stage stage;
 	
 	private GLCanvas canvas;
-	
-	private IPhysicsEngine engine;
 	
 	/**
 	 * Minimal required length of frame step.
@@ -41,12 +38,8 @@ public class StageAnimator implements Loopy, StageListener
 
 	public static final String NAME = "q-animus";
 	
-	public StageAnimator(GLCanvas canvas, IPhysicsEngine engine)
+	public StageAnimator(GLCanvas canvas)
 	{
-		if ( engine == null)
-			throw new IllegalArgumentException("Engine cannot be null.");
-		this.engine = engine;
-		
 		if (canvas == null)
 			throw new IllegalArgumentException("Canvas cannot be null.");
 		this.canvas = canvas;
@@ -78,20 +71,14 @@ public class StageAnimator implements Loopy, StageListener
 
 	public void runBody() 
 	{
-		//////////////////////////////////////////////////////////
-		// New entities are born here:
-		currScene.preAnimate();
 		
 		//////////////////////////////////////////////////////////
 		// Running scene behaviors:
 		// TODO: fix animation step for shorter frames
 		currScene.animate(defaultFrameLength);
 		
-		engine.calculate(defaultFrameLength);
-		
 		//////////////////////////////////////////////////////////
-		// Clean up dead entities:
-		currScene.postAnimate();
+		currScene.postAnimate(defaultFrameLength);
 		
 		long newStart = System.nanoTime();
 //		int fps = (int)(1000000000l/(newStart-frameStart));
@@ -106,15 +93,16 @@ public class StageAnimator implements Loopy, StageListener
 		catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }
 		
 		frameStart = System.nanoTime();
+		
+		// scheduling repaint:
+		canvas.repaint();
 	}
 
 	
 	public void runPostLock() 
 	{
-		// TODO: this invokes job in AWT event thread - understand what to do and do it.
 		// 
 //		try {
-			canvas.repaint();
 //		}
 //		catch(java.lang.InterruptedException e) {	log.info("Animator thread display procedure was interrupted.");	}
 	}
@@ -123,7 +111,5 @@ public class StageAnimator implements Loopy, StageListener
 	public void sceneChanged(Scene prevScene, Scene currScene) 
 	{
 		this.currScene = currScene;
-		
-		engine.setCollisionManager(currScene.getWorldVeil().createCollisionManager());
 	}
 }

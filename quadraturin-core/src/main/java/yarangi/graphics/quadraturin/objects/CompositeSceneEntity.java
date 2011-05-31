@@ -1,14 +1,14 @@
 package yarangi.graphics.quadraturin.objects;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GLException;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.spatial.AABB;
+import yarangi.spatial.Area;
 
 /**
  * Used to organize {@link CompositeSceneEntity} objects into scene tree.
@@ -28,7 +28,6 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	 * Entity parent in entity tree
 	 */
 //	private CompositeSceneEntity parent;
-
 	
 	/**
 	 * Creates a new located and oriented entity.
@@ -93,21 +92,27 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	@SuppressWarnings("unchecked")
 	public void display(GL gl, double time, RenderingContext context)
 	{
-		AABB aabb = getAABB();
+		Area area = getArea();
 	
 		// storing transformation matrix:
 		gl.glPushMatrix();
 		
 		// transforming into entity coordinates:
-		gl.glTranslatef((float)aabb.getX(), (float)aabb.getY(), 0);
-		gl.glRotatef((float)aabb.getA(), 0, 0, 1 );
+		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
+		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		// setting entity name for picking mechanism
 		// all children will be picked by this name, in addition to their own names
 		if(context.doPushNames())
 			gl.glPushName(getId());
 		
 		// rendering this entity:
-		getLook().render(gl, time, this, context);
+		try {
+			getLook().render(gl, time, this, context);
+		}
+		catch(GLException e)
+		{
+			System.out.println("oy!");
+		}
 		
 		// going into children branches:
 		for(SceneEntity child : getChildren())

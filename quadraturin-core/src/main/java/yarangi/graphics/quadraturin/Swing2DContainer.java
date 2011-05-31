@@ -19,8 +19,6 @@ import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
-import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
-import yarangi.graphics.quadraturin.simulations.StupidInteractions;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 
@@ -178,10 +176,10 @@ public class Swing2DContainer extends JFrame
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
-		log.debug("Creating entity stage animator...");
-		IPhysicsEngine engine = new StupidInteractions();
+//		log.debug("Creating entity stage animator...");
+//		IPhysicsEngine engine = new StupidInteractions();
 
-	    animator = new StageAnimator(canvas, engine);
+	    animator = new StageAnimator(canvas);
 		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
 		stage.addListener(animator);
 		

@@ -2,7 +2,10 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
-import yarangi.spatial.AABB;
+import org.apache.log4j.Logger;
+
+import yarangi.spatial.Area;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.ISpatialSensor;
 
@@ -11,75 +14,86 @@ public class StupidInteractions implements IPhysicsEngine
 	/**
 	 * Stupid's logger.
 	 */	
-//	private Logger log = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 	
+	/**
+	 * Calculates narrow phase of collision handling.
+	 */
 	private ICollisionManager manager;
 	
+	/**
+	 * Spatial query processor for broad phase of collision/interaction test
+	 */
 	private IProximitySensor sensor;
 	
-	public StupidInteractions()
-	{
-	}
-	
-	public void setCollisionManager(ICollisionManager man)
+	public StupidInteractions(ICollisionManager man)
 	{
 		this.manager = man;
 		
 		this.sensor = new DefaultProximitySensor(man);
 	}
 	
-
 	public void init() { }
 	
+	// TODO: make it double sided:
 	public void calculate(double time) 
 	{
-		AABB aabb;
-
-//		long startTime = System.nanoTime();
-		// TODO: make it double sided:
+		if(time <= 0)
+			throw new IllegalArgumentException("Time must be bigger than zero.");
+			
+		// no collision manager found
 		if(manager == null)
 			return;
 		
+		Area area;
+
 		Set <ISpatialObject> entities = manager.getObjectIndex().keySet();
+		log.debug("Entities in index: " + manager.getObjectIndex().size());
 		for(ISpatialObject e : entities)
 		{
-			aabb = e.getAABB();
-			if(aabb == null)
+			area = e.getArea();
+			if(area == null) // bodyless entity:
 				continue;
 			
-			if(!(e instanceof IPhysicalObject))
+			// TODO: somehow remove the check and the casting
+			if(!(e instanceof IPhysicalObject)) // non-physical entity:
 				continue;
 			
 			IPhysicalObject entity = (IPhysicalObject) e;
 					
-			double minx = aabb.x-aabb.r;
-			double miny = aabb.y-aabb.r;
-			double maxx = aabb.x+aabb.r;
-			double maxy = aabb.y+aabb.r;
-			
+			////////////////////////////////
+			// collision detection broad phase: 
 			sensor.setSource(entity);
 			
-			manager.getObjectIndex().query(sensor,minx, miny, maxx, maxy);
+			manager.getObjectIndex().query(sensor, area); // 
 			
+			////////////////////////////////
+			// inert mass point adjustment:
 			
-			// inert mass point
-			// TODO: add volume, rotation and collision response :) 
-			entity.getVelocity().x += entity.getForce().x / entity.getMass() * time;
-			entity.getVelocity().y += entity.getForce().y / entity.getMass() * time;
+			// TODO: add volume, rotation and collision response :)
+			// TODO: probably should use some Runga-Kutta (research it). 
+			entity.addVelocity(entity.getForce().x / entity.getMass() * time, entity.getForce().y / entity.getMass() * time);
 			
-//			if(entity.getVelocity().abs() > 1)
+			// TODO: add limits for forces and velocities
+			// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)
 				
-			
-			entity.getAABB().x += entity.getVelocity().x * time;
-			entity.getAABB().y += entity.getVelocity().y * time;
+			entity.moveMassCenter(entity.getVelocity().x * time, entity.getVelocity().y * time);
 			
 		}
 	}
 	
+	/**
+	 * Spatial query processor
+	 */
 	public interface IProximitySensor extends ISpatialSensor <ISpatialObject>
 	{
+		/**
+		 * Defines the reference entity for proximity tests.
+		 * @param source
+		 */
 		public void setSource(IPhysicalObject source);
 	}
+	
 	public class DefaultProximitySensor implements IProximitySensor
 	{
 		protected IPhysicalObject source;
@@ -91,7 +105,7 @@ public class StupidInteractions implements IPhysicsEngine
 			this.manager = manager;
 		}
 		
-		public void objectFound(ISpatialObject target, double distance) {
+		public void objectFound(IAreaChunk chunk, ISpatialObject target) {
 			manager.collide(source, target);
 		}
 

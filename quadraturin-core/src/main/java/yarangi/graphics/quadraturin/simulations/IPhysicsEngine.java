@@ -13,8 +13,6 @@ public interface IPhysicsEngine
 	 */
 	public void init();
 	
-	public void setCollisionManager(ICollisionManager manager);
-	
 	/**
 	 * Calculates whatever needs to be calculated.
 	 * Called in the engine loop.

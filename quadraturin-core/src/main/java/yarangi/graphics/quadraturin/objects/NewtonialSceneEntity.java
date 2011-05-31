@@ -22,26 +22,31 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 
 	final public double getMass() { return mass; }
 	
-	protected void setMass(double mass) { this.mass = mass; }
+	final public void setMass(double mass) { this.mass = mass; }
 	
-	protected void setForce(double x, double y)
+	final public void moveMassCenter(double dx, double dy)
+	{
+		getArea().translate(dx, dy);
+	}
+	
+	final public void setForce(double x, double y)
 	{
 		force.x = x;
 		force.y = y;
 	}
-	protected void setVelocity(double x, double y)
+	final public void setVelocity(double x, double y)
 	{
 		velocity.x = x;
 		velocity.y = y;
 	}
 	
-	public void addForce(double x, double y)
+	final public void addForce(double x, double y)
 	{
 		force.x += x;
 		force.y += y;
 	}
 	
-	protected void addVelocity(double x, double y)
+	final public void addVelocity(double x, double y)
 	{
 		velocity.x += x;
 		velocity.y += y;

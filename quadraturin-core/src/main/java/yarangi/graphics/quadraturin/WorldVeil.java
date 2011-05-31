@@ -3,17 +3,22 @@ package yarangi.graphics.quadraturin;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.simulations.ICollisionManager;
+import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
 
 public abstract class WorldVeil extends SceneVeil 
 {
 
+	private IPhysicsEngine engine;
+	
 	public WorldVeil(int width, int height) 
 	{
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
-		super(width, height, new SpatialHashMap<ISpatialObject>(10000, 10, width, height));
+		super(width, height, new SpatialHashMap<ISpatialObject>(50000, 10, width, height));
 			
+		this.engine = createPhysicsEngine();
 	}
 
 	/**
@@ -21,8 +26,12 @@ public abstract class WorldVeil extends SceneVeil
 	 * filters and implement the narrow phase of collision processing.
 	 * @return
 	 */
-	public abstract ICollisionManager createCollisionManager();
+	public abstract IPhysicsEngine createPhysicsEngine();
 
+	public IPhysicsEngine getPhysicsEngine() 
+	{
+		return engine; 
+	}
 	
 	/** 
 	 * Initializes engine's view point for this scene.

@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.spatial.AABB;
+import yarangi.spatial.Area;
 
 public abstract class Overlay extends SceneEntity 
 {
@@ -18,14 +19,14 @@ public abstract class Overlay extends SceneEntity
 	@SuppressWarnings("unchecked")
 	public void display(GL gl, double time, RenderingContext context)
 	{
-		AABB aabb = getAABB();
+		Area area = getArea();
 	
 		// storing transformation matrix:
 		gl.glPushMatrix();
 		
 		// transforming into entity coordinates:
-		gl.glTranslatef((float)aabb.getX(), (float)aabb.getY(), 0);
-		gl.glRotatef((float)aabb.getA(), 0, 0, 1 );
+		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
+		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		// setting entity name for picking mechanism
 		// all children will be picked by this name, in addition to their own names
 		if(context.doPushNames())

@@ -18,5 +18,14 @@ public interface IPhysicalObject extends ISpatialObject
 	public double getMass();
 	
 	public void setImpactWith(IPhysicalObject e); 
+	
+	public void setMass(double mass);
+	
+	public void setForce(double x, double y);
+	public void setVelocity(double x, double y);
+	
+	public void addForce(double x, double y);	
+	public void addVelocity(double x, double y);
 
+	public void moveMassCenter(double dx, double dy);
 }

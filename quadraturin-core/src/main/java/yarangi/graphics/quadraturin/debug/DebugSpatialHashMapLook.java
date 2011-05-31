@@ -6,7 +6,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.spatial.AABB;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
 
@@ -56,11 +56,11 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 			{
 				cellX = x / map.getCellSize();
 				boolean isReal = false;
-				Set <AABB> bucket = map.getBucket(cellX, cellY).keySet();
+				Set <IAreaChunk> bucket = map.getBucket(cellX, cellY).keySet();
 //				if(bucket.size() > 0)
 //				System.out.println(bucket.size() + " ::: " + x + " " + y);
-				for(AABB aabb : bucket)
-					if(aabb.overlaps(x-halfCellSize, y-halfCellSize, x+halfCellSize, y+halfCellSize))
+				for(IAreaChunk chunk : bucket)
+					if(chunk.overlaps(x-halfCellSize, y-halfCellSize, x+halfCellSize, y+halfCellSize))
 					{
 						isReal = true;
 						break;

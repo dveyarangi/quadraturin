@@ -95,7 +95,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		if (Debug.ON) {
 			log.info("GL core is in debug mode.");
-			drawable.setGL(new DebugGL(gl));
+//			drawable.setGL(new DebugGL(gl));
 		}
 		
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));

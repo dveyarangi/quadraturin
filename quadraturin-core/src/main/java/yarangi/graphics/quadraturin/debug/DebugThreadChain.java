@@ -39,6 +39,9 @@ public class DebugThreadChain extends ThreadChain
 	{
 		addThread(new LoopyChainedThread("q-profiler", this, new DelimeterThread()));
 		accumulatedTimes = new long [getSize()];
+		
+		log.debug("Available processors: " + Runtime.getRuntime().availableProcessors());
+
 			
 		super.start();
 	}
@@ -78,15 +81,18 @@ public class DebugThreadChain extends ThreadChain
 		{
 			iterations ++;
 			
-			if(iterations > debugInterations)
-			{
-				log.debug("Average execution time of all threads is " + Math.round(cycleLength/1000000.) + " ms (" + 1000000000/cycleLength  + " cycles per second)");
-				int vectorsCreated = Vector2D.getCount()-vectors;
-				log.debug("Average vectors per frame: " + vectorsCreated/debugInterations);
-				vectors = Vector2D.getCount();
-				cycleLength = 0;
-				iterations = 0;
-			}			
+			if(iterations <= debugInterations)
+				return;
+			log.debug("Average execution time of all threads is " + Math.round(cycleLength/1000000.) + " ms (" + 1000000000/cycleLength  + " cycles per second)");
+			int vectorsCreated = Vector2D.getCount()-vectors;
+			log.debug("Average vectors per frame: " + vectorsCreated/debugInterations);
+			vectors = Vector2D.getCount();
+			cycleLength = 0;
+			iterations = 0;
+			
+			Runtime runtime = Runtime.getRuntime();
+			log.debug("Memory: " + runtime.totalMemory() + "/" + runtime.maxMemory() + " allocated; " + runtime.freeMemory() + " free.");
+			
 		}
 
 		public void runPostLock() { }}

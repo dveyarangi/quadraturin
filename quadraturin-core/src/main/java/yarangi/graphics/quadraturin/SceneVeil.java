@@ -20,7 +20,7 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneVeil
+public abstract class SceneVeil implements IAnimate
 {
 	
 	/**
@@ -110,7 +110,7 @@ public abstract class SceneVeil
 			SceneEntity born = bornEntities.poll();
 			born.init(gl);
 			root.addChild(born);
-			if(born.getAABB() != null)
+			if(born.getArea() != null)
 				indexer.add(born);
 		}
 		
@@ -119,7 +119,7 @@ public abstract class SceneVeil
 			SceneEntity dead = deadEntities.poll();
 //			System.out.println("dead: " + dead.getId());
 			dead.destroy(gl);
-			if(dead.getAABB() != null)
+			if(dead.getArea() != null)
 			indexer.remove(dead);
 			root.removeChild(dead);
 		}
@@ -133,22 +133,17 @@ public abstract class SceneVeil
 			veilEffect.render(gl, time, root, context);
 		}
 	}
-
-	/**
-	 * 
-	 */
-	public void preAnimate() { }
 	
-	public boolean animate(double time)
+	public void animate(double time)
 	{
-		boolean changePending = false;
+//		boolean changePending = false;
 		// TODO: no control on order of executions
 		for(SceneEntity entity : root.getChildren())
 		{
 			if(entity.behave(time, true))
 			{
 				indexer.update(entity);
-				changePending = true;
+//				changePending = true;
 			}
 			
 			if (!entity.isAlive())
@@ -157,10 +152,11 @@ public abstract class SceneVeil
 			}
 		}
 		
-		return changePending;
+		
+//		if(engine != null)
+		
+//		return changePending;
 	}
-	
-	public void postAnimate() { }
 
 
 	/**

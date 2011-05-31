@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 public class Debug 
 {
-	public static Logger LOG = Logger.getLogger(Debug.class);
+	public static Logger LOG = Logger.getLogger("q-debug");
 	/**
 	 * System property to turn on GL debug mode.
 	 */

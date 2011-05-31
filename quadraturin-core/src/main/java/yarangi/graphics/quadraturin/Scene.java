@@ -12,7 +12,10 @@ import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.Vector2D;
+import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SetSensor;
 
@@ -61,12 +64,17 @@ public abstract class Scene implements UserActionListener
 	 * TODO: move
 	 */
 	private double frameLength;
+	
+	
+	/**
+	 * TODO: move
+	 */
+	private IPhysicsEngine engine;
 
 
 	public Scene(String sceneName, WorldVeil worldVeil, UIVeil uiVeil,  int width, int height, double frameLength)
 	{
 		this.name = sceneName;
-
 		
 		this.worldVeil = worldVeil;
 		viewPoint = new ViewPoint2D(null, null, null, new Dimension(width, height));
@@ -78,6 +86,8 @@ public abstract class Scene implements UserActionListener
 		
 		if(Debug.ON)
 			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
+		
+		this.engine = getWorldVeil().getPhysicsEngine();
 	}
 	
 	public final double getFrameLength() { return frameLength; }
@@ -88,7 +98,7 @@ public abstract class Scene implements UserActionListener
 	 */
 	public abstract Map <String, IAction> getActionsMap();
 
-	public IViewPoint getViewPoint() {
+	public IViewPoint getViewPoint() { 
 		return viewPoint;
 	}
 
@@ -111,14 +121,14 @@ public abstract class Scene implements UserActionListener
 		uiVeil.addEntity(entity);
 	}
 	
-	public void removeOverlay(SceneEntity entity)
+	 final public void removeOverlay(SceneEntity entity)
 	{
 		uiVeil.removeEntity(entity);
 	}
 
-	public WorldVeil getWorldVeil() { return worldVeil; }
+	final public WorldVeil getWorldVeil() { return worldVeil; }
 	
-	public UIVeil getUIVeil() { return uiVeil; }
+	final public UIVeil getUIVeil() { return uiVeil; }
 	
 	public ISpatialObject pick(Vector2D worldLocation, Point canvasLocation)
 	{
@@ -126,14 +136,10 @@ public abstract class Scene implements UserActionListener
 		SetSensor <ISpatialObject> sensor = new SetSensor <ISpatialObject> ();
 		
 		if(canvasLocation != null)
-			uiVeil.getEntityIndex().query(sensor, 
-					canvasLocation.x-CURSOR_PICK_SPAN, canvasLocation.y-CURSOR_PICK_SPAN, 
-					canvasLocation.x+CURSOR_PICK_SPAN, canvasLocation.y+CURSOR_PICK_SPAN);
+			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
 		if(worldLocation != null && sensor.size() == 0)
-			worldVeil.getEntityIndex().query(sensor, 
-				worldLocation.x-CURSOR_PICK_SPAN, worldLocation.y-CURSOR_PICK_SPAN, 
-				worldLocation.x+CURSOR_PICK_SPAN, worldLocation.y+CURSOR_PICK_SPAN);
+			worldVeil.getEntityIndex().query(sensor, new AABB(worldLocation.x, worldLocation.y, CURSOR_PICK_SPAN, 0));
 		
 		if(sensor.size() != 0)
 			return sensor.iterator().next();
@@ -161,6 +167,7 @@ public abstract class Scene implements UserActionListener
 		getUIVeil().init(gl);
 		
 	}
+	
 	public void destroy(GL gl)
 	{
 		getWorldVeil().destroy(gl);
@@ -203,23 +210,25 @@ public abstract class Scene implements UserActionListener
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENE ANIMATION
-	
-	public void preAnimate()
-	{
-		getWorldVeil().preAnimate();
-		getUIVeil().preAnimate();
-	}
-	
+
 	public void animate(double time)
 	{
 		getWorldVeil().animate(time);
 		getUIVeil().animate(time);
-	}
-	
-	public void postAnimate() 
-	{
-		getWorldVeil().postAnimate();
-		getUIVeil().postAnimate();
+		
+		if(engine != null)
+			engine.calculate(time);
 	}
 
+	public IPhysicsEngine getPhysicalEngine() {
+		return engine;
+	}
+
+	
+	public void postAnimate(double time) 
+	{
+	}
+
+	final public ISpatialIndex <ISpatialObject> getEntityIndex() { return worldVeil.getEntityIndex(); }
+	final public ISpatialIndex <ISpatialObject> getOverlayIndex() { return uiVeil.getEntityIndex(); }
 }

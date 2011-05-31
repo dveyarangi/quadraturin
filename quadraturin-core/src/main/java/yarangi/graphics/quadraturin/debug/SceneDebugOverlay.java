@@ -1,7 +1,5 @@
 package yarangi.graphics.quadraturin.debug;
 
-import java.util.Set;
-
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
@@ -48,23 +46,23 @@ public class SceneDebugOverlay extends Overlay
 		gl.glColor4f(1f,1f,1f, 0.5f);
 		spatialOverlay.render(gl, time,  indexer, context);
 		
-		AABB c;
+/*		Area area;
 		gl.glColor4f(0.f, 0.f, 1.f, 0.5f);
 		Set <ISpatialObject> entities = indexer.keySet();
 		for(ISpatialObject entity : entities)
 		{
-			c = entity.getAABB();
-			if( c == null )
+			area = entity.getArea();
+			if( area == null )
 				continue;
 			
 			gl.glBegin(GL.GL_LINE_STRIP);
-			gl.glVertex3f((float)(c.x-c.r), (float)(c.y+c.r), 0.f);
-			gl.glVertex3f((float)(c.x+c.r), (float)(c.y+c.r), 0.f);
-			gl.glVertex3f((float)(c.x+c.r), (float)(c.y-c.r), 0.f);
-			gl.glVertex3f((float)(c.x-c.r), (float)(c.y-c.r), 0.f);
-			gl.glVertex3f((float)(c.x-c.r), (float)(c.y+c.r), 0.f);
+			gl.glVertex3f((float)(area.getRefX()-area.()), (float)(c.y+c.r), 0.f);
+			gl.glVertex3f((float)(area.getRefX()+c.r), (float)(c.y+c.r), 0.f);
+			gl.glVertex3f((float)(area.getRefX()+c.r), (float)(c.y-c.r), 0.f);
+			gl.glVertex3f((float)(area.getRefX()-c.r), (float)(c.y-c.r), 0.f);
+			gl.glVertex3f((float)(area.getRefX()-c.r), (float)(c.y+c.r), 0.f);
 			gl.glEnd();
-		}
+		}*/
 	}
 
 

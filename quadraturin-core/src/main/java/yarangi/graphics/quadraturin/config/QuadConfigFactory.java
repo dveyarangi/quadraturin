@@ -46,7 +46,7 @@ public class QuadConfigFactory
 		instance = new QuadConfigFactory(CONFIG_FILENAME);
 	}
 	
-	private Logger log = Logger.getLogger(QuadConfigFactory.class);
+	private Logger log = Logger.getLogger("q-config");
 	
 	private static QuadConfigFactory instance;
 	
