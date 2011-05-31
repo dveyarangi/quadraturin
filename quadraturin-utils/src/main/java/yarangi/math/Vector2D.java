@@ -87,24 +87,24 @@ public class Vector2D extends IVector2D
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getX() { return x; }
+	final public double x() { return x; }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getY() { return y; }
+	final public double y() { return y; }
 
 	/**
 	 * Calculates vector length.
 	 * @return
 	 */
-	public double abs() { return Math.sqrt(x*x+y*y); }
+	final public double abs() { return Math.sqrt(x*x+y*y); }
 	
 	/**
 	 * Normalizes this vector.
 	 * Note: this operation changes current vector
 	 */
-	public Vector2D normalize()
+	final public Vector2D normalize()
 	{
 //		if(normalized) return;
 		
@@ -117,7 +117,7 @@ public class Vector2D extends IVector2D
 	 * @param v
 	 * @return
 	 */
-	public double dot(Vector2D v)
+	final public double dot(Vector2D v)
 	{
 		return x*v.x + y*v.y;
 	}
@@ -127,7 +127,7 @@ public class Vector2D extends IVector2D
 	 * @param v
 	 * @return
 	 */
-	public Vector2D plus(Vector2D v)
+	final public Vector2D plus(Vector2D v)
 	{
 		return new Vector2D(this.x+v.x, this.y+v.y);
 	}
@@ -137,7 +137,7 @@ public class Vector2D extends IVector2D
 	 * @param v
 	 * @return
 	 */
-	public Vector2D minus(Vector2D v)
+	final public Vector2D minus(Vector2D v)
 	{
 		return new Vector2D(this.x-v.x, this.y-v.y);
 	}
@@ -146,26 +146,35 @@ public class Vector2D extends IVector2D
 	 * Calculates vector negative.
 	 * @return
 	 */
-	public Vector2D minus() { return new Vector2D(-x, -y); }
+	final public Vector2D minus() { return new Vector2D(-x, -y); }
 	
 	/**
 	 * Calculates vector multiplication product
 	 * @param d
 	 * @return
 	 */
-	public Vector2D mul(double d)
+	final public Vector2D mul(double d)
 	{
 		return new Vector2D(d*this.x,d*this.y);
 	}
 	
-	public Vector2D rotate(double a)
+	/**
+	 * Rotates vector by specified quantity of radians.
+	 * @param a
+	 * @return
+	 */
+	final public Vector2D rotate(double a)
 	{
 		double cosa = Math.cos(a);
 		double sina = Math.sin(a);
 		return new Vector2D(x*cosa - y*sina, x*sina + y*cosa );
 	}
 	
-	public double getAngle() { return Math.atan2(y, x); }
+	/**
+	 * Calculates vector angle (radians). 
+	 * @return
+	 */
+	final public double getAngle() { return Math.atan2(y, x); }
 	
 	/**
 	 * @return display string representation of this vector
@@ -180,7 +189,7 @@ public class Vector2D extends IVector2D
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getDimensions() { return 2; }
+	public int size() { return 2; }
 	
 	public boolean equals(Object o)
 	{
@@ -188,7 +197,7 @@ public class Vector2D extends IVector2D
 			return false;
 		
 		IVector2D vec = (IVector2D) o;
-		return x == vec.getX() && y == vec.getY();
+		return x == vec.x() && y == vec.y();
 	}
 	
 	public int hashCode()

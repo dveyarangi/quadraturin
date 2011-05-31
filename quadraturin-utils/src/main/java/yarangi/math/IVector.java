@@ -17,5 +17,5 @@ public interface IVector
 	 * Number of vector dimensions
 	 * @return
 	 */
-	public int getDimensions();
+	public int size();
 }

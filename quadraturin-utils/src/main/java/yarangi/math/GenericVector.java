@@ -21,7 +21,7 @@ public class GenericVector implements IVector
 		return coords[dim];
 	}
 
-	public int getDimensions() {
+	public int size() {
 		return coords.length;
 	}
 

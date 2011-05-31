@@ -10,15 +10,15 @@ public abstract class IVector2D implements IVector
 	/**
 	 * @return Abscissa value.
 	 */
-	public abstract double getX();
+	public abstract double x();
 	
 	/**
 	 * @return Ordinate value
 	 */
-	public abstract double getY();
+	public abstract double y();
 	
 	/**
 	 * {@inheritDoc} - 2, obviously.
 	 */
-	public int getDimensions() { return 2; }
+	public int size() { return 2; }
 }
