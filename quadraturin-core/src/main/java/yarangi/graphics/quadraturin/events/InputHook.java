@@ -94,8 +94,10 @@ public class InputHook
 			return "Mouse Left";
 		if(buttonId == MOUSE_RIGHT_BUTTON)
 			return "Mouse Right";
+		if(buttonId == MOUSE_WHEEL)
+			return "Mouse Wheel";
 		
-		return "unknown id (" + buttonId + ")";
+		return "unknown name (" + buttonId + ")";
 	}
 	
 	private static String getModeName(int modeId)
@@ -107,8 +109,10 @@ public class InputHook
 		case PRESSED:  return "pressed";
 		case TAPPED:   return "tapped";
 		case DRAGGED:  return "dragged";
+		case FORWARD:  return "forward";
+		case BACKWARD:  return "backward";
 		}
-		return "unknown id (" + modeId + ")";
+		return "unknown mode (" + modeId + ")";
 	}
 
 }
