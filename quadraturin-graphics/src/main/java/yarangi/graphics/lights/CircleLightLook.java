@@ -14,6 +14,7 @@ import yarangi.graphics.textures.TextureUtils;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ISpatialObject;
 
@@ -80,7 +81,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		if(context.isForEffect())
 			return;
 		
-		Map <ISpatialObject, Double> entities = entity.getEntities();
+		Map <IAreaChunk, ISpatialObject> entities = entity.getEntities();
 		
 		if(entities == null)
 			return;
@@ -115,7 +116,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 
 		// drawing red polygones for full shadows and penumbra:
-		for(ISpatialObject caster : entities.keySet())
+		for(ISpatialObject caster : entities.values())
 		{
 			if(caster == entity || (caster instanceof ICircleLightEntity))
 				continue;
@@ -123,17 +124,24 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 			if(filter != null && !filter.accept(caster))
 				continue;
 //			System.out.println(entities.size());
-			Vector2D distance = caster.getAABB().minus(entity.getAABB());
+			Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
 			Vector2D dir = distance.normalize();
 			
 			Vector2D left = dir.rotate(Angles.PI_div_2);
 			Vector2D right = dir.rotate(-Angles.PI_div_2); // new Vector2D( dir.y, -dir.x)
 
-			Vector2D casterLeft  = left.mul(caster.getAABB().r).plus(distance);
-			Vector2D casterRight = right.mul(caster.getAABB().r).plus(distance);
 			
-			Vector2D sourceLeft = left.mul(entity.getAABB().r);
-			Vector2D sourceRight = right.mul(entity.getAABB().r);
+			// TODO: raycasting?
+			Vector2D casterLeft  = left.mul(10).plus(distance);
+			Vector2D casterRight = right.mul(10).plus(distance);
+			
+			Vector2D sourceLeft = left.mul(10);
+			Vector2D sourceRight = right.mul(10);
+//			Vector2D casterLeft  = left.mul(caster.getAABB().r).plus(distance);
+//			Vector2D casterRight = right.mul(caster.getAABB().r).plus(distance);
+			
+//			Vector2D sourceLeft = left.mul(entity.getAABB().r);
+//			Vector2D sourceRight = right.mul(entity.getAABB().r);
 			
 			Vector2D fullLeft = casterLeft.minus(sourceLeft).normalize();
 			Vector2D fullRight = casterRight.minus(sourceRight).normalize();
@@ -142,8 +150,11 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 			Vector2D softLeft = casterLeft.minus(sourceRight).normalize();
 			Vector2D softRight = casterRight.minus(sourceLeft).normalize();
 			
-			Vector2D casterLeftOutter  = left.mul(caster.getAABB().r*10).plus(distance);
-			Vector2D casterRightOutter = right.mul(caster.getAABB().r*10).plus(distance);
+			// TODO: calc real shadow extent:
+			Vector2D casterLeftOutter  = left.mul(10*10).plus(distance);
+			Vector2D casterRightOutter = right.mul(10*10).plus(distance);
+//			Vector2D casterLeftOutter  = left.mul(caster.getAABB().r*10).plus(distance);
+//			Vector2D casterRightOutter = right.mul(caster.getAABB().r*10).plus(distance);
 			// drawing full shadow
 			gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
 			gl.glBegin(GL.GL_QUADS);

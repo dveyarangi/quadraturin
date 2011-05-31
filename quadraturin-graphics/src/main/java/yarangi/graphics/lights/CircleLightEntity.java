@@ -6,12 +6,13 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.objects.ISensorEntity;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.AABB;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialObject;
 
 public abstract class CircleLightEntity extends SceneEntity implements ISensorEntity
 {
 	
-	private Map <ISpatialObject, Double>  entities; 
+	private Map <IAreaChunk, ISpatialObject> entities; 
 	
 	private double intensity;
 	
@@ -28,12 +29,12 @@ public abstract class CircleLightEntity extends SceneEntity implements ISensorEn
 		this.lightColor = color;
 	}
 
-	public void setEntities(Map <ISpatialObject, Double>  entities)
+	public void setEntities(Map <IAreaChunk, ISpatialObject>  entities)
 	{
 		this.entities = entities;
 	}
 	
-	public Map <ISpatialObject, Double>  getEntities() { return entities; }
+	public Map <IAreaChunk, ISpatialObject> getEntities() { return entities; }
 	
 	public Color getColor() { return lightColor; }
 	

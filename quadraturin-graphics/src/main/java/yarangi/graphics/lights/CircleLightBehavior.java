@@ -20,11 +20,9 @@ public class CircleLightBehavior <K extends ICircleLightEntity> implements Behav
 	public boolean behave(double time, K entity, boolean isVisible) 
 	{
 		sensor.clear();
-		double radius = entity.getSensorRadius();
 //		System.out.println("light affected radius: " + radius);
 		
-		indexer.query(sensor, entity.getAABB().x-radius, entity.getAABB().y-radius, 
-						      entity.getAABB().x+radius, entity.getAABB().y+radius);
+		indexer.query(sensor, entity.getArea().getRefPoint().x(), entity.getArea().getRefPoint().y(), entity.getSensorRadius());
 		
 		entity.setEntities(sensor);
 		return true;
