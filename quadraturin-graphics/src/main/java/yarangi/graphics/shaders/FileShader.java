@@ -47,7 +47,7 @@ public class FileShader extends TextFileResource implements IShader
 			shaderProgram = asString();
 		} 
 		catch (IOException e) {
-			log.error("Failed to load shader file", e);
+			log.error("Failed to load shader file [" + getFilename() + "]", e);
 			throw new IllegalArgumentException(e);
 		}
 		
@@ -55,6 +55,7 @@ public class FileShader extends TextFileResource implements IShader
 		int vertexProgramOffset = shaderProgram.lastIndexOf(VERTEX_DELIMETER);
 		int fragmentProgramOffset = shaderProgram.lastIndexOf(FRAGMENT_DELIMETER);
 		
+		log.debug("Compiling and linking shader program [" + getFilename() + "].");
 		// compiling vertex shader:
 		if(vertexProgramOffset != -1)
 		{
@@ -89,8 +90,9 @@ public class FileShader extends TextFileResource implements IShader
 
 		gl.glShaderSource(shaderId, 1, new String [] {program}, (int[])null, 0);
 		gl.glCompileShader(shaderId);
-		printShaderInfoLog(gl, shaderId);
-		
+		String info = getShaderInfoLog(gl, shaderId);
+		if(info != null)
+			log.debug("Shader message: " + info);
 		return shaderId;
 	}
 	
@@ -113,7 +115,10 @@ public class FileShader extends TextFileResource implements IShader
 		
 		gl.glLinkProgram(programId);
 		gl.glValidateProgram(programId);
-		printProgramInfoLog(gl);
+		
+		String info = getShaderProgramInfo(gl);
+		if(info != null)
+			log.debug("Shader program message: " + info);
 
 		return programId;
 	}
@@ -179,7 +184,7 @@ public class FileShader extends TextFileResource implements IShader
 		return type == GL.GL_FRAGMENT_SHADER ? fragmentShaderId : vertexShaderId;
 	}
 	
-	protected void printProgramInfoLog(GL gl)
+	protected String getShaderProgramInfo(GL gl)
 	{
 	    IntBuffer infologLength = IntBuffer.allocate(1);
 
@@ -191,11 +196,13 @@ public class FileShader extends TextFileResource implements IShader
 	    	IntBuffer infoLog = IntBuffer.allocate(1);
 	    	ByteBuffer buffer = ByteBuffer.allocate(logLength);
 	        gl.glGetProgramInfoLog(programId, logLength, infoLog, buffer);
-			log.info("Shader program message: " + new String(buffer.array()));
+		    return new String(buffer.array());
 	    }
+
+	    return null;
 	}
 	
-	protected void printShaderInfoLog(GL gl, int shaderId)
+	protected String getShaderInfoLog(GL gl, int shaderId)
 	{
 	    IntBuffer infologLength = IntBuffer.allocate(1);
 
@@ -207,8 +214,9 @@ public class FileShader extends TextFileResource implements IShader
 	    	IntBuffer infoLog = IntBuffer.allocate(1);
 	    	ByteBuffer buffer = ByteBuffer.allocate(logLength);
 	        gl.glGetShaderInfoLog(shaderId, logLength, infoLog, buffer);
-			log.info("Shader message: " + new String(buffer.array()));
+			return new String(buffer.array());
 	    }
+	    return null;
 	}
 
 }
