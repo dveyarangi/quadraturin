@@ -28,7 +28,7 @@ public class Main {
 		int width = 400;
 		int height = 200;
 		
-		GraphModel model = new GraphModel();
+		GraphScene model = new GraphScene();
 		
 		Swing2DContainer frame = new Swing2DContainer();
 		int id = frame.addScene(model);

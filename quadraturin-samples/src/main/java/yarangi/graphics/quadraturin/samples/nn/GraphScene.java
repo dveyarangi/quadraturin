@@ -14,10 +14,11 @@ import yarangi.graphics.quadraturin.WorldVeil;
 import yarangi.graphics.quadraturin.actions.DefaultActionFactory;
 import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.simulations.ICollisionManager;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
-public class GraphModel extends Scene
+public class GraphScene extends Scene
 {
 	
 	private double [][] tx, ty;
@@ -27,9 +28,9 @@ public class GraphModel extends Scene
 	
 	private double []nx, ny;
 
-	public GraphModel()
+	public GraphScene()
 	{
-		super("NN debug",  new WorldVeil(1000, 1000) {
+		super("NN test",  new WorldVeil(1000, 1000) {
 			
 			@Override
 			public void preDisplay(GL gl) { }
@@ -45,9 +46,9 @@ public class GraphModel extends Scene
 				vp.setCenter(new Vector2D(0,0));
 				vp.setScale(new RangedDouble(0.1, 1, 2));
 			}
-			
+
 			@Override
-			public ICollisionManager createCollisionManager() { return null; }
+			public IPhysicsEngine createPhysicsEngine() { return null; }
 		}, 
 		new UIVeil(1000, 1000) {}, 
 		1000, 1000, 1);
