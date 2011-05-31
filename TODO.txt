@@ -9,17 +9,20 @@ TODOS:
 	> Animation
 		- Out-of-screen simplified behavior and physics?
 		- some default container for scene dynamics aggregation (scripted events, world AI)
+		- adapt frame length to average FPS.
 	> Graphics
 		- LOD 
 		- scene entity tree clipping 
 		- scene UI
 		- renderer interface instead of plain JOGL?
 		- import object "looks" from files
-		
+	> Integration
+	    - configurable minimized window behavior
+	    - 
 		
 * Resource loading
 	> JAXB
-		> configuration
+		V configuration
 	> text
 		> ui labels
 		> dialogue
@@ -34,7 +37,7 @@ TODOS:
 
 * Navigation
 	> Mouse to world coordinates conversion must be fixed
-	> Zoom out is broken (objects go out of GL clipping area)
+	V Zoom out is broken (objects go out of GL clipping area)
 	> Strafing speed should be visually consistent on different zoom values.
 	> Limit scene dimensions and limit transposition to scene borders
 	
