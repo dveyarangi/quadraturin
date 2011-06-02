@@ -129,7 +129,7 @@ public class Vector2D extends IVector2D
 	 */
 	final public Vector2D plus(Vector2D v)
 	{
-		return new Vector2D(this.x+v.x, this.y+v.y);
+		return new Vector2D(x+v.x, y+v.y);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class Vector2D extends IVector2D
 	 */
 	final public Vector2D minus(Vector2D v)
 	{
-		return new Vector2D(this.x-v.x, this.y-v.y);
+		return new Vector2D(x-v.x, y-v.y);
 	}
 	
 	/**
@@ -155,7 +155,7 @@ public class Vector2D extends IVector2D
 	 */
 	final public Vector2D mul(double d)
 	{
-		return new Vector2D(d*this.x,d*this.y);
+		return new Vector2D(d*x,d*y);
 	}
 	
 	/**
@@ -200,6 +200,7 @@ public class Vector2D extends IVector2D
 		return x == vec.x() && y == vec.y();
 	}
 	
+	// TODO: faster
 	public int hashCode()
 	{
 		return new Double(x).hashCode() + new Double(y).hashCode();
