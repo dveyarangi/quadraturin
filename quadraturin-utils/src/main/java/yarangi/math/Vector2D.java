@@ -2,8 +2,10 @@ package yarangi.math;
 
 /**
  * Implementation of bi-dimensional vector.
+ * TODO: compile vector math expressions?
  * 
  * @author Dve Yarangi
+ * 
  */
 public class Vector2D extends IVector2D
 {
@@ -15,8 +17,24 @@ public class Vector2D extends IVector2D
 	/** y */
 	public double y;
 	
+	/**
+	 * Vector counter. TODO: should only be in debug mode
+	 */
 	public static int count = 0;
+	
+	/**
+	 * Constant for zero vector.
+	 */
+	public static final Vector2D ZERO = new Vector2D(0,0);
+	
+	/**
+	 * Constant for undefined vector.
+	 */
+	public static final Vector2D NOWHERE = new Vector2D(Double.NaN, Double.NaN);
 
+	/**
+	 * Creates a (0,0) vector.
+	 */
 	public Vector2D()
 	{
 		x = 0;
@@ -24,10 +42,13 @@ public class Vector2D extends IVector2D
 		count ++;
 	}
 	
+	/**
+	 * @return Total vectors created.
+	 */
 	public static int getCount() { return count; } 
 
 	/**
-	 * Create a new vector with specified values.
+	 * Create a new vector with specified coordinate values.
 	 * @param x
 	 * @param y
 	 */
@@ -38,6 +59,13 @@ public class Vector2D extends IVector2D
 		count ++;
 	}
 	
+	/**
+	 * Creates a vector that is   
+	 * @param x
+	 * @param y
+	 * @param r
+	 * @param a
+	 */
 	public Vector2D(double x, double y, double r, double a)
 	{
 		this.x = x+r*Math.cos(a);
@@ -45,6 +73,12 @@ public class Vector2D extends IVector2D
 		count ++;
 	}
 	
+	/**
+	 * Creates a vector
+	 * @param a - x or r
+	 * @param b - y or a
+	 * @param radial if true, a and b a are considered radial coordinates.
+	 */
 	public Vector2D(double a, double b, boolean radial)
 	{
 		if(radial)
@@ -146,7 +180,10 @@ public class Vector2D extends IVector2D
 	 * Calculates vector negative.
 	 * @return
 	 */
-	final public Vector2D minus() { return new Vector2D(-x, -y); }
+	final public Vector2D minus() 
+	{ 
+		return new Vector2D(-x, -y); 
+	}
 	
 	/**
 	 * Calculates vector multiplication product
@@ -200,7 +237,7 @@ public class Vector2D extends IVector2D
 		return x == vec.x() && y == vec.y();
 	}
 	
-	// TODO: faster
+	// TODO: make it faster
 	public int hashCode()
 	{
 		return new Double(x).hashCode() + new Double(y).hashCode();

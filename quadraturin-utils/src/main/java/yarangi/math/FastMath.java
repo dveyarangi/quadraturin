@@ -20,7 +20,8 @@ public class FastMath
 	   
 	   public static int toGrid(int val, int cell)
 	   {
-		   return val/cell*cell; // embracing eternity!
+		   return val - val % cell;
+		   // return val/cell * cell; // embrace eternity!
 	   }
 	   public static double toGrid(double val, double cell)
 	   {
