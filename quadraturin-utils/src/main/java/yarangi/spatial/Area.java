@@ -1,7 +1,5 @@
 package yarangi.spatial;
 
-import java.util.Iterator;
-
 import yarangi.math.Vector2D;
 
 /**
@@ -17,7 +15,19 @@ public interface Area
 	 * @param cellsize size of the grid cell
 	 * @return
 	 */
-	public Iterator <IAreaChunk> iterator(double cellsize);
+	public IGridIterator <IAreaChunk> iterator(double cellsize);
+	
+	/**
+	 * Retrieves area orientation.
+	 * @return
+	 */
+	public double getOrientation();
+	
+	/**
+	 * Sets area orientation
+	 * @param a
+	 */
+	public void setOrientation(double a);
 
 	/**
 	 * Retrieves area's center reference point.
@@ -26,15 +36,22 @@ public interface Area
 	public Vector2D getRefPoint();
 	
 	/**
-	 * Retrieves area orientation.
+	 * Translates area reference point. 
+	 * @param dx
+	 * @param dy
+	 */
+	public void translate(double dx, double dy);
+	
+	/**
+	 * Area profile width from specified angle.
+	 * @param direction
 	 * @return
 	 */
-	public double getOrientation();
-	public void setOrientation(double a);
+//	public double calcWidth(double angle);
 
-	public void translate(double dx, double dy);
-
+	/**
+	 * Copies the area.
+	 * @return
+	 */
 	public Area clone();
-	
-//	public Area clone();
 }

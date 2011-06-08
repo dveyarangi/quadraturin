@@ -1,8 +1,9 @@
 package yarangi.spatial;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
+import yarangi.math.FastMath;
 
 /**
  * Straightforward implementation of spatial hash map.
@@ -29,7 +30,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * size of single hash cell
 	 */
-	private int cellSize;
+	private double cellSize;
 	
 	/**
 	 * hash cells amounts 
@@ -94,7 +95,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	protected void addObject(Area area, T object) 
 	{
 		
-		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
 		IAreaChunk chunk;
 		int x, y;
 		
@@ -102,7 +103,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
 			
 			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
 				continue;
@@ -118,13 +119,13 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected T removeObject(Area area, T object) 
 	{
-		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
 		IAreaChunk chunk;
 		int x, y;
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
 			
 			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
 				continue;
@@ -158,14 +159,14 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		Iterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
 		Map <IAreaChunk, T> cell;
 		IAreaChunk chunk;
 		int x, y;
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = (int)(chunk.getX()/cellSize); y = (int)(chunk.getY()/cellSize);
+			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
 			
 			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
 				continue;
@@ -174,6 +175,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			for(IAreaChunk c : cell.keySet())
 			{
 				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
+//					System.out.println(cell.get(c));
 					processor.objectFound(c, cell.get(c)/*, 
 							Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/);
 			}
@@ -231,7 +233,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * @return size (height and width) of a single cell
 	 */
-	public int getCellSize() { return cellSize; }
+	public double getCellSize() { return cellSize; }
 	
 	/**
 	 * Retrieves content of the bucket that holds the contents of (x,y) cell.

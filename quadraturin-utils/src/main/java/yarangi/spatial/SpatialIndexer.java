@@ -24,7 +24,15 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 */
 	public int size() { return locations.size(); }
 
-
+	/**
+	 * @return The entirety of the objects added to the indexer.
+	 * Note: This list is a live structure used by indexer. Modifying it may 
+	 * result in incorrect indexer behavior.
+	 */
+	public Set <K> getAllObjects()
+	{
+		return locations.keySet();
+	}
 	/**
 	 * Adds an {@link AABB} box, containing the object.
 	 * @param aabb
@@ -67,6 +75,11 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 		updateObject(oldLocation, newLocation, object);
 	}
 	
+	public void update(K object, IAreaChunk chunk)
+	{
+		
+	}
+	
 	/**
 	 * Retrieves set of indexed {@link ISpatialObject}s.
 	 * Note: The collection is backed up by the indexer and should not be modified. 
@@ -94,5 +107,19 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 * @param object
 	 */
 	protected abstract void updateObject(Area old, Area area, K object);
+	
+	/**
+	 * Updates an {@link AABB} box location.
+	 * @param aabb
+	 * @param object
+	 */
+//	protected abstract void updateObject(Area old, Area area, K object);
+	
+	public Set <K> query(Area area)
+	{
+		SetSensor <K> set = new SetSensor<K> ();
+		query(set, area);
+		return set;
+	}
 
 }

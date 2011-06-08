@@ -1,6 +1,5 @@
 package yarangi.spatial;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import yarangi.math.Vector2D;
@@ -40,29 +39,38 @@ public class AABB implements Area
 		this.a = a;
 	}
 	
+	/**
+	 * Copy ctor.
+	 * @param aabb
+	 */
 	protected AABB(AABB aabb)
 	{
 		this(aabb.ref.x, aabb.ref.y, aabb.r, aabb.a);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public final double getRadius() { return r; }
 	
-	public final double getBoundingRadius() { return r; }
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	public final double getOrientation() { return a; }
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public final Vector2D getRefPoint() { return ref; }
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	public final void setOrientation(double a) { this.a = a; }
 	
-	
-	
-//	public boolean overlaps(AABB aabb)
-//	{
-//		return overlaps(aabb.x-r, aabb.y-r, aabb.x+r, aabb.y+r);
-//	}
-	
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	final public void translate(double dx, double dy) {
 		ref.x += dx; 
@@ -85,13 +93,22 @@ public class AABB implements Area
 
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean equals(Object o)
 	{
 		return o == this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public Area clone() { return new AABB(this); }
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString()
 	{
 		return "AABB [loc:" + ref.x + ":" + ref.y + "; r:" + r + "; a:" + a + "]"; 
@@ -102,12 +119,12 @@ public class AABB implements Area
 		return new AABB(x, y, r, a);
 	}*/
 	
-	public Iterator <IAreaChunk> iterator(double cellsize)
+	public IGridIterator <IAreaChunk> iterator(double cellsize)
 	{
 		return new AABBIterator(this, cellsize);
 	}
 	
-	public class AABBIterator implements Iterator <IAreaChunk>
+	public class AABBIterator implements IGridIterator <IAreaChunk>
 	{
 		private double cellsize;
 		
@@ -152,13 +169,13 @@ public class AABB implements Area
 			
 			return vector;
 		}
-
-		@Override
-		public void remove() { throw new IllegalStateException("Remove operation not supported."); }
-
 		
 	}
 	
+	/**
+	 *  
+	 * 
+	 */
 	public class AABBChunk implements IAreaChunk
 	{
 
