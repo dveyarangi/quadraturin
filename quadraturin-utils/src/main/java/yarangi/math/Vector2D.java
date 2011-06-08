@@ -3,7 +3,7 @@ package yarangi.math;
 /**
  * Implementation of bi-dimensional vector.
  * TODO: compile vector math expressions?
- * 
+
  * @author Dve Yarangi
  * 
  */
@@ -135,15 +135,27 @@ public class Vector2D extends IVector2D
 	final public double abs() { return Math.sqrt(x*x+y*y); }
 	
 	/**
-	 * Normalizes this vector.
-	 * Note: this operation changes current vector
+	 * ReturnsNormalizes this vector.
 	 */
-	final public Vector2D normalize()
+	final public Vector2D normal()
 	{
 //		if(normalized) return;
 		
 		double l = this.abs();
 		return new Vector2D(x/l, y/l);
+	}
+	
+	/**
+	 * Normalizes this vector.
+	 * Note: this operation changes current vector
+	 */
+	final public Vector2D normalize()
+	{
+		double l = this.abs();
+		this.x = x/l;
+		y = y/l;
+		
+		return this;
 	}
 	
 	/**
@@ -167,6 +179,18 @@ public class Vector2D extends IVector2D
 	}
 	
 	/**
+	 * Adds the values to this vector
+	 * Note: this operation changes current vector
+	 * @param v
+	 * @return
+	 */
+	public void add(Vector2D v)
+	{
+		this.x += v.x;
+		this.y += v.y;
+	}
+	
+	/**
 	 * Calculates vector difference
 	 * @param v
 	 * @return
@@ -174,6 +198,12 @@ public class Vector2D extends IVector2D
 	final public Vector2D minus(Vector2D v)
 	{
 		return new Vector2D(x-v.x, y-v.y);
+	}
+	
+	public void substract(Vector2D v)
+	{
+		this.x -= v.x;
+		this.y -= v.y;
 	}
 	
 	/**
@@ -185,6 +215,12 @@ public class Vector2D extends IVector2D
 		return new Vector2D(-x, -y); 
 	}
 	
+	final public void inverse()
+	{
+		this.x = -x;
+		this.y = -y;
+	}
+	
 	/**
 	 * Calculates vector multiplication product
 	 * @param d
@@ -193,6 +229,12 @@ public class Vector2D extends IVector2D
 	final public Vector2D mul(double d)
 	{
 		return new Vector2D(d*x,d*y);
+	}
+	
+	final public void multiply(double d)
+	{
+		this.x *= d;
+		this.y *= d;
 	}
 	
 	/**
@@ -206,7 +248,15 @@ public class Vector2D extends IVector2D
 		double sina = Math.sin(a);
 		return new Vector2D(x*cosa - y*sina, x*sina + y*cosa );
 	}
-	
+
+	/**
+	 * @return Rotates vector by 90 counter-clockwise
+	 */
+	final public Vector2D left() { return new Vector2D(-y, x); }
+	/**
+	 * @return Rotates vector by 90 clockwise
+	 */
+	final public Vector2D right() { return new Vector2D(y, -x); }
 	/**
 	 * Calculates vector angle (radians). 
 	 * @return

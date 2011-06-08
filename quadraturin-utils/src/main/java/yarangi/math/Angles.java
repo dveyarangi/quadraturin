@@ -11,6 +11,7 @@ public class Angles
 	public static final double PI_div_6 = Math.PI/6;
 	public static final double PI_div_10 = Math.PI/10;
 	public static final double PI_div_20 = Math.PI/20;
+	public static final double PI_div_40 = Math.PI/40;
 	
 	public static final double TO_RAD = PI/180.;
 	public static final double TO_DEG = 180./PI;
