@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.InputConfig;
+import yarangi.graphics.quadraturin.config.QuadraturinConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 
 /**

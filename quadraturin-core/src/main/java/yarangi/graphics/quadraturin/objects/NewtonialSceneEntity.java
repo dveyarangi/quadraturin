@@ -2,7 +2,6 @@ package yarangi.graphics.quadraturin.objects;
 
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
 import yarangi.math.Vector2D;
-import yarangi.spatial.AABB;
 
 public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysicalObject
 {
@@ -11,8 +10,8 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 	private Vector2D velocity = new Vector2D(0,0);
 	private double mass = 1;
 	
-	protected NewtonialSceneEntity(AABB aabb) {
-		super(aabb);
+	protected NewtonialSceneEntity() {
+		super();
 	}
 
 

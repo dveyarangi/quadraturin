@@ -34,9 +34,9 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	 * Create a new scene entity, wrapped in specified AABB.
 	 * @param aabb
 	 */
-	protected SceneEntity(Area area) 
+	protected SceneEntity() 
 	{
-		super(area);
+		super();
 	}
 
 	/** 

@@ -1,5 +1,9 @@
 package yarangi.graphics.quadraturin.threads;
 
+/**
+ * 
+ * @author dveyarangi
+ */
 public interface Loopy 
 {
 	/**

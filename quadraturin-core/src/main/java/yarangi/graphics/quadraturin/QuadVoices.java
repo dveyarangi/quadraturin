@@ -20,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
+import yarangi.ZenUtils;
 import yarangi.graphics.quadraturin.config.ActionBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
@@ -76,15 +77,22 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	private Point mouseLocation;
 	
-	private Logger log;
-	
+	/**
+	 * Logging name
+	 */
 	public static final String NAME="q-voice"; 
+	
+	/**
+	 * Logger
+	 */
+	private Logger log = Logger.getLogger(NAME);
+	
 	
 	public QuadVoices(InputConfig config) 
 	{
-
-		this.log = Logger.getLogger(NAME);
+		ZenUtils.summonLogic();
 		
+		// mapping input hooks to action ids:
 		for(ActionBinding bind : config.getBinding())
 		{
 			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
@@ -101,14 +109,14 @@ public class QuadVoices implements IEventManager, Loopy
 	public void runBody() 
 	{
 
+		// picking object under cursor:
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
 		ISpatialObject object = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		SceneEntity pickedEntity = (SceneEntity) object;
 		
-		cursorEvent.setSceneEntity(pickedEntity);
-		
 		// firing the cursor motion event:
+		cursorEvent.setSceneEntity(pickedEntity);
 		for(CursorListener l : cursorListeners)
 			l.onCursorMotion(cursorEvent);
 		
@@ -139,6 +147,10 @@ public class QuadVoices implements IEventManager, Loopy
 	}
 	
 	public void runPostLock() { /* freedom of voice? */ }
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// EVENTS TRANSFORMATION
 	
 	/** {@inheritDoc} */
 	public void keyPressed(KeyEvent ke) 
@@ -304,7 +316,10 @@ public class QuadVoices implements IEventManager, Loopy
 	}
 	
 
-
+	/**
+	 * {@inheritDoc}
+	 * Updates event listeners from new scene
+	 */
 	public void sceneChanged(Scene prevScene, Scene nextScene) 
 	{
 		if(prevScene != null && prevScene.getActionsMap() != null)

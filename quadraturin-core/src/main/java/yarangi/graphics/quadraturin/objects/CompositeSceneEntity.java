@@ -7,7 +7,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLException;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
 /**
@@ -35,9 +34,9 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	 * @param y
 	 * @param a
 	 */
-	protected CompositeSceneEntity(AABB aabb)
+	protected CompositeSceneEntity()
 	{
-		super(aabb);
+		super();
 	}
 	
 	/**

@@ -74,10 +74,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 	}
 
-	public void start() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void start() { /* nothing here */ }
 
 	/**
 	 * Called by the drawable immediately after the OpenGL context is

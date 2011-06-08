@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.spatial.AABB;
+import yarangi.spatial.Area;
 
 /**
  * Dummy entity for torturing needs. 
@@ -23,9 +24,8 @@ public class DummyEntity extends CompositeSceneEntity
 		public boolean behave(double time, SceneEntity entity, boolean isVisible) { return false; } 
 	};
 	
-	public DummyEntity(AABB aabb) 
+	public DummyEntity() 
 	{ 
-		super(aabb);
 		setLook(DUMMY_LOOK);
 		setBehavior(DUMMY_BEHAVIOR);
 	}
@@ -34,5 +34,8 @@ public class DummyEntity extends CompositeSceneEntity
 	public boolean isPickable() {
 		return false;
 	}
+
+	@Override
+	public Area getArea() { return null; }
 	
 }

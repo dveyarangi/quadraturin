@@ -29,6 +29,9 @@ import yarangi.graphics.quadraturin.threads.ThreadChain;
  * TODO: shall add option to set different closing listener.
  * 
  * @author Dve Yarangi
+ * 
+ * <i>Object-oriented programming is an exceptionally bad idea which could only have originated in California.</i> 
+ *                                                                                                -- Edsger Dijkstra
  */
 public class Swing2DContainer extends JFrame
 {

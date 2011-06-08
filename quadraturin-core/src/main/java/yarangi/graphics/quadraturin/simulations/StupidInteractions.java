@@ -48,12 +48,12 @@ public class StupidInteractions implements IPhysicsEngine
 		Area area;
 
 		Set <ISpatialObject> entities = manager.getObjectIndex().keySet();
-		log.debug("Entities in index: " + manager.getObjectIndex().size());
+//		log.debug("Entities in index: " + manager.getObjectIndex().size());
 		for(ISpatialObject e : entities)
 		{
 			area = e.getArea();
-			if(area == null) // bodyless entity:
-				continue;
+//			if(area == null) // bodyless entity:
+//				continue;
 			
 			// TODO: somehow remove the check and the casting
 			if(!(e instanceof IPhysicalObject)) // non-physical entity:

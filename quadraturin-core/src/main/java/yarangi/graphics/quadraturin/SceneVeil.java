@@ -7,10 +7,11 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
 import yarangi.graphics.quadraturin.objects.DummyEntity;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.SetSensor;
 import yarangi.spatial.SpatialIndexer;
 
 /**
@@ -26,7 +27,7 @@ public abstract class SceneVeil implements IAnimate
 	/**
 	 * Scene tree root.
 	 */
-	private CompositeSceneEntity root = new DummyEntity(new AABB(0,0,0,0));
+	private CompositeSceneEntity root = new DummyEntity();
 	
 	private int width, height;
 	
@@ -47,6 +48,8 @@ public abstract class SceneVeil implements IAnimate
 	
 	private IVeilOverlay veilEffect;
 	
+	
+	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
@@ -126,11 +129,18 @@ public abstract class SceneVeil implements IAnimate
 		
 		if(veilEffect == null)
 		{
-			root.display(gl, time, context);
+
+			SetSensor <ISpatialObject> clipped = new SetSensor<ISpatialObject>();
+			getEntityIndex().query(clipped, new AABB(0, 0, 100, 0));
+			// TODO: do the clipping already, you lazy pig!
+			// TODO: and get rid of the root element, you lazy pig!
+			for(ISpatialObject object : getEntityIndex().getAllObjects())
+				((SceneEntity) object).display(gl, time, context);
+//			root.display(gl, time, context);
 		}
 		else
 		{
-			veilEffect.render(gl, time, root, context);
+//			veilEffect.render(gl, time, root, context);
 		}
 	}
 	

@@ -3,14 +3,13 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
 public abstract class Overlay extends SceneEntity 
 {
 
-	protected Overlay(AABB aabb) {
-		super(aabb);
+	protected Overlay() {
+		super();
 		setLook(DummyEntity.DUMMY_LOOK);
 		setBehavior(DummyEntity.DUMMY_BEHAVIOR);
 	}

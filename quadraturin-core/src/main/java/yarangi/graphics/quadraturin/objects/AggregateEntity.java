@@ -14,7 +14,7 @@ public abstract class AggregateEntity extends SceneEntity
 	private List <SceneEntity> children;
 	
 	protected AggregateEntity(SceneVeil sceneVeil) {
-		super(null);
+		super();
 		
 		this.sceneVeil = sceneVeil;
 	}
