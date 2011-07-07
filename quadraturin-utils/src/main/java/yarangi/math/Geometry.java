@@ -11,7 +11,7 @@ public class Geometry
 	 */
 	public static double calcHypotSquare(Vector2D v1, Vector2D v2)
 	{
-		return calcHypotSquare(v1.x, v1.y, v2.x, v2.y);
+		return calcHypotSquare(v1.x(), v1.y(), v2.x(), v2.y());
 	}
 	
 	public static double calcHypotSquare(double x1, double y1, double x2, double y2)
@@ -23,7 +23,7 @@ public class Geometry
 	
 	public static double calcHypot(Vector2D v1, Vector2D v2)
 	{
-		return calcHypot(v1.x, v1.y, v2.x, v2.y);
+		return calcHypot(v1.x(), v1.y(), v2.x(), v2.y());
 	}
 	
 	public static double calcHypot(double x1, double y1, double x2, double y2)
@@ -94,13 +94,13 @@ public class Geometry
 	public static Vector2D calcIntersection(Vector2D P, Vector2D u, Vector2D Q, Vector2D v)
 	{
 		Vector2D w = P.minus(Q);
-		double perp = (v.x * u.y - v.y * u.x);
+		double perp = (v.x() * u.y() - v.y() * u.x());
 		if(perp == 0)
 			return null;
 		
-		double s = (v.y * w.x - v.x * w.y) / perp;
+		double s = (v.y() * w.x() - v.x() * w.y()) / perp;
 		
-		return new Vector2D(P.x + u.x * s, P.y + u.y * s);
+		return new Vector2D(P.x() + u.x() * s, P.y() + u.y() * s);
 	}
 	
 	/**
@@ -114,12 +114,12 @@ public class Geometry
 	public static Vector2D calcIntersectionParams(Vector2D P, Vector2D u, Vector2D Q, Vector2D v)
 	{
 		Vector2D w = P.minus(Q);
-		double perp = (v.x * u.y - v.y * u.x);
+		double perp = (v.x() * u.y() - v.y() * u.x());
 		if(perp == 0)
 			return null;
 		
-		double s = (v.y * w.x - v.x * w.y) / perp;
-		double t = (u.y * w.x - u.x * w.y) / (u.x * v.y - u.y * v.x);
+		double s = (v.y() * w.x() - v.x() * w.y()) / perp;
+		double t = (u.y() * w.x() - u.x() * w.y()) / (u.x() * v.y() - u.y() * v.x());
 	
 		return new Vector2D(s, t);
 	}

@@ -11,16 +11,23 @@ public class Vector2D extends IVector2D
 {
 	private static final long serialVersionUID = 3043592649139743124L;
 	
-	/** x */
+	/**
+	 *  x 
+	 * TODO: make it private
+	 */
 	public double x;
 	
-	/** y */
+	/**
+	 *  y 
+	 * TODO: make it private
+	 */
 	public double y;
 	
 	/**
-	 * Vector counter. TODO: should only be in debug mode
+	 * Vector counter. 
+	 * TODO: should only be in debug mode
 	 */
-	public static int count = 0;
+	private static int count = 0;
 	
 	/**
 	 * Constant for zero vector.
@@ -28,20 +35,16 @@ public class Vector2D extends IVector2D
 	public static final Vector2D ZERO = new Vector2D(0,0);
 	
 	/**
+	 * Creates a new zero vector.
+	 * @return
+	 */
+	public static Vector2D ZERO() { return new Vector2D(0,0); }
+	
+	/**
 	 * Constant for undefined vector.
 	 */
 	public static final Vector2D NOWHERE = new Vector2D(Double.NaN, Double.NaN);
 
-	/**
-	 * Creates a (0,0) vector.
-	 */
-	public Vector2D()
-	{
-		x = 0;
-		y = 0;
-		count ++;
-	}
-	
 	/**
 	 * @return Total vectors created.
 	 */
@@ -60,16 +63,16 @@ public class Vector2D extends IVector2D
 	}
 	
 	/**
-	 * Creates a vector that is   
-	 * @param x
-	 * @param y
-	 * @param r
-	 * @param a
+	 * Creates a vector that originates at (x,y), has a length r and direction a.  
+	 * @param ox - origin x
+	 * @param oy - origin y
+	 * @param r - length
+	 * @param a - direction (radians
 	 */
-	public Vector2D(double x, double y, double r, double a)
+	public Vector2D(double ox, double oy, double r, double a)
 	{
-		this.x = x+r*Math.cos(a);
-		this.y = y+r*Math.sin(a);
+		this.x = ox+r*Math.cos(a);
+		this.y = oy+r*Math.sin(a);
 		count ++;
 	}
 	
@@ -95,7 +98,7 @@ public class Vector2D extends IVector2D
 	}
 	
 	/**
-	 * Create a new vector with specified values.
+	 * Copy the specified vector.
 	 * @param x
 	 * @param y
 	 */
@@ -127,15 +130,21 @@ public class Vector2D extends IVector2D
 	 * {@inheritDoc}
 	 */
 	final public double y() { return y; }
-
+	
+	final public void setx(double x) { this.x = x; }
+	final public void sety(double y) { this.y = y; }
+	final public void setxy(double x, double y)
+	{
+		setx(x); sety(y);
+	}
 	/**
 	 * Calculates vector length.
 	 * @return
 	 */
-	final public double abs() { return Math.sqrt(x*x+y*y); }
+	final public double abs() { return Math.hypot(x, y); }
 	
 	/**
-	 * ReturnsNormalizes this vector.
+	 * @return Normalized vector.
 	 */
 	final public Vector2D normal()
 	{
@@ -147,13 +156,13 @@ public class Vector2D extends IVector2D
 	
 	/**
 	 * Normalizes this vector.
-	 * Note: this operation changes current vector
+	 * <li>Note: this operation changes current vector
 	 */
 	final public Vector2D normalize()
 	{
 		double l = this.abs();
 		this.x = x/l;
-		y = y/l;
+		this.y = y/l;
 		
 		return this;
 	}
@@ -180,7 +189,7 @@ public class Vector2D extends IVector2D
 	
 	/**
 	 * Adds the values to this vector
-	 * Note: this operation changes current vector
+	 * <li>Note: this operation changes current vector
 	 * @param v
 	 * @return
 	 */
@@ -188,6 +197,11 @@ public class Vector2D extends IVector2D
 	{
 		this.x += v.x;
 		this.y += v.y;
+	}
+
+	public void add(double x, double y) {
+		this.x += x;
+		this.y += y;
 	}
 	
 	/**
@@ -200,6 +214,10 @@ public class Vector2D extends IVector2D
 		return new Vector2D(x-v.x, y-v.y);
 	}
 	
+	/**
+	 * <li>Note: this operation changes current vector
+	 * @param v
+	 */
 	public void substract(Vector2D v)
 	{
 		this.x -= v.x;
@@ -215,6 +233,9 @@ public class Vector2D extends IVector2D
 		return new Vector2D(-x, -y); 
 	}
 	
+	/**
+	 * <li>Note: this operation changes current vector
+	 */
 	final public void inverse()
 	{
 		this.x = -x;
@@ -231,6 +252,11 @@ public class Vector2D extends IVector2D
 		return new Vector2D(d*x,d*y);
 	}
 	
+	/**
+	 * Multiplies self by specified value.
+	 * <li>Note: this operation changes current vector
+	 * @param d
+	 */
 	final public void multiply(double d)
 	{
 		this.x *= d;
@@ -253,10 +279,12 @@ public class Vector2D extends IVector2D
 	 * @return Rotates vector by 90 counter-clockwise
 	 */
 	final public Vector2D left() { return new Vector2D(-y, x); }
+	
 	/**
 	 * @return Rotates vector by 90 clockwise
 	 */
 	final public Vector2D right() { return new Vector2D(y, -x); }
+	
 	/**
 	 * Calculates vector angle (radians). 
 	 * @return

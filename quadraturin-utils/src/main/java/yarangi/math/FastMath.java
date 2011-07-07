@@ -5,6 +5,9 @@ public class FastMath
 	   private static final int    BIG_ENOUGH_INT   = 16 * 1024;
 	   private static final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
 	   private static final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5;
+	   
+	   public static final double ROOT_2 = Math.sqrt(2);
+	   public static final double ROOT_3 = Math.sqrt(3);
 	 
 	   public static int floor(double x) {
 	      return (int) (x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
@@ -26,5 +29,10 @@ public class FastMath
 	   public static double toGrid(double val, double cell)
 	   {
 		   return round(val/cell)*cell;
+	   }
+	   
+	   public static int toGrid(double val, int cell)
+	   {
+		   return round(val/(double)cell)*cell;
 	   }
 }
