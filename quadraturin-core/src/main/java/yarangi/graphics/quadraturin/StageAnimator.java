@@ -4,7 +4,7 @@ import javax.media.opengl.GLCanvas;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
+import yarangi.graphics.quadraturin.config.StageConfig;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
@@ -38,13 +38,13 @@ public class StageAnimator implements Loopy, StageListener
 
 	public static final String NAME = "q-animus";
 	
-	public StageAnimator(GLCanvas canvas)
+	public StageAnimator(GLCanvas canvas, StageConfig stageConfig)
 	{
 		if (canvas == null)
 			throw new IllegalArgumentException("Canvas cannot be null.");
 		this.canvas = canvas;
 		
-		int maxFPS = QuadConfigFactory.getStageConfig().getMaxFps();
+		int maxFPS = stageConfig.getMaxFps();
 		
 		if ( maxFPS == 0)
 			minFrameLength = 0;
@@ -55,7 +55,7 @@ public class StageAnimator implements Loopy, StageListener
 				" => frame length: " + minFrameLength + " ns.");
 		
 		
-		defaultFrameLength = QuadConfigFactory.getStageConfig().getFrameLength();
+		defaultFrameLength = stageConfig.getFrameLength();
 		
 		frameStart = System.nanoTime();
 		
