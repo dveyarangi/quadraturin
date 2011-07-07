@@ -54,7 +54,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 	
 	public void init(GL gl, K entity) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getSensorRadius()*2));
+		textureSize = BitUtils.po2Ceiling((int)(Math.sqrt(entity.getSensorRadiusSquare())*2));
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
 		fbo = TextureUtils.createFBO(gl, lightTexture, depthBuffer);
@@ -78,6 +78,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 
 	public void render(GL gl, double time, K entity, RenderingContext context) 
 	{
+		// TODO: store and restore blending mode
 		if(context.isForEffect())
 			return;
 		
@@ -125,7 +126,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 				continue;
 //			System.out.println(entities.size());
 			Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
-			Vector2D dir = distance.normalize();
+			Vector2D dir = distance.normal();
 			
 			Vector2D left = dir.rotate(Angles.PI_div_2);
 			Vector2D right = dir.rotate(-Angles.PI_div_2); // new Vector2D( dir.y, -dir.x)
@@ -212,6 +213,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		renderTexture(gl, entity);
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+		gl.glBlendEquation( GL.GL_FUNC_ADD );
 //		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_FUNC_ADD);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 /*		gl.glColor3f(1, 1, 1);
@@ -222,6 +224,9 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		gl.glVertex2f((float)(-textureSize/2), (float)(+textureSize/2));
 		gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
 		gl.glEnd();*/
+		
+		// shadow blending setting:
+
 
 	}
 
