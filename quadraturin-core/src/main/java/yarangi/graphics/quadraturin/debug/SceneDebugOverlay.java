@@ -5,6 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
@@ -21,6 +22,7 @@ public class SceneDebugOverlay extends Overlay
 	public SceneDebugOverlay(SpatialIndexer <ISpatialObject> indexer)
 	{
 		super();
+		
 			if(indexer instanceof SpatialHashMap)
 				spatialOverlay = new DebugSpatialHashMapLook();
 //			if(indexer instanceof QuadTree)
@@ -28,6 +30,7 @@ public class SceneDebugOverlay extends Overlay
 		
 		this.indexer = indexer;
 
+		setArea(new AABB(0,0,0,0));
 	}
 	
 	public void init(GL gl)
@@ -68,8 +71,5 @@ public class SceneDebugOverlay extends Overlay
 
 	@Override
 	public boolean isPickable() { return false;	}
-
-	@Override
-	public Area getArea() {	return null; }
 
 }
