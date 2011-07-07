@@ -33,11 +33,11 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 		force.x = x;
 		force.y = y;
 	}
-	final public void setVelocity(double x, double y)
+/*	final public void setVelocity(double x, double y)
 	{
 		velocity.x = x;
 		velocity.y = y;
-	}
+	}*/
 	
 	final public void addForce(double x, double y)
 	{
@@ -49,6 +49,10 @@ public abstract class NewtonialSceneEntity extends SceneEntity implements IPhysi
 	{
 		velocity.x += x;
 		velocity.y += y;
+		double abs = velocity.abs(); // TODO: to many roots here
+		if(abs > getMaxSpeed())
+			velocity.multiply(getMaxSpeed()/abs);
 	}
 
+	public abstract double getMaxSpeed(); 
 }
