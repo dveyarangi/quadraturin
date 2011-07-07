@@ -77,6 +77,7 @@ public abstract class CompositeSceneEntity extends SceneEntity
 	public void init(GL gl)
 	{
 		super.init(gl);
+		
 		for(SceneEntity child : getChildren())
 			child.init(gl);
 	}
@@ -99,6 +100,7 @@ public abstract class CompositeSceneEntity extends SceneEntity
 		// transforming into entity coordinates:
 		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
 		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+		
 		// setting entity name for picking mechanism
 		// all children will be picked by this name, in addition to their own names
 		if(context.doPushNames())

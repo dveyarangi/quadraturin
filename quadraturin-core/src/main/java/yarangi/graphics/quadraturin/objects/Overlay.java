@@ -10,8 +10,9 @@ public abstract class Overlay extends SceneEntity
 
 	protected Overlay() {
 		super();
-		setLook(DummyEntity.DUMMY_LOOK);
-		setBehavior(DummyEntity.DUMMY_BEHAVIOR);
+		setLook(Dummy.LOOK);
+		setBehavior(Dummy.BEHAVIOR);
+		setArea(Area.EMPTY);
 	}
 	
 	@Override

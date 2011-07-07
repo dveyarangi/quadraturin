@@ -11,6 +11,9 @@ import yarangi.spatial.SpatialObjectSkeleton;
  * SceneEntity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 
  *  holds a life-cycle flag {@link #isAlive()} and implements {@link SpatialObjectSkeleton}, so it can be registered in
  *  spatial index structures.
+ *  
+ *  TODO: SceneEntity requires {@link #getArea()} implementation, null can be returned.
+ *  
  */
 public abstract class SceneEntity extends SpatialObjectSkeleton 
 {
@@ -24,6 +27,11 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	 * Entity behavior
 	 */
 	private Behavior <?> behavior;
+	
+	/**
+	 * Area span
+	 */
+	private Area area;
 	
 	/**
 	 * Dead entities are automatically removed from the stage.
@@ -52,7 +60,14 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	 */
 	@SuppressWarnings("rawtypes")
 	public void setBehavior(Behavior behavior) { this.behavior = behavior; }
+
 	
+	/**
+	 * Sets entity area span.
+	 * @param empty
+	 */
+	public void setArea(Area area) { this.area = area; }
+
 	/**
 	 * Alive flag, for collection of dead entities.
 	 * @return
@@ -78,20 +93,32 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	 */
 	@SuppressWarnings("rawtypes")
 	public final Behavior getBehavior() { return behavior; }
+	
+	/**
+	 * Where the object exists.
+	 */
+	public final Area getArea() { return area; }
 
 
 	@SuppressWarnings("unchecked")
 	public void init(GL gl)
 	{
-		if(getLook() != null)
-			this.getLook().init(gl, this);
+		if(getArea() == null)
+			throw new IllegalStateException("Area " + this + " is not initialized.");
+
+		if(getLook() == null)
+			throw new IllegalStateException("Look for " + this + " is not initialized.");
+		
+		if(getBehavior() == null)
+			throw new IllegalStateException("Behavior for " + this + " is not initialized.");
+		
+		this.getLook().init(gl, this);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void destroy(GL gl)
 	{
-		if(getLook() != null)
-			this.getLook().destroy(gl, this);
+		this.getLook().destroy(gl, this);
 	}
 	/**
 	 * Displays this entity using specified GL interface
@@ -103,8 +130,6 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	@SuppressWarnings("unchecked")
 	public void display(GL gl, double time, RenderingContext context )
 	{
-		if(getLook() == null)
-			return;
 		Area area = getArea();
 	
 		// storing transformation matrix:
@@ -113,16 +138,17 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 		// transforming into entity coordinates:
 		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
 		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+		
 		// setting entity name for picking mechanism
 		// all children will be picked by this name, in addition to their own names
-		if(context.doPushNames())
-			gl.glPushName(getId());
+//		if(context.doPushNames())
+//			gl.glPushName(getId());
 		
 		// rendering this entity:
 		getLook().render(gl, time, this, context);
 		
-		if(context.doPushNames()) // entity naming ends here
-			gl.glPopName();
+//		if(context.doPushNames()) // entity naming ends here
+//			gl.glPopName();
 		// restoring transformation matrix:
 		gl.glPopMatrix();
 	}

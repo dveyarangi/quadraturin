@@ -3,31 +3,29 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.spatial.AABB;
+import yarangi.graphics.quadraturin.objects.behaviors.DummyBehavior;
 import yarangi.spatial.Area;
 
 /**
  * Dummy entity for torturing needs. 
  */
-public class DummyEntity extends CompositeSceneEntity
+public class Dummy extends CompositeSceneEntity
 {
 
 	private static final long serialVersionUID = 5263046347119077749L;
 	
-	public static Look <SceneEntity> DUMMY_LOOK = new Look <SceneEntity> () { 
+	public static Look <SceneEntity> LOOK = new Look <SceneEntity> () { 
 		public void render(GL gl, double time, SceneEntity entity, RenderingContext context) {}
 		public void init(GL gl, SceneEntity entity) { } 
 		public void destroy(GL gl, SceneEntity entity) { } 
 	};
 	
-	public static Behavior <SceneEntity> DUMMY_BEHAVIOR = new Behavior <SceneEntity> ()  {	
-		public boolean behave(double time, SceneEntity entity, boolean isVisible) { return false; } 
-	};
-	
-	public DummyEntity() 
+	public static Behavior <SceneEntity> BEHAVIOR = new DummyBehavior <SceneEntity> ();
+	public Dummy() 
 	{ 
-		setLook(DUMMY_LOOK);
-		setBehavior(DUMMY_BEHAVIOR);
+		setLook(LOOK);
+		setBehavior(BEHAVIOR);
+		setArea(Area.EMPTY);
 	}
 
 	@Override
@@ -35,7 +33,6 @@ public class DummyEntity extends CompositeSceneEntity
 		return false;
 	}
 
-	@Override
-	public Area getArea() { return null; }
+
 	
 }
