@@ -33,7 +33,6 @@ public class Main {
 		Swing2DContainer frame = new Swing2DContainer();
 		int id = frame.addScene(model);
 //		frame.setSize(1200, 500);
-		frame.setVisible(true);
 
 		frame.start();
 		
