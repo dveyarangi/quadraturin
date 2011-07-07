@@ -11,21 +11,37 @@ import yarangi.spatial.ISpatialObject;
 public interface IPhysicalObject extends ISpatialObject
 {
 	
-	public Vector2D getForce();
+	/**
+	 * Translates object by specified deltas. 
+	 * @param dx
+	 * @param dy
+	 */
+	public void moveMassCenter(double dx, double dy);
 	
-	public Vector2D getVelocity();
-	
+	/**
+	 * @return Object mass.
+	 */
 	public double getMass();
-	
-	public void setImpactWith(IPhysicalObject e); 
-	
 	public void setMass(double mass);
 	
+	/** 
+	 * @return Sum of forces influencing this object.
+	 */
+	public Vector2D getForce();
 	public void setForce(double x, double y);
-	public void setVelocity(double x, double y);
-	
 	public void addForce(double x, double y);	
+	
+	/**
+	 * @return Object velocity vector.
+	 */
+	public Vector2D getVelocity();
+//	public void setVelocity(double x, double y);
 	public void addVelocity(double x, double y);
-
-	public void moveMassCenter(double dx, double dy);
+	
+	/**
+	 * Implements collision logic. 
+	 * @param e
+	 */
+	public void setImpactWith(IPhysicalObject e); 
+	
 }

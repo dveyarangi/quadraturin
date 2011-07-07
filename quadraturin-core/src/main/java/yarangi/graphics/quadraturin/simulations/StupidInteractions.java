@@ -52,8 +52,8 @@ public class StupidInteractions implements IPhysicsEngine
 		for(ISpatialObject e : entities)
 		{
 			area = e.getArea();
-//			if(area == null) // bodyless entity:
-//				continue;
+			if(area == null) // bodyless entity:
+				continue;
 			
 			// TODO: somehow remove the check and the casting
 			if(!(e instanceof IPhysicalObject)) // non-physical entity:
@@ -76,7 +76,7 @@ public class StupidInteractions implements IPhysicsEngine
 			
 			// TODO: add limits for forces and velocities
 			// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)
-				
+			
 			entity.moveMassCenter(entity.getVelocity().x * time, entity.getVelocity().y * time);
 			
 		}
@@ -105,8 +105,10 @@ public class StupidInteractions implements IPhysicsEngine
 			this.manager = manager;
 		}
 		
-		public void objectFound(IAreaChunk chunk, ISpatialObject target) {
+		public boolean objectFound(IAreaChunk chunk, ISpatialObject target) {
 			manager.collide(source, target);
+			
+			return true;
 		}
 
 		public void setSource(IPhysicalObject source) {
