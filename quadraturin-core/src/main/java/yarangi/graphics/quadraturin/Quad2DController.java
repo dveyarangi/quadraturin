@@ -11,7 +11,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
+import yarangi.graphics.quadraturin.config.XMLQuadConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -34,7 +34,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * Display configuration properties.
 	 */
-	private EkranConfig ekranConfig = QuadConfigFactory.getEkranConfig();
+	private EkranConfig ekranConfig;
 
 	/**
 	 * OpenGL utilities.
@@ -61,7 +61,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	private DefaultRenderingContext context;
 	
-	public Quad2DController(String name, IEventManager voices, ThreadChain chain) {
+	public Quad2DController(String name, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
 		super(name, chain);
 		
@@ -70,6 +70,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 //		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
 		
 		this.context = new DefaultRenderingContext();
+		
+		this.ekranConfig = ekranConfig;
 //		frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
 
 	}
@@ -251,8 +253,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glTranslatef((float) viewPoint.getCenter().x,
-				(float) viewPoint.getCenter().y, 0/* -(float) viewPoint.getHeight()*/);
+		gl.glTranslatef((float) viewPoint.getCenter().x(),
+				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
 		// TODO: extract matrices to viewPoint for world coordinates calculation:
 		//updateViewPoint(gl, viewPoint);
 		

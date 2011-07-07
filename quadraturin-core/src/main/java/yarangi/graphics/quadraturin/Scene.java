@@ -139,7 +139,7 @@ public abstract class Scene implements UserActionListener
 			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
 		if(worldLocation != null && sensor.size() == 0)
-			worldVeil.getEntityIndex().query(sensor, new AABB(worldLocation.x, worldLocation.y, CURSOR_PICK_SPAN, 0));
+			worldVeil.getEntityIndex().query(sensor, new AABB(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
 		
 		if(sensor.size() != 0)
 			return sensor.iterator().next();

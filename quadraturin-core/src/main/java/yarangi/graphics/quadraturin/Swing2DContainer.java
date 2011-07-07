@@ -15,7 +15,8 @@ import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
+import yarangi.graphics.quadraturin.config.IQuadConfig;
+import yarangi.graphics.quadraturin.config.XMLQuadConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -96,9 +97,11 @@ public class Swing2DContainer extends JFrame
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
+		IQuadConfig config = XMLQuadConfig.getInstance();	
 		
-		int xres = QuadConfigFactory.getEkranConfig().getXres();
-		int yres = QuadConfigFactory.getEkranConfig().getYres();
+		
+		int xres = config.getEkranConfig().getXres();
+		int yres = config.getEkranConfig().getYres();
 		// TODO: full-screen
 		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
 		this.setMinimumSize(new Dimension(xres, yres));
@@ -149,18 +152,18 @@ public class Swing2DContainer extends JFrame
 			
 		
 		log.debug("Creating entity stage...");
-		stage = new Stage();
+		stage = new Stage(config.getStageConfig());
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
 		log.debug("Creating Quadraturin event manager...");
-		voices = new QuadVoices(QuadConfigFactory.getInputConfig());
+		voices = new QuadVoices(config.getInputConfig());
 		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
 		stage.addListener(voices);
 		log.trace("Quadraturin event manager created.");
 		
 		log.debug("Creating Quadraturin GL listener...");
-		controller = new Quad2DController("q-renderer", voices, chain);
+		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
 		chain.addThread(controller);
 		
@@ -182,7 +185,7 @@ public class Swing2DContainer extends JFrame
 //		log.debug("Creating entity stage animator...");
 //		IPhysicsEngine engine = new StupidInteractions();
 
-	    animator = new StageAnimator(canvas);
+	    animator = new StageAnimator(canvas, config.getStageConfig());
 		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
 		stage.addListener(animator);
 		

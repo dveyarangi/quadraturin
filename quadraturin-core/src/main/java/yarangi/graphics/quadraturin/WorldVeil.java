@@ -16,7 +16,7 @@ public abstract class WorldVeil extends SceneVeil
 	public WorldVeil(int width, int height) 
 	{
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
-		super(width, height, new SpatialHashMap<ISpatialObject>(50000, 10, width, height));
+		super(width, height, new SpatialHashMap<ISpatialObject>(10000, 10, width, height));
 			
 		this.engine = createPhysicsEngine();
 	}

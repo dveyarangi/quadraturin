@@ -84,8 +84,8 @@ public class ViewPoint2D implements IViewPoint
 	{
 		Point point = new Point();
 		double h = scale.getDouble();
-		point.x = (int)Math.round(p.x*h - center.x*h - getPortWidth()/2);
-		point.y = (int)Math.round(p.y*h - center.y*h - getPortHeight()/2);
+		point.x = (int)Math.round(p.x*h - center.x()*h - getPortWidth()/2);
+		point.y = (int)Math.round(p.y*h - center.y()*h - getPortHeight()/2);
 		
 		return point;
 	}
@@ -93,7 +93,7 @@ public class ViewPoint2D implements IViewPoint
 	public Vector2D toStagePoint(java.awt.Point p)
 	{
 		double h = scale.getDouble();
-		return new Vector2D((p.x + center.x*h - window.width/2)/h, (p.y + center.y*h - window.height/2)/h);
+		return new Vector2D((p.x + center.x()*h - window.width/2)/h, (p.y + center.y()*h - window.height/2)/h);
 	}
 
 //	public Rectangle2D.Double getViewWindow() { return viewWindow; }
@@ -118,7 +118,7 @@ public class ViewPoint2D implements IViewPoint
 			throw new IllegalArgumentException("Must be copied from " + this.getClass() + " type.");
 		
 		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
-		this.center = new Vector2D(vp.getCenter().x, vp.getCenter().y);
+		this.center = new Vector2D(vp.getCenter().x(), vp.getCenter().y());
 		this.window = new Dimension(vp.getPortWidth(), vp.getPortHeight());
 		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
 		this.world = new Dimension(vp.world.width, vp.world.height);
