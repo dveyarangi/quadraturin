@@ -11,5 +11,5 @@ public interface ISensorEntity extends ISpatialObject
 	
 	public Map <IAreaChunk, ISpatialObject> getEntities();
 
-	public double getSensorRadius();
+	public double getSensorRadiusSquare();
 }
