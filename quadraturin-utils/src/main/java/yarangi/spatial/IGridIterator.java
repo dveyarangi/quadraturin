@@ -1,5 +1,11 @@
 package yarangi.spatial;
 
+/**
+ * 
+ * @author dveyarangi
+ *
+ * @param <K>
+ */
 public interface IGridIterator <K extends IAreaChunk> 
 {
 	/**
@@ -12,6 +18,6 @@ public interface IGridIterator <K extends IAreaChunk>
 	 * Retrieves area chunk in the next grid cell.
 	 * @return
 	 */
-	public IAreaChunk next();
+	public K next();
 
 }

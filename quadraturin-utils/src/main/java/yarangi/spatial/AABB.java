@@ -45,7 +45,7 @@ public class AABB implements Area
 	 */
 	protected AABB(AABB aabb)
 	{
-		this(aabb.ref.x, aabb.ref.y, aabb.r, aabb.a);
+		this(aabb.ref.x(), aabb.ref.y(), aabb.r, aabb.a);
 	}
 	
 	/**
@@ -73,22 +73,22 @@ public class AABB implements Area
 	 */
 	@Override
 	final public void translate(double dx, double dy) {
-		ref.x += dx; 
-		ref.y += dy;
+		ref.add(dx, dy);
+
 	}
 
 	
 	public boolean overlaps(double minx, double miny, double maxx, double maxy)
 	{
-		return ( (maxx >= ref.x-r && maxx <= ref.x+r) ||
-			     (minx >= ref.x-r && minx <= ref.x+r) ||
-			     (minx >= ref.x-r && maxx <= ref.x+r) ||
-			     (minx <= ref.x-r && maxx >= ref.x+r)    
+		return ( (maxx >= ref.x()-r && maxx <= ref.x()+r) ||
+			     (minx >= ref.x()-r && minx <= ref.x()+r) ||
+			     (minx >= ref.x()-r && maxx <= ref.x()+r) ||
+			     (minx <= ref.x()-r && maxx >= ref.x()+r)    
 			  ) && ( 
-			     (maxy >= ref.y-r && maxy <= ref.y+r) ||
-			     (miny >= ref.y-r && miny <= ref.y+r) ||
-			     (miny >= ref.y-r && maxy <= ref.y+r) ||
-			     (miny <= ref.y-r && maxy >= ref.y+r)    
+			     (maxy >= ref.y()-r && maxy <= ref.y()+r) ||
+			     (miny >= ref.y()-r && miny <= ref.y()+r) ||
+			     (miny >= ref.y()-r && maxy <= ref.y()+r) ||
+			     (miny <= ref.y()-r && maxy >= ref.y()+r)    
 			   );
 
 	}
@@ -111,7 +111,7 @@ public class AABB implements Area
 	 */
 	public String toString()
 	{
-		return "AABB [loc:" + ref.x + ":" + ref.y + "; r:" + r + "; a:" + a + "]"; 
+		return "AABB [loc:" + ref.x() + ":" + ref.y() + "; r:" + r + "; a:" + a + "]"; 
 	}
 
 /*	public Area clone() 
@@ -137,11 +137,11 @@ public class AABB implements Area
 			
 			this.cellsize = cellsize;
 			
-			minx = Math.floor( (aabb.ref.x-aabb.r)/cellsize ) * cellsize;
-			miny = Math.floor( (aabb.ref.y-aabb.r)/cellsize ) * cellsize;;
+			minx = Math.floor( (aabb.ref.x()-aabb.r)/cellsize ) * cellsize;
+			miny = Math.floor( (aabb.ref.y()-aabb.r)/cellsize ) * cellsize;;
 			
-			maxx = Math.ceil(  (aabb.ref.x+aabb.r)/cellsize ) * cellsize;
-			maxy = Math.ceil(  (aabb.ref.y+aabb.r)/cellsize ) * cellsize;
+			maxx = Math.ceil(  (aabb.ref.x()+aabb.r)/cellsize ) * cellsize;
+			maxy = Math.ceil(  (aabb.ref.y()+aabb.r)/cellsize ) * cellsize;
 			
 			currx = minx;
 			curry = miny;
@@ -157,8 +157,8 @@ public class AABB implements Area
 		{
 			if(!hasNext())
 				throw new NoSuchElementException("No more grid points.");
-			
 			AABBChunk vector = new AABBChunk(currx, curry, cellsize);
+//			System.out.println(maxx);
 			
 			currx += cellsize;
 			if(currx > maxx)
@@ -191,10 +191,10 @@ public class AABB implements Area
 			double halfsize = cellsize/2;
 			AABB aabb = AABB.this;
 			
-			this.minx = Math.max(x - halfsize, aabb.ref.x-aabb.r);
-			this.maxx = Math.min(x + halfsize, aabb.ref.x+aabb.r);
-			this.miny = Math.max(y - halfsize, aabb.ref.y-aabb.r);
-			this.maxy = Math.min(y + halfsize, aabb.ref.y+aabb.r);
+			this.minx = Math.max(x - halfsize, aabb.ref.x()-aabb.r);
+			this.maxx = Math.min(x + halfsize, aabb.ref.x()+aabb.r);
+			this.miny = Math.max(y - halfsize, aabb.ref.y()-aabb.r);
+			this.maxy = Math.min(y + halfsize, aabb.ref.y()+aabb.r);
 		}
 		
 		@Override final public Area getArea() { return AABB.this; }

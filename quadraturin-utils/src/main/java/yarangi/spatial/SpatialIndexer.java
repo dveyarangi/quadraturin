@@ -25,24 +25,20 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	public int size() { return locations.size(); }
 
 	/**
-	 * @return The entirety of the objects added to the indexer.
-	 * Note: This list is a live structure used by indexer. Modifying it may 
-	 * result in incorrect indexer behavior.
-	 */
-	public Set <K> getAllObjects()
-	{
-		return locations.keySet();
-	}
-	/**
 	 * Adds an {@link AABB} box, containing the object.
 	 * @param aabb
 	 * @param object
 	 */
 	public void add(K object)
 	{
-		Area center = object.getArea().clone();
+		Area center = object.getArea();
+		if(center != null)
+		{
+			center = center.clone();
+			addObject(center, object);
+		}
+		
 		locations.put(object, center);
-		addObject(center, object);
 	}
 	
 	/**
@@ -52,10 +48,10 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 */
 	public K remove(K object)
 	{
-		Area  oldLocation = locations.get(object);
+		Area oldLocation = locations.remove(object);
 		if(oldLocation == null)
 			throw new IllegalArgumentException("The object [" + object + "] was not added to the indexer.");
-		locations.remove(object);
+		
 		return removeObject(oldLocation, object);
 	}
 	
@@ -68,17 +64,17 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	{
 		Area oldLocation = locations.get(object);
 		if(oldLocation == null)
-			throw new IllegalArgumentException("The object [" + object + "] was not added to the indexer.");
+			throw new IllegalArgumentException("The object [" + object + "] is not updateble by the indexer.");
 		Area newLocation = object.getArea().clone();
 		
 		locations.put(object, newLocation);
 		updateObject(oldLocation, newLocation, object);
 	}
 	
-	public void update(K object, IAreaChunk chunk)
+/*	public void update(K object, IAreaChunk chunk)
 	{
 		
-	}
+	}*/
 	
 	/**
 	 * Retrieves set of indexed {@link ISpatialObject}s.

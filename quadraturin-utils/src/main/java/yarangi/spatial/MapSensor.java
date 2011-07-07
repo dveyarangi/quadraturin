@@ -7,8 +7,9 @@ public class MapSensor <K extends ISpatialObject> extends HashMap <IAreaChunk, K
 
 	private static final long serialVersionUID = 9025712177585233445L;
 
-	public void objectFound(IAreaChunk chunk, K object) {
+	public boolean objectFound(IAreaChunk chunk, K object) {
 		put(chunk, object);
+		return false;
 	}
 
 }

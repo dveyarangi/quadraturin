@@ -1,14 +1,18 @@
 package yarangi.spatial;
 
 /**
- * Key interface for spatial structure elements.
- * 
+ * Interface for object with shape.
  */
 public interface ISpatialObject 
 {
 
 	/**
-	 * Object volume
+	 * Object id.
+	 * @return
+	 */
+	public int getId();
+	/**
+	 * Object volume.
 	 * @return
 	 */
 	public Area getArea();

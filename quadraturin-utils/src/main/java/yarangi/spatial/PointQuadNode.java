@@ -33,8 +33,8 @@ public class PointQuadNode <T>
 	public PointQuadNode <T> add(Vector2D p, T object)
 	{
 		// calculating descent direction:
-		int northing = point.y > p.y ? NORTH : SOUTH; 
-		int easting = point.x < p.x ? EAST : WEST;
+		int northing = point.y() > p.y() ? NORTH : SOUTH; 
+		int easting = point.x() < p.x() ? EAST : WEST;
 		
 		
 		PointQuadNode <T> node = children[northing][easting];
@@ -53,8 +53,8 @@ public class PointQuadNode <T>
 //		System.out.println(this.object + " ::: " + object);
 		if(this.object != object)
 		{
-			int northing = point.y > p.y ? NORTH : SOUTH; 
-			int easting = point.x < p.x ? EAST : WEST;
+			int northing = point.y() > p.y() ? NORTH : SOUTH; 
+			int easting = point.x() < p.x() ? EAST : WEST;
 			PointQuadNode <T> node = children[northing][easting];
 			if (node == null)
 			{

@@ -3,11 +3,13 @@ package yarangi.spatial;
 public interface ISpatialIndex <K extends ISpatialObject>
 {
 	/**
-	 * Iterates over specified rectangle, reporting fully or partially fitting objects in index. 
+	 * Iterates over specified area, reporting fully or partially fitting objects in index. 
 	 * {@link ISpatialSensor} must implement object observing logic. They can also modify 
 	 * the sensed objects, proving that measurements are just a set of observations that 
 	 * reduce uncertainty where the result is expressed as a quantity. One could also say that a 
 	 * measurement is the collapse of the wavefunction.
+	 * 
+	 * Nevertheless, query terminates if {@link ISpatialSensor#objectFound(IAreaChunk, ISpatialObject)} returns true.
 	 * 
 	 * @param minx
 	 * @param miny
@@ -23,6 +25,6 @@ public interface ISpatialIndex <K extends ISpatialObject>
 	 * @param maxx
 	 * @param maxy
 	 */
-	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radius);
+	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radiusSquare);
 
 }

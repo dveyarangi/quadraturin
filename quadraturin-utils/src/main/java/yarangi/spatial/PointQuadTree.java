@@ -38,18 +38,18 @@ public class PointQuadTree <T>
 	{
 		gl.glColor3f(1f,1f,1f);
 		gl.glBegin(GL.GL_LINE_STRIP);
-		gl.glVertex3f((float)root.getPoint().x, -1000f,0f);
-		gl.glVertex3f((float)root.getPoint().x, 1000f,0f);
+		gl.glVertex3f((float)root.getPoint().x(), -1000f,0f);
+		gl.glVertex3f((float)root.getPoint().x(), 1000f,0f);
 		gl.glEnd();
 		gl.glBegin(GL.GL_LINE_STRIP);
-		gl.glVertex3f(-1000f, (float)root.getPoint().y, 0f);
-		gl.glVertex3f(1000f, (float)root.getPoint().y, 0f);
+		gl.glVertex3f(-1000f, (float)root.getPoint().y(), 0f);
+		gl.glVertex3f(1000f, (float)root.getPoint().y(), 0f);
 		gl.glEnd();
 		int nodes = 0;
-		nodes += render(gl, root.getChild(PointQuadNode.NORTH, PointQuadNode.WEST), root, -1000, root.getPoint().y, root.getPoint().x, -1000);
-		nodes += render(gl, root.getChild(PointQuadNode.NORTH, PointQuadNode.EAST), root, root.getPoint().x, root.getPoint().y, 1000, -1000);
-		nodes += render(gl, root.getChild(PointQuadNode.SOUTH, PointQuadNode.WEST), root, -1000, 1000, root.getPoint().x, root.getPoint().y);
-		nodes += render(gl, root.getChild(PointQuadNode.SOUTH, PointQuadNode.EAST), root, root.getPoint().x, 1000, 1000, root.getPoint().y);
+		nodes += render(gl, root.getChild(PointQuadNode.NORTH, PointQuadNode.WEST), root, -1000, root.getPoint().y(), root.getPoint().x(), -1000);
+		nodes += render(gl, root.getChild(PointQuadNode.NORTH, PointQuadNode.EAST), root, root.getPoint().x(), root.getPoint().y(), 1000, -1000);
+		nodes += render(gl, root.getChild(PointQuadNode.SOUTH, PointQuadNode.WEST), root, -1000, 1000, root.getPoint().x(), root.getPoint().y());
+		nodes += render(gl, root.getChild(PointQuadNode.SOUTH, PointQuadNode.EAST), root, root.getPoint().x(), 1000, 1000, root.getPoint().y());
 //		System.out.println("Nodes in quad tree: " + nodes);
 	}
 	
@@ -59,18 +59,18 @@ public class PointQuadTree <T>
 			return 0;
 		Vector2D np = node.getPoint();
 		gl.glBegin(GL.GL_LINE_STRIP);
-		gl.glVertex3f((float)np.x, (float)by1, 0);
-		gl.glVertex3f((float)np.x, (float)by2, 0);
+		gl.glVertex3f((float)np.x(), (float)by1, 0);
+		gl.glVertex3f((float)np.x(), (float)by2, 0);
 		gl.glEnd();
 		gl.glBegin(GL.GL_LINE_STRIP);
-		gl.glVertex3f((float)bx1, (float)np.y, 0);
-		gl.glVertex3f((float)bx2, (float)np.y, 0);
+		gl.glVertex3f((float)bx1, (float)np.y(), 0);
+		gl.glVertex3f((float)bx2, (float)np.y(), 0);
 		gl.glEnd();
 		int nodes = 1;
-		nodes += render(gl, node.getChild(PointQuadNode.NORTH, PointQuadNode.WEST), node, bx1, np.y, np.x, by2);
-		nodes += render(gl, node.getChild(PointQuadNode.NORTH, PointQuadNode.EAST), node, np.x, np.y, bx2, by2);
-		nodes += render(gl, node.getChild(PointQuadNode.SOUTH, PointQuadNode.WEST), node, bx1, by2, np.x, np.y);
-		nodes += render(gl, node.getChild(PointQuadNode.SOUTH, PointQuadNode.EAST), node, np.x, by1, bx2, np.y);
+		nodes += render(gl, node.getChild(PointQuadNode.NORTH, PointQuadNode.WEST), node, bx1, np.y(), np.x(), by2);
+		nodes += render(gl, node.getChild(PointQuadNode.NORTH, PointQuadNode.EAST), node, np.x(), np.y(), bx2, by2);
+		nodes += render(gl, node.getChild(PointQuadNode.SOUTH, PointQuadNode.WEST), node, bx1, by2, np.x(), np.y());
+		nodes += render(gl, node.getChild(PointQuadNode.SOUTH, PointQuadNode.EAST), node, np.x(), by1, bx2, np.y());
 		
 		return nodes;
 	}

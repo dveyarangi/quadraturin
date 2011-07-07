@@ -30,7 +30,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * size of single hash cell
 	 */
-	private double cellSize;
+	private double cellSize, invCellsize;
 	
 	/**
 	 * hash cells amounts 
@@ -51,9 +51,10 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		
 		this.width = width;
 		this.height = height;
+		this.cellSize = cellSize;
+		this.invCellsize = 1 / this.cellSize;
 		this.halfWidth = width/2/cellSize;
 		this.halfHeight = height/2/cellSize;
-		this.cellSize = cellSize;
 
 		map = new Map [size];
 		for(int idx = 0; idx < size; idx ++)
@@ -75,7 +76,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * @return buckets number
 	 */
-	public int getBucketCount() { return size; }
+	public final int getBucketCount() { return size; }
 
 	/**
 	 * Calculates spatial hash value.
@@ -84,7 +85,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * @param y cell y cell coordinate (can range from -halfHeight to halfHeight)
 	 * @return
 	 */
-	protected int hash(int x, int y)
+	protected final int hash(int x, int y)
 	{
 		return ((x+halfWidth)*6184547 + (y+halfHeight)* 2221069) % size;
 	}
@@ -95,7 +96,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	protected void addObject(Area area, T object) 
 	{
 		
-		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <?> it = area.iterator(cellSize);
 		IAreaChunk chunk;
 		int x, y;
 		
@@ -103,9 +104,10 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
 			
-			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+			if(isInvalidIndex(x, y)) 
 				continue;
 			
 //			System.out.println(x + ":" + y + " " + object.getArea());
@@ -119,15 +121,16 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected T removeObject(Area area, T object) 
 	{
-		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <?> it = area.iterator(cellSize);
 		IAreaChunk chunk;
 		int x, y;
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
 			
-			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+			if(isInvalidIndex(x, y)) 
 				continue;
 			
 //			System.out.println(x + ":" + y);
@@ -152,23 +155,25 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 
 	/**
 	 * {@inheritDoc}
-	 * TODO: result, reported to processor may be same object repeatedly.
+	 * TODO: result, reported to sensor may be same object repeatedly.
 	 */
 	public ISpatialSensor <T> query(ISpatialSensor <T> processor, Area area)
 	{
-		
+		if(area == null)
+			throw new IllegalArgumentException("Area cannot be null.");
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		IGridIterator <IAreaChunk> it = area.iterator(cellSize);
+		IGridIterator <?> it = area.iterator(cellSize);
 		Map <IAreaChunk, T> cell;
 		IAreaChunk chunk;
 		int x, y;
 		while(it.hasNext())
 		{
 			chunk = it.next();
-			x = FastMath.round(chunk.getX()/cellSize); y = FastMath.round(chunk.getY()/cellSize);
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
 			
-			if(x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight) 
+			if(isInvalidIndex(x, y)) 
 				continue;
 			
 			cell = map[hash(x, y)];
@@ -176,25 +181,38 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			{
 				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
 //					System.out.println(cell.get(c));
-					processor.objectFound(c, cell.get(c)/*, 
-							Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/);
+					if(processor.objectFound(c, cell.get(c)/*, 
+							Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/))
+						break;
 			}
 		}
 
 		return processor;
 	}
 	
+	
+	public final int toGridIndex(double value)
+	{
+		return FastMath.round(value * invCellsize);
+	}
+	
+	public final boolean isInvalidIndex(int x, int y)
+	{
+		return (x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight); 
+	}
+	
 	/**
 	 * {@inheritDoc}
-	 * TODO: result, reported to processor may be same object repeatedly.
+	 * TODO: result, reported to sensor may be same object repeatedly.
 	 */
-	public ISpatialSensor <T> query(ISpatialSensor <T> processor, double x, double y, double radius)
+	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double x, double y, double radiusSquare)
 	{
-		
-		int minx = Math.max((int)((x-radius)/cellSize), -halfWidth);
-		int miny = Math.max((int)((y-radius)/cellSize), -halfHeight);
-		int maxx = Math.min((int)((x+radius)/cellSize), halfWidth);
-		int maxy = Math.min((int)((y+radius)/cellSize), halfHeight);
+		// TODO: spiral iteration, remove this root calculation:
+		double radius = Math.sqrt(radiusSquare);
+		int minx = Math.max(toGridIndex(x-radius), -halfWidth);
+		int miny = Math.max(toGridIndex(y-radius), -halfHeight);
+		int maxx = Math.min(toGridIndex(x+radius),  halfWidth);
+		int maxy = Math.min(toGridIndex(y+radius),  halfHeight);
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
@@ -211,29 +229,30 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 //					System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
 					
 					// TODO: make it strictier:
-					if(radius >= Math.sqrt(distanceSquare))
-						processor.objectFound(chunk, cell.get(chunk)/*, distanceSquare*/);
+					if(radiusSquare >= distanceSquare)
+						if(sensor.objectFound(chunk, cell.get(chunk)/*, distanceSquare*/))
+							break;
 				}
 
 			}
 		
-		return processor;
+		return sensor;
 	}
 
 	/**
 	 * @return width of the area, covered by this map
 	 */
-	public int getHeight() { return height; }
+	public final int getHeight() { return height; }
 
 	/**
 	 * @return height of the area, covered by this map
 	 */
-	public int getWidth() { return width; }
+	public final int getWidth() { return width; }
 
 	/**
 	 * @return size (height and width) of a single cell
 	 */
-	public double getCellSize() { return cellSize; }
+	public final double getCellSize() { return cellSize; }
 	
 	/**
 	 * Retrieves content of the bucket that holds the contents of (x,y) cell.
@@ -242,7 +261,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * @param y
 	 * @return
 	 */
-	public Map <IAreaChunk, T> getBucket(int x, int y)
+	public final Map <IAreaChunk, T> getBucket(int x, int y)
 	{
 		return map[hash(x, y)];
 	}
