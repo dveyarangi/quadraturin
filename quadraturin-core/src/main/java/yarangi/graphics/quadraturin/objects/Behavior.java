@@ -14,7 +14,7 @@ public interface Behavior <An>
 	 * @param entity Entity this behavior should be applied to
 	 * @param isVisible states, if the entity is currently visible to invoke simpler behavior
 	 * 
-	 * @return true, if the underlying entity has been relocated and needs spatial update.
+	 * @return true, if behavior successfully finished in specified time.
 	 */
 	public boolean behave(double time, An entity, boolean isVisible);
 	
