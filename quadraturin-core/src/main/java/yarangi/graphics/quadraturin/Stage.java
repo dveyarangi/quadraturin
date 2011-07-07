@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
+import yarangi.graphics.quadraturin.config.StageConfig;
 
 /**
  * The entity stage coordinates the animator and rendering threads, and provides
@@ -52,9 +52,9 @@ public class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	public Stage()
+	public Stage(StageConfig stageConfig)
 	{
-		this.frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
+		this.frameLength = stageConfig.getFrameLength();
 		log.debug("Using sec/frame ratio of " + frameLength + ".");
 	}
 
