@@ -35,4 +35,9 @@ public class FastMath
 	   {
 		   return round(val/(double)cell)*cell;
 	   }
+
+	public static double powOf2(double d)
+	{
+		return d*d;
+	}
 }
