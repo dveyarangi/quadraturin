@@ -1,14 +1,14 @@
 package yarangi.graphics.quadraturin;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Map;
 
 import javax.media.opengl.GL;
 
+import org.apache.log4j.Logger;
+
 import yarangi.graphics.quadraturin.actions.IAction;
-import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
+import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
@@ -16,7 +16,6 @@ import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialIndex;
-import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SetSensor;
 
 /**
@@ -27,8 +26,28 @@ import yarangi.spatial.SetSensor;
  * <li> {@link WorldVeil} responsible to draw and animate game world.
  * Veils provide a way to add and remove {@link SceneEntity} objects.
  * 
- * Scene class encapsulates veil handling and provides the engine and user a single point of entry.  
- * 
+ * In order to link scene automatically, use following configuration example:
+ * <pre>
+ * 		"scenes" : [
+ 			{
+				"name" : "playground",
+				"sceneClass" : "yarangi.game.temple.Playground",
+				"width" : 1000,
+				"height" : 1000,
+				"frameLength" : 1,
+		    	"engineClass" : "yarangi.graphics.quadraturin.simulations.StupidInteractions",
+			    "viewpoint" : { 
+			    	"centerx"  : 0.0,
+			    	"centery"  : 0.0,
+			    	"maxZoom"  : 2,
+			    	"initZoom" : 1,
+			    	"minZoom"  : 0.1
+			    }
+			    
+			}
+		]
+ * </pre>
+ * Any scene has to define {@link Scene#Scene(SceneConfig, QuadVoices)} constructor.
  * @author dveyarangi
  */
 public abstract class Scene implements UserActionListener
@@ -58,38 +77,35 @@ public abstract class Scene implements UserActionListener
 	/**
 	 * TODO: split?
 	 */
-	private IViewPoint viewPoint;
+	private ViewPoint2D viewPoint;
 	
 	/**
 	 * TODO: move
 	 */
 	private double frameLength;
-	
-	
-	/**
-	 * TODO: move
-	 */
-	private IPhysicsEngine engine;
 
-
-	public Scene(String sceneName, WorldVeil worldVeil, UIVeil uiVeil,  int width, int height, double frameLength)
+	private Logger log;
+	public Scene(SceneConfig config, QuadVoices voices)
 	{
-		this.name = sceneName;
+		this.name = config.getName();
 		
-		this.worldVeil = worldVeil;
-		viewPoint = new ViewPoint2D(null, null, null, new Dimension(width, height));
-		worldVeil.initViewPoint(viewPoint);
-
-		this.uiVeil = uiVeil;
+		log = Logger.getLogger(name);
 		
-		this.frameLength = frameLength;
+		IPhysicsEngine engine = config.createEngine();
+		if(engine == null)
+			log.info("Physics calculator is not specified.");
+			
+		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine);
+		viewPoint = config.createViewpoint();
 		
-		if(Debug.ON)
-			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
+		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
 		
-		this.engine = getWorldVeil().getPhysicsEngine();
+		this.frameLength = config.getFrameLength();
+		
+//		if(Debug.ON)
+//			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
 	}
-	
+	public final void setFrameLength(double length) { this.frameLength = length; }
 	public final double getFrameLength() { return frameLength; }
 	
 	/**
@@ -106,15 +122,22 @@ public abstract class Scene implements UserActionListener
 	
 //	public EventManager getVoices() { return voices; }
 	
+	/**
+	 * Appends a world entity.
+	 */
 	public void addEntity(SceneEntity entity)
 	{
 		worldVeil.addEntity(entity);
 	}
 	
-	public void removeEntity(SceneEntity entity)
-	{
-		worldVeil.removeEntity(entity);
-	}
+	/**
+	 * Schedules entity removal. It will be actually removed at next rendering cycle.
+	 * @param entity
+	 */
+//	public void removeEntity(SceneEntity entity)
+//	{
+//		worldVeil.removeEntity(entity);
+//	}
 	
 	public void addOverlay(SceneEntity entity)
 	{
@@ -126,14 +149,18 @@ public abstract class Scene implements UserActionListener
 		uiVeil.removeEntity(entity);
 	}
 
+	/**
+	 * 
+	 * @return Reference to {@link WorldVeil}.
+	 */
 	final public WorldVeil getWorldVeil() { return worldVeil; }
 	
 	final public UIVeil getUIVeil() { return uiVeil; }
 	
-	public ISpatialObject pick(Vector2D worldLocation, Point canvasLocation)
+	public SceneEntity pick(Vector2D worldLocation, Point canvasLocation)
 	{
 		// collecting picked entities:
-		SetSensor <ISpatialObject> sensor = new SetSensor <ISpatialObject> ();
+		SetSensor <SceneEntity> sensor = new SetSensor <SceneEntity> ();
 		
 		if(canvasLocation != null)
 			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
@@ -216,19 +243,15 @@ public abstract class Scene implements UserActionListener
 		getWorldVeil().animate(time);
 		getUIVeil().animate(time);
 		
-		if(engine != null)
-			engine.calculate(time);
+		if(getWorldVeil().getPhysicsEngine() != null)
+			getWorldVeil().getPhysicsEngine().calculate(time);
 	}
 
-	public IPhysicsEngine getPhysicalEngine() {
-		return engine;
-	}
 
-	
 	public void postAnimate(double time) 
 	{
 	}
 
-	final public ISpatialIndex <ISpatialObject> getEntityIndex() { return worldVeil.getEntityIndex(); }
-	final public ISpatialIndex <ISpatialObject> getOverlayIndex() { return uiVeil.getEntityIndex(); }
+	final public ISpatialIndex <SceneEntity> getEntityIndex() { return worldVeil.getEntityIndex(); }
+	final public ISpatialIndex <SceneEntity> getOverlayIndex() { return uiVeil.getEntityIndex(); }
 }
