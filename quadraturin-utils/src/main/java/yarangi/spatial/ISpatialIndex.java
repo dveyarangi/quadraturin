@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface ISpatialIndex <K extends ISpatialObject>
+public interface ISpatialIndex <K>
 {
 	/**
 	 * Iterates over specified area, reporting fully or partially fitting objects in index. 

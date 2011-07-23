@@ -38,7 +38,7 @@ public class Polygon implements Area
 	
 	public void add(int idx, Vector2D point) 
 	{ 
-		Vector2D newPoint = new Vector2D(point.x()+ref.x(), point.y()+ref.y());
+		Vector2D newPoint = new Vector2D(point.x(), point.y());
 		this.points.add(idx, newPoint);
 		updateAABB(newPoint);
 	}
@@ -46,7 +46,7 @@ public class Polygon implements Area
 	
 	public void add(Vector2D point) 
 	{ 
-		Vector2D newPoint = new Vector2D(point.x()+ref.x(), point.y()+ref.y());
+		Vector2D newPoint = new Vector2D(point.x(), point.y());
 		this.points.add(newPoint); 
 		updateAABB(newPoint);
 	}
@@ -90,6 +90,10 @@ public class Polygon implements Area
 	@Override
 	public void setOrientation(double a) { throw new IllegalStateException("This method is not yet implemented"); }
 
+	// TODO!
+	@Override
+	public double getMaxRadius() { return 1; }
+	
 	@Override
 	public void translate(double dx, double dy) {
 		ref.add(dx, dy);
@@ -286,8 +290,11 @@ public class Polygon implements Area
 				
 				chunk = new PolyChunk(currGridx, currGridy, currStartIdx, currEndIdx);
 				
-				currx += dx;
-				curry += dy;
+				if(currGridx != nextGridx || currGridy != nextGridy)
+				{ // we could get to the next polypoint point inside the if(scan)
+					currx += dx;
+					curry += dy;
+				}
 			}
 			
 //			System.out.println(chunk);
@@ -311,8 +318,8 @@ public class Polygon implements Area
 		public PolyChunk(int x, int y, int minIdx, int maxIdx) 
 		{
 			
-			this.x = x;
-			this.y = y;
+			this.x = x + FastMath.round(Polygon.this.getRefPoint().x());
+			this.y = y + FastMath.round(Polygon.this.getRefPoint().y());
 			
 			this.minIdx = minIdx; 
 			this.maxIdx = maxIdx;

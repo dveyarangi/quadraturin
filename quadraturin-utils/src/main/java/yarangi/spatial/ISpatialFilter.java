@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
 
-public interface ISpatialFilter {
-	public boolean accept(ISpatialObject entity);
+public interface ISpatialFilter <K>{
+	public boolean accept(K entity);
 }
