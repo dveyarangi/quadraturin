@@ -11,7 +11,6 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
-import yarangi.graphics.quadraturin.config.XMLQuadConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -94,7 +93,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		if (Debug.ON) {
 			log.info("GL core is in debug mode.");
-//			drawable.setGL(new DebugGL(gl));
+			drawable.setGL(new DebugGL(gl));
 		}
 		
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
@@ -319,7 +318,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		/* note viewport[3] is height of window in pixels */
 		realy = viewport[3] - (int) y;
-		glu.gluUnProject((double) x, (double) realy, 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, wcoord, 0);
+		glu.gluUnProject(x, realy, 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, wcoord, 0);
 		return new Vector2D(wcoord[0], wcoord[1]);
 //		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
 	}
@@ -342,7 +341,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		public IViewPoint getViewPoint() { return vp; }
 		
 		protected void setViewPoint(IViewPoint vp) { this.vp = vp; }
-	};
+	}
 	
 	public void registerPlugin(IGraphicsPlugin plugin)
 	{
