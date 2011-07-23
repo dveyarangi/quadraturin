@@ -4,20 +4,24 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.Scene;
+import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.spatial.Area;
-import yarangi.spatial.SpatialObjectSkeleton;
 
 /**
  * SceneEntity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 
- *  holds a life-cycle flag {@link #isAlive()} and implements {@link SpatialObjectSkeleton}, so it can be registered in
- *  spatial index structures.
- *  
- *  TODO: SceneEntity requires {@link #getArea()} implementation, null can be returned.
+ * 
+ * <li>If the {@link #spatialAspect}  is set, entity will be added into spatial indexer of corresponding {@link SceneVeil}.
+ * <li>If the {@link #physicalAspect} is set, entity will participate in physics calculations. It requires the 
+ * {@link #spatialAspect} to be set.
+ * <li>If the {@link #sensorAspect} is set, it will be automatically updated with set of proximity data. It requires the 
+ * {@link #spatialAspect} to be set.
+ * 
+ * <p>If {@link #markDead} is called, the entity will be disposed of at the next rendering cycle. 
  *  
  */
-public abstract class SceneEntity extends SpatialObjectSkeleton 
+public class SceneEntity
 {
-
+	
 	/**
 	 * Entity look
 	 */
@@ -31,8 +35,11 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	/**
 	 * Area span
 	 */
-	private Area area;
+	private Area spatialAspect;
 	
+	private Body physicalAspect;
+
+	private Sensor sensorAspect;
 	/**
 	 * Dead entities are automatically removed from the stage.
 	 */
@@ -51,23 +58,24 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	 * Sets entity's look.
 	 * @param look
 	 */
-	@SuppressWarnings("rawtypes")
-	public void setLook(Look look) { this.look = look; }
+	public void setLook(Look <?> look) { this.look = look; }
 	
 	/**
 	 * Sets entity's behavior.
 	 * @param behavior
 	 */
-	@SuppressWarnings("rawtypes")
-	public void setBehavior(Behavior behavior) { this.behavior = behavior; }
+	public void setBehavior(Behavior <?>behavior) { this.behavior = behavior; }
 
 	
 	/**
 	 * Sets entity area span.
 	 * @param empty
 	 */
-	public void setArea(Area area) { this.area = area; }
+	public void setArea(Area area) { this.spatialAspect = area; }
 
+	public void setBody(Body body) { this.physicalAspect = body; }
+	
+	public void setSensor(Sensor sensor) { this.sensorAspect = sensor; }
 	/**
 	 * Alive flag, for collection of dead entities.
 	 * @return
@@ -75,10 +83,9 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	public final boolean isAlive() { return isAlive; }
 	
 	/**
-	 * Sets 'alive' flag
-	 * @param isAlive
+	 * Marks entity "dead", forcing it's disposal at the start of the next rendering cycle.
 	 */
-	public final void setIsAlive(boolean isAlive) { this.isAlive = isAlive; } 
+	public final void markDead() { this.isAlive = false; } 
 	
 	/**
 	 * How the object looks.
@@ -97,8 +104,12 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 	/**
 	 * Where the object exists.
 	 */
-	public final Area getArea() { return area; }
+	public final Area getArea() { return spatialAspect; }
 
+	
+	public final Body getBody() { return physicalAspect; }
+	
+	public final Sensor getSensor() { return sensorAspect; }
 
 	@SuppressWarnings("unchecked")
 	public void init(GL gl)
@@ -166,11 +177,6 @@ public abstract class SceneEntity extends SpatialObjectSkeleton
 			return false;
 		return getBehavior().behave(time, this, isVisible);
 	}
-
-	/**
-	 * States either this entity is pickable.
-	 * @return
-	 */
-	public abstract boolean isPickable();
+	
 
 }
