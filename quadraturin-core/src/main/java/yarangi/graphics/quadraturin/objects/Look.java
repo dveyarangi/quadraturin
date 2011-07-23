@@ -23,4 +23,6 @@ public interface Look <An>
 
 	public void destroy(GL gl, An entity);
 
+	
+	public boolean isCastsShadow();
 }
