@@ -1,15 +1,14 @@
 package yarangi.graphics.scene;
 
-import yarangi.graphics.quadraturin.objects.DummyEntity;
-import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
-import yarangi.spatial.AABB;
+import yarangi.graphics.quadraturin.objects.Dummy;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 
 /**
  * Once collision detection is set up, this may be converted to physical entity.
  *  
  * @author  
  */
-public class BackgroundEntity extends CompositeSceneEntity 
+public class BackgroundEntity extends SceneEntity 
 {
 
 	private static final long serialVersionUID = -734638445941525615L;
@@ -25,7 +24,7 @@ public class BackgroundEntity extends CompositeSceneEntity
 	
 	public BackgroundEntity(int width, int height, double tileSize) 
 	{
-		super(new AABB(0,0,0,0));
+		super();
 		
 		this.width = tileSize*width;
 		this.height = tileSize*height;
@@ -35,7 +34,7 @@ public class BackgroundEntity extends CompositeSceneEntity
 		for(int x = 0; x < width; x ++)
 			for(int y = 0; y < height; y ++)
 				heights[x][y] = -1;
-		setBehavior(DummyEntity.DUMMY_BEHAVIOR);
+		setBehavior(Dummy.BEHAVIOR);
 		setLook(new BackgroundLook());
 	}
 	
@@ -48,9 +47,6 @@ public class BackgroundEntity extends CompositeSceneEntity
 	public double getWidth() { return width; }
 	public double getHeight() { return height; }
 	public double getTileSize() { return tileSize; }
-
-	@Override
-	public boolean isPickable() { return false; }
 	
 	public float[] getLightPosition() { return lightPosition; }
 

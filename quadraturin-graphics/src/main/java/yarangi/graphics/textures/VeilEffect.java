@@ -1,9 +1,9 @@
 package yarangi.graphics.textures;
 
-import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
+import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.objects.Look;
 
-public interface VeilEffect extends Look <CompositeSceneEntity>
+public interface VeilEffect extends Look <SceneVeil>
 {
 
 }

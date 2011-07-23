@@ -1,22 +1,20 @@
 package yarangi.graphics.lights;
 
 import java.nio.IntBuffer;
-import java.util.Map;
+import java.util.Set;
 
 import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
-import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialFilter;
-import yarangi.spatial.ISpatialObject;
 
 /**
  * 
@@ -31,7 +29,7 @@ import yarangi.spatial.ISpatialObject;
  *
  * @param <K>
  */
-public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
+public class CircleLightLook <K extends SceneEntity> implements Look <K>
 {
 	
 	private IShader penumbraShader;
@@ -44,17 +42,17 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 	
 	private int lightTexture;
 	
-	private ISpatialFilter filter;
+	private Color color;
 	
-	public CircleLightLook(ISpatialFilter filter)
+	public CircleLightLook(Color color)
 	{
-		this.filter = filter;
+		this.color = color;
 	}
 
 	
 	public void init(GL gl, K entity) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(Math.sqrt(entity.getSensorRadiusSquare())*2));
+		textureSize = BitUtils.po2Ceiling((int)(Math.sqrt(entity.getSensor().getSensorRadiusSquare())*2));
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
 		fbo = TextureUtils.createFBO(gl, lightTexture, depthBuffer);
@@ -82,11 +80,9 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		if(context.isForEffect())
 			return;
 		
-		Map <IAreaChunk, ISpatialObject> entities = entity.getEntities();
-		
+		Set <SceneEntity> entities = entity.getSensor().getEntities();
 		if(entities == null)
 			return;
-
 		// saving modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
@@ -117,13 +113,11 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 
 		// drawing red polygones for full shadows and penumbra:
-		for(ISpatialObject caster : entities.values())
+		for(SceneEntity caster : entities)
 		{
-			if(caster == entity || (caster instanceof ICircleLightEntity))
+			if(!caster.getLook().isCastsShadow())
 				continue;
 			
-			if(filter != null && !filter.accept(caster))
-				continue;
 //			System.out.println(entities.size());
 			Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
 			Vector2D dir = distance.normal();
@@ -205,7 +199,6 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 		// drawing shadow map:
 		gl.glBindTexture(GL.GL_TEXTURE_2D, lightTexture);
 		lightShader.begin(gl);
-		Color color = entity.getColor();
 		lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 		lightShader.setFloat1Uniform(gl, "height", 2f);
 		lightShader.setFloat1Uniform(gl, "size", 0.01f);
@@ -230,7 +223,7 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 
 	}
 
-	private void renderTexture(GL gl, K entity)
+	private void renderTexture(GL gl, SceneEntity entity)
 	{
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
@@ -251,5 +244,12 @@ public class CircleLightLook <K extends ICircleLightEntity> implements Look <K>
 //		gl.glDeleteFramebuffersEXT(GL.GL_FRAMEBUFFER_EXT, new int [] {fbo}, 0);
 //		gl.glDeleteRenderbuffersEXT(GL.GL_RENDERBUFFER_EXT, arg1)
 	}
+
+
+	@Override
+	public boolean isCastsShadow() {
+		return false;
+	}
 	
+	public Color getColor() { return color ; }
 }

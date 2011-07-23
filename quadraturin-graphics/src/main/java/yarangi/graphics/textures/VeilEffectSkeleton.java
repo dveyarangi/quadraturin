@@ -8,8 +8,9 @@ import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
+import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.math.BitUtils;
 
 /**
@@ -44,7 +45,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 	 * @param height
 	 * @return texture object handler
 	 */
-	public void init(GL gl, CompositeSceneEntity entity) 
+	public void init(GL gl, SceneVeil entity) 
 	{
 		// creating texture that covers the current viewport:
 		
@@ -58,7 +59,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		log.debug("Background texture size is " + width + "x" + height + ".");
 	}
 
-	public void render(GL gl, double time, CompositeSceneEntity entity, RenderingContext context) 
+	public void render(GL gl, double time, SceneVeil entity, RenderingContext context) 
 	{
 		gl.glEnable(GL.GL_TEXTURE_2D);
 				// save viewport and set up new one
@@ -105,7 +106,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		
 	}
 
-	public void destroy(GL gl, CompositeSceneEntity entity) {
+	public void destroy(GL gl, SceneVeil entity) {
 		// TODO: something is fishy around here
 		// gl.glDeleteTextures(1, textureHandle);
 	}
@@ -132,4 +133,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		gl.glMatrixMode(GL.GL_MODELVIEW); // Select Modelview
 		gl.glPopMatrix(); // Pop The Matrix
 	}
+
+	@Override
+	public boolean isCastsShadow() { return false; }
 }

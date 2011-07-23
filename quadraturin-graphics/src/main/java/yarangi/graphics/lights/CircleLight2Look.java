@@ -56,7 +56,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 
 	public void render(GL gl, double time, K entity, RenderingContext context) 
 	{
-		if(context.isForEffect())
+/*		if(context.isForEffect())
 			return;
 		Map <ISpatialObject, Double>  entities = entity.getEntities();
 		
@@ -166,7 +166,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 		lightShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 //		gl.glEnable(GL.GL_BLEND);
-//		gl.glEnable(GL.GL_DEPTH_TEST);
+//		gl.glEnable(GL.GL_DEPTH_TEST);*/
 	}
 
 	private void renderTexture(GL gl, int texture, double r)

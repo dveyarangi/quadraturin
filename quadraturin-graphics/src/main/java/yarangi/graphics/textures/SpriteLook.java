@@ -180,4 +180,11 @@ public class SpriteLook <T extends SceneEntity> implements Look <T>
         gl.glMatrixMode(GL.GL_MODELVIEW);  // Select Modelview
         gl.glPopMatrix();      // Pop The Matrix
     }
+
+	@Override
+	public boolean isCastsShadow()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
