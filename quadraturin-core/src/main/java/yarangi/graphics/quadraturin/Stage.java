@@ -1,17 +1,21 @@
 package yarangi.graphics.quadraturin;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 
 /**
+ * Scene series configurator and container.
  * The entity stage coordinates the animator and rendering threads, and provides
  * {@link Scene}-s life-cycle operations.
  * 
- * It also provides scene-change event observing capabilities.
+ * It also fires scene-change events for {@link StageAnimator}, {@link QuadVoices} and graphics thread (currently {@link Quad2DController})
  * 
  * TODO: Stage - scene interactions should be refactored
  * TODO: scene UI controls are not created.
@@ -24,12 +28,7 @@ public class Stage
 	/**
 	 * List of scenes.
 	 */
-	private List <Scene> scenes = new LinkedList <Scene> ();
-	
-	/**
-	 * Frame/sec ratio
-	 */
-	private double frameLength;
+	private Map <String, Scene> scenes = new HashMap <String, Scene> ();
 
 	/**
 	 * Current scene
@@ -52,10 +51,18 @@ public class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	public Stage(StageConfig stageConfig)
+	public Stage(StageConfig stageConfig, QuadVoices voices)
 	{
-		this.frameLength = stageConfig.getFrameLength();
-		log.debug("Using sec/frame ratio of " + frameLength + ".");
+		
+		for(SceneConfig scene : stageConfig.getScenes())
+		{
+			addScene(scene.createScene(voices));
+			log.info("Registered scene " + scene.getName() + " (class: " + scene.getSceneClass());
+		}
+		
+		scene = scenes.get(stageConfig.getInitialScene());
+		if(scene == null)
+			throw new IllegalArgumentException("Initial scene [" + stageConfig.getInitialScene() + "] is not defined.");
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,17 +76,14 @@ public class Stage
 	 * @param scene
 	 * @return
 	 */
-	public int addScene(Scene scene)
+	public void addScene(Scene scene)
 	{
-		int newId = scenes.size();
-		scenes.add(newId, scene);
-		return newId;
+		scenes.put(scene.getName(), scene);
 	}
 	
-	public void setInitialScene(Scene scene)
+	public void setInitialScene()
 	{
-		this.scene = scene;
-		
+		// setting initial scene:
 		fireStageChanged(null, scene);
 	}
 	
@@ -87,10 +91,10 @@ public class Stage
 	 * Actualizes scene with specified id
 	 * @param id Scene id
 	 */
-	public synchronized void setScene(int id)
+	public synchronized void setScene(String name)
 	{
 		Scene prevScene = scene;
-		this.scene = scenes.get(id);
+		this.scene = scenes.get(name);
 		
 		fireStageChanged(prevScene, scene);
 	}
