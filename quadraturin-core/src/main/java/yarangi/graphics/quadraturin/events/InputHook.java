@@ -1,7 +1,7 @@
 package yarangi.graphics.quadraturin.events;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 public class InputHook 
 {
@@ -73,8 +73,8 @@ public class InputHook
 	 */
 	public static int getMouseButton(int modifiers)
 	{
-		return (modifiers & MouseEvent.BUTTON1_DOWN_MASK) != 0 ? MOUSE_LEFT_BUTTON : 
-		       (modifiers & MouseEvent.BUTTON2_DOWN_MASK) != 0 ? MOUSE_RIGHT_BUTTON : 0;
+		return (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0 ? MOUSE_LEFT_BUTTON : 
+		       (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0 ? MOUSE_RIGHT_BUTTON : 0;
 //		     | modifiers & MouseEvent.BUTTON3_DOWN_MASK << 2;
 	}
 	
