@@ -24,18 +24,22 @@ public class UserActionEvent
 	 * Entity involved in this event.
 	 */
 	private SceneEntity entity;
+	
+	private CursorEvent cursor;
 
 	
-	public UserActionEvent(String actionId, InputHook hook)
+	public UserActionEvent(String actionId, InputHook hook, CursorEvent cursor)
 	{
-		this(actionId, hook, null);
+		this(actionId, hook, null, cursor);
 	}
 	
-	public UserActionEvent(String actionId, InputHook hook, SceneEntity entity)
+	public UserActionEvent(String actionId, InputHook hook, SceneEntity entity, CursorEvent cursor)
 	{
 		this.actionId = actionId;
 		this.hook = hook;
 		this.entity = entity;
+		
+		this.cursor = cursor;
 	}
 	
 	public void setSceneEntity(SceneEntity entity) {
@@ -44,6 +48,8 @@ public class UserActionEvent
 	public String getActionId() { return actionId; }
 	
 	public SceneEntity getEntity() { return entity; }
+	
+	public CursorEvent getCursor() { return cursor; }
 	
 	public String toString()
 	{
