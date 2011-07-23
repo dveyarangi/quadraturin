@@ -4,14 +4,11 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.Overlay;
-import yarangi.spatial.AABB;
-import yarangi.spatial.Area;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
-public class SceneDebugOverlay extends Overlay
+public class SceneDebugOverlay
 {
 
 	@SuppressWarnings("rawtypes")
@@ -30,12 +27,13 @@ public class SceneDebugOverlay extends Overlay
 		
 		this.indexer = indexer;
 
-		setArea(new AABB(0,0,0,0));
+//		setArea(new AABB(0,0,0,0));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void init(GL gl)
 	{
-		super.init(gl);
+//		super.init(gl);
 		
 		spatialOverlay.init(gl, indexer);
 	}
@@ -67,9 +65,5 @@ public class SceneDebugOverlay extends Overlay
 			gl.glEnd();
 		}*/
 	}
-
-
-	@Override
-	public boolean isPickable() { return false;	}
 
 }
