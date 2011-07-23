@@ -1,16 +1,15 @@
 package yarangi.graphics.quadraturin;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.CompositeSceneEntity;
-import yarangi.graphics.quadraturin.objects.Dummy;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
-import yarangi.spatial.ISpatialObject;
-import yarangi.spatial.SetSensor;
+import yarangi.math.Vector2D;
 import yarangi.spatial.SpatialIndexer;
 
 /**
@@ -20,20 +19,17 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneVeil implements IAnimate
+public abstract class SceneVeil
 {
-	
-	/**
-	 * Scene tree root.
-	 */
-	private CompositeSceneEntity root = new Dummy();
-	
+
 	private int width, height;
+	
+	private Set <SceneEntity> entities = new HashSet <SceneEntity> ();
 	
 	/**
 	 * Indexes the object's locations
 	 */
-	private SpatialIndexer <ISpatialObject> indexer;
+	private SpatialIndexer <SceneEntity> indexer;
 
 	/**
 	 * Queue of entites waitong to be added to the veil.
@@ -48,11 +44,11 @@ public abstract class SceneVeil implements IAnimate
 	private IVeilOverlay veilEffect;
 	
 	
-	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
+//	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
-	public SceneVeil(int width, int height, SpatialIndexer <ISpatialObject> indexer)
+	public SceneVeil(int width, int height, SpatialIndexer <SceneEntity> indexer)
 	{
 		this.indexer = indexer;
 		
@@ -67,16 +63,8 @@ public abstract class SceneVeil implements IAnimate
 	}
 	
 
-	public SpatialIndexer <ISpatialObject> getEntityIndex() { return indexer; }
-	
-	/**
-	 * 
-	 * @return Root entity of the scene for object tree traversal.
-	 */
-	protected SceneEntity getSceneRoot() 
-	{
-		return root;
-	}
+	public SpatialIndexer <SceneEntity> getEntityIndex() { return indexer; }
+
 
 	/**
 	 * Initializes the scene. 
@@ -85,17 +73,18 @@ public abstract class SceneVeil implements IAnimate
 	 */
 	public void init(GL gl)
 	{
-		root.init(gl);
-		
+		for(SceneEntity entity : entities)
+			entity.init(gl);
 		if(veilEffect != null)
-			veilEffect.init(gl, root);
+			veilEffect.init(gl, this);
 	}
 	
 	public void destroy(GL gl)
 	{
-		root.destroy(gl);
+		for(SceneEntity entity : entities)
+			entity.destroy(gl);
 		if(veilEffect != null)
-			veilEffect.destroy(gl, root);
+			veilEffect.destroy(gl, this);
 	}
 	
 	/**
@@ -111,28 +100,35 @@ public abstract class SceneVeil implements IAnimate
 		{
 			SceneEntity born = bornEntities.poll();
 			born.init(gl);
-			root.addChild(born);
-				indexer.add(born);
+			entities.add(born);
+			if(born.getArea() != null)
+				indexer.add(born.getArea(), born);
 		}
 		
 		while(!deadEntities.isEmpty())
 		{
 			SceneEntity dead = deadEntities.poll();
-//			System.out.println("dead: " + dead.getId());
 			dead.destroy(gl);
-			indexer.remove(dead);
-			root.removeChild(dead);
+			if(dead.getArea() != null)
+			{
+				indexer.remove(dead);
+				entities.remove(dead);
+			}
 		}
 		
+		System.out.println(entities.size() + " : " + indexer.size());
 		if(veilEffect == null)
 		{
 
 //			SetSensor <ISpatialObject> clipped = new SetSensor<ISpatialObject>();
 //			getEntityIndex().query(clipped, new AABB(0, 0, 100, 0));
-			// TODO: do the clipping already, you lazy pig!
-			// TODO: and get rid of the root element, you lazy pig!
-			for(ISpatialObject object : getEntityIndex().keySet())
-				((SceneEntity) object).display(gl, time, context);
+			// TODO: do the clipping already, you lazy me!
+//			System.out.println("BEGIN ======================================================");
+			for(SceneEntity entity : entities)
+			{
+//				System.out.println(entity);
+				entity.display(gl, time, context);
+			}
 //			root.display(gl, time, context);
 		}
 		else
@@ -145,17 +141,27 @@ public abstract class SceneVeil implements IAnimate
 	{
 //		boolean changePending = false;
 		// TODO: no control on order of executions
-		for(SceneEntity entity : root.getChildren())
+		Vector2D refPoint;
+		for(SceneEntity entity : entities)
 		{
+			if(entity.getSensor() != null)
+			{
+				refPoint = entity.getArea().getRefPoint();
+				entity.getSensor().clearSensor();
+				indexer.query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
+			}
+			
 			if(entity.behave(time, true))
 			{
-				indexer.update(entity);
+				if(entity.getArea() != null)
+					indexer.update(entity.getArea(), entity);
 //				changePending = true;
 			}
 			
 			if (!entity.isAlive())
 			{
 				removeEntity(entity);
+
 			}
 		}
 		
