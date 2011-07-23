@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.config.IQuadConfig;
-import yarangi.graphics.quadraturin.config.XMLQuadConfig;
+import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -70,8 +70,6 @@ public class Swing2DContainer extends JFrame
 	 * Animation thread.
 	 */
 	private StageAnimator animator;
-
-	private int loadingScreenId;
 	
 	/**
 	 * Logger
@@ -93,11 +91,11 @@ public class Swing2DContainer extends JFrame
 		log.info("/////////////////////////////////////////////////////////////");
 		log.info(applicationName + " container is being expanded...");
 
-			if(Debug.ON) ;			
+		if(Debug.ON) {/* Debug statics called */}			
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
-		IQuadConfig config = XMLQuadConfig.getInstance();	
+		IQuadConfig config = QuadConfigFactory.getConfig();	
 		
 		
 		int xres = config.getEkranConfig().getXres();
@@ -151,23 +149,18 @@ public class Swing2DContainer extends JFrame
 		
 			
 		
-		log.debug("Creating entity stage...");
-		stage = new Stage(config.getStageConfig());
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
 		log.debug("Creating Quadraturin event manager...");
 		voices = new QuadVoices(config.getInputConfig());
 		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
-		stage.addListener(voices);
 		log.trace("Quadraturin event manager created.");
 		
 		log.debug("Creating Quadraturin GL listener...");
 		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
 		chain.addThread(controller);
-		
-		stage.addListener(controller);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    log.trace("Registering Quadraturin controller...");
@@ -185,15 +178,16 @@ public class Swing2DContainer extends JFrame
 //		log.debug("Creating entity stage animator...");
 //		IPhysicsEngine engine = new StupidInteractions();
 
-	    animator = new StageAnimator(canvas, config.getStageConfig());
+	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
 		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
+		
+		log.debug("Creating entity stage...");
+		stage = new Stage(config.getStageConfig(), voices);
+		
+		stage.addListener(voices);
+		stage.addListener(controller);
 		stage.addListener(animator);
-		
-		
-		// TODO: configure:
-		loadingScreenId = stage.addScene(new DummyScene("Intro scene"));
-		stage.setScene(loadingScreenId);
-		
+		stage.setInitialScene(); // TODO: ugly
 
 		log.trace("Entity stage animator created.");
 
@@ -206,6 +200,7 @@ public class Swing2DContainer extends JFrame
 	 */
 	public void start()
 	{
+		
 		chain.start();
 		
 		this.setVisible(true);
@@ -256,18 +251,18 @@ public class Swing2DContainer extends JFrame
 		return voices; 
 	}
 	
-	public int addScene(Scene scene)
+	public void addScene(Scene scene)
 	{
-		return stage.addScene(scene);
+		stage.addScene(scene);
 	}
 
 	/**
 	 * 
 	 * @return
 	 */
-	public void activateScene(int sceneId) 
+	public void activateScene(String name) 
 	{
-		stage.setScene(sceneId);
+		stage.setScene(name);
 	}
 	
 	public void registerPlugin(IGraphicsPlugin plugin)
