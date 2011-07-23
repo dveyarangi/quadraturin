@@ -10,7 +10,7 @@ import yarangi.math.FastMath;
  *
  * @param <T>
  */
-public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
+public class SpatialHashMap <T> extends SpatialIndexer<T>
 {
 	/**
 	 * buckets array.
@@ -216,7 +216,6 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		
 		Map <IAreaChunk, T> cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
@@ -224,7 +223,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 				cell = map[hash(tx, ty)];
 				for(IAreaChunk chunk : cell.keySet())
 				{
-					double distanceSquare = Math.pow(x - chunk.getX(), 2) + Math.pow(y - chunk.getY(), 2);
+					double distanceSquare = FastMath.powOf2(x - chunk.getX()) + FastMath.powOf2(y - chunk.getY());
 					
 //					System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
 					

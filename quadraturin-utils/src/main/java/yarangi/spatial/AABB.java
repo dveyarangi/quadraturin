@@ -51,7 +51,8 @@ public class AABB implements Area
 	/**
 	 * {@inheritDoc}
 	 */
-	public final double getRadius() { return r; }
+
+	public double getMaxRadius() { return r; }
 	
 	/**
 	 * {@inheritDoc}

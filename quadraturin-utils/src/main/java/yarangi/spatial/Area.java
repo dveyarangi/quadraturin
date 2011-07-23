@@ -44,6 +44,9 @@ public interface Area
 	 */
 	public void translate(double dx, double dy);
 	
+
+	public double getMaxRadius();
+
 	/**
 	 * Area profile width from specified angle.
 	 * @param direction
@@ -98,6 +101,8 @@ public interface Area
 		@Override
 		public Vector2D getRefPoint() {return ref; }
 
+		public double getMaxRadius() { return 0; }
+
 		@Override
 		public void translate(double dx, double dy) { }
 		
@@ -129,6 +134,8 @@ public interface Area
 		{
 			return 0;
 		}
+
+		public double getMaxRadius() { return 0; }
 
 		@Override
 		public void setOrientation(double a) 

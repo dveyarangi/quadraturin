@@ -8,7 +8,7 @@ import java.util.Set;
  * 
  * @param <T> stored element type.
  */
-public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpatialIndex <K>
+public abstract class SpatialIndexer <K> implements ISpatialIndex <K>
 {
 	
 	/**
@@ -29,16 +29,12 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 * @param aabb
 	 * @param object
 	 */
-	public void add(K object)
+	public void add(Area area, K object)
 	{
-		Area center = object.getArea();
-		if(center != null)
-		{
-			center = center.clone();
-			addObject(center, object);
-		}
+		area = area.clone();
+		addObject(area, object);
 		
-		locations.put(object, center);
+		locations.put(object, area);
 	}
 	
 	/**
@@ -60,12 +56,12 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 * @param aabb
 	 * @param object
 	 */
-	public void update(K object)
+	public void update(Area area, K object)
 	{
 		Area oldLocation = locations.get(object);
 		if(oldLocation == null)
 			throw new IllegalArgumentException("The object [" + object + "] is not updateble by the indexer.");
-		Area newLocation = object.getArea().clone();
+		Area newLocation = area.clone();
 		
 		locations.put(object, newLocation);
 		updateObject(oldLocation, newLocation, object);
