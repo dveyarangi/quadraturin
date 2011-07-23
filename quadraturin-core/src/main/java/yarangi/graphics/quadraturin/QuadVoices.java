@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
-import yarangi.graphics.quadraturin.config.ActionBinding;
+import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
@@ -30,7 +30,6 @@ import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.quadraturin.threads.Loopy;
-import yarangi.spatial.ISpatialObject;
 
 /**
  * Used to aggregate the regular AWT keyboard and mouse events, transformed mouse events, 
@@ -93,7 +92,7 @@ public class QuadVoices implements IEventManager, Loopy
 		ZenUtils.summonLogic();
 		
 		// mapping input hooks to action ids:
-		for(ActionBinding bind : config.getBinding())
+		for(InputBinding bind : config.getBindings())
 		{
 			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
 			binding.put(hook, bind.getActionId());
@@ -108,12 +107,9 @@ public class QuadVoices implements IEventManager, Loopy
 
 	public void runBody() 
 	{
-
 		// picking object under cursor:
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
-		ISpatialObject object = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
-		
-		SceneEntity pickedEntity = (SceneEntity) object;
+		SceneEntity pickedEntity = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
@@ -157,7 +153,7 @@ public class QuadVoices implements IEventManager, Loopy
 	{
 		InputHook hook = new InputHook(InputHook.PRESSED, ke.getKeyCode());
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -165,7 +161,7 @@ public class QuadVoices implements IEventManager, Loopy
 	{ 
 		InputHook hook = new InputHook(InputHook.RELEASED, ke.getKeyCode());
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -173,7 +169,7 @@ public class QuadVoices implements IEventManager, Loopy
 	{ 
 		InputHook hook = new InputHook(InputHook.TAPPED, ke.getKeyCode());
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -184,7 +180,7 @@ public class QuadVoices implements IEventManager, Loopy
 //		System.out.println(hook);
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -196,7 +192,7 @@ public class QuadVoices implements IEventManager, Loopy
 		InputHook hook = new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -207,7 +203,7 @@ public class QuadVoices implements IEventManager, Loopy
 		InputHook hook = new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 
 	/** {@inheritDoc} */
@@ -218,7 +214,7 @@ public class QuadVoices implements IEventManager, Loopy
 		InputHook hook = new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	/** {@inheritDoc} */
@@ -256,10 +252,9 @@ public class QuadVoices implements IEventManager, Loopy
 			return;
 		
 		InputHook hook = new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL);
-//		System.out.println(hook);
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook));
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,7 +324,6 @@ public class QuadVoices implements IEventManager, Loopy
 		if(nextScene != null && nextScene.getActionsMap() != null)
 			for(String actionId : nextScene.getActionsMap().keySet())
 				addUserActionListener(actionId, nextScene);
-		
 		scene = nextScene;
 //		environmentListeners.clear();
 //		selectionListeners.clear();
