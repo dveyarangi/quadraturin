@@ -1,14 +1,15 @@
 package yarangi.graphics.quadraturin.simulations;
 
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.math.Vector2D;
-import yarangi.spatial.ISpatialObject;
+import yarangi.spatial.Area;
 
 /**
  * Basic interface for entities that can be manipulated by {@link IPhysicsEngine}.
  * 
  * @author Dve Yarangi
  */
-public interface IPhysicalObject extends ISpatialObject
+public interface IPhysicalObject
 {
 	
 	/**
@@ -16,8 +17,7 @@ public interface IPhysicalObject extends ISpatialObject
 	 * @param dx
 	 * @param dy
 	 */
-	public void moveMassCenter(double dx, double dy);
-	
+	public void moveMassCenter(Area area, double dx, double dy);	
 	/**
 	 * @return Object mass.
 	 */
@@ -42,6 +42,6 @@ public interface IPhysicalObject extends ISpatialObject
 	 * Implements collision logic. 
 	 * @param e
 	 */
-	public void setImpactWith(IPhysicalObject e); 
+	public void setImpactWith(SceneEntity e);
 	
 }

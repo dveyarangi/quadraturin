@@ -19,4 +19,6 @@ public interface IPhysicsEngine
 	 * @param time
 	 */
 	public void calculate(double time);
+	
+	public void setCollisionManager(ICollisionManager man);
 }

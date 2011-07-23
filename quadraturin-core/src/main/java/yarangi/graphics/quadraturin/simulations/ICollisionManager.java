@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.simulations;
 
-import yarangi.spatial.ISpatialObject;
+import yarangi.graphics.quadraturin.objects.Body;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialIndexer;
 
 /**
@@ -15,11 +16,11 @@ public interface ICollisionManager
 	 * @param e1
 	 * @param e2
 	 */
-	public void collide(ISpatialObject e1, ISpatialObject e2);
+	public void collide(Body e1, SceneEntity e2); 
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public SpatialIndexer <ISpatialObject> getObjectIndex();
+	public SpatialIndexer <SceneEntity> getObjectIndex();
 }

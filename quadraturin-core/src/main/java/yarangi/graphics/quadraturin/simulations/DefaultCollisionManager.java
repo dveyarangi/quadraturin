@@ -1,29 +1,24 @@
 package yarangi.graphics.quadraturin.simulations;
 
-import yarangi.spatial.ISpatialObject;
+import yarangi.graphics.quadraturin.objects.Body;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialIndexer;
 
 public class DefaultCollisionManager implements ICollisionManager 
 {
-	private SpatialIndexer <ISpatialObject> indexer;
+	private SpatialIndexer <SceneEntity> indexer;
 	
-	public DefaultCollisionManager(SpatialIndexer <ISpatialObject> indexer)
+	public DefaultCollisionManager(SpatialIndexer <SceneEntity> indexer)
 	{
 		this.indexer = indexer;
 	}
 	
-	public void collide(ISpatialObject e1, ISpatialObject e2) {
-		if(!(e1 instanceof IPhysicalObject))
-			return;
-		if(!(e2 instanceof IPhysicalObject))
-			return;
-
-		IPhysicalObject source = (IPhysicalObject) e1;
-		IPhysicalObject target = (IPhysicalObject) e2;
-		
-		target.setImpactWith(source);
+	public void collide(Body e1, SceneEntity e2) 
+	{
+		// todo:
+		e1.setImpactWith(e2);
 	}
 
-	public SpatialIndexer<ISpatialObject> getObjectIndex() { return indexer; }
+	public SpatialIndexer<SceneEntity> getObjectIndex() { return indexer; }
 
 }
