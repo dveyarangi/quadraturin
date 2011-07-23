@@ -35,4 +35,12 @@ public class RangedDouble
 	
 	public double getMin() { return min; }
 	public double getMax() { return max; }
+	
+	public String toString()
+	{
+		return new StringBuilder()
+			.append("value: ").append(curr)
+			.append(" range: [").append(min).append("-").append(max).append("]")
+			.toString();
+	}
 }
