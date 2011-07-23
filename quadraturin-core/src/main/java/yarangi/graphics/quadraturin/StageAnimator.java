@@ -4,6 +4,7 @@ import javax.media.opengl.GLCanvas;
 
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
@@ -34,17 +35,17 @@ public class StageAnimator implements Loopy, StageListener
 	 */
 	private Logger log = Logger.getLogger(NAME);
 	
-	private double defaultFrameLength;
+//	private double defaultFrameLength;
 
 	public static final String NAME = "q-animus";
 	
-	public StageAnimator(GLCanvas canvas, StageConfig stageConfig)
+	public StageAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
 	{
 		if (canvas == null)
 			throw new IllegalArgumentException("Canvas cannot be null.");
 		this.canvas = canvas;
 		
-		int maxFPS = stageConfig.getMaxFps();
+		int maxFPS = ekranConfig.getMaxFps();
 		
 		if ( maxFPS == 0)
 			minFrameLength = 0;
@@ -53,9 +54,6 @@ public class StageAnimator implements Loopy, StageListener
 		
 		log.debug("Max frame rate set to " + (maxFPS == 0 ? "'unbound'" : maxFPS) + " fps" +
 				" => frame length: " + minFrameLength + " ns.");
-		
-		
-		defaultFrameLength = stageConfig.getFrameLength();
 		
 		frameStart = System.nanoTime();
 		
@@ -75,10 +73,10 @@ public class StageAnimator implements Loopy, StageListener
 		//////////////////////////////////////////////////////////
 		// Running scene behaviors:
 		// TODO: fix animation step for shorter frames
-		currScene.animate(defaultFrameLength);
+		currScene.animate(currScene.getFrameLength());
 		
 		//////////////////////////////////////////////////////////
-		currScene.postAnimate(defaultFrameLength);
+		currScene.postAnimate(currScene.getFrameLength());
 		
 		long newStart = System.nanoTime();
 //		int fps = (int)(1000000000l/(newStart-frameStart));
