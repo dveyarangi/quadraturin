@@ -124,5 +124,12 @@ public class ViewPoint2D implements IViewPoint
 		this.world = new Dimension(vp.world.width, vp.world.height);
 	}	
 
-
+	public String toString()
+	{
+		return new StringBuilder()
+			.append("center: ").append(center).append(" ")
+			.append("scale: [").append(scale).append("] ")
+			.toString();
+		
+	}
 }
