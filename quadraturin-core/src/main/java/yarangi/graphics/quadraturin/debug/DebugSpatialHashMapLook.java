@@ -89,4 +89,7 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 		gl.glDeleteLists(gridMeshId, 1);
 	}
 
+	@Override
+	public boolean isCastsShadow() { return false; }
+
 }
