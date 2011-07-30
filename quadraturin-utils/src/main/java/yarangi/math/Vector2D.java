@@ -13,15 +13,13 @@ public class Vector2D extends IVector2D
 	
 	/**
 	 *  x 
-	 * TODO: make it private
 	 */
-	public double x;
+	private double x;
 	
 	/**
 	 *  y 
-	 * TODO: make it private
 	 */
-	public double y;
+	private double y;
 	
 	/**
 	 * Vector counter. 
