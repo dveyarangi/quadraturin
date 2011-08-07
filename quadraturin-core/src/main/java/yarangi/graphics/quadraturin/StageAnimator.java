@@ -106,7 +106,7 @@ public class StageAnimator implements Loopy, StageListener
 	}
 
 
-	public void sceneChanged(Scene prevScene, Scene currScene) 
+	public void sceneChanged(Scene currScene) 
 	{
 		this.currScene = currScene;
 	}
