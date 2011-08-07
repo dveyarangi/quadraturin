@@ -10,8 +10,7 @@ public interface StageListener
 {
 	/**
 	 * Handles scene swap.
-	 * @param oldScene - previous scene, can be null
 	 * @param newScene - current scene.
 	 */
-	public void sceneChanged(Scene oldScene, Scene newScene);
+	public void sceneChanged(Scene newScene);
 }
