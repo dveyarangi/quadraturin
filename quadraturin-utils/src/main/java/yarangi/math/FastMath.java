@@ -33,7 +33,7 @@ public class FastMath
 	   
 	   public static int toGrid(double val, int cell)
 	   {
-		   return round(val/(double)cell)*cell;
+		   return round(val/cell)*cell;
 	   }
 
 	public static double powOf2(double d)
