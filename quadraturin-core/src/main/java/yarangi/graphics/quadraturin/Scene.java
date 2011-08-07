@@ -1,22 +1,23 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
-import java.util.Map;
 
 import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.actions.IAction;
+import yarangi.graphics.quadraturin.actions.IActionController;
 import yarangi.graphics.quadraturin.config.SceneConfig;
-import yarangi.graphics.quadraturin.events.UserActionEvent;
-import yarangi.graphics.quadraturin.events.UserActionListener;
+import yarangi.graphics.quadraturin.debug.Debug;
+import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.simulations.ICollisionManager;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ISpatialIndex;
-import yarangi.spatial.SetSensor;
+import yarangi.spatial.PickingSensor;
 
 /**
  * Represents current engine task. 
@@ -50,7 +51,7 @@ import yarangi.spatial.SetSensor;
  * Any scene has to define {@link Scene#Scene(SceneConfig, QuadVoices)} constructor.
  * @author dveyarangi
  */
-public abstract class Scene implements UserActionListener
+public abstract class Scene
 {
 	
 	/**
@@ -84,23 +85,33 @@ public abstract class Scene implements UserActionListener
 	 */
 	private double frameLength;
 
+	private QuadVoices voices;
+	
 	private Logger log;
 	public Scene(SceneConfig config, QuadVoices voices)
 	{
+		// just for fun:
 		this.name = config.getName();
 		
 		log = Logger.getLogger(name);
 		
+		// checking for physics engine:
 		IPhysicsEngine engine = config.createEngine();
 		if(engine == null)
 			log.info("Physics calculator is not specified.");
-			
-		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine);
+		
+		// initial viewpoint:
 		viewPoint = config.createViewpoint();
+			
+		// scene world aggregator:
+		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine);
 		
+		// scene ui aggregator
 		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
-		
+		// scene time / second
 		this.frameLength = config.getFrameLength();
+		
+		this.voices = voices;
 		
 //		if(Debug.ON)
 //			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
@@ -108,11 +119,6 @@ public abstract class Scene implements UserActionListener
 	public final void setFrameLength(double length) { this.frameLength = length; }
 	public final double getFrameLength() { return frameLength; }
 	
-	/**
-	 * Retrieves scene {@link IAction} mapping.
-	 * @return
-	 */
-	public abstract Map <String, IAction> getActionsMap();
 
 	public IViewPoint getViewPoint() { 
 		return viewPoint;
@@ -157,31 +163,21 @@ public abstract class Scene implements UserActionListener
 	
 	final public UIVeil getUIVeil() { return uiVeil; }
 	
-	public SceneEntity pick(Vector2D worldLocation, Point canvasLocation)
+	public SceneEntity pick(ISpatialFilter<SceneEntity> pickingFilter, Vector2D worldLocation, Point canvasLocation)
 	{
 		// collecting picked entities:
-		SetSensor <SceneEntity> sensor = new SetSensor <SceneEntity> ();
+		PickingSensor <SceneEntity> sensor = new PickingSensor <SceneEntity> (pickingFilter);
 		
 		if(canvasLocation != null)
 			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
-		if(worldLocation != null && sensor.size() == 0)
+		if(sensor.getObject() == null && worldLocation != null)
 			worldVeil.getEntityIndex().query(sensor, new AABB(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
 		
-		if(sensor.size() != 0)
-			return sensor.iterator().next();
+		if(sensor.getObject() != null)
+			return sensor.getObject();
 		
 		return null;
-	}
-	
-	public void onUserAction(UserActionEvent event) 
-	{
-		IAction action = getActionsMap().get(event.getActionId());
-
-		if(action == null)
-			throw new IllegalArgumentException("Action id " + event.getActionId() + " is not defined." );
-		
-		action.act(event);
 	}
 
 	/**
@@ -240,11 +236,12 @@ public abstract class Scene implements UserActionListener
 
 	public void animate(double time)
 	{
-		getWorldVeil().animate(time);
 		getUIVeil().animate(time);
 		
 		if(getWorldVeil().getPhysicsEngine() != null)
 			getWorldVeil().getPhysicsEngine().calculate(time);
+		
+		getWorldVeil().animate(time);
 	}
 
 
@@ -254,4 +251,14 @@ public abstract class Scene implements UserActionListener
 
 	final public ISpatialIndex <SceneEntity> getEntityIndex() { return worldVeil.getEntityIndex(); }
 	final public ISpatialIndex <SceneEntity> getOverlayIndex() { return uiVeil.getEntityIndex(); }
+	
+	public void setActionController(IActionController actionController)
+	{
+		this.voices.setActionController( actionController );
+	}
+	public ICollisionManager getCollisionManager()
+	{
+		return getWorldVeil().getPhysicsEngine().getCollisionManager();
+	}
+
 }
