@@ -30,8 +30,9 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	/**
 	 * size of single hash cell
 	 */
-	private double cellSize, invCellsize;
-	
+	private int cellSize; 
+	private double invCellsize;
+	private double halfCellSize;
 	/**
 	 * hash cells amounts 
 	 */
@@ -52,10 +53,10 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 		this.width = width;
 		this.height = height;
 		this.cellSize = cellSize;
-		this.invCellsize = 1 / this.cellSize;
+		this.invCellsize = 1. / this.cellSize;
 		this.halfWidth = width/2/cellSize;
 		this.halfHeight = height/2/cellSize;
-
+		this.halfCellSize = cellSize/2.;
 		map = new Map [size];
 		for(int idx = 0; idx < size; idx ++)
 			map[idx] = new HashMap <IAreaChunk, T> ();
@@ -234,6 +235,68 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 				}
 
 			}
+		
+		return sensor;
+	}
+	
+	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double ox, double oy, double dx, double dy)
+	{
+		int currGridx = toGridIndex(ox);
+		int currGridy = toGridIndex(oy);
+		double tMaxX, tMaxY;
+		double tDeltaX, tDeltaY;
+		int stepX, stepY;
+		if(dx > 0)
+		{
+			tMaxX = ((currGridx*cellSize + halfCellSize) - ox) / dx;
+			tDeltaX = cellSize / dx;
+			stepX = 1;
+		}					
+		else
+		if(dx < 0)
+		{
+			tMaxX = ((currGridx*cellSize - halfCellSize) - ox) / dx;
+			tDeltaX = -cellSize / dx;
+			stepX = -1;
+		}
+		else { tMaxX = Double.MAX_VALUE; tDeltaX = 0; stepX = 0;}
+		
+		if(dy > 0)
+		{
+			tMaxY = ((currGridy*cellSize + halfCellSize) - oy) / dy;
+			tDeltaY = cellSize / dy;
+			stepY = 1;
+		}
+		else
+		if(dy < 0)
+		{
+			tMaxY = ((currGridy*cellSize - halfCellSize) - oy) / dy;
+			tDeltaY = -cellSize / dy;
+			stepY = -1;
+		}
+		else { tMaxY = Double.MAX_VALUE; tDeltaY = 0; stepY = 0;}
+		
+		Map <IAreaChunk, T> cell;
+		while(tMaxX <= 1 || tMaxY <= 1)
+		{
+			if(tMaxX < tMaxY)
+			{
+				tMaxX += tDeltaX;
+				currGridx += stepX;
+			}
+			else
+			{
+				tMaxY += tDeltaY;
+				currGridy += stepY;
+			}
+			cell = map[hash(currGridx, currGridy)];
+			for(IAreaChunk chunk : cell.keySet())
+			{
+				if(toGridIndex(chunk.getX()) == currGridx && toGridIndex(chunk.getY()) == currGridy)
+				if(sensor.objectFound(chunk, cell.get(chunk)))
+					break;
+			}	
+		}		
 		
 		return sensor;
 	}

@@ -26,5 +26,17 @@ public interface ISpatialIndex <K>
 	 * @param maxy
 	 */
 	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radiusSquare);
+	
+	/**
+	 * Iterates over a line, originating at (ox, oy) width (dx, dy) length
+	 * 
+	 * @param sensor
+	 * @param ox
+	 * @param oy
+	 * @param dx
+	 * @param dy
+	 * @return
+	 */
+	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double ox, double oy, double dx, double dy);
 
 }
