@@ -78,6 +78,13 @@ public class AABB implements Area
 
 	}
 
+	@Override
+	public void fitTo(double radius)
+	{
+		if(radius < 0)
+			throw new IllegalArgumentException("AABB radius must be positive.");
+		this.r = radius;
+	}
 	
 	public boolean overlaps(double minx, double miny, double maxx, double maxy)
 	{
@@ -120,7 +127,7 @@ public class AABB implements Area
 		return new AABB(x, y, r, a);
 	}*/
 	
-	public IGridIterator <IAreaChunk> iterator(double cellsize)
+	public IGridIterator <IAreaChunk> iterator(int cellsize)
 	{
 		return new AABBIterator(this, cellsize);
 	}

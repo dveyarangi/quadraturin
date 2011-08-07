@@ -17,7 +17,7 @@ public interface Area
 	 * @param cellsize size of the grid cell
 	 * @return
 	 */
-	public IGridIterator <? extends IAreaChunk> iterator(double cellsize);
+	public IGridIterator <? extends IAreaChunk> iterator(int cellsize);
 	
 	/**
 	 * Retrieves area orientation.
@@ -45,6 +45,8 @@ public interface Area
 	public void translate(double dx, double dy);
 	
 
+	public void fitTo(double radius);
+
 	public double getMaxRadius();
 
 	/**
@@ -59,6 +61,9 @@ public interface Area
 	 * @return
 	 */
 	public Area clone();
+	
+//	public void traverse(IChunkObserver observer);
+//	public void traverse(IChunkObserver observer);
 	
 	public static class EmptyChunk implements IAreaChunk
 	{
@@ -75,7 +80,7 @@ public interface Area
 		@Override public double getMaxX() { return 0;	}
 		@Override public double getMaxY() { return 0;	}
 		
-	};
+	}
 	
 	
 	public static IAreaChunk EMPTY_CHUNK = new EmptyChunk();
@@ -86,7 +91,7 @@ public interface Area
 		private Vector2D ref = new Vector2D(0,0);
 
 		@Override
-		public IGridIterator<IAreaChunk> iterator(double cellsize) {
+		public IGridIterator<IAreaChunk> iterator(int cellsize) {
 			return new EmptyIterator();
 		}
 
@@ -105,7 +110,9 @@ public interface Area
 
 		@Override
 		public void translate(double dx, double dy) { }
-		
+		@Override
+		public void fitTo(double radius) { }
+	
 		class EmptyIterator implements IGridIterator <IAreaChunk>
 		{
 			@Override public boolean hasNext() { return false; }
@@ -114,6 +121,7 @@ public interface Area
 			
 		}
 		public Area clone() { return this; }
+
 	
 	};
 	
@@ -124,8 +132,12 @@ public interface Area
 		{
 			ref = new Vector2D(x, y);
 		}
+		public PointArea(Vector2D point)
+		{
+			this( point.x(), point.y() );
+		}
 		@Override
-		public IGridIterator<? extends IAreaChunk> iterator(double cellsize) {
+		public IGridIterator<? extends IAreaChunk> iterator(int cellsize) {
 			return new PointIterator();
 		}
 
@@ -140,7 +152,9 @@ public interface Area
 		@Override
 		public void setOrientation(double a) 
 		{
+			throw new IllegalStateException("This method is not supported for class " + this.getClass());
 		}
+
 
 		@Override
 		public Vector2D getRefPoint() {
@@ -150,6 +164,11 @@ public interface Area
 		@Override
 		public void translate(double dx, double dy) {
 			ref.add(dx, dy);
+		}
+		@Override
+		public void fitTo(double radius)
+		{
+			throw new IllegalStateException("This method is not supported for class " + this.getClass());
 		}
 		
 		public Area clone()
