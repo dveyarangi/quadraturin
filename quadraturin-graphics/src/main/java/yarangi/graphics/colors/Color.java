@@ -17,8 +17,16 @@ public class Color
 		this.b = b;
 		this.a = a;
 	}
+	public Color(Color color)
+	{
+		this(color.r, color.g, color.b, color.a);
+	}
 	public float getBlue() { return b; }
 	public float getGreen() { return g; }
 	public float getRed() { return r; }
 	public float getAlpha() { return a; }
+	public void setRed(float r) { this.r = r; }
+	public void setGreen(float g) { this.g = g; }
+	public void setBlue(float b) { this.b = b; }
+	public void setAlpha(float a) { this.a = a; }
 }
