@@ -1,8 +1,9 @@
 package yarangi.spatial;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import yarangi.math.FastArrays;
 import yarangi.math.FastMath;
@@ -10,12 +11,14 @@ import yarangi.math.Vector2D;
 
 public class Polygon implements Area 
 {
-	private List <Vector2D> points = new ArrayList <Vector2D> ();
+	private List <PolyPoint> points = new ArrayList <PolyPoint> ();
 	
 	
 	private Vector2D ref;
 	
-	private Vector2D maxx, maxy, minx, miny;
+	private PolyPoint maxx, maxy, minx, miny;
+	
+	private double radius = 1;
 	
 	public Polygon(double x, double y) 
 	{ 
@@ -25,7 +28,7 @@ public class Polygon implements Area
 	private Polygon(Polygon polygon)
 	{
 
-		for(Vector2D point : polygon.points)
+		for(PolyPoint point : polygon.points)
 			points.add(point);
 		
 		maxx = polygon.maxx;
@@ -36,47 +39,47 @@ public class Polygon implements Area
 		ref = new Vector2D(polygon.ref);
 	}
 	
-	public void add(int idx, Vector2D point) 
+	public void add(int idx, double x, double y) 
 	{ 
-		Vector2D newPoint = new Vector2D(point.x(), point.y());
+		PolyPoint newPoint = new PolyPoint(x, y);
 		this.points.add(idx, newPoint);
 		updateAABB(newPoint);
 	}
 	
 	
-	public void add(Vector2D point) 
+	public void add(double x, double y) 
 	{ 
-		Vector2D newPoint = new Vector2D(point.x(), point.y());
+		PolyPoint newPoint = new PolyPoint(x, y);
 		this.points.add(newPoint); 
 		updateAABB(newPoint);
 	}
 	
-	final private void updateAABB(Vector2D point)
+	final private void updateAABB(PolyPoint point)
 	{
-		if(minx == null || minx.x() > point.x())
+		if(minx == null || minx.x > point.x)
 			minx = point;
-		if(maxx == null || maxx.x() < point.x())
+		if(maxx == null || maxx.x < point.x)
 			maxx = point;
-		if(miny == null || miny.y() > point.y())
+		if(miny == null || miny.y > point.y)
 			miny = point;
-		if(maxy == null || maxy.y() < point.y())
+		if(maxy == null || maxy.y < point.y)
 			maxy = point;
 	}
 
 	
-	public void add(int idx, double x, double y) { add(idx, new Vector2D(x, y)); }
+	public void add(int idx, Vector2D v) { add(idx, v.x(), v.y()); }
 	
-	public void add(double x, double y) 
+	public void add(Vector2D v) 
 	{
-		add(new Vector2D(x, y)); 
+		add(v.x(), v.y()); 
 	}
 	
 	// TODO: test idx % points.size() against idx < points.size() ? idx : 0;
 	public void remove(int idx) { this.points.remove(idx); }
 	
-	public Vector2D get(int idx) { return this.points.get(idx); }
+	public PolyPoint get(int idx) { return this.points.get(idx); }
 	
-	public Area clone()
+	public Polygon clone()
 	{
 		return new Polygon(this);
 	}
@@ -89,10 +92,15 @@ public class Polygon implements Area
 
 	@Override
 	public void setOrientation(double a) { throw new IllegalStateException("This method is not yet implemented"); }
+	@Override
+	public void fitTo(double radius)
+	{
+		this.radius = radius;
+	}
 
 	// TODO!
 	@Override
-	public double getMaxRadius() { return 1; }
+	public double getMaxRadius() { return radius; }
 	
 	@Override
 	public void translate(double dx, double dy) {
@@ -101,205 +109,199 @@ public class Polygon implements Area
 	
 
 	@Override
-	public IGridIterator<IAreaChunk> iterator(double cellsize) {
-		return new PolyIterator(cellsize);
+	public IGridIterator<PolyChunk> iterator(int cellsize) {
+		return new PolyIterator(generateChunks(cellsize));
+		
 	}
 	
 
-	final public List <Vector2D> getPoints() { return points; }
+	final public List <PolyPoint> getPoints() { return points; }
 	
 
 	final public int size() { return points.size(); }
 	
-	/**
-	 * Implements Bresenham's scanning for each of the polygon edges.
-	 * TODO: Also consider DDA, ray casting, winding number, scan converting, 
-	 */
 	
-	public class PolyIterator implements IGridIterator <IAreaChunk>
+	private List <PolyChunk> generateChunks(int cellsize)
 	{
+		List <PolyChunk> list = new LinkedList <PolyChunk> ();
+		
 		/** vertex of current polygon line */
-		Vector2D currPoint, nextPoint;
+		PolyPoint currPoint, nextPoint;
+		
 		/** location of the next point in grid.  */
-		private double currx, curry;
+//		double currx = tempPoint.x();
+//		double curry = tempPoint.y();
 		
 		
-		private int currGridx, currGridy;
+		int currGridx, currGridy;
 		/** location of the next point in grid.  */
-		private int nextGridx, nextGridy;
+		int nextGridx, nextGridy;
 		
 		/** step to next point in grid */
-		private double dx, dy;
+		double dx, dy;
 		
-		private int startGridx, startGridy;
-		
-		/** size of single grid cell */
-		private double cellsize;
+		int startGridx, startGridy;
 		
 		int currStartIdx, currEndIdx;
 		
-		private boolean start, scan;
+		int pointsNum = this.size();
+		
+		int tempGridx, tempGridy;
+		
+		currStartIdx = 0;
+		
+		PolyPoint tempPoint = this.get(0);
+		
+		tempGridx = currGridx = nextGridx = startGridx = FastMath.toGrid(tempPoint.x(), cellsize); 
+		tempGridy = currGridy = nextGridy = startGridy = FastMath.toGrid(tempPoint.y(), cellsize); 
+		// searching for first polygon point in this grid cell:
+		do {
+			currPoint = tempPoint;
+			
+			currStartIdx = FastArrays.dec(currStartIdx, pointsNum);
+			
+			tempPoint = points.get(currStartIdx);
+			tempGridx = FastMath.toGrid(tempPoint.x, cellsize);
+			tempGridy = FastMath.toGrid(tempPoint.y, cellsize);
+//			System.out.println(" * testing at (" + tempGridx + "," + tempGridy + ")");
+		} 
+		while(tempGridx == startGridx
+		   && tempGridy == startGridy);
 
-		public PolyIterator(double cellsize)
+		nextPoint = currPoint;
+		
+		currEndIdx = currStartIdx+1;
+		
+		// line scan parameters (from "A Fast Voxel Traversal Algorithm for Ray Tracing" article): 
+		double tMaxX=1, tMaxY=1;
+		double tDeltaX=0, tDeltaY=0;
+		double stepX=0 , stepY=0;
+		
+		do
 		{
-			
-			// TODO: move to {@link #next()} arguments?
-			this.cellsize = cellsize;
-			
-			Polygon poly = Polygon.this;
-			Vector2D tempPoint = poly.get(0);
-			
-			currx = tempPoint.x();
-			curry = tempPoint.y();
-			
-			int tempGridx = currGridx = nextGridx = startGridx = (int)FastMath.toGrid(currx, cellsize); 
-			int tempGridy = currGridy = nextGridy = startGridy = (int)FastMath.toGrid(curry, cellsize); 
-			
-			int size = poly.size();
-			currStartIdx = 0;
-			
-
-//			System.out.println("== ITERATOR ===========================================");
-			do {
-				currPoint = tempPoint;
-				
-				currStartIdx = FastArrays.dec(currStartIdx, size);
-				
-				tempPoint = poly.points.get(currStartIdx);
-				tempGridx = (int)FastMath.toGrid(tempPoint.x(), cellsize);
-				tempGridy = (int)FastMath.toGrid(tempPoint.y(), cellsize);
-//				System.out.println(" * testing at (" + tempGridx + "," + tempGridy + ")");
-			} 
-			while(tempGridx == startGridx
-			   && tempGridy == startGridy);
-//			System.out.println(" * starting loc (" + startGridx + "," + startGridy + ")");
-			
-			currGridx = (int)FastMath.toGrid(currx, cellsize);
-			currGridy = (int)FastMath.toGrid(curry, cellsize);
-				
-			start = scan = true;
-			nextPoint = currPoint;
-			
-			currEndIdx = currStartIdx+1;
-			
-			
-//			nextIndex(false);
-			
-		}
-		
-		
-		/**
-		 * Advances indexes. Calculates currPoint and nextPoint for scanning.
-		 * nextGridx, nextGridy
-		 * currStartIdx, currEndIdx
-		 * NextPoint
-		 */
-		private void rollIndexes()
-		{
-			int size = Polygon.this.size();
-			currStartIdx = FastArrays.dec(currEndIdx, size);
-			currEndIdx = currStartIdx;
-		
-			int tempGridx = nextGridx, tempGridy = nextGridy; 
-			do {
-				currPoint = nextPoint;
-				currEndIdx = FastArrays.inc(currEndIdx, size);
-				nextPoint = Polygon.this.get(currEndIdx);
-				
-				nextGridx = (int)FastMath.toGrid(nextPoint.x(), cellsize);
-				nextGridy = (int)FastMath.toGrid(nextPoint.y(), cellsize);
-			}
-			while(nextGridx == tempGridx
-			   && nextGridy == tempGridy);
-			
-			
-			
-		}
-		
-		/**
-		 * Calculates deltas for Bresenham's scanning for specified polygon edge.
-		 * dx and dy are changed
-		 */
-		private void calcSegment(Vector2D currPoint, Vector2D nextPoint)
-		{
-			
-			// calculating segment slope:
-			double sx = nextPoint.x() - currPoint.x();
-			double sy = nextPoint.y() - currPoint.y();
-			double m = sy / sx;
-			
-			if(m <= 1 && m >= -1) // x changes faster than y:
-			{   
-				dx = sx > 0 ? cellsize : -cellsize;
-				dy = m * dx;
-			}
-			else 
-			{
-				dy = sy > 0 ? cellsize : -cellsize;
-				dx = Double.isInfinite(m) ? 0 : dy / m;
-			}
-		}
-		
-		@Override
-		public boolean hasNext() {
-			return (currGridx != startGridx	|| currGridy != startGridy) || start;
-		}
-
-		@Override
-		public IAreaChunk next() 
-		{
-			// going to the next grid cell center:
-			if(!hasNext())
-				throw new NoSuchElementException("No more elements.");
-			
-			// going to the next grid cell center:
-			currGridx = (int)FastMath.toGrid(currx, cellsize);
-			currGridy = (int)FastMath.toGrid(curry, cellsize);
-			
-			PolyChunk chunk;
 			
 			// in a dense poly, this condition will be met frequently:
-			if(currGridx == nextGridx && currGridy == nextGridy) // we reached poly edge end 
+			if(tMaxX >= 1 && tMaxY >= 1) // we reached poly line end 
 			{
 				// calculating its indexes range inside current cell:
-				rollIndexes();
-				chunk = new PolyChunk(currGridx, currGridy, currStartIdx, currEndIdx);
-				 // set flag to calculate scanning parameters next segment line:
-				scan = true; 
-			}
-			else // traversing along the current poly edge:  
-			{
-				if(scan)
+				currStartIdx = FastArrays.dec(currEndIdx, size());
+				currEndIdx = currStartIdx;
+			
+				do {
+					currPoint = nextPoint;
+					currEndIdx = FastArrays.inc(currEndIdx, size());
+					nextPoint = Polygon.this.get(currEndIdx);
+					
+					nextGridx = FastMath.toGrid(nextPoint.x, cellsize);
+					nextGridy = FastMath.toGrid(nextPoint.y, cellsize);
+				}
+				while(nextGridx == currGridx
+				   && nextGridy == currGridy);
+				
+				// 
+				list.add(new PolyChunk(currGridx, currGridy, currStartIdx, currEndIdx));
+				
+				
+				// calculating parameters for line scan :
+				
+				dx = nextPoint.x() - currPoint.x();
+				dy = nextPoint.y() - currPoint.y();
+				
+				if(dx > 0)
 				{
-					// adjusting starting segment index:
-					currStartIdx = FastArrays.dec(currEndIdx, Polygon.this.size());
-					
-					// calculating next line segment deltas:
-					calcSegment(currPoint, nextPoint);
-					
-					
-					currx = currPoint.x() + dx;
-					curry = currPoint.y() + dy;
-					// going to the next grid cell center:
-					currGridx = (int)FastMath.toGrid(currx, cellsize);
-					currGridy = (int)FastMath.toGrid(curry, cellsize);
-					
-					scan = false;
-					start = false;
+					tMaxX = ((currGridx + cellsize/2.) - currPoint.x()) / dx;
+					tDeltaX = cellsize / dx;
+					stepX = cellsize;
+				}					
+				else
+				if(dx < 0)
+				{
+					tMaxX = ((currGridx - cellsize/2.) - currPoint.x()) / dx;
+					tDeltaX = -cellsize / dx;
+					stepX = -cellsize;
 				}
+				else { tMaxX = Double.MAX_VALUE;}
 				
-				chunk = new PolyChunk(currGridx, currGridy, currStartIdx, currEndIdx);
-				
-				if(currGridx != nextGridx || currGridy != nextGridy)
-				{ // we could get to the next polypoint point inside the if(scan)
-					currx += dx;
-					curry += dy;
+				if(dy > 0)
+				{
+					tMaxY = ((currGridy + cellsize/2.) - currPoint.y()) / dy;
+					tDeltaY = cellsize / dy;
+					stepY = cellsize;
 				}
+				else
+				if(dy < 0)
+				{
+					tMaxY = ((currGridy - cellsize/2.) - currPoint.y()) / dy;
+					tDeltaY = -cellsize / dy;
+					stepY = -cellsize;
+				}
+				else { tMaxY = Double.MAX_VALUE;}
+				
+
 			}
 			
-//			System.out.println(chunk);
-			return chunk;
+			if(tMaxX < tMaxY)
+			{
+				tMaxX += tDeltaX;
+				currGridx += stepX;
+			}
+			else
+			{
+				tMaxY += tDeltaY;
+				currGridy += stepY;
+			}
+			
+			list.add(new PolyChunk(currGridx, currGridy, currStartIdx, currEndIdx));
+			
 		}
+		while((currGridx != startGridx || currGridy != startGridy));
+		
+		return list;
+	}
+	
+	public class PolyIterator implements IGridIterator <PolyChunk>
+	{
+		private Iterator <PolyChunk> parent;
+		
+		public PolyIterator(List <PolyChunk> chunks)
+		{
+			parent = chunks.iterator();
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			return parent.hasNext();
+		}
+
+		@Override
+		public PolyChunk next()
+		{
+			return parent.next();
+		}
+		
+	}
+
+	public class PolyPoint
+	{
+		private double x, y;
+		
+		private int nextConvexIdx, prevConvexIdx;
+		
+		public PolyPoint(double x, double y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+		
+		public final double x() { return x; }
+		public final double y() { return y; }
+		
+		public void setPrevConvexIdx(int idx) { this.prevConvexIdx = idx; } 
+		public void setNextConvexIdx(int idx) { this.nextConvexIdx = idx; }
+		
+		public double getNextConvexIdx() { return nextConvexIdx; }
+		public double getPrevConvexIdx() { return prevConvexIdx; }
 	}
 	
 	/**
@@ -345,19 +347,48 @@ public class Polygon implements Area
 			return true;
 		}
 		
-		public boolean equals(Object object)
+		@Override
+		public int hashCode()
 		{
-			if(!(object instanceof PolyChunk))
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + x;
+			result = prime * result + y;
+			return result;
+		}
+
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if ( this == obj )
+				return true;
+			if ( obj == null )
 				return false;
-			
-			PolyChunk chunk = (PolyChunk) object;
-			return chunk.x == x && chunk.y == y;
+			if ( getClass() != obj.getClass() )
+				return false;
+			PolyChunk other = (PolyChunk) obj;
+			if ( !getOuterType().equals( other.getOuterType() ) )
+				return false;
+			if ( x != other.x )
+				return false;
+			if ( y != other.y )
+				return false;
+			return true;
 		}
 		
 		public String toString()
 		{
 			return "Polychunk at [" + x + "," + y + "], idx[" + minIdx + ":" + maxIdx + "].";
 		}
+
+
+		private Polygon getOuterType()
+		{
+			return Polygon.this;
+		}
 	}
+
 
 }
