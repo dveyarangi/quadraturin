@@ -6,17 +6,17 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.math.FastMath;
 import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.SpatialHashMap;
 
-public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObject>>
+public class DebugSpatialHashMapLook implements Look <SpatialHashMap<SceneEntity>>
 {
 	
 	private int gridMeshId;
 
-	public void init(GL gl, SpatialHashMap<ISpatialObject> map) 
+	public void init(GL gl, SpatialHashMap<SceneEntity> map) 
 	{
 		gridMeshId = gl.glGenLists(1);
 	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
@@ -40,7 +40,7 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 		gl.glEndList();
 	}
 
-	public void render(GL gl, double time, SpatialHashMap<ISpatialObject> map, RenderingContext context) 
+	public void render(GL gl, double time, SpatialHashMap<SceneEntity> map, RenderingContext context) 
 	{
 		if(context.isForEffect())
 			return;
@@ -84,7 +84,7 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<ISpatialObj
 		}
 	}
 
-	public void destroy(GL gl, SpatialHashMap<ISpatialObject> entity) 
+	public void destroy(GL gl, SpatialHashMap<SceneEntity> entity) 
 	{
 		gl.glDeleteLists(gridMeshId, 1);
 	}

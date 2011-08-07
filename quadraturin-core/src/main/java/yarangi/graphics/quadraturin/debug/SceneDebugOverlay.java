@@ -4,19 +4,19 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.spatial.ISpatialObject;
+import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
-public class SceneDebugOverlay
+public class SceneDebugOverlay extends SceneEntity
 {
 
 	@SuppressWarnings("rawtypes")
 	private Look spatialOverlay;
 	
-	SpatialIndexer <ISpatialObject> indexer;
+	SpatialIndexer <SceneEntity> indexer;
 	
-	public SceneDebugOverlay(SpatialIndexer <ISpatialObject> indexer)
+	public SceneDebugOverlay(SpatialIndexer <SceneEntity> indexer)
 	{
 		super();
 		
@@ -66,4 +66,8 @@ public class SceneDebugOverlay
 		}*/
 	}
 
+	public void destroy(GL gl)
+	{
+		spatialOverlay.destroy( gl, indexer );
+	}
 }
