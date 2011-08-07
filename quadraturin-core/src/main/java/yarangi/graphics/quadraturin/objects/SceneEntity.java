@@ -5,6 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneVeil;
+import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.spatial.Area;
 
 /**
@@ -39,7 +40,7 @@ public class SceneEntity
 	
 	private Body physicalAspect;
 
-	private Sensor sensorAspect;
+	private ISensor sensorAspect;
 	/**
 	 * Dead entities are automatically removed from the stage.
 	 */
@@ -75,7 +76,7 @@ public class SceneEntity
 
 	public void setBody(Body body) { this.physicalAspect = body; }
 	
-	public void setSensor(Sensor sensor) { this.sensorAspect = sensor; }
+	public void setSensor(ISensor sensor) { this.sensorAspect = sensor; }
 	/**
 	 * Alive flag, for collection of dead entities.
 	 * @return
@@ -106,10 +107,9 @@ public class SceneEntity
 	 */
 	public final Area getArea() { return spatialAspect; }
 
-	
 	public final Body getBody() { return physicalAspect; }
 	
-	public final Sensor getSensor() { return sensorAspect; }
+	public final ISensor getSensor() { return sensorAspect; }
 
 	@SuppressWarnings("unchecked")
 	public void init(GL gl)
@@ -177,6 +177,4 @@ public class SceneEntity
 			return false;
 		return getBehavior().behave(time, this, isVisible);
 	}
-	
-
 }
