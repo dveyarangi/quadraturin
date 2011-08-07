@@ -2,9 +2,10 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
+import javax.xml.transform.Source;
+
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.objects.Body;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
@@ -39,6 +40,8 @@ public class StupidInteractions implements IPhysicsEngine
 		
 	}
 	
+	public ICollisionManager getCollisionManager() { return manager; }
+	
 	public void init() { }
 	
 	// TODO: make it double sided:
@@ -71,9 +74,10 @@ public class StupidInteractions implements IPhysicsEngine
 			if(body == null) // non-physical entity:
 				continue;
 			
+			
 			////////////////////////////////
 			// collision detection broad phase: 
-			sensor.setSource(body);
+			sensor.setSource(entity);
 			
 			// TODO: querying by area is inefficient (polygon iterator is slow)
 			manager.getObjectIndex().query(sensor, area);  
@@ -83,12 +87,12 @@ public class StupidInteractions implements IPhysicsEngine
 			
 			// TODO: add volume, rotation and collision response :)
 			// TODO: probably should use some Runga-Kutta (research it). 
-			body.addVelocity(body.getForce().x / body.getMass() * time, body.getForce().y / body.getMass() * time);
+			body.addVelocity(body.getForce().x() / body.getMass() * time, body.getForce().y() / body.getMass() * time);
 			
 			// TODO: add limits for forces and velocities
 			// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)
 			
-			body.moveMassCenter(area, body.getVelocity().x * time, body.getVelocity().y * time);
+			body.moveMassCenter(area, body.getVelocity().x() * time, body.getVelocity().y() * time);
 			
 		}
 	}
@@ -102,12 +106,12 @@ public class StupidInteractions implements IPhysicsEngine
 		 * Defines the reference entity for proximity tests.
 		 * @param source
 		 */
-		public void setSource(Body source);
+		public void setSource(SceneEntity source);
 	}
 	
 	public class DefaultProximitySensor implements IProximitySensor
 	{
-		protected Body source;
+		protected SceneEntity source;
 		
 		protected ICollisionManager manager;
 		
@@ -116,17 +120,19 @@ public class StupidInteractions implements IPhysicsEngine
 			this.manager = manager;
 		}
 		
-		public boolean objectFound(IAreaChunk chunk, SceneEntity target) 
+		public final boolean objectFound(IAreaChunk chunk, SceneEntity target) 
 		{
 			if(!target.isAlive())
 				return false; 
+			if(!source.isAlive())
+				return false;
 			
 			manager.collide(source, target);
 			
 			return true;
 		}
 
-		public void setSource(Body source) {
+		public final void setSource(SceneEntity source) {
 			this.source = source;
 		}
 		

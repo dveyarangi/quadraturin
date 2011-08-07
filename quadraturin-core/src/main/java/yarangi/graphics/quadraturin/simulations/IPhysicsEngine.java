@@ -21,4 +21,6 @@ public interface IPhysicsEngine
 	public void calculate(double time);
 	
 	public void setCollisionManager(ICollisionManager man);
+
+	public ICollisionManager getCollisionManager();
 }

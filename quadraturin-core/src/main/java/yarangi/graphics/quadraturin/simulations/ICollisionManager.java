@@ -1,6 +1,5 @@
 package yarangi.graphics.quadraturin.simulations;
 
-import yarangi.graphics.quadraturin.objects.Body;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialIndexer;
 
@@ -16,11 +15,19 @@ public interface ICollisionManager
 	 * @param e1
 	 * @param e2
 	 */
-	public void collide(Body e1, SceneEntity e2); 
+	public void collide(SceneEntity e1, SceneEntity e2); 
 	
 	/**
-	 * 
+	 * Registers a collision handler for specific object type.
+	 * @param _class
+	 * @param agentCollider
+	 */
+	public void registerHandler(Class<?> _class, ICollisionHandler<?> agentCollider);
+	
+	/**
+	 *  
 	 * @return
 	 */
 	public SpatialIndexer <SceneEntity> getObjectIndex();
+
 }

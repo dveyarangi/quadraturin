@@ -5,6 +5,8 @@ package yarangi.graphics.quadraturin.simulations;
  */
 public class DummyInteractions implements IPhysicsEngine {
 
+	
+	private ICollisionManager manager;
 	/**
 	 * {@inheritDoc}
 	 * Does nothing.
@@ -15,30 +17,18 @@ public class DummyInteractions implements IPhysicsEngine {
 	 * {@inheritDoc}
 	 * Does nothing.
 	 */
-	public void addEntity(IPhysicalObject entity) { }
-
-	/**
-	 * {@inheritDoc}
-	 * Does nothing.
-	 */
-	public void removeEntity(IPhysicalObject entity) { }
-
-	/**
-	 * {@inheritDoc}
-	 * Does nothing.
-	 */
 	public void calculate(double time) { }
-
-	/**
-	 * {@inheritDoc}
-	 * Also does nothing.
-	 */
-	public void updateEntity(IPhysicalObject entity) { }
 
 	/**
 	 * {@inheritDoc}
 	 * Does nothing.
 	 */	
-	public void setCollisionManager(ICollisionManager manager) { }
+	public void setCollisionManager(ICollisionManager manager) { this.manager = manager;}
+
+	@Override
+	public ICollisionManager getCollisionManager()
+	{
+		return manager;
+	}
 
 }
