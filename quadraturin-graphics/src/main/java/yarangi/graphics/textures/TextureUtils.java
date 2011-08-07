@@ -7,6 +7,8 @@ import javax.media.opengl.GL;
 
 public class TextureUtils 
 {
+	public static final int ILLEGAL_ID = -1;
+	
 	public static int createEmptyTexture2D(GL gl, int width, int height, boolean mipmap)
 	{
 		// texture handle buffer
@@ -79,20 +81,53 @@ public class TextureUtils
 		return handleBuffer.get(0);
 	}
 	
-	public static int createFBO(GL gl, int textureId, int depthId)
+	public static FBOHandle createFBO(GL gl, int textureId, int depthId)
 	{
 		IntBuffer handleBuffer = IntBuffer.allocate(1);
 		gl.glGenFramebuffersEXT(1, handleBuffer); // Generate one frame buffer and store the ID in fbo  
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, handleBuffer.get(0)); // Bind our frame buffer
 		
-		if(textureId != -1)
+		if(textureId != ILLEGAL_ID)
 			gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, textureId, 0);
 		
-		if(depthId != -1)
+		if(depthId != ILLEGAL_ID)
 			gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthId); // Attach the depth buffer fbo_depth to our frame buffer
 //		…  
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
 		int status = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
-		return handleBuffer.get(0);
+		
+		return new FBOHandle(textureId, depthId, handleBuffer.get(0));
+	}
+	
+	public static class FBOHandle
+	{
+		private int textureId;
+		private int depthBufferId;
+		private int fboId;
+		
+		
+		protected FBOHandle(int textureId, int depthBufferId, int fboId)
+		{
+			super();
+			this.textureId = textureId;
+			this.depthBufferId = depthBufferId;
+			this.fboId = fboId;
+		}
+		
+		public int getTextureId() { return textureId; }
+		protected void setTextureId(int textureId) { this.textureId = textureId; }
+		public int getDepthBufferId() { return depthBufferId; }
+		protected void setDepthBufferId(int depthBufferId) { this.depthBufferId = depthBufferId; }
+		public int getFboId() { return fboId; }
+		protected void setFboId(int fboId) { this.fboId = fboId; }
+		
+		
+	}
+
+	public static void destroyFBO(GL gl, FBOHandle fbo)
+	{
+		gl.glDeleteTextures(1, new int [] {fbo.getTextureId()}, 0);
+		gl.glDeleteRenderbuffersEXT(1, new int [] { fbo.getDepthBufferId() }, 0);
+		gl.glDeleteFramebuffersEXT(1, new int [] {fbo.getFboId()}, 0);
 	}
 }
