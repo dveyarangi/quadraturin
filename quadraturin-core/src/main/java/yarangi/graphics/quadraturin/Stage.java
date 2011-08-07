@@ -84,7 +84,7 @@ public class Stage
 	public void setInitialScene()
 	{
 		// setting initial scene:
-		fireStageChanged(null, scene);
+		fireStageChanged(scene);
 	}
 	
 	/**
@@ -93,10 +93,9 @@ public class Stage
 	 */
 	public synchronized void setScene(String name)
 	{
-		Scene prevScene = scene;
 		this.scene = scenes.get(name);
 		
-		fireStageChanged(prevScene, scene);
+		fireStageChanged(scene);
 	}
 	
 	public void addListener(StageListener l)
@@ -112,10 +111,10 @@ public class Stage
 	/**
 	 * Informs listeners about scene changes.
 	 */
-	protected void fireStageChanged(Scene prevScene, Scene currScene)
+	protected void fireStageChanged(Scene currScene)
 	{
 		for(StageListener l : listeners)
-			l.sceneChanged(prevScene, currScene);
+			l.sceneChanged(currScene);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
