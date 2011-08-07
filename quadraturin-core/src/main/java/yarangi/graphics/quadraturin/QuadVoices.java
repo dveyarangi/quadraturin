@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
+import yarangi.graphics.quadraturin.actions.IActionController;
 import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
@@ -69,13 +70,14 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
-	
 	private Scene scene;
 	/**
 	 * Mouse location
 	 */
 	private Point mouseLocation;
 	
+	private IActionController controller;
+
 	/**
 	 * Logging name
 	 */
@@ -109,8 +111,10 @@ public class QuadVoices implements IEventManager, Loopy
 	{
 		// picking object under cursor:
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
-		SceneEntity pickedEntity = scene.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+//		if(controller == null)
+//			return;
 		
+		SceneEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
 		for(CursorListener l : cursorListeners)
@@ -315,19 +319,26 @@ public class QuadVoices implements IEventManager, Loopy
 	 * {@inheritDoc}
 	 * Updates event listeners from new scene
 	 */
-	public void sceneChanged(Scene prevScene, Scene nextScene) 
+	public void sceneChanged(Scene nextScene) 
 	{
-		if(prevScene != null && prevScene.getActionsMap() != null)
-		for(String actionId : prevScene.getActionsMap().keySet())
-			removeUserActionListener(actionId);
-		
-		if(nextScene != null && nextScene.getActionsMap() != null)
-			for(String actionId : nextScene.getActionsMap().keySet())
-				addUserActionListener(actionId, nextScene);
 		scene = nextScene;
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.
 	}
 
+	public void setActionController(IActionController controller)
+	{
+		if(this.controller != null)
+			for(String actionId : this.controller.getActionIds())
+				removeUserActionListener(actionId);
+		
+		removeCursorListener( this.controller );
+		this.controller = controller;
+		for(String actionId : controller.getActionIds())
+			addUserActionListener(actionId, controller);
+		
+		addCursorListener( controller );
+		
+	}
 }
