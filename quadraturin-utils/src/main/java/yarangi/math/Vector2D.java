@@ -191,15 +191,18 @@ public class Vector2D extends IVector2D
 	 * @param v
 	 * @return
 	 */
-	public void add(Vector2D v)
+	final public Vector2D add(Vector2D v)
 	{
 		this.x += v.x;
 		this.y += v.y;
+		
+		return this;
 	}
 
-	public void add(double x, double y) {
+	final public Vector2D add(double x, double y) {
 		this.x += x;
 		this.y += y;
+		return this;
 	}
 	
 	/**
@@ -216,10 +219,23 @@ public class Vector2D extends IVector2D
 	 * <li>Note: this operation changes current vector
 	 * @param v
 	 */
-	public void substract(Vector2D v)
+	final public Vector2D substract(Vector2D v)
 	{
 		this.x -= v.x;
 		this.y -= v.y;
+		
+		return this;
+	}
+	/**
+	 * <li>Note: this operation changes current vector
+	 * @param v
+	 */
+	final public Vector2D substract(double x, double y)
+	{
+		this.x -= x;
+		this.y -= y;
+		
+		return this;
 	}
 	
 	/**
@@ -255,10 +271,11 @@ public class Vector2D extends IVector2D
 	 * <li>Note: this operation changes current vector
 	 * @param d
 	 */
-	final public void multiply(double d)
+	final public Vector2D multiply(double d)
 	{
 		this.x *= d;
 		this.y *= d;
+		return this;
 	}
 	
 	/**
@@ -274,12 +291,12 @@ public class Vector2D extends IVector2D
 	}
 
 	/**
-	 * @return Rotates vector by 90 counter-clockwise
+	 * @return New vector, rotated by 90 counter-clockwise
 	 */
 	final public Vector2D left() { return new Vector2D(-y, x); }
 	
 	/**
-	 * @return Rotates vector by 90 clockwise
+	 * @return New vector, rotated by 90 clockwise
 	 */
 	final public Vector2D right() { return new Vector2D(y, -x); }
 	
