@@ -12,6 +12,7 @@ import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
+import yarangi.graphics.textures.TextureUtils.FBOHandle;
 import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
@@ -38,7 +39,7 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 	private int textureSize;
 	private IntBuffer viewport = IntBuffer.allocate(4);
 	
-	private int fbo;
+	private FBOHandle fbo;
 	
 	private int lightTexture;
 	
@@ -52,7 +53,7 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 	
 	public void init(GL gl, K entity) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(Math.sqrt(entity.getSensor().getSensorRadiusSquare())*2));
+		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2.));
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
 		fbo = TextureUtils.createFBO(gl, lightTexture, depthBuffer);
@@ -80,9 +81,6 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 		if(context.isForEffect())
 			return;
 		
-		Set <SceneEntity> entities = entity.getSensor().getEntities();
-		if(entities == null)
-			return;
 		// saving modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
@@ -101,83 +99,86 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 		gl.glOrtho(-viewport.get(2)/2, viewport.get(2)/2, -viewport.get(3)/2, viewport.get(3)/2, -1, 1);
 		
 		// binding FBO:
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo);
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo.getFboId());
 		
 		// clearing frame buffer:
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		gl.glClearColor(0,0,0,0);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
 		gl.glBlendEquation( GL.GL_MAX );
 		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 
-		// drawing red polygones for full shadows and penumbra:
-		for(SceneEntity caster : entities)
+		if(entity.getSensor() != null)
 		{
-			if(!caster.getLook().isCastsShadow())
-				continue;
-			
-//			System.out.println(entities.size());
-			Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
-			Vector2D dir = distance.normal();
-			
-			Vector2D left = dir.rotate(Angles.PI_div_2);
-			Vector2D right = dir.rotate(-Angles.PI_div_2); // new Vector2D( dir.y, -dir.x)
-
-			
-			// TODO: raycasting?
-			Vector2D casterLeft  = left.mul(10).plus(distance);
-			Vector2D casterRight = right.mul(10).plus(distance);
-			
-			Vector2D sourceLeft = left.mul(10);
-			Vector2D sourceRight = right.mul(10);
-//			Vector2D casterLeft  = left.mul(caster.getAABB().r).plus(distance);
-//			Vector2D casterRight = right.mul(caster.getAABB().r).plus(distance);
-			
-//			Vector2D sourceLeft = left.mul(entity.getAABB().r);
-//			Vector2D sourceRight = right.mul(entity.getAABB().r);
-			
-			Vector2D fullLeft = casterLeft.minus(sourceLeft).normalize();
-			Vector2D fullRight = casterRight.minus(sourceRight).normalize();
-			
-			// penumbra:
-			Vector2D softLeft = casterLeft.minus(sourceRight).normalize();
-			Vector2D softRight = casterRight.minus(sourceLeft).normalize();
-			
-			// TODO: calc real shadow extent:
-			Vector2D casterLeftOutter  = left.mul(10*10).plus(distance);
-			Vector2D casterRightOutter = right.mul(10*10).plus(distance);
-//			Vector2D casterLeftOutter  = left.mul(caster.getAABB().r*10).plus(distance);
-//			Vector2D casterRightOutter = right.mul(caster.getAABB().r*10).plus(distance);
-			// drawing full shadow
-			gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
-			gl.glBegin(GL.GL_QUADS);
-			gl.glVertex2f((float)(casterLeft.x),     (float)casterLeft.y);
-			gl.glVertex2f((float)(casterLeft.x  + fullLeft.x  * textureSize),  (float)(casterLeft.y + fullLeft.y * textureSize));
-			gl.glVertex2f((float)(casterRight.x + fullRight.x * textureSize), (float)(casterRight.y + fullRight.y * textureSize));
-			gl.glVertex2f((float)(casterRight.x),    (float)casterRight.y);
-			gl.glEnd();
-			
-			// drawing penumbra. the shader calculates penumbra gradient based on pixel angle:
-			penumbraShader.begin(gl);
-			gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterLeftOutter.x),     (float)casterLeftOutter.y);
-			gl.glTexCoord2f(1, 1);gl.glVertex2f((float)(casterLeft.x+softLeft.x*textureSize),  (float)(casterLeft.y+softLeft.y*textureSize));
-			gl.glTexCoord2f(1, 0);gl.glVertex2f((float)(casterLeft.x+fullLeft.x*textureSize),  (float)(casterLeft.y+fullLeft.y*textureSize));
-			gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterLeft.x),     (float)casterLeft.y);
-			gl.glEnd();
-			
-			gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterRightOutter.x),    (float)casterRightOutter.y);
-			gl.glTexCoord2f(1, 1);gl.glVertex2f((float)(casterRight.x+softRight.x*textureSize), (float)(casterRight.y+softRight.y*textureSize));
-			gl.glTexCoord2f(1, 0);gl.glVertex2f((float)(casterRight.x+fullRight.x*textureSize), (float)(casterRight.y+fullRight.y*textureSize));
-			gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterRight.x),    (float)casterRight.y);
-			gl.glEnd();
-			penumbraShader.end(gl);
-			
+			Set <SceneEntity> entities = entity.getSensor().getEntities();
+		// drawing red polygones for full shadows and penumbra:
+			for(SceneEntity caster : entities)
+			{
+				if(!caster.getLook().isCastsShadow())
+					continue;
+				
+	//			System.out.println(entities.size());
+				Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
+				Vector2D dir = distance.normal();
+				
+				Vector2D left = dir.rotate(Angles.PI_div_2);
+				Vector2D right = dir.rotate(-Angles.PI_div_2); // new Vector2D( dir.y, -dir.x)
+	
+				
+				// TODO: raycasting?
+				Vector2D casterLeft  = left.mul(caster.getArea().getMaxRadius()).plus(distance);
+				Vector2D casterRight = right.mul(caster.getArea().getMaxRadius()).plus(distance);
+				
+				Vector2D sourceLeft = left.mul(caster.getArea().getMaxRadius());
+				Vector2D sourceRight = right.mul(caster.getArea().getMaxRadius());
+	//			Vector2D casterLeft  = left.mul(caster.getAABB().r).plus(distance);
+	//			Vector2D casterRight = right.mul(caster.getAABB().r).plus(distance);
+				
+	//			Vector2D sourceLeft = left.mul(entity.getAABB().r);
+	//			Vector2D sourceRight = right.mul(entity.getAABB().r);
+				
+				Vector2D fullLeft = casterLeft.minus(sourceLeft).normalize();
+				Vector2D fullRight = casterRight.minus(sourceRight).normalize();
+				
+				// penumbra:
+				Vector2D softLeft = casterLeft.minus(sourceRight).normalize();
+				Vector2D softRight = casterRight.minus(sourceLeft).normalize();
+				
+				// TODO: calc real shadow extent:
+				Vector2D casterLeftOutter  = left.mul(10*10).plus(distance);
+				Vector2D casterRightOutter = right.mul(10*10).plus(distance);
+	//			Vector2D casterLeftOutter  = left.mul(caster.getAABB().r*10).plus(distance);
+	//			Vector2D casterRightOutter = right.mul(caster.getAABB().r*10).plus(distance);
+				// drawing full shadow
+				gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
+				gl.glBegin(GL.GL_QUADS);
+				gl.glVertex2f((float)(casterLeft.x()),     (float)casterLeft.y());
+				gl.glVertex2f((float)(casterLeft.x()  + fullLeft.x()  * textureSize),  (float)(casterLeft.y() + fullLeft.y() * textureSize));
+				gl.glVertex2f((float)(casterRight.x() + fullRight.x() * textureSize), (float)(casterRight.y() + fullRight.y() * textureSize));
+				gl.glVertex2f((float)(casterRight.x()),    (float)casterRight.y());
+				gl.glEnd();
+				
+				// drawing penumbra. the shader calculates penumbra gradient based on pixel angle:
+				penumbraShader.begin(gl);
+				gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterLeftOutter.x()),     (float)casterLeftOutter.y());
+				gl.glTexCoord2f(1, 1);gl.glVertex2f((float)(casterLeft.x()+softLeft.x()*textureSize),  (float)(casterLeft.y()+softLeft.y()*textureSize));
+				gl.glTexCoord2f(1, 0);gl.glVertex2f((float)(casterLeft.x()+fullLeft.x()*textureSize),  (float)(casterLeft.y()+fullLeft.y()*textureSize));
+				gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterLeft.x()),     (float)casterLeft.y());
+				gl.glEnd();
+				
+				gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterRightOutter.x()),    (float)casterRightOutter.y());
+				gl.glTexCoord2f(1, 1);gl.glVertex2f((float)(casterRight.x()+softRight.x()*textureSize), (float)(casterRight.y()+softRight.y()*textureSize));
+				gl.glTexCoord2f(1, 0);gl.glVertex2f((float)(casterRight.x()+fullRight.x()*textureSize), (float)(casterRight.y()+fullRight.y()*textureSize));
+				gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterRight.x()),    (float)casterRight.y());
+				gl.glEnd();
+				penumbraShader.end(gl);
+				
+			}
 		}
-
 		// exiting framebuffer:
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
 
@@ -230,19 +231,18 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		gl.glBegin(GL.GL_QUADS);
 //		System.out.println(textureSize/2);
-		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
-		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)(+textureSize/2), (float)(-textureSize/2));
-		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)(+textureSize/2), (float)(+textureSize/2));
-		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)(-textureSize/2), (float)(+textureSize/2));
+		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-textureSize/2, -textureSize/2);
+		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(+textureSize/2, -textureSize/2);
+		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(+textureSize/2, +textureSize/2);
+		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f(-textureSize/2, +textureSize/2);
 		gl.glEnd();
 		
 	}
 
 	public void destroy(GL gl, K entity) 
 	{
-//		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 0);
-//		gl.glDeleteFramebuffersEXT(GL.GL_FRAMEBUFFER_EXT, new int [] {fbo}, 0);
-//		gl.glDeleteRenderbuffersEXT(GL.GL_RENDERBUFFER_EXT, arg1)
+
+		TextureUtils.destroyFBO(gl, fbo);
 	}
 
 
