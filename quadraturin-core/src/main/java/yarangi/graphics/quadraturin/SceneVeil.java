@@ -116,7 +116,7 @@ public abstract class SceneVeil
 			}
 		}
 		
-		System.out.println(entities.size() + " : " + indexer.size());
+//		System.out.println(entities.size() + " : " + indexer.size());
 		if(veilEffect == null)
 		{
 
@@ -144,12 +144,6 @@ public abstract class SceneVeil
 		Vector2D refPoint;
 		for(SceneEntity entity : entities)
 		{
-			if(entity.getSensor() != null)
-			{
-				refPoint = entity.getArea().getRefPoint();
-				entity.getSensor().clearSensor();
-				indexer.query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
-			}
 			
 			if(entity.behave(time, true))
 			{
@@ -161,7 +155,14 @@ public abstract class SceneVeil
 			if (!entity.isAlive())
 			{
 				removeEntity(entity);
-
+				continue;
+			}
+			
+			if(entity.getSensor() != null)
+			{
+				refPoint = entity.getArea().getRefPoint();
+				entity.getSensor().clearSensor();
+				indexer.query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
 			}
 		}
 		
