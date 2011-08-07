@@ -5,7 +5,6 @@ import java.util.Set;
 
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
-import yarangi.spatial.ISpatialSensor;
 
 /**
  * Sensor aspect of {@link SceneEntity}
@@ -13,7 +12,7 @@ import yarangi.spatial.ISpatialSensor;
  * @author dveyarangi
  *
  */
-public class Sensor implements ISpatialSensor <SceneEntity>
+public class Sensor implements ISensor
 {
 	private Set <SceneEntity> entities;
 	
@@ -31,35 +30,32 @@ public class Sensor implements ISpatialSensor <SceneEntity>
 		clearSensor();
 	}
 	
-	public void setEntities(Set <SceneEntity> entities)
-	{
-		this.entities = entities;
-	}
-	
+	@Override
 	public Set <SceneEntity> getEntities()
 	{
 		return entities;
 	}
 
+	@Override
 	public double getSensorRadiusSquare()
 	{
 		return radiusSquare;
 	}
 	
+	@Override
 	public double getRadius() { return radius; }
 	
 	public ISpatialFilter <SceneEntity> getFilter() { return filter; }
  
+	@Override
 	public void clearSensor() { this.entities = new HashSet <SceneEntity> (); }
 	
 	@Override
 	public boolean objectFound(IAreaChunk chunk, SceneEntity object) 
 	{
 		if(filter == null || filter.accept(object))
-		{
 			entities.add(object);
-			return true;
-		}
+		
 		return false;
 	}
 }
