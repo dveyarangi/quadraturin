@@ -8,19 +8,19 @@ import yarangi.graphics.quadraturin.objects.behaviors.DummyBehavior;
 /**
  * Dummy entity for torturing needs. 
  */
-public class Dummy extends SceneEntity
+public class Dummy extends WorldEntity
 {
 
 	private static final long serialVersionUID = 5263046347119077749L;
 	
-	public static Look <SceneEntity> LOOK = new Look <SceneEntity> () { 
-		public void render(GL gl, double time, SceneEntity entity, RenderingContext context) {}
-		public void init(GL gl, SceneEntity entity) { } 
-		public void destroy(GL gl, SceneEntity entity) { }
+	public static Look <WorldEntity> LOOK = new Look <WorldEntity> () { 
+		public void render(GL gl, double time, WorldEntity entity, RenderingContext context) {}
+		public void init(GL gl, WorldEntity entity) { } 
+		public void destroy(GL gl, WorldEntity entity) { }
 		@Override
 		public boolean isCastsShadow() { return false; } 
 	};
 	
-	public static Behavior <SceneEntity> BEHAVIOR = new DummyBehavior <SceneEntity> ();
+	public static Behavior <WorldEntity> BEHAVIOR = new DummyBehavior <WorldEntity> ();
 
 }

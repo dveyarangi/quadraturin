@@ -1,45 +1,69 @@
 package yarangi.graphics.quadraturin.objects;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.spatial.Area;
 
-public abstract class Overlay extends SceneEntity 
+public class Overlay implements IVeilEntity
 {
+	/**
+	 * Overlay look
+	 */
+	private Look <?> look;
+	
+	
+	
+	/** 
+	 * Sets overlay's look.
+	 * @param look
+	 */
+	public void setLook(Look <?> look) { this.look = look; }
+	
+	/**
+	 * How the object looks.
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public final Look getLook() { return look; }
 
-	protected Overlay() {
-		super();
-		setLook(Dummy.LOOK);
-		setBehavior(Dummy.BEHAVIOR);
-		setArea(Area.EMPTY);
-	}
-	
 	@Override
-	@SuppressWarnings("unchecked")
-	public void display(GL gl, double time, RenderingContext context)
+	public Area getArea()
 	{
-		Area area = getArea();
-	
-		// storing transformation matrix:
-		gl.glPushMatrix();
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getPassId()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setPassId(int id)
+	{
+		// TODO Auto-generated method stub
 		
-		// transforming into entity coordinates:
-		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
-		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
-		// setting entity name for picking mechanism
-		// all children will be picked by this name, in addition to their own names
-		if(context.doPushNames())
-			gl.glPushName(getId());
+	}
+
+	@Override
+	public void setArea(Area area)
+	{
+		// TODO Auto-generated method stub
 		
-		// rendering this entity:
-		getLook().render(gl, time, this, context);
+	}
+
+	@Override
+	public boolean isAlive()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void markDead()
+	{
+		// TODO Auto-generated method stub
 		
-		if(context.doPushNames()) // entity naming ends here
-			gl.glPopName();
-		
-		// restoring transformation matrix:
-		gl.glPopMatrix();
 	}
 
 }
