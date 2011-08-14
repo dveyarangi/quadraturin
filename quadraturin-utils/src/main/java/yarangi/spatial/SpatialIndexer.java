@@ -8,7 +8,7 @@ import java.util.Set;
  * 
  * @param <T> stored element type.
  */
-public abstract class SpatialIndexer <K> implements ISpatialIndex <K>
+public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpatialIndex <K>
 {
 	
 	/**

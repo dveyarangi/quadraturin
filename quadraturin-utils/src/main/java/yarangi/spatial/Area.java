@@ -44,9 +44,16 @@ public interface Area
 	 */
 	public void translate(double dx, double dy);
 	
-
+	/**
+	 * Scales the area to fit specified maximum radius.
+	 * @param radius
+	 */
 	public void fitTo(double radius);
 
+	/**
+	 * Retrieves area's max radius.
+	 * @return
+	 */
 	public double getMaxRadius();
 
 	/**
@@ -64,28 +71,30 @@ public interface Area
 	
 //	public void traverse(IChunkObserver observer);
 //	public void traverse(IChunkObserver observer);
+	//////////////////////////////////////////////////
+	// TODO: all following statics bother me
 	
-	public static class EmptyChunk implements IAreaChunk
+	public final static class EmptyChunk implements IAreaChunk
 	{
 		
 		@Override public Area getArea() { return EMPTY; }
 
-		@Override public double getX() { return 0; }
-		@Override public double getY() { return 0; }
+		@Override public double getX() { throw new IllegalStateException("This method is not defined."); }
+		@Override public double getY() { throw new IllegalStateException("This method is not defined."); }
 
 		@Override public boolean overlaps(double xmin, double ymin, double xmax, double ymax) { return false;	}
 
-		@Override public double getMinX() { return 0; }
-		@Override public double getMinY() { return 0; }
-		@Override public double getMaxX() { return 0;	}
-		@Override public double getMaxY() { return 0;	}
+		@Override public double getMinX() { throw new IllegalStateException("This method is not defined."); }
+		@Override public double getMinY() { throw new IllegalStateException("This method is not defined."); }
+		@Override public double getMaxX() { throw new IllegalStateException("This method is not defined."); }
+		@Override public double getMaxY() { throw new IllegalStateException("This method is not defined.");}
 		
 	}
 	
 	
-	public static IAreaChunk EMPTY_CHUNK = new EmptyChunk();
+	public static final IAreaChunk EMPTY_CHUNK = new EmptyChunk();
 	
-	public static Area EMPTY = new Area() 
+	public static final Area EMPTY = new Area() 
 	{
 		
 		private Vector2D ref = new Vector2D(0,0);

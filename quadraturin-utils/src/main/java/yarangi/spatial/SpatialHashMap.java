@@ -10,7 +10,7 @@ import yarangi.math.FastMath;
  *
  * @param <T>
  */
-public class SpatialHashMap <T> extends SpatialIndexer<T>
+public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 {
 	/**
 	 * buckets array.
@@ -31,12 +31,21 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	 * size of single hash cell
 	 */
 	private int cellSize; 
+	
+	/** 
+	 * 1/cellSize, to speed up some calculations
+	 */
 	private double invCellsize;
+	/** 
+	 * cellSize/2
+	 */
 	private double halfCellSize;
 	/**
 	 * hash cells amounts 
 	 */
-	private int halfWidth, halfHeight;
+	private int halfGridWidth, halfGridHeight;
+	
+	private int passId;
 	
 	/**
 	 * 
@@ -54,8 +63,8 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 		this.height = height;
 		this.cellSize = cellSize;
 		this.invCellsize = 1. / this.cellSize;
-		this.halfWidth = width/2/cellSize;
-		this.halfHeight = height/2/cellSize;
+		this.halfGridWidth = width/2/cellSize;
+		this.halfGridHeight = height/2/cellSize;
 		this.halfCellSize = cellSize/2.;
 		map = new Map [size];
 		for(int idx = 0; idx < size; idx ++)
@@ -88,7 +97,7 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	 */
 	protected final int hash(int x, int y)
 	{
-		return ((x+halfWidth)*6184547 + (y+halfHeight)* 2221069) % size;
+		return ((x+halfGridWidth)*6184547 + (y+halfGridHeight)* 2221069) % size;
 	}
 
 	/**
@@ -162,12 +171,15 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	{
 		if(area == null)
 			throw new IllegalArgumentException("Area cannot be null.");
+		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		IGridIterator <?> it = area.iterator(cellSize);
+		IGridIterator <? extends IAreaChunk> it = area.iterator(cellSize);
 		Map <IAreaChunk, T> cell;
 		IAreaChunk chunk;
+		T object;
 		int x, y;
+		int passId = getNextPassId();
 		while(it.hasNext())
 		{
 			chunk = it.next();
@@ -180,17 +192,35 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 			cell = map[hash(x, y)];
 			for(IAreaChunk c : cell.keySet())
 			{
+				object = cell.get(c);
+				if(object.getPassId() == passId)
+					continue;
 				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
 //					System.out.println(cell.get(c));
-					if(processor.objectFound(c, cell.get(c)/*, 
-							Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/))
+				{
+					if(processor.objectFound(c, object/*, 
+						Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/))
 						break;
+				}
+				object.setPassId( passId );
 			}
 		}
 
 		return processor;
 	}
 	
+
+//	@Override
+//	public ISpatialSensor<T> query(ISpatialSensor<T> sensor, AABB area)
+//	{
+		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
+	protected final int getNextPassId()
+	{
+		return ++passId;
+	}
 	
 	public final int toGridIndex(double value)
 	{
@@ -199,7 +229,7 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	
 	public final boolean isInvalidIndex(int x, int y)
 	{
-		return (x < -halfWidth || x > halfWidth || y < -halfHeight || y > halfHeight); 
+		return (x < -halfGridWidth || x > halfGridWidth || y < -halfGridHeight || y > halfGridHeight); 
 	}
 	
 	/**
@@ -210,10 +240,12 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	{
 		// TODO: spiral iteration, remove this root calculation:
 		double radius = Math.sqrt(radiusSquare);
-		int minx = Math.max(toGridIndex(x-radius), -halfWidth);
-		int miny = Math.max(toGridIndex(y-radius), -halfHeight);
-		int maxx = Math.min(toGridIndex(x+radius),  halfWidth);
-		int maxy = Math.min(toGridIndex(y+radius),  halfHeight);
+		int minx = Math.max(toGridIndex(x-radius), -halfGridWidth);
+		int miny = Math.max(toGridIndex(y-radius), -halfGridHeight);
+		int maxx = Math.min(toGridIndex(x+radius),  halfGridWidth);
+		int maxy = Math.min(toGridIndex(y+radius),  halfGridHeight);
+		int passId = getNextPassId();
+		T object;
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
@@ -222,16 +254,30 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 			for(int ty = miny; ty <= maxy; ty ++)
 			{
 				cell = map[hash(tx, ty)];
+				
+				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
+				if(radiusSquare < distanceSquare)
+					continue;
+				
+//				System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
+				
+				// TODO: make it strictier:
 				for(IAreaChunk chunk : cell.keySet())
 				{
-					double distanceSquare = FastMath.powOf2(x - chunk.getX()) + FastMath.powOf2(y - chunk.getY());
+					object = cell.get(chunk);
+					if(object.getPassId() == passId)
+						continue;
+					
+//					double distanceSquare = FastMath.powOf2(x - chunk.getX()) + FastMath.powOf2(y - chunk.getY());
 					
 //					System.out.println(aabb.r+radius + " : " + Math.sqrt(distanceSquare));
 					
 					// TODO: make it strictier:
-					if(radiusSquare >= distanceSquare)
-						if(sensor.objectFound(chunk, cell.get(chunk)/*, distanceSquare*/))
+//					if(radiusSquare >= distanceSquare)
+						if(sensor.objectFound(chunk, object/*, distanceSquare*/))
 							break;
+					
+					object.setPassId( passId );
 				}
 
 			}
@@ -276,6 +322,8 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 		}
 		else { tMaxY = Double.MAX_VALUE; tDeltaY = 0; stepY = 0;}
 		
+		int passId = getNextPassId();
+		T object;
 		Map <IAreaChunk, T> cell;
 		while(tMaxX <= 1 || tMaxY <= 1)
 		{
@@ -292,9 +340,14 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 			cell = map[hash(currGridx, currGridy)];
 			for(IAreaChunk chunk : cell.keySet())
 			{
+				object =  cell.get(chunk);
+				if(object.getPassId() == passId)
+					continue;
 				if(toGridIndex(chunk.getX()) == currGridx && toGridIndex(chunk.getY()) == currGridy)
 				if(sensor.objectFound(chunk, cell.get(chunk)))
 					break;
+				
+				object.setPassId( passId );
 			}	
 		}		
 		
@@ -327,6 +380,6 @@ public class SpatialHashMap <T> extends SpatialIndexer<T>
 	{
 		return map[hash(x, y)];
 	}
-	
+
 
 }

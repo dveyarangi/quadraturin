@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface ISpatialIndex <K>
+public interface ISpatialIndex <K extends ISpatialObject>
 {
 	/**
 	 * Iterates over specified area, reporting fully or partially fitting objects in index. 
@@ -17,6 +17,7 @@ public interface ISpatialIndex <K>
 	 * @param maxy
 	 */
 	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, Area area);
+//	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, AABB area);
 	
 	/**
 	 * 

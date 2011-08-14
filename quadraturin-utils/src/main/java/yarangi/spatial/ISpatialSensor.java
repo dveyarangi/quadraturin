@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface ISpatialSensor <K> 
+public interface ISpatialSensor <K extends ISpatialObject> 
 {
 	/**
 	 * Called on object detection.

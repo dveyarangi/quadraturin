@@ -1,7 +1,7 @@
 package yarangi.spatial;
 
 
-public class PickingSensor <K> implements ISpatialSensor <K> 
+public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor <K> 
 {
 
 	private static final long serialVersionUID = 9025712177585233445L;
