@@ -204,6 +204,7 @@ public class Swing2DContainer extends JFrame
 		chain.start();
 		
 		this.setVisible(true);
+		canvas.requestFocusInWindow();
 	}
 
 	/**
@@ -225,12 +226,8 @@ public class Swing2DContainer extends JFrame
 //		stage.setScene(loadingScreenId);
 
 		chain.stop();
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+
+		// force redraw to dispose of entities looks:
 		canvas.display();
 		
 		canvas.removeGLEventListener(controller);

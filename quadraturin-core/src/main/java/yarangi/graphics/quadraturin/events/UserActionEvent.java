@@ -1,6 +1,6 @@
 package yarangi.graphics.quadraturin.events;
 
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.objects.IWorldEntity;
 
 /**
  * User action event represents a mouse or keyboard buttons action (press, release, tap).
@@ -23,7 +23,7 @@ public class UserActionEvent
 	/**
 	 * Entity involved in this event.
 	 */
-	private SceneEntity entity;
+	private IWorldEntity entity;
 	
 	private CursorEvent cursor;
 
@@ -33,7 +33,7 @@ public class UserActionEvent
 		this(actionId, hook, null, cursor);
 	}
 	
-	public UserActionEvent(String actionId, InputHook hook, SceneEntity entity, CursorEvent cursor)
+	public UserActionEvent(String actionId, InputHook hook, IWorldEntity entity, CursorEvent cursor)
 	{
 		this.actionId = actionId;
 		this.hook = hook;
@@ -42,12 +42,12 @@ public class UserActionEvent
 		this.cursor = cursor;
 	}
 	
-	public void setSceneEntity(SceneEntity entity) {
+	public void setSceneEntity(IWorldEntity entity) {
 		this.entity = entity;
 	}
 	public String getActionId() { return actionId; }
 	
-	public SceneEntity getEntity() { return entity; }
+	public IWorldEntity getEntity() { return entity; }
 	
 	public CursorEvent getCursor() { return cursor; }
 	

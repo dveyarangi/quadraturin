@@ -29,7 +29,7 @@ import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.events.UserActionListener;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.objects.IWorldEntity;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
@@ -114,7 +114,7 @@ public class QuadVoices implements IEventManager, Loopy
 //		if(controller == null)
 //			return;
 		
-		SceneEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+		IWorldEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
 		for(CursorListener l : cursorListeners)
