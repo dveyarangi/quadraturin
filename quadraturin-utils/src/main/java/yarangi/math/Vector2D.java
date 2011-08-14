@@ -23,14 +23,10 @@ public class Vector2D extends IVector2D
 	
 	/**
 	 * Vector counter. 
-	 * TODO: should only be in debug mode
+	 * TODO: instrumentate in debug mode instead
+	 * TODO: overflow!
 	 */
 	private static int count = 0;
-	
-	/**
-	 * Constant for zero vector.
-	 */
-	public static final Vector2D ZERO = new Vector2D(0,0);
 	
 	/**
 	 * Creates a new zero vector.
@@ -140,7 +136,11 @@ public class Vector2D extends IVector2D
 	 * @return
 	 */
 	final public double abs() { return Math.hypot(x, y); }
-	
+
+	final public double absSquare()
+	{
+		return x*x+y*y;
+	}	
 	/**
 	 * @return Normalized vector.
 	 */
@@ -199,6 +199,12 @@ public class Vector2D extends IVector2D
 		return this;
 	}
 
+	/**
+	 * Adds the values to this vector
+	 * <li>Note: this operation changes current vector
+	 * @param v
+	 * @return
+	 */
 	final public Vector2D add(double x, double y) {
 		this.x += x;
 		this.y += y;
@@ -226,6 +232,7 @@ public class Vector2D extends IVector2D
 		
 		return this;
 	}
+	
 	/**
 	 * <li>Note: this operation changes current vector
 	 * @param v
@@ -306,15 +313,6 @@ public class Vector2D extends IVector2D
 	 */
 	final public double getAngle() { return Math.atan2(y, x); }
 	
-	/**
-	 * @return display string representation of this vector
-	 */
-	public String toString() 
-	{ 
-		return new StringBuilder()
-			.append("v(").append(this.x).append(",").append(this.y).append(")")
-			.toString(); 
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -330,9 +328,20 @@ public class Vector2D extends IVector2D
 		return x == vec.x() && y == vec.y();
 	}
 	
+	/**
+	 * @return display string representation of this vector
+	 */
+	public String toString() 
+	{ 
+		return new StringBuilder()
+			.append("v(").append(this.x).append(",").append(this.y).append(")")
+			.toString(); 
+	}
+	
 	// TODO: make it faster
 	public int hashCode()
 	{
 		return new Double(x).hashCode() + new Double(y).hashCode();
 	}
+
 }
