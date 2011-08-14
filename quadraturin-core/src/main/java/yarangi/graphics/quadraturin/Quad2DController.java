@@ -249,6 +249,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		gl.glMatrixMode(GL.GL_PROJECTION);
+		
+		viewPoint.setViewPort(viewport);
 		gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
@@ -256,6 +258,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
 		// TODO: extract matrices to viewPoint for world coordinates calculation:
 		//updateViewPoint(gl, viewPoint);
+		
 		
 
 		Point pickPoint = voices.getMouseLocation();

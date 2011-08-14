@@ -2,7 +2,9 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.Arrays;
 
+import yarangi.math.FastMath;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
@@ -20,6 +22,11 @@ public class ViewPoint2D implements IViewPoint
 	private RangedDouble scale;
 	
 	private Dimension world;
+	
+	private Vector2D scrollSpeed;
+	private Vector2D zoomSpeed;
+	
+	private int [] viewport;
 //	private Rectangle2D.Double viewWindow;
 //	private Rectangle2D.Double virtualWindow;
 
@@ -38,7 +45,8 @@ public class ViewPoint2D implements IViewPoint
 		
 		this.world = world;
 //		transpose();
-		
+		scrollSpeed = new Vector2D(0, 0);
+		zoomSpeed = new Vector2D(0, 0);
 	}
 	
 /*	private void transpose() {
@@ -102,8 +110,8 @@ public class ViewPoint2D implements IViewPoint
 		return (int)(dist/scale);
 	}*/
 
-	public int getPortWidth() { return window.width; }
-	public int getPortHeight() { return window.height;}
+	public int getPortWidth() { return  FastMath.floor(viewport[2] * getScale()); }
+	public int getPortHeight() { return FastMath.floor(viewport[3] * getScale());}
 
 	public Vector2D getCenter() { return center; }
 
@@ -122,6 +130,7 @@ public class ViewPoint2D implements IViewPoint
 		this.window = new Dimension(vp.getPortWidth(), vp.getPortHeight());
 		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
 		this.world = new Dimension(vp.world.width, vp.world.height);
+		viewport = Arrays.copyOf( vp.viewport, 4 );
 	}	
 
 	public String toString()
@@ -131,5 +140,10 @@ public class ViewPoint2D implements IViewPoint
 			.append("scale: [").append(scale).append("] ")
 			.toString();
 		
+	}
+
+	public void setViewPort(int[] viewport)
+	{
+		this.viewport = viewport;
 	}
 }
