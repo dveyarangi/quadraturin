@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 import yarangi.graphics.quadraturin.threads.Loopy;
+import yarangi.numbers.AverageCounter;
 
 /**
  * Invokes scene behavior.
@@ -34,10 +35,20 @@ public class StageAnimator implements Loopy, StageListener
 	 * Animator's logger.
 	 */
 	private Logger log = Logger.getLogger(NAME);
-	
-//	private double defaultFrameLength;
 
 	public static final String NAME = "q-animus";
+	
+	/**
+	 * Counter for frame length average.
+	 */
+	private AverageCounter counter;
+	
+	private static final int COUNTER_ITERATIONS = 10;
+	
+	/**
+	 * Average frame length calculated each {@link #COUNTER_ITERATIONS} cycles.
+	 */
+	private double approxFrameLength;
 	
 	public StageAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
 	{
@@ -55,11 +66,13 @@ public class StageAnimator implements Loopy, StageListener
 		log.debug("Max frame rate set to " + (maxFPS == 0 ? "'unbound'" : maxFPS) + " fps" +
 				" => frame length: " + minFrameLength + " ns.");
 		
-		frameStart = System.nanoTime();
 		
-//		frameSum = FRAMES_NUM * minFrameLength;
-//		for(int idx = 0; idx < FRAMES_NUM; idx ++)
-//			lastFrames[idx] = minFrameLength;
+		counter = new AverageCounter();
+		approxFrameLength = 1./maxFPS; // rough guess
+		
+		
+		frameStart = System.nanoTime();
+
 	}
 
 
@@ -69,21 +82,31 @@ public class StageAnimator implements Loopy, StageListener
 
 	public void runBody() 
 	{
-		
 		//////////////////////////////////////////////////////////
 		// Running scene behaviors:
-		// TODO: fix animation step for shorter frames
-		currScene.animate(currScene.getFrameLength());
+		// TODO: give currScene.getFrameLength()
+		currScene.animate(approxFrameLength * currScene.getFrameLength());
 		
 		//////////////////////////////////////////////////////////
-		currScene.postAnimate(currScene.getFrameLength());
+		currScene.postAnimate(approxFrameLength * currScene.getFrameLength());
 		
-		long newStart = System.nanoTime();
-//		int fps = (int)(1000000000l/(newStart-frameStart));
-//		System.out.println("FPS: " + fps);
-		frameTimeLeft = minFrameLength - (newStart - frameStart);
+		long frameDuration = System.nanoTime() - frameStart;
+		
+
+		counter.addValue( frameDuration ); // adjusting frame average length
+		
+
+		if(counter.getCounter() > COUNTER_ITERATIONS)
+		{
+			// recalculating frame key time:
+			approxFrameLength = 1000000 * counter.get1DivAverage(); 
+			counter.reset();
+		}
+
+		frameTimeLeft = minFrameLength - (frameDuration);
+		
 		if(frameTimeLeft > 0)
-		try {
+		try { // spending remaining frame time to match the maxFPS setting:
 			if( log.isTraceEnabled() )
 				log.trace("Going to sleep for " + frameTimeLeft + " ns.");
 			Thread.sleep(frameTimeLeft / 1000000);
@@ -92,7 +115,7 @@ public class StageAnimator implements Loopy, StageListener
 		
 		frameStart = System.nanoTime();
 		
-		// scheduling repaint:
+		// requesting repaint (TODO: actual repaint time is still a mystery)
 		canvas.repaint();
 	}
 
