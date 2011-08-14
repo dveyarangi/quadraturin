@@ -3,25 +3,25 @@ package yarangi.graphics.quadraturin.simulations;
 import java.util.HashMap;
 import java.util.Map;
 
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialIndexer;
 
-public class DefaultCollisionManager implements ICollisionManager 
+public class DefaultCollisionManager <K extends IPhysicalObject> implements ICollisionManager <K>
 {
-	private SpatialIndexer <SceneEntity> indexer;
+	private SpatialIndexer <K> indexer;
 	
-	private Map <Class, ICollisionHandler> handlers = new HashMap <Class, ICollisionHandler> ();
+	private Map <Class<? extends IPhysicalObject>, ICollisionHandler<K>> handlers = 
+				new HashMap <Class<? extends IPhysicalObject>, ICollisionHandler<K>> ();
 	
-	public DefaultCollisionManager(SpatialIndexer <SceneEntity> indexer)
+	public DefaultCollisionManager(SpatialIndexer <K> indexer)
 	{
 		this.indexer = indexer;
 	}
 	
 	@Override
-	public void collide(SceneEntity source, SceneEntity target) 
+	public void collide(K source, IPhysicalObject target) 
 	{
 		// todo:
-		ICollisionHandler handler = handlers.get( source.getClass() );
+		ICollisionHandler<K> handler = handlers.get( source.getClass() );
 		if(handler == null)
 			return;
 		
@@ -29,10 +29,10 @@ public class DefaultCollisionManager implements ICollisionManager
 	}
 
 	@Override
-	public SpatialIndexer<SceneEntity> getObjectIndex() { return indexer; }
+	public SpatialIndexer<K> getObjectIndex() { return indexer; }
 
 	@Override
-	public void registerHandler(Class<?> _class, ICollisionHandler<?> handler)
+	public void registerHandler(Class <? extends IPhysicalObject> _class, ICollisionHandler<K> handler)
 	{
 		handlers.put( _class, handler );
 	}

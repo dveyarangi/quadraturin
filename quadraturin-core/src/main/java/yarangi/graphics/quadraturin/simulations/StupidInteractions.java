@@ -2,16 +2,13 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
-import javax.xml.transform.Source;
-
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 
-public class StupidInteractions implements IPhysicsEngine
+public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsEngine <K>
 {
 	/**
 	 * Stupid's logger.
@@ -21,28 +18,29 @@ public class StupidInteractions implements IPhysicsEngine
 	/**
 	 * Calculates narrow phase of collision handling.
 	 */
-	private ICollisionManager manager;
+	private ICollisionManager <K> manager;
 	
 	/**
 	 * Spatial query processor for broad phase of collision/interaction test
 	 */
-	private IProximitySensor sensor;
+	private IProximitySensor <K> sensor;
 	
 	public StupidInteractions()
 	{
 		
 	}
 	
-	public void setCollisionManager(ICollisionManager man)
+	public void setCollisionManager(ICollisionManager <K> man)
 	{
 		this.manager = man;
-		this.sensor = new DefaultProximitySensor(man);
+		this.sensor = new DefaultProximitySensor <K>(man);
 		
 	}
 	
-	public ICollisionManager getCollisionManager() { return manager; }
+	public ICollisionManager <K> getCollisionManager() { return manager; }
 	
 	public void init() { }
+	public void destroy() { }
 	
 	// TODO: make it double sided:
 	public void calculate(double time) 
@@ -56,12 +54,12 @@ public class StupidInteractions implements IPhysicsEngine
 		
 		Area area;
 
-		Set <SceneEntity> entities = manager.getObjectIndex().keySet();
+		Set <K> entities = manager.getObjectIndex().keySet();
 //		log.debug("Entities in index: " + manager.getObjectIndex().size());
 		// TODO: redo! this is highly stupid!
 		// query only to narrow the search, use polygon+velocity collision methods instead
 		// http://www.codeproject.com/KB/GDI-plus/PolygonCollision.aspx
-		for(SceneEntity entity : entities)
+		for(K entity : entities)
 		{
 			if(!entity.isAlive()) // sanity check
 				continue; 
@@ -100,27 +98,27 @@ public class StupidInteractions implements IPhysicsEngine
 	/**
 	 * Spatial query processor
 	 */
-	public interface IProximitySensor extends ISpatialSensor <SceneEntity>
+	public interface IProximitySensor <T extends IPhysicalObject> extends ISpatialSensor <T>
 	{
 		/**
 		 * Defines the reference entity for proximity tests.
 		 * @param source
 		 */
-		public void setSource(SceneEntity source);
+		public void setSource(T source);
 	}
 	
-	public class DefaultProximitySensor implements IProximitySensor
+	public class DefaultProximitySensor <T extends IPhysicalObject> implements IProximitySensor <T>
 	{
-		protected SceneEntity source;
+		protected T source;
 		
-		protected ICollisionManager manager;
+		protected ICollisionManager <T> manager;
 		
-		public DefaultProximitySensor(ICollisionManager manager)
+		public DefaultProximitySensor(ICollisionManager <T> manager)
 		{
 			this.manager = manager;
 		}
 		
-		public final boolean objectFound(IAreaChunk chunk, SceneEntity target) 
+		public final boolean objectFound(IAreaChunk chunk, T target) 
 		{
 			if(!target.isAlive())
 				return false; 
@@ -132,7 +130,7 @@ public class StupidInteractions implements IPhysicsEngine
 			return true;
 		}
 
-		public final void setSource(SceneEntity source) {
+		public final void setSource(T source) {
 			this.source = source;
 		}
 		

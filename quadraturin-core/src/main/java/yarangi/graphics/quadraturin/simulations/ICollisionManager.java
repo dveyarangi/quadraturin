@@ -1,6 +1,5 @@
 package yarangi.graphics.quadraturin.simulations;
 
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.spatial.SpatialIndexer;
 
 /**
@@ -8,26 +7,27 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public interface ICollisionManager
+public interface ICollisionManager <K extends IPhysicalObject>
 {
+	
 	/**
 	 * Invoked on coarse collision detection stage.
 	 * @param e1
 	 * @param e2
 	 */
-	public void collide(SceneEntity e1, SceneEntity e2); 
+	public void collide(K source, IPhysicalObject target); 
 	
 	/**
 	 * Registers a collision handler for specific object type.
 	 * @param _class
 	 * @param agentCollider
 	 */
-	public void registerHandler(Class<?> _class, ICollisionHandler<?> agentCollider);
+	public void registerHandler(Class<? extends IPhysicalObject> _class, ICollisionHandler<K> agentCollider);
 	
 	/**
 	 *  
 	 * @return
 	 */
-	public SpatialIndexer <SceneEntity> getObjectIndex();
+	public SpatialIndexer <K> getObjectIndex();
 
 }

@@ -6,7 +6,7 @@ package yarangi.graphics.quadraturin.simulations;
  * Physics engine interface. See {@link StupidInteractions}
  * 
  */
-public interface IPhysicsEngine
+public interface IPhysicsEngine <K extends IPhysicalObject>
 {
 	/**
 	 * Initializes whatever needs to be initialized.
@@ -20,7 +20,9 @@ public interface IPhysicsEngine
 	 */
 	public void calculate(double time);
 	
-	public void setCollisionManager(ICollisionManager man);
+	public void setCollisionManager(ICollisionManager <K> man);
 
-	public ICollisionManager getCollisionManager();
+	public ICollisionManager <K> getCollisionManager();
+
+	public void destroy();
 }
