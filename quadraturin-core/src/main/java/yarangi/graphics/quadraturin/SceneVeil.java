@@ -7,54 +7,58 @@ import java.util.Set;
 
 import javax.media.opengl.GL;
 
+import yarangi.graphics.quadraturin.objects.IVeilEntity;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
-import yarangi.math.Vector2D;
+import yarangi.graphics.quadraturin.objects.WorldEntity;
+import yarangi.spatial.Area;
+import yarangi.spatial.IAreaChunk;
+import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
 
 /**
- * Provides means to manage lifecycles of {@link SceneEntity} objects. 
+ * Provides means to manage lifecycles of {@link WorldEntity} objects. 
  * Also provides {@link SpatialIndexer} to allow object picking and other
  * location-based interactions. 
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneVeil
+public abstract class SceneVeil <K extends IVeilEntity>
 {
 
 	private int width, height;
 	
-	private Set <SceneEntity> entities = new HashSet <SceneEntity> ();
+	private Set <K> entities = new HashSet <K> ();
 	
 	/**
 	 * Indexes the object's locations
 	 */
-	private SpatialIndexer <SceneEntity> indexer;
+	private SpatialIndexer <K> indexer;
 
 	/**
 	 * Queue of entites waitong to be added to the veil.
 	 */
-	private Queue <SceneEntity> bornEntities = new LinkedList<SceneEntity> ();
+	private Queue <K> bornEntities = new LinkedList<K> ();
 
 	/**
 	 * Queue of dead entities to be cleaned up.
 	 */
-	private Queue <SceneEntity> deadEntities = new LinkedList <SceneEntity> ();
+	private Queue <K> deadEntities = new LinkedList <K> ();
 	
 	private IVeilOverlay veilEffect;
-	
+	private ViewPoint2D viewPoint;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
-	public SceneVeil(int width, int height, SpatialIndexer <SceneEntity> indexer)
+	public SceneVeil(int width, int height, SpatialIndexer <K> indexer, ViewPoint2D viewPoint)
 	{
 		this.indexer = indexer;
 		
 		this.width = width;
 		this.height = height;
 
+		this.viewPoint = viewPoint;
 	}
 	
 	public void setOverlayEffect(IVeilOverlay effect)
@@ -63,9 +67,13 @@ public abstract class SceneVeil
 	}
 	
 
-	public SpatialIndexer <SceneEntity> getEntityIndex() { return indexer; }
+	public SpatialIndexer <K> getEntityIndex() { return indexer; }
 
 
+	protected Set <K> getEntities()
+	{
+		return entities;
+	}
 	/**
 	 * Initializes the scene. 
 	 * @param gl
@@ -73,19 +81,17 @@ public abstract class SceneVeil
 	 */
 	public void init(GL gl)
 	{
-		for(SceneEntity entity : entities)
-			entity.init(gl);
 		if(veilEffect != null)
 			veilEffect.init(gl, this);
 	}
 	
 	public void destroy(GL gl)
 	{
-		for(SceneEntity entity : entities)
-			entity.destroy(gl);
 		if(veilEffect != null)
 			veilEffect.destroy(gl, this);
 	}
+	
+	
 	
 	/**
 	 * Displays the entirety of entities in this scene.
@@ -98,8 +104,8 @@ public abstract class SceneVeil
 		// injecting new entities
 		while(!bornEntities.isEmpty())
 		{
-			SceneEntity born = bornEntities.poll();
-			born.init(gl);
+			K born = bornEntities.poll();
+			born.getLook().init( gl, born );
 			entities.add(born);
 			if(born.getArea() != null)
 				indexer.add(born.getArea(), born);
@@ -107,8 +113,8 @@ public abstract class SceneVeil
 		
 		while(!deadEntities.isEmpty())
 		{
-			SceneEntity dead = deadEntities.poll();
-			dead.destroy(gl);
+			K dead = deadEntities.poll();
+			dead.getLook().destroy( gl, dead );
 			if(dead.getArea() != null)
 			{
 				indexer.remove(dead);
@@ -119,58 +125,25 @@ public abstract class SceneVeil
 //		System.out.println(entities.size() + " : " + indexer.size());
 		if(veilEffect == null)
 		{
-
-//			SetSensor <ISpatialObject> clipped = new SetSensor<ISpatialObject>();
-//			getEntityIndex().query(clipped, new AABB(0, 0, 100, 0));
+//			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
+//			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
+//			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
 			// TODO: do the clipping already, you lazy me!
 //			System.out.println("BEGIN ======================================================");
-			for(SceneEntity entity : entities)
+			for(K entity : entities)
 			{
-//				System.out.println(entity);
-				entity.display(gl, time, context);
+				render(gl, time, entity, context);
 			}
+//			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);
 		}
-		else
+/*		else
 		{
-//			veilEffect.render(gl, time, root, context);
-		}
+			veilEffect.render(gl, time, entities, context);
+		}*/
 	}
 	
-	public void animate(double time)
-	{
-//		boolean changePending = false;
-		// TODO: no control on order of executions
-		Vector2D refPoint;
-		for(SceneEntity entity : entities)
-		{
-			
-			if(entity.behave(time, true))
-			{
-				if(entity.getArea() != null)
-					indexer.update(entity.getArea(), entity);
-//				changePending = true;
-			}
-			
-			if (!entity.isAlive())
-			{
-				removeEntity(entity);
-				continue;
-			}
-			
-			if(entity.getSensor() != null)
-			{
-				refPoint = entity.getArea().getRefPoint();
-				entity.getSensor().clearSensor();
-				indexer.query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
-			}
-		}
-		
-		
-//		if(engine != null)
-		
-//		return changePending;
-	}
+	public abstract void animate(double time);
 
 
 	/**
@@ -178,7 +151,7 @@ public abstract class SceneVeil
 	 * on the next iteration of animation loop.
 	 * @param entity
 	 */
-	public void addEntity(SceneEntity entity) 
+	public void addEntity(K entity) 
 	{	
 
 		// TODO: perhaps children of SceneEntities shall be added here also
@@ -196,7 +169,7 @@ public abstract class SceneVeil
 	 * Removes the entity from the scene.
 	 * @param entity
 	 */
-	public void removeEntity(SceneEntity entity)
+	public void removeEntity(K entity)
 	{
 		deadEntities.add(entity);
 	}
@@ -204,5 +177,50 @@ public abstract class SceneVeil
 
 	public int getWidth() {return width; }
 	public int getHeight() {return height; }
+
+	public class ClippingSensor extends HashSet <K> implements ISpatialSensor <K> 
+	{
+		private GL gl;
+		private double time;
+		private RenderingContext context;
+		
+		public ClippingSensor(GL gl, double time, RenderingContext context)
+		{
+			super();
+			this.gl = gl;
+			this.time = time;
+			this.context = context;
+		}
+		@Override
+		public boolean objectFound(IAreaChunk chunk, K object)
+		{
+			if(!contains( object ))
+			{
+				render(gl, time, object, context);
+				add(object);
+			}
+			
+			return false;
+		}
+		
+	}
+	
+	protected void render(GL gl, double time, K entity, RenderingContext context)
+	{
+		Area area = entity.getArea();
+		
+		// storing transformation matrix:
+		gl.glPushMatrix();
+		
+		// transforming into entity coordinates:
+		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
+		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+		
+		// rendering this entity:
+		entity.getLook().render(gl, time, entity, context);
+		
+		gl.glPopMatrix();
+
+	}
 
 }
