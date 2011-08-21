@@ -126,8 +126,10 @@ public class TextureUtils
 
 	public static void destroyFBO(GL gl, FBOHandle fbo)
 	{
+		if(fbo.getTextureId() != ILLEGAL_ID)
 		gl.glDeleteTextures(1, new int [] {fbo.getTextureId()}, 0);
-		gl.glDeleteRenderbuffersEXT(1, new int [] { fbo.getDepthBufferId() }, 0);
+		if(fbo.getDepthBufferId() != ILLEGAL_ID)
+			gl.glDeleteRenderbuffersEXT(1, new int [] { fbo.getDepthBufferId() }, 0);
 		gl.glDeleteFramebuffersEXT(1, new int [] {fbo.getFboId()}, 0);
 	}
 }
