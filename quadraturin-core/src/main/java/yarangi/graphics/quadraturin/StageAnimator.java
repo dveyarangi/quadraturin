@@ -38,6 +38,8 @@ public class StageAnimator implements Loopy, StageListener
 
 	public static final String NAME = "q-animus";
 	
+	private static final double FROM_NANO = 1./1000000000.;
+	
 	/**
 	 * Counter for frame length average.
 	 */
@@ -99,19 +101,20 @@ public class StageAnimator implements Loopy, StageListener
 		if(counter.getCounter() > COUNTER_ITERATIONS)
 		{
 			// recalculating frame key time:
-			approxFrameLength = 1000000 * counter.get1DivAverage(); 
+			approxFrameLength = counter.getAverage() * FROM_NANO; 
+//			log.debug( "Estimated frame processing length: " +  approxFrameLength);
 			counter.reset();
 		}
 
 		frameTimeLeft = minFrameLength - (frameDuration);
 		
 		if(frameTimeLeft > 0)
-		try { // spending remaining frame time to match the maxFPS setting:
-			if( log.isTraceEnabled() )
-				log.trace("Going to sleep for " + frameTimeLeft + " ns.");
-			Thread.sleep(frameTimeLeft / 1000000);
-		} 
-		catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }
+			try { // spending remaining frame time to match the maxFPS setting:
+				if( log.isTraceEnabled() )
+					log.trace("Going to sleep for " + frameTimeLeft + " ns.");
+				Thread.sleep((long)(frameTimeLeft * FROM_NANO));
+			} 
+			catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }
 		
 		frameStart = System.nanoTime();
 		
