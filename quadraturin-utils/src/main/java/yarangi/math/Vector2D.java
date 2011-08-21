@@ -7,7 +7,7 @@ package yarangi.math;
  * @author Dve Yarangi
  * 
  */
-public class Vector2D extends IVector2D
+public class Vector2D //extends IVector2D
 {
 	private static final long serialVersionUID = 3043592649139743124L;
 	
@@ -173,6 +173,16 @@ public class Vector2D extends IVector2D
 	final public double dot(Vector2D v)
 	{
 		return x*v.x + y*v.y;
+	}
+	
+	/**
+	 * Calculates Z component of cross product of two extended (z=0) vectors
+	 * @param v
+	 * @return
+	 */
+	final public double crossZComponent(Vector2D v)
+	{
+		return x*v.y - y*v.x;
 	}
 	
 	/**
