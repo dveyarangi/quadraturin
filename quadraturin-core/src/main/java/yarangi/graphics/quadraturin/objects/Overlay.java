@@ -9,7 +9,7 @@ public class Overlay implements IVeilEntity
 	 */
 	private Look <?> look;
 	
-	
+	private Area area;
 	
 	/** 
 	 * Sets overlay's look.
@@ -27,8 +27,8 @@ public class Overlay implements IVeilEntity
 	@Override
 	public Area getArea()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		
+		return area;
 	}
 
 	@Override
@@ -48,8 +48,7 @@ public class Overlay implements IVeilEntity
 	@Override
 	public void setArea(Area area)
 	{
-		// TODO Auto-generated method stub
-		
+		this.area = area;
 	}
 
 	@Override
