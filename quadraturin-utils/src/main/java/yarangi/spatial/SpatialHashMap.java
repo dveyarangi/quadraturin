@@ -7,6 +7,8 @@ import yarangi.math.FastMath;
 
 /**
  * Straightforward implementation of spatial hash map.
+ * 
+ * Note: cannot be used in multi-threaded environment, due to passId optimization (and lack of any type of synchronization).
  *
  * @param <T>
  */
@@ -14,6 +16,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 {
 	/**
 	 * buckets array.
+	 * TODO: hashmap is slow!!!
 	 */
 	protected Map <IAreaChunk, T> [] map;
 	
@@ -45,7 +48,12 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	private int halfGridWidth, halfGridHeight;
 	
+	/**
+	 * Used by query methods to mark tested objects and avoid result duplication;
+	 * thusly permits only single threaded usage. 
+	 */
 	private int passId;
+	
 	
 	/**
 	 * 
@@ -83,6 +91,34 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		throw new IllegalStateException("Not implemented yet.");
 	}
 	
+
+	/**
+	 * @return width of the area, covered by this map
+	 */
+	public final int getHeight() { return height; }
+
+	/**
+	 * @return height of the area, covered by this map
+	 */
+	public final int getWidth() { return width; }
+
+	/**
+	 * @return size (height and width) of a single cell
+	 */
+	public final double getCellSize() { return cellSize; }
+	
+	/**
+	 * Retrieves content of the bucket that holds the contents of (x,y) cell.
+	 * Result may contain data from other cells as well.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public final Map <IAreaChunk, T> getBucket(int x, int y)
+	{
+		return map[hash(x, y)];
+	}
+	
 	/**
 	 * @return buckets number
 	 */
@@ -105,25 +141,8 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected void addObject(Area area, T object) 
 	{
-		
-		IGridIterator <?> it = area.iterator(cellSize);
-		IAreaChunk chunk;
-		int x, y;
-		
-		// adding the object to all overlapping buckets:
-		while(it.hasNext())
-		{
-			chunk = it.next();
-			x = toGridIndex(chunk.getX()); 
-			y = toGridIndex(chunk.getY());
-			
-			if(isInvalidIndex(x, y)) 
-				continue;
-			
-//			System.out.println(x + ":" + y + " " + object.getArea());
-			map[hash(x, y)].put(chunk, object);
-		}		
-
+		addingConsumer.setObject( object );
+		area.iterate( cellSize, addingConsumer );
 	}
 
 	/**
@@ -131,24 +150,8 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected T removeObject(Area area, T object) 
 	{
-		IGridIterator <?> it = area.iterator(cellSize);
-		IAreaChunk chunk;
-		int x, y;
-		while(it.hasNext())
-		{
-			chunk = it.next();
-			x = toGridIndex(chunk.getX()); 
-			y = toGridIndex(chunk.getY());
-			
-			if(isInvalidIndex(x, y)) 
-				continue;
-			
-//			System.out.println(x + ":" + y);
-			if(map[hash(x, y)].remove(chunk) == null)
-			{
-				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (area:" + area + "; obj:" + object + ").");
-			}
-		}		
+		removingConsumer.setObject( object );
+		area.iterate( cellSize, removingConsumer );
 		
 		return object;
 	}
@@ -165,58 +168,21 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 
 	/**
 	 * {@inheritDoc}
-	 * TODO: result, reported to sensor may be same object repeatedly.
+	 * TODO: slow
 	 */
 	public ISpatialSensor <T> query(ISpatialSensor <T> processor, Area area)
 	{
 		if(area == null)
 			throw new IllegalArgumentException("Area cannot be null.");
-		
-//		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
-		// removing the object from all overlapping buckets:
-		IGridIterator <? extends IAreaChunk> it = area.iterator(cellSize);
-		Map <IAreaChunk, T> cell;
-		IAreaChunk chunk;
-		T object;
-		int x, y;
-		int passId = getNextPassId();
-		while(it.hasNext())
-		{
-			chunk = it.next();
-			x = toGridIndex(chunk.getX()); 
-			y = toGridIndex(chunk.getY());
-			
-			if(isInvalidIndex(x, y)) 
-				continue;
-			
-			cell = map[hash(x, y)];
-			for(IAreaChunk c : cell.keySet())
-			{
-				object = cell.get(c);
-				if(object.getPassId() == passId)
-					continue;
-				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
-//					System.out.println(cell.get(c));
-				{
-					if(processor.objectFound(c, object/*, 
-						Math.pow((xmax+xmin)/2 * c.getX(), 2) + Math.pow((ymax+ymin)/2 * c.getY(), 2)*/))
-						break;
-				}
-				object.setPassId( passId );
-			}
-		}
+
+		queryingConsumer.setSensor( processor );
+		queryingConsumer.setQueryId(getNextPassId());
+		area.iterate( cellSize, queryingConsumer );
 
 		return processor;
 	}
 	
 
-//	@Override
-//	public ISpatialSensor<T> query(ISpatialSensor<T> sensor, AABB area)
-//	{
-		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
 	protected final int getNextPassId()
 	{
 		return ++passId;
@@ -234,7 +200,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	
 	/**
 	 * {@inheritDoc}
-	 * TODO: result, reported to sensor may be same object repeatedly.
+	 * TODO: actually queries a rectangle with sqrt(radiusSquare) span
 	 */
 	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double x, double y, double radiusSquare)
 	{
@@ -354,32 +320,115 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		return sensor;
 	}
 
-	/**
-	 * @return width of the area, covered by this map
-	 */
-	public final int getHeight() { return height; }
-
-	/**
-	 * @return height of the area, covered by this map
-	 */
-	public final int getWidth() { return width; }
-
-	/**
-	 * @return size (height and width) of a single cell
-	 */
-	public final double getCellSize() { return cellSize; }
-	
-	/**
-	 * Retrieves content of the bucket that holds the contents of (x,y) cell.
-	 * Result may contain data from other cells as well.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public final Map <IAreaChunk, T> getBucket(int x, int y)
+	private interface IObjectConsumer <T> extends IChunkConsumer
 	{
-		return map[hash(x, y)];
+		public void setObject(T object);
 	}
+	
+	private IObjectConsumer <T> addingConsumer = new IObjectConsumer <T>()
+	{
+		private T object;
+		private int x, y;
+		
+		public void setObject(T object)
+		{
+			this.object = object;
+		}
+		@Override
+		public boolean consume(IAreaChunk chunk)
+		{
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
+			
+			if(isInvalidIndex(x, y)) 
+				return false;
+			
+			map[hash(x, y)].put(chunk, object);
+			return true;
+		}
+	};
+	
+	private IObjectConsumer <T> removingConsumer = new IObjectConsumer <T>()
+	{
+		private T object;
+		private int x, y;
+		
+		public void setObject(T object)
+		{
+			this.object = object;
+		}
+		
+		@Override
+		public boolean consume(IAreaChunk chunk)
+		{
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
+			
+			if(isInvalidIndex(x, y)) 
+				return false;
+			
+			if(map[hash(x, y)].remove(chunk) == null)
+			{
+//				for(IAreaChunk ch : map[hash(x,y)].keySet())
+//					System.out.println(ch.getArea() + " :: " + chunk.getArea());
+				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (obj:" + object + ").");
+			}
+			return true;
+		}
+	};
+	private interface IQueryingConsumer <T extends ISpatialObject> extends IChunkConsumer
+	{
+		public void setSensor(ISpatialSensor <T> sensor);
 
+		public void setQueryId(int nextPassId);
+	}
+	
+	private IQueryingConsumer <T> queryingConsumer = new IQueryingConsumer <T>()
+	{
+		private T object;
+		private int x, y;
+		private Map <IAreaChunk, T> cell;
+		private ISpatialSensor <T> processor;
+		private int passId;
+		
+		public void setSensor(ISpatialSensor <T> processor)
+		{
+			this.processor = processor;
+		}
+		
+		public void setQueryId(int passId)
+		{
+			this.passId = passId;
+		}
+
+		@Override
+		public boolean consume(IAreaChunk chunk)
+		{
+			x = toGridIndex(chunk.getX()); 
+			y = toGridIndex(chunk.getY());
+			
+			if(isInvalidIndex(x, y)) 
+				return false;
+			
+			cell = map[hash(x, y)];
+			for(IAreaChunk c : cell.keySet())
+			{
+				object = cell.get(c);
+				if(object.getPassId() == passId)
+					continue;
+				
+				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
+//					System.out.println(cell.get(c));
+				{
+					object.setPassId( passId );
+					if(processor.objectFound(c, object))
+						break;
+					
+				}
+			}
+			
+			return true;
+		}
+	};
 
 }

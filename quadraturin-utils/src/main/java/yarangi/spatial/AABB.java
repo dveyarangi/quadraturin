@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-import java.util.NoSuchElementException;
+import java.util.LinkedList;
 
 import yarangi.math.Vector2D;
 
@@ -101,6 +101,19 @@ public class AABB implements Area
 
 	}
 	
+	@Override
+	public LinkedList<Vector2D> getDarkEdge(Vector2D from)
+	{
+		LinkedList <Vector2D> res = new LinkedList <Vector2D> ();
+		//			System.out.println(entities.size());
+		Vector2D distance = getRefPoint().minus(from).normalize();
+
+		res.add(distance.left().multiply(getMaxRadius()).add( ref ).substract(from));
+		res.add(distance.right().multiply(getMaxRadius()).add( ref ).substract(from));
+		return res;
+	}
+
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -121,65 +134,27 @@ public class AABB implements Area
 	{
 		return "AABB [loc:" + ref.x() + ":" + ref.y() + "; r:" + r + "; a:" + a + "]"; 
 	}
-
-/*	public Area clone() 
-	{
-		return new AABB(x, y, r, a);
-	}*/
 	
-	public IGridIterator <IAreaChunk> iterator(int cellsize)
+	@Override
+	public void iterate(int cellsize, IChunkConsumer consumer)
 	{
-		return new AABBIterator(this, cellsize);
-	}
-	
-	public class AABBIterator implements IGridIterator <IAreaChunk>
-	{
-		private double cellsize;
 		
-		private double currx, curry;
+		double minx = Math.floor( (ref.x()-r)/cellsize ) * cellsize;
+		double miny = Math.floor( (ref.y()-r)/cellsize ) * cellsize;
 		
-		private double minx, miny, maxx, maxy;
+		double maxx = Math.ceil(  (ref.x()+r)/cellsize ) * cellsize;
+		double maxy = Math.ceil(  (ref.y()+r)/cellsize ) * cellsize;
 		
-		private AABBIterator(AABB aabb, double cellsize) {
-			
-			
-			this.cellsize = cellsize;
-			
-			minx = Math.floor( (aabb.ref.x()-aabb.r)/cellsize ) * cellsize;
-			miny = Math.floor( (aabb.ref.y()-aabb.r)/cellsize ) * cellsize;;
-			
-			maxx = Math.ceil(  (aabb.ref.x()+aabb.r)/cellsize ) * cellsize;
-			maxy = Math.ceil(  (aabb.ref.y()+aabb.r)/cellsize ) * cellsize;
-			
-			currx = minx;
-			curry = miny;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return curry <= maxy;
-		}
-
-		@Override
-		public IAreaChunk next() 
-		{
-			if(!hasNext())
-				throw new NoSuchElementException("No more grid points.");
-			AABBChunk vector = new AABBChunk(currx, curry, cellsize);
-//			System.out.println(maxx);
-			
-			currx += cellsize;
-			if(currx > maxx)
+		double currx, curry;
+		
+		
+		for(currx = minx; currx <= maxx; currx += cellsize)
+			for(curry = miny; curry <= maxy; curry += cellsize)
 			{
-				currx = minx;
-				curry += cellsize;
+				consumer.consume( new AABBChunk(currx, curry, cellsize));
 			}
-			
-			return vector;
-		}
-		
 	}
-	
+
 	/**
 	 *  
 	 * 
@@ -262,5 +237,7 @@ public class AABB implements Area
 		
 		public int hashCode() { return this.getArea().hashCode(); }
 	}
+
+
 
 }

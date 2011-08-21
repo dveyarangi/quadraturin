@@ -1,7 +1,6 @@
 package yarangi.spatial;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,13 +55,13 @@ public class Polygon implements Area
 	
 	final private void updateAABB(PolyPoint point)
 	{
-		if(minx == null || minx.x > point.x)
+		if(minx == null || minx.x() > point.x())
 			minx = point;
-		if(maxx == null || maxx.x < point.x)
+		if(maxx == null || maxx.x() < point.x())
 			maxx = point;
-		if(miny == null || miny.y > point.y)
+		if(miny == null || miny.y() > point.y())
 			miny = point;
-		if(maxy == null || maxy.y < point.y)
+		if(maxy == null || maxy.y() < point.y())
 			maxy = point;
 	}
 
@@ -109,9 +108,11 @@ public class Polygon implements Area
 	
 
 	@Override
-	public IGridIterator<PolyChunk> iterator(int cellsize) {
-		return new PolyIterator(generateChunks(cellsize));
-		
+	public void iterate(int cellsize, IChunkConsumer consumer)
+	{
+		List <PolyChunk> chunks = generateChunks(cellsize);
+		for(PolyChunk chunk : chunks)
+			consumer.consume( chunk );
 	}
 	
 
@@ -161,8 +162,8 @@ public class Polygon implements Area
 			currStartIdx = FastArrays.dec(currStartIdx, pointsNum);
 			
 			tempPoint = points.get(currStartIdx);
-			tempGridx = FastMath.toGrid(tempPoint.x, cellsize);
-			tempGridy = FastMath.toGrid(tempPoint.y, cellsize);
+			tempGridx = FastMath.toGrid(tempPoint.x(), cellsize);
+			tempGridy = FastMath.toGrid(tempPoint.y(), cellsize);
 //			System.out.println(" * testing at (" + tempGridx + "," + tempGridy + ")");
 		} 
 		while(tempGridx == startGridx
@@ -192,8 +193,8 @@ public class Polygon implements Area
 					currEndIdx = FastArrays.inc(currEndIdx, size());
 					nextPoint = Polygon.this.get(currEndIdx);
 					
-					nextGridx = FastMath.toGrid(nextPoint.x, cellsize);
-					nextGridy = FastMath.toGrid(nextPoint.y, cellsize);
+					nextGridx = FastMath.toGrid(nextPoint.x(), cellsize);
+					nextGridy = FastMath.toGrid(nextPoint.y(), cellsize);
 				}
 				while(nextGridx == currGridx
 				   && nextGridy == currGridy);
@@ -259,43 +260,14 @@ public class Polygon implements Area
 		return list;
 	}
 	
-	public class PolyIterator implements IGridIterator <PolyChunk>
+	public class PolyPoint extends Vector2D
 	{
-		private Iterator <PolyChunk> parent;
-		
-		public PolyIterator(List <PolyChunk> chunks)
-		{
-			parent = chunks.iterator();
-		}
-		
-		@Override
-		public boolean hasNext()
-		{
-			return parent.hasNext();
-		}
-
-		@Override
-		public PolyChunk next()
-		{
-			return parent.next();
-		}
-		
-	}
-
-	public class PolyPoint
-	{
-		private double x, y;
-		
 		private int nextConvexIdx, prevConvexIdx;
 		
 		public PolyPoint(double x, double y)
 		{
-			this.x = x;
-			this.y = y;
+			super(x, y);
 		}
-		
-		public final double x() { return x; }
-		public final double y() { return y; }
 		
 		public void setPrevConvexIdx(int idx) { this.prevConvexIdx = idx; } 
 		public void setNextConvexIdx(int idx) { this.nextConvexIdx = idx; }
@@ -388,6 +360,49 @@ public class Polygon implements Area
 		{
 			return Polygon.this;
 		}
+	}
+
+	@Override
+	public LinkedList<Vector2D> getDarkEdge(Vector2D from)
+	{
+		LinkedList <Vector2D> res = new LinkedList <Vector2D> ();
+
+		Vector2D minPoint = null;
+		Vector2D maxPoint = null;
+		
+		Vector2D prev = points.get( points.size()-1 ).plus( ref ).substract( from );
+		Vector2D curr = points.get( 0 ).plus( ref ).substract( from );
+		Vector2D next;
+		for(int idx = 0; idx < points.size(); idx ++)
+		{
+			next = points.get(FastArrays.inc( idx, points.size() )).plus( ref ).substract( from );
+//			System.out.println(prev + " : " + curr + " : " + next);
+			double c1 = prev.crossZComponent( curr );
+			double c2 = next.crossZComponent( curr );
+//			System.out.println(prev.cross);
+//			System.out.println(c1 + " : " + c2);
+			if(c1 >= 0 && c2 >= 0)
+				minPoint = new Vector2D(curr);
+			if(c1 <= 0 && c2 <= 0)
+				maxPoint = new Vector2D(curr);
+			
+			if(minPoint != null && maxPoint != null)
+				break;
+			
+			prev = curr;
+			curr = next;
+
+		}
+		
+//		res.add( new Vector2D(minPoint.x(), minPoint.y()) );
+//		res.add( new Vector2D(maxPoint.x(), maxPoint.y()) );
+		
+		if(minPoint != null)
+			res.add( minPoint );
+		if(maxPoint != null)
+			res.add( maxPoint );
+
+		return res;
 	}
 
 
