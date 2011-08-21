@@ -1,19 +1,20 @@
 package yarangi.graphics.lights;
 
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Set;
 
 import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.objects.IWorldEntity;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.objects.WorldEntity;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.textures.TextureUtils.FBOHandle;
-import yarangi.math.Angles;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
@@ -30,7 +31,7 @@ import yarangi.math.Vector2D;
  *
  * @param <K>
  */
-public class CircleLightLook <K extends SceneEntity> implements Look <K>
+public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 {
 	
 	private IShader penumbraShader;
@@ -53,10 +54,15 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 	
 	public void init(GL gl, K entity) {
 		
+		// rounding texture size to power of 2:
 		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2.));
+		
+		// creating empty texture for lighting:
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
-		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
-		fbo = TextureUtils.createFBO(gl, lightTexture, depthBuffer);
+		
+		// creating 
+//		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
+		fbo = TextureUtils.createFBO(gl, lightTexture, TextureUtils.ILLEGAL_ID);
 		
 		// TODO: move shader initialization elsewhere:
 		lightShader = ShaderFactory.getShader("light");
@@ -98,11 +104,13 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 		gl.glViewport(0, 0, textureSize, textureSize);
 		gl.glOrtho(-viewport.get(2)/2, viewport.get(2)/2, -viewport.get(3)/2, viewport.get(3)/2, -1, 1);
 		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// binding FBO:
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo.getFboId());
 		
-		// clearing frame buffer:
 		gl.glDisable(GL.GL_DEPTH_TEST);
+		
+		// clearing frame buffer:
 		gl.glClearColor(0,0,0,0);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
@@ -112,45 +120,52 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 
 		if(entity.getSensor() != null)
 		{
-			Set <SceneEntity> entities = entity.getSensor().getEntities();
+			Set <WorldEntity> entities = entity.getSensor().getEntities();
+			List <Vector2D> shadowEdge;
+			Vector2D sourceLoc = entity.getArea().getRefPoint();
+			Vector2D casterLoc;
 		// drawing red polygones for full shadows and penumbra:
-			for(SceneEntity caster : entities)
+			for(WorldEntity caster : entities)
 			{
 				if(!caster.getLook().isCastsShadow())
 					continue;
 				
-	//			System.out.println(entities.size());
-				Vector2D distance = caster.getArea().getRefPoint().minus(entity.getArea().getRefPoint());
-				Vector2D dir = distance.normal();
+				shadowEdge = caster.getArea().getDarkEdge( sourceLoc );
+				if(shadowEdge.size() < 2)
+					continue;
 				
-				Vector2D left = dir.rotate(Angles.PI_div_2);
-				Vector2D right = dir.rotate(-Angles.PI_div_2); // new Vector2D( dir.y, -dir.x)
-	
+				casterLoc = caster.getArea().getRefPoint();
+				
+	//			System.out.println(entities.size());
+				Vector2D distance = casterLoc.minus(sourceLoc);
 				
 				// TODO: raycasting?
-				Vector2D casterLeft  = left.mul(caster.getArea().getMaxRadius()).plus(distance);
-				Vector2D casterRight = right.mul(caster.getArea().getMaxRadius()).plus(distance);
+				Vector2D casterLeft  = shadowEdge.get(0);
+				Vector2D casterRight = shadowEdge.get(shadowEdge.size()-1);
 				
-				Vector2D sourceLeft = left.mul(caster.getArea().getMaxRadius());
-				Vector2D sourceRight = right.mul(caster.getArea().getMaxRadius());
+				Vector2D sourceLeftLeft = casterLeft.left().normalize().multiply(entity.getArea().getMaxRadius());
+				Vector2D sourceLeftRight = casterLeft.right().normalize().multiply(entity.getArea().getMaxRadius());
+				Vector2D sourceRightLeft = casterRight.left().normalize().multiply(entity.getArea().getMaxRadius());
+				Vector2D sourceRightRight = casterRight.right().normalize().multiply(entity.getArea().getMaxRadius());
 	//			Vector2D casterLeft  = left.mul(caster.getAABB().r).plus(distance);
 	//			Vector2D casterRight = right.mul(caster.getAABB().r).plus(distance);
 				
 	//			Vector2D sourceLeft = left.mul(entity.getAABB().r);
 	//			Vector2D sourceRight = right.mul(entity.getAABB().r);
 				
-				Vector2D fullLeft = casterLeft.minus(sourceLeft).normalize();
-				Vector2D fullRight = casterRight.minus(sourceRight).normalize();
+				Vector2D fullLeft = casterLeft.normal();
+				Vector2D fullRight = casterRight.normal();
 				
 				// penumbra:
-				Vector2D softLeft = casterLeft.minus(sourceRight).normalize();
-				Vector2D softRight = casterRight.minus(sourceLeft).normalize();
+				Vector2D softLeft = casterLeft.minus(sourceLeftRight).normalize();
+				Vector2D softRight = casterRight.minus(sourceRightLeft).normalize();
 				
 				// TODO: calc real shadow extent:
-				Vector2D casterLeftOutter  = left.mul(10*10).plus(distance);
-				Vector2D casterRightOutter = right.mul(10*10).plus(distance);
+				Vector2D casterLeftOutter  = casterLeft.plus(sourceLeftLeft.mul(10*10));
+				Vector2D casterRightOutter = casterRight.plus(sourceRightRight.mul(10*10));
 	//			Vector2D casterLeftOutter  = left.mul(caster.getAABB().r*10).plus(distance);
 	//			Vector2D casterRightOutter = right.mul(caster.getAABB().r*10).plus(distance);
+				
 				// drawing full shadow
 				gl.glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
 				gl.glBegin(GL.GL_QUADS);
@@ -161,6 +176,8 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 				gl.glEnd();
 				
 				// drawing penumbra. the shader calculates penumbra gradient based on pixel angle:
+				// TODO: to costly, replace with prepared texture:
+
 				penumbraShader.begin(gl);
 				gl.glBegin(GL.GL_QUADS);
 				gl.glTexCoord2f(0, 1);gl.glVertex2f((float)(casterLeftOutter.x()),     (float)casterLeftOutter.y());
@@ -179,10 +196,12 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 				
 			}
 		}
+		
 		// exiting framebuffer:
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
-
-		// restoring transformations and 
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		// restoring to original view
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		gl.glPopMatrix();
 		gl.glMatrixMode(GL.GL_MODELVIEW);
@@ -198,6 +217,9 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 //		System.out.println(textureSize);
 		// drawing shadow map:
+		
+		// drawing light:
+		// TODO: shader too costly, replace with prepared texture:
 		gl.glBindTexture(GL.GL_TEXTURE_2D, lightTexture);
 		lightShader.begin(gl);
 		lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
@@ -224,17 +246,17 @@ public class CircleLightLook <K extends SceneEntity> implements Look <K>
 
 	}
 
-	private void renderTexture(GL gl, SceneEntity entity)
+	private void renderTexture(GL gl, IWorldEntity entity)
 	{
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		gl.glBegin(GL.GL_QUADS);
 //		System.out.println(textureSize/2);
-		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-textureSize/2, -textureSize/2);
-		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(+textureSize/2, -textureSize/2);
-		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(+textureSize/2, +textureSize/2);
-		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f(-textureSize/2, +textureSize/2);
+		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(-textureSize/2, -textureSize/2, -0.1f);
+		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(+textureSize/2, -textureSize/2,  -0.1f);
+		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(+textureSize/2, +textureSize/2,  -0.1f);
+		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(-textureSize/2, +textureSize/2,  -0.1f);
 		gl.glEnd();
 		
 	}
