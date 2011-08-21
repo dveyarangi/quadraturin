@@ -12,7 +12,8 @@ public interface ICollisionHandler <K>
 	/**
 	 * Implements collision logic. 
 	 * @param e
+	 * @return true, if no further processing of source collision is required.
 	 */
-	public void setImpactWith(K source, IPhysicalObject target);
+	public boolean setImpactWith(K source, IPhysicalObject target);
 
 }

@@ -14,8 +14,9 @@ public interface ICollisionManager <K extends IPhysicalObject>
 	 * Invoked on coarse collision detection stage.
 	 * @param e1
 	 * @param e2
+	 * @return true, if no further processing of source collisions is required.
 	 */
-	public void collide(K source, IPhysicalObject target); 
+	public boolean collide(K source, IPhysicalObject target); 
 	
 	/**
 	 * Registers a collision handler for specific object type.

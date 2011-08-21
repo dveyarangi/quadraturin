@@ -72,18 +72,20 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			if(body == null) // non-physical entity:
 				continue;
 			
-			
 			////////////////////////////////
 			// collision detection broad phase: 
 			sensor.setSource(entity);
 			
 			// TODO: querying by area is inefficient (polygon iterator is slow)
+			// TODO: collision prediction (expand area?)
 			manager.getObjectIndex().query(sensor, area);  
 			
 			////////////////////////////////
 			// inert mass point adjustment:
 			
-			// TODO: add volume, rotation and collision response :)
+			// TODO: add volume and rotation :)
+			
+			
 			// TODO: probably should use some Runga-Kutta (research it). 
 			body.addVelocity(body.getForce().x() / body.getMass() * time, body.getForce().y() / body.getMass() * time);
 			
@@ -120,14 +122,13 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 		
 		public final boolean objectFound(IAreaChunk chunk, T target) 
 		{
-			if(!target.isAlive())
-				return false; 
+//			if(!target.isAlive())
+//				return false; 
 			if(!source.isAlive())
-				return false;
+				return true;
 			
-			manager.collide(source, target);
+			return manager.collide(source, target);
 			
-			return true;
 		}
 
 		public final void setSource(T source) {

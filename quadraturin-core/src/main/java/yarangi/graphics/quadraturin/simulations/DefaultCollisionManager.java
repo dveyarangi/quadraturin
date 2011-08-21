@@ -18,14 +18,14 @@ public class DefaultCollisionManager <K extends IPhysicalObject> implements ICol
 	}
 	
 	@Override
-	public void collide(K source, IPhysicalObject target) 
+	public boolean collide(K source, IPhysicalObject target) 
 	{
 		// todo:
 		ICollisionHandler<K> handler = handlers.get( source.getClass() );
 		if(handler == null)
-			return;
+			return false;
 		
-		handler.setImpactWith( source, target );
+		return handler.setImpactWith( source, target );
 	}
 
 	@Override
