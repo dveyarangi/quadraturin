@@ -21,6 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
+import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.actions.IActionController;
 import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
@@ -28,7 +29,6 @@ import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
-import yarangi.graphics.quadraturin.events.UserActionListener;
 import yarangi.graphics.quadraturin.objects.IWorldEntity;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
@@ -58,12 +58,7 @@ public class QuadVoices implements IEventManager, Loopy
 	 * Maps input code to action id. 
 	 */
 	private Map <InputHook, String> binding = new HashMap <InputHook, String> ();
-	
-	/**
-	 * User action listeners. 
-	 */
-	private HashMap <String, UserActionListener> userListeners = new HashMap <String, UserActionListener> ();
-	
+
 	
 	/**
 	 * User actions (key or mouse key hits)
@@ -131,11 +126,9 @@ public class QuadVoices implements IEventManager, Loopy
 			// or revise to work with picks list: 
 			event.setSceneEntity(pickedEntity);
 			
-			UserActionListener listener = userListeners.get(event.getActionId());
-			if(listener == null)
-				continue;
-			
-			listener.onUserAction(event);
+			IAction action = controller.getActions().get(event.getActionId());
+			if(action != null)
+				action.act( event );
 		}
 		
 /*		if(sceneTime != -1)
@@ -266,24 +259,6 @@ public class QuadVoices implements IEventManager, Loopy
 	// ENGINE EVENTS
 
 	/**
-	 * Adds listeners for user actions
-	 * @param entityId
-	 * @param listener
-	 */
-	public void addUserActionListener(String actionId, UserActionListener listener)
-	{
-		if(userListeners.get(actionId) != null)
-			throw new IllegalStateException("Action " + actionId + " already has a registered listener.");
-		
-		log.debug("Registered listener [" + listener + "] for action [" + actionId + "].");
-		userListeners.put(actionId, listener);
-	}
-	public void removeUserActionListener(String actionId)
-	{
-		userListeners.remove(actionId);
-	}
-	
-	/**
 	 * Removes listener for entity pick events. 
 	 * @param entityId
 	 */
@@ -329,15 +304,10 @@ public class QuadVoices implements IEventManager, Loopy
 
 	public void setActionController(IActionController controller)
 	{
-		if(this.controller != null)
-			for(String actionId : this.controller.getActionIds())
-				removeUserActionListener(actionId);
-		
+
 		removeCursorListener( this.controller );
-		this.controller = controller;
-		for(String actionId : controller.getActionIds())
-			addUserActionListener(actionId, controller);
 		
+		this.controller = controller;
 		addCursorListener( controller );
 		
 	}

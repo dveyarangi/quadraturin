@@ -8,7 +8,6 @@ import java.awt.event.MouseWheelListener;
 
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
-import yarangi.graphics.quadraturin.events.UserActionListener;
 
 /**
  * User IO events manager interface.
@@ -34,15 +33,6 @@ public interface IEventManager extends KeyListener, MouseListener, MouseMotionLi
 	 * @param event
 	 */
 	public void declare(CursorEvent event);
-
-	/**
-	 * Register a user action listener.
-	 * @param action
-	 * @param listener
-	 */
-	public void addUserActionListener(String action, UserActionListener listener);
-	
-	public void removeUserActionListener(String action);
 	
 	/**
 	 * Register a cursor io listener.
