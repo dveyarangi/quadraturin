@@ -12,10 +12,10 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 
 	private IPhysicsEngine <IWorldEntity> engine;
 	
-	public WorldVeil(int width, int height, IPhysicsEngine <IWorldEntity> engine, ViewPoint2D vp) 
+	public WorldVeil(int width, int height, IPhysicsEngine <IWorldEntity> engine) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
-		super(width, height, new SpatialHashMap	<IWorldEntity>(width*height/10, 10, width, height), vp);
+		super(width, height, new SpatialHashMap	<IWorldEntity>(width*height/10, 10, width, height));
 		
 		System.out.println("Allocated " + width*height/10 + " cells.");
 			

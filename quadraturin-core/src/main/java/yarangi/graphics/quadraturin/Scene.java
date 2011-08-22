@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.IActionController;
 import yarangi.graphics.quadraturin.config.SceneConfig;
+import yarangi.graphics.quadraturin.debug.Debug;
+import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
 import yarangi.graphics.quadraturin.objects.IWorldEntity;
 import yarangi.graphics.quadraturin.objects.Overlay;
 import yarangi.graphics.quadraturin.objects.WorldEntity;
@@ -96,7 +98,7 @@ public abstract class Scene
 		log = Logger.getLogger(name);
 		
 		// checking for physics engine:
-		IPhysicsEngine engine = config.createEngine();
+		IPhysicsEngine <IWorldEntity> engine = config.createEngine();
 		if(engine == null)
 			log.info("Physics calculator is not specified.");
 		
@@ -104,17 +106,17 @@ public abstract class Scene
 		viewPoint = config.createViewpoint();
 			
 		// scene world aggregator:
-		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine, viewPoint);
+		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine);
 		
 		// scene ui aggregator
-		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight(), viewPoint);
+		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
 		// scene time / second
 		this.frameLength = config.getFrameLength();
 		
 		this.voices = voices;
 		
-//		if(Debug.ON)
-//			addEntity(new SceneDebugOverlay(worldVeil.getEntityIndex()));
+//		if(Debug.ON) 
+//			addOverlay(new SceneDebugOverlay(worldVeil.getEntityIndex()));
 	}
 
 	/**

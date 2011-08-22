@@ -45,20 +45,17 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	private Queue <K> deadEntities = new LinkedList <K> ();
 	
 	private IVeilOverlay veilEffect;
-	private ViewPoint2D viewPoint;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
-	public SceneVeil(int width, int height, SpatialIndexer <K> indexer, ViewPoint2D viewPoint)
+	public SceneVeil(int width, int height, SpatialIndexer <K> indexer)
 	{
 		this.indexer = indexer;
 		
 		this.width = width;
 		this.height = height;
-
-		this.viewPoint = viewPoint;
 	}
 	
 	public void setOverlayEffect(IVeilOverlay effect)
@@ -213,7 +210,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		gl.glPushMatrix();
 		
 		// transforming into entity coordinates:
-		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0);
+		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0/* TODO: entity.getLook().getPriority() */);
 		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		
 		// rendering this entity:
