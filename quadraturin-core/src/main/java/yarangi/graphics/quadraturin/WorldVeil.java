@@ -12,6 +12,8 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 
 	private IPhysicsEngine <IWorldEntity> engine;
 	
+	private double veilTime;
+	
 	public WorldVeil(int width, int height, IPhysicsEngine <IWorldEntity> engine) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
@@ -57,7 +59,7 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 		// running physics:
 		if(getPhysicsEngine() != null)
 			getPhysicsEngine().calculate(time);
-		
+		veilTime += time;
 		Vector2D refPoint;
 		// TODO: no control on order of executions
 		for(IWorldEntity entity : getEntities())
@@ -78,9 +80,15 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 			
 			if(entity.getSensor() != null)
 			{   // filling world objects in sensor range:
-				refPoint = entity.getArea().getRefPoint();
-				entity.getSensor().clearSensor();
-				getEntityIndex().query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
+				// TODO: scheduling, perhaps?
+
+				if(entity.getSensor().isSensingNeeded( veilTime ))
+				{
+					entity.getSensor().clearSensor();
+					refPoint = entity.getArea().getRefPoint();
+					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
+					getEntityIndex().query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
+				}
 			}
 		}
 //		return changePending;

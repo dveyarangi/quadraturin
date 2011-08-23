@@ -6,7 +6,10 @@ import yarangi.spatial.ISpatialSensor;
 
 public interface ISensor <K extends IVeilEntity> extends ISpatialSensor <K>
 {
-
+	/**
+	 * Sensed entities.
+	 * @return
+	 */
 	public abstract Set<K> getEntities();
 
 	public abstract double getSensorRadiusSquare();
@@ -14,5 +17,6 @@ public interface ISensor <K extends IVeilEntity> extends ISpatialSensor <K>
 	public abstract double getRadius();
 
 	public abstract void clearSensor();
-
+	
+	public boolean isSensingNeeded(double time);
 }

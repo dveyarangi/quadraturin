@@ -21,12 +21,16 @@ public class Sensor implements ISensor <IWorldEntity>
 	
 	private ISpatialFilter <IWorldEntity>filter;
 
-	
-	public Sensor(double radius, ISpatialFilter <IWorldEntity>filter )
+	private double lastSensingTime;
+
+	private double interval;
+
+	public Sensor(double radius, double interval, ISpatialFilter <IWorldEntity>filter )
 	{
 		this.radiusSquare = radius * radius;
 		this.radius = radius;
 		this.filter = filter;
+		this.interval = interval;
 		clearSensor();
 	}
 	
@@ -58,4 +62,16 @@ public class Sensor implements ISensor <IWorldEntity>
 		
 		return false;
 	}
+
+	@Override
+	public boolean isSensingNeeded(double time)
+	{
+		boolean needed = time - lastSensingTime > interval;
+		if(needed)
+			lastSensingTime = time;
+			
+		return needed;
+	}
+	
+	
 }

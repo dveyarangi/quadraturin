@@ -44,4 +44,11 @@ public class DummySensor implements ISensor <IWorldEntity>
 	{
 		return true;
 	}
+
+	@Override
+	public boolean isSensingNeeded(double time)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
