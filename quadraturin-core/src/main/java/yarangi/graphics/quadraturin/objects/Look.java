@@ -11,7 +11,11 @@ import yarangi.graphics.quadraturin.RenderingContext;
  */
 public interface Look <An>
 {
-	
+	/**
+	 * Initiate graphics (textures, meshes, etc.)
+	 * @param gl
+	 * @param entity
+	 */
 	public void init(GL gl, An entity);
 	
 	/**
@@ -23,6 +27,15 @@ public interface Look <An>
 
 	public void destroy(GL gl, An entity);
 
+	/**
+	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)
+	 * Ranges from 0 to {@link Quad2DController#MAX_DEPTH_PRIORITY}
+	 * @return
+	 */
+//	public double getPriority();
 	
+	/**
+	 * @return true, if this look should be considered opaque for lighting calculations.
+	 */
 	public boolean isCastsShadow();
 }
