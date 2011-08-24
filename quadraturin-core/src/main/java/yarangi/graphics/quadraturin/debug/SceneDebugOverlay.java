@@ -2,11 +2,10 @@ package yarangi.graphics.quadraturin.debug;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.objects.IWorldEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
-import yarangi.spatial.Area;
+import yarangi.spatial.Point;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
@@ -30,7 +29,7 @@ public class SceneDebugOverlay extends Overlay
 		this.indexer = indexer;
 
 		setLook(spatialOverlay);
-		setArea(new Area.PointArea(0,0));
+		setArea(new Point(0,0));
 	}
 	
 	@SuppressWarnings("unchecked")
