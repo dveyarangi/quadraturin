@@ -134,6 +134,12 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 		public final void setSource(T source) {
 			this.source = source;
 		}
+
+		@Override
+		public void clear()
+		{
+			
+		}
 		
 	}
 }
