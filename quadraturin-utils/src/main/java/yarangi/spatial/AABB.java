@@ -1,6 +1,8 @@
 package yarangi.spatial;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import yarangi.math.Vector2D;
 
@@ -102,14 +104,14 @@ public class AABB implements Area
 	}
 	
 	@Override
-	public LinkedList<Vector2D> getDarkEdge(Vector2D from)
+	public List<Vector2D> getDarkEdge(Vector2D from)
 	{
-		LinkedList <Vector2D> res = new LinkedList <Vector2D> ();
+		List <Vector2D> res = new ArrayList <Vector2D> (2);
 		//			System.out.println(entities.size());
-		Vector2D distance = getRefPoint().minus(from).normalize();
+		Vector2D distance = getRefPoint().minus(from).normalize().multiply(getMaxRadius());
 
-		res.add(distance.left().multiply(getMaxRadius()).add( ref ).substract(from));
-		res.add(distance.right().multiply(getMaxRadius()).add( ref ).substract(from));
+		res.add(distance.left() .add(ref).substract(from));
+		res.add(distance.right().add(ref).substract(from));
 		return res;
 	}
 

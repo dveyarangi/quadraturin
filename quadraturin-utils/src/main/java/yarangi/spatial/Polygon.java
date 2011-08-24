@@ -363,44 +363,45 @@ public class Polygon implements Area
 	}
 
 	@Override
-	public LinkedList<Vector2D> getDarkEdge(Vector2D from)
+	public List<Vector2D> getDarkEdge(Vector2D from)
 	{
-		LinkedList <Vector2D> res = new LinkedList <Vector2D> ();
+		List <Vector2D> res = new ArrayList <Vector2D> ();
 
 		Vector2D minPoint = null;
 		Vector2D maxPoint = null;
+		Vector2D areaCenter = ref.minus(from);
 		
-		Vector2D prev = points.get( points.size()-1 ).plus( ref ).substract( from );
-		Vector2D curr = points.get( 0 ).plus( ref ).substract( from );
+		Vector2D prev = points.get( points.size()-1 ).plus( areaCenter );
+		Vector2D curr = points.get( 0 ).plus( areaCenter );
 		Vector2D next;
+		double c1 = prev.crossZComponent( curr ), c2;
 		for(int idx = 0; idx < points.size(); idx ++)
 		{
-			next = points.get(FastArrays.inc( idx, points.size() )).plus( ref ).substract( from );
+			next = points.get(FastArrays.inc( idx, points.size() )).plus( areaCenter );
 //			System.out.println(prev + " : " + curr + " : " + next);
-			double c1 = prev.crossZComponent( curr );
-			double c2 = next.crossZComponent( curr );
+			c2 = next.crossZComponent( curr );
 //			System.out.println(prev.cross);
 //			System.out.println(c1 + " : " + c2);
 			if(c1 >= 0 && c2 >= 0)
-				minPoint = new Vector2D(curr);
+				minPoint = curr;
 			if(c1 <= 0 && c2 <= 0)
-				maxPoint = new Vector2D(curr);
+				maxPoint = curr;
 			
 			if(minPoint != null && maxPoint != null)
 				break;
 			
 			prev = curr;
 			curr = next;
-
+			c1 = -c2;
 		}
 		
 //		res.add( new Vector2D(minPoint.x(), minPoint.y()) );
 //		res.add( new Vector2D(maxPoint.x(), maxPoint.y()) );
 		
 		if(minPoint != null)
-			res.add( minPoint );
+			res.add( new Vector2D(minPoint) );
 		if(maxPoint != null)
-			res.add( maxPoint );
+			res.add( new Vector2D(maxPoint) );
 
 		return res;
 	}
