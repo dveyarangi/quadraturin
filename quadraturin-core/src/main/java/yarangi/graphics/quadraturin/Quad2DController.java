@@ -222,6 +222,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			// TODO: should this interrupt the AWT event thread?
 			// TODO: check for GLContext overriding
 			log.debug("Renderer thread was interrupted.");
+			return;
 		}
 		
 		if(isScenePending)
@@ -236,7 +237,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			isScenePending = false;
 		}
 		
-
+		if(currScene == null)
+			return;
 
 		// ////////////////////////////////////////////////////
 		// TODO: viewpoint transformations
@@ -286,10 +288,12 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glLoadIdentity();
 
 		currScene.postDisplay(gl, currScene.getFrameLength(), context);
+		
+		releaseNext();
 
+		// TODO: ensure that rendering cycle does not start again before this finishes:
 		gl.glFlush();
 		glDrawable.swapBuffers();
-		releaseNext();
 	}
 
 	/**
