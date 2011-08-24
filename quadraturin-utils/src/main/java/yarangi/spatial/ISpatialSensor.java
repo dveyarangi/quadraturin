@@ -9,4 +9,6 @@ public interface ISpatialSensor <K extends ISpatialObject>
 	 * @return true, if the query should stop after this object.
 	 */
 	public boolean objectFound(IAreaChunk chunk, K object);
+	
+	public void clear();
 }

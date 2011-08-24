@@ -26,4 +26,10 @@ public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor 
 	
 	public K getObject() { return object; }
 
+	@Override
+	public void clear()
+	{
+		object = null;
+	}
+
 }

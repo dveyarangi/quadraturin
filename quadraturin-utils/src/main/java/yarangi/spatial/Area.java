@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import yarangi.ZenUtils;
@@ -60,7 +60,7 @@ public interface Area
 	 */
 	public double getMaxRadius();
 	
-	public LinkedList <Vector2D> getDarkEdge(Vector2D from);
+	public List <Vector2D> getDarkEdge(Vector2D from);
 
 	/**
 	 * Area profile width from specified angle.
@@ -125,10 +125,10 @@ public interface Area
 		public Area clone() { return this; }
 
 		@Override
-		public LinkedList <Vector2D> getDarkEdge(Vector2D from)
+		public List <Vector2D> getDarkEdge(Vector2D from)
 		{
 			ZenUtils.methodNotSupported(this.getClass());
-			return new LinkedList <Vector2D> ();
+			return new ArrayList <Vector2D> (0);
 		}
 	
 	};

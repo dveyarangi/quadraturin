@@ -141,6 +141,8 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 */
 	protected void addObject(Area area, T object) 
 	{
+		if(object == null)
+			throw new NullPointerException();
 		addingConsumer.setObject( object );
 		area.iterate( cellSize, addingConsumer );
 	}
@@ -170,16 +172,18 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * {@inheritDoc}
 	 * TODO: slow
 	 */
-	public ISpatialSensor <T> query(ISpatialSensor <T> processor, Area area)
+	public ISpatialSensor <T> query(ISpatialSensor <T> sensor, Area area)
 	{
 		if(area == null)
 			throw new IllegalArgumentException("Area cannot be null.");
+		
+		sensor.clear();
 
-		queryingConsumer.setSensor( processor );
+		queryingConsumer.setSensor( sensor );
 		queryingConsumer.setQueryId(getNextPassId());
 		area.iterate( cellSize, queryingConsumer );
 
-		return processor;
+		return sensor;
 	}
 	
 
@@ -215,6 +219,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
+		sensor.clear();
 		Map <IAreaChunk, T> cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
@@ -291,6 +296,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		int passId = getNextPassId();
 		T object;
 		Map <IAreaChunk, T> cell;
+		sensor.clear();
 		while(tMaxX <= 1 || tMaxY <= 1)
 		{
 			if(tMaxX < tMaxY)
