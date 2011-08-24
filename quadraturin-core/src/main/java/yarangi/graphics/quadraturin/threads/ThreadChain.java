@@ -49,7 +49,17 @@ public class ThreadChain
 	{
 		thread.setOrdial(threads.size());
 		threads.add(thread);
-		semaphores.add( new Semaphore(1));	
+		
+		Semaphore semaphore = new Semaphore(1); 
+		try
+		{
+			semaphore.acquire();
+		} catch ( InterruptedException e ) { 
+			/* bah, this will never happen :) */
+			throw new IllegalStateException( "Cannot aquire newly created semaphore." );
+		}
+		semaphores.add( semaphore );	
+
 		
 	}
 	
@@ -108,13 +118,8 @@ public class ThreadChain
 	public void start()
 	{
 
-		if(semaphores.size() > 0)
-			for(int idx = 1; idx < semaphores.size(); idx ++)
-				try {
-					semaphores.get(idx).acquire();
-				} catch (InterruptedException e) { throw new RuntimeException("Failed to aquire semaphore after it's creation.", e);	}
 		
-	//	semaphores.get(0).release(1);
+		semaphores.get(0).release(1);
 		
 		for(IChainedThread thread : threads)
 		{
