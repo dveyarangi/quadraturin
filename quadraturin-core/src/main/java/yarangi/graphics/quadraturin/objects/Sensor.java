@@ -31,7 +31,7 @@ public class Sensor implements ISensor <IWorldEntity>
 		this.radius = radius;
 		this.filter = filter;
 		this.interval = interval;
-		clearSensor();
+		clear();
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class Sensor implements ISensor <IWorldEntity>
 	public ISpatialFilter <IWorldEntity> getFilter() { return filter; }
  
 	@Override
-	public void clearSensor() { this.entities = new HashSet <IWorldEntity> (); }
+	public void clear() { this.entities = new HashSet <IWorldEntity> (); }
 	
 	@Override
 	public boolean objectFound(IAreaChunk chunk, IWorldEntity object) 

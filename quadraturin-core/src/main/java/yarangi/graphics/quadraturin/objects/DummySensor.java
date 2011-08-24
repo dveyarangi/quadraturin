@@ -15,30 +15,14 @@ public class DummySensor implements ISensor <IWorldEntity>
 {
 	private Set <IWorldEntity> entities = new HashSet <IWorldEntity> ();
 	
-	private double radius;
-	private double radiusSquare;
+	public DummySensor() { }
 	
-	public DummySensor(double radius)
-	{
-		this.radiusSquare = radius * radius;
-		this.radius = radius;
-		clearSensor();
-	}
-	
-	public Set <IWorldEntity> getEntities()
-	{
-		return entities;
-	}
+	public Set <IWorldEntity> getEntities() { return entities; }
 
-	public double getSensorRadiusSquare()
-	{
-		return radiusSquare;
-	}
+	public double getSensorRadiusSquare() { return 0; }
 	
-	public double getRadius() { return radius; }
- 
-	public void clearSensor() { this.entities = new HashSet <IWorldEntity> (); }
-	
+	public double getRadius() { return 0; }
+ 	
 	@Override
 	public boolean objectFound(IAreaChunk chunk, IWorldEntity object) 
 	{
@@ -48,7 +32,9 @@ public class DummySensor implements ISensor <IWorldEntity>
 	@Override
 	public boolean isSensingNeeded(double time)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void clear() { }
 }

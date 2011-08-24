@@ -15,8 +15,6 @@ public interface ISensor <K extends IVeilEntity> extends ISpatialSensor <K>
 	public abstract double getSensorRadiusSquare();
 
 	public abstract double getRadius();
-
-	public abstract void clearSensor();
 	
 	public boolean isSensingNeeded(double time);
 }
