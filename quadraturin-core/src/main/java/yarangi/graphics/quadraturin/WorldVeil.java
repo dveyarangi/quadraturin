@@ -84,7 +84,6 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 
 				if(entity.getSensor().isSensingNeeded( veilTime ))
 				{
-					entity.getSensor().clearSensor();
 					refPoint = entity.getArea().getRefPoint();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					getEntityIndex().query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
