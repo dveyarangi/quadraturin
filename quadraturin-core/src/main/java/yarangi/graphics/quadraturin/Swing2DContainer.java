@@ -139,7 +139,7 @@ public class Swing2DContainer extends JFrame
 			}
 		});
 		
-		log.debug("Creating thread pool...");
+		log.debug("Creating thread chain...");
 		if(Debug.ON)
 		{
 			chain = new DebugThreadChain(100);
@@ -147,20 +147,15 @@ public class Swing2DContainer extends JFrame
 		else
 			chain = new ThreadChain("q-chain");
 		
-			
-		
-		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
 		log.debug("Creating Quadraturin event manager...");
 		voices = new QuadVoices(config.getInputConfig());
-		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
 		log.trace("Quadraturin event manager created.");
 		
 		log.debug("Creating Quadraturin GL listener...");
 		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
-		chain.addThread(controller);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    log.trace("Registering Quadraturin controller...");
@@ -179,7 +174,7 @@ public class Swing2DContainer extends JFrame
 //		IPhysicsEngine engine = new StupidInteractions();
 
 	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
-		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
+		log.trace("Entity stage animator created.");
 		
 		log.debug("Creating entity stage...");
 		stage = new Stage(config.getStageConfig(), voices);
@@ -188,8 +183,12 @@ public class Swing2DContainer extends JFrame
 		stage.addListener(controller);
 		stage.addListener(animator);
 		stage.setInitialScene(); // TODO: ugly
+		
+		
+		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
+		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
+		chain.addThread(controller);
 
-		log.trace("Entity stage animator created.");
 
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
