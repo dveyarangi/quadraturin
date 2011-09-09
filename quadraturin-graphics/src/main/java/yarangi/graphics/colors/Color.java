@@ -1,7 +1,9 @@
 package yarangi.graphics.colors;
 
+import javax.media.opengl.GL;
 
-public class Color
+
+final public class Color
 {
 	protected float r;
 	protected float g;
@@ -29,4 +31,18 @@ public class Color
 	public void setGreen(float g) { this.g = g; }
 	public void setBlue(float b) { this.b = b; }
 	public void setAlpha(float a) { this.a = a; }
+	
+	public void apply(GL gl)
+	{
+		gl.glColor4f( r, g, b, a );
+	}
+	public boolean isVoid()
+	{
+		return r == 0 && b == 0 && g == 0 && a == 0;
+	}
+	
+	public String toString()
+	{
+		return "R:" + r + " G:" + g + " B:" + b + " A:" + a;
+	}
 }
