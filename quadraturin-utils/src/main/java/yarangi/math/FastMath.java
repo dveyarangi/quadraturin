@@ -30,6 +30,10 @@ public class FastMath
 	   {
 		   return round(val/cell)*cell;
 	   }
+	   public static float toGrid(float val, float cell)
+	   {
+		   return round(val/cell)*cell;
+	   }
 	   
 	   public static int toGrid(double val, int cell)
 	   {
