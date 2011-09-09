@@ -9,7 +9,7 @@ import yarangi.math.FastMath;
  * Straightforward implementation of spatial hash map.
  * 
  * Note: cannot be used in multi-threaded environment, due to passId optimization (and lack of any type of synchronization).
- *
+ * TODO: refactor to extend {@link GridMap}
  * @param <T>
  */
 public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
@@ -177,8 +177,6 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		if(area == null)
 			throw new IllegalArgumentException("Area cannot be null.");
 		
-		sensor.clear();
-
 		queryingConsumer.setSensor( sensor );
 		queryingConsumer.setQueryId(getNextPassId());
 		area.iterate( cellSize, queryingConsumer );
@@ -219,7 +217,6 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		sensor.clear();
 		Map <IAreaChunk, T> cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
@@ -296,7 +293,6 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		int passId = getNextPassId();
 		T object;
 		Map <IAreaChunk, T> cell;
-		sensor.clear();
 		while(tMaxX <= 1 || tMaxY <= 1)
 		{
 			if(tMaxX < tMaxY)
