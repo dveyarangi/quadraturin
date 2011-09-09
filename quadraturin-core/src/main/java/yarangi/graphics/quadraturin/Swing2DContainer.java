@@ -179,10 +179,10 @@ public class Swing2DContainer extends JFrame
 		log.debug("Creating entity stage...");
 		stage = new Stage(config.getStageConfig(), voices);
 		
+		stage.setInitialScene(); // TODO: ugly
 		stage.addListener(voices);
 		stage.addListener(controller);
 		stage.addListener(animator);
-		stage.setInitialScene(); // TODO: ugly
 		
 		
 		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
