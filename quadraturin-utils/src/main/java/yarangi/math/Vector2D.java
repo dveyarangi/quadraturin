@@ -194,6 +194,15 @@ public class Vector2D //extends IVector2D
 	{
 		return new Vector2D(x+v.x, y+v.y);
 	}
+	/**
+	 * Calculates vector sum
+	 * @param v
+	 * @return
+	 */
+	final public Vector2D plus(double x, double y)
+	{
+		return new Vector2D(this.x+x, this.y+y);
+	}
 	
 	/**
 	 * Adds the values to this vector
@@ -229,6 +238,15 @@ public class Vector2D //extends IVector2D
 	final public Vector2D minus(Vector2D v)
 	{
 		return new Vector2D(x-v.x, y-v.y);
+	}
+	/**
+	 * Calculates vector difference
+	 * @param v
+	 * @return
+	 */
+	final public Vector2D minus(double x, double y)
+	{
+		return new Vector2D(this.x-x, this.y-y);
 	}
 	
 	/**
