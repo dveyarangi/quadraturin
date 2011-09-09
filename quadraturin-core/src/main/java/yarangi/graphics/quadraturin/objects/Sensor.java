@@ -7,25 +7,27 @@ import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
 
 /**
- * Sensor aspect of {@link WorldEntity}
+ * Sensor aspect of {@link Entity}
  * 
  * @author dveyarangi
  *
  */
-public class Sensor implements ISensor <IWorldEntity>
+public class Sensor implements ISensor <IEntity>
 {
-	private Set <IWorldEntity> entities;
+	private Set <IEntity> entities;
 	
 	private double radius;
 	private double radiusSquare;
 	
-	private ISpatialFilter <IWorldEntity>filter;
+	private ISpatialFilter <IEntity> filter;
+	
+	private boolean senseTerrain;
 
 	private double lastSensingTime;
 
 	private double interval;
 
-	public Sensor(double radius, double interval, ISpatialFilter <IWorldEntity>filter )
+	public Sensor(double radius, double interval, ISpatialFilter <IEntity>filter, boolean senseTerrain )
 	{
 		this.radiusSquare = radius * radius;
 		this.radius = radius;
@@ -35,7 +37,7 @@ public class Sensor implements ISensor <IWorldEntity>
 	}
 	
 	@Override
-	public Set <IWorldEntity> getEntities()
+	public Set <IEntity> getEntities()
 	{
 		return entities;
 	}
@@ -49,13 +51,13 @@ public class Sensor implements ISensor <IWorldEntity>
 	@Override
 	public double getRadius() { return radius; }
 	
-	public ISpatialFilter <IWorldEntity> getFilter() { return filter; }
+	public ISpatialFilter <IEntity> getFilter() { return filter; }
  
 	@Override
-	public void clear() { this.entities = new HashSet <IWorldEntity> (); }
+	public void clear() { this.entities = new HashSet <IEntity> (); }
 	
 	@Override
-	public boolean objectFound(IAreaChunk chunk, IWorldEntity object) 
+	public boolean objectFound(IAreaChunk chunk, IEntity object) 
 	{
 		if(filter == null || filter.accept(object))
 			entities.add(object);
@@ -72,6 +74,9 @@ public class Sensor implements ISensor <IWorldEntity>
 			
 		return needed;
 	}
+
+	@Override
+	public boolean isSenseTerrain() { return senseTerrain; }
 	
 	
 }

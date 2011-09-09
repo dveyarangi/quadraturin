@@ -4,7 +4,7 @@ import java.util.Set;
 
 import yarangi.spatial.ISpatialSensor;
 
-public interface ISensor <K extends IVeilEntity> extends ISpatialSensor <K>
+public interface ISensor <K> extends ISpatialSensor <K>
 {
 	/**
 	 * Sensed entities.
@@ -17,4 +17,6 @@ public interface ISensor <K extends IVeilEntity> extends ISpatialSensor <K>
 	public abstract double getRadius();
 	
 	public boolean isSensingNeeded(double time);
+	
+	public boolean isSenseTerrain();
 }
