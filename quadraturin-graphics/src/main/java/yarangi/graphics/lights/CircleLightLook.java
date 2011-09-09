@@ -8,9 +8,8 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.WorldEntity;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.TextureUtils;
@@ -31,7 +30,7 @@ import yarangi.math.Vector2D;
  *
  * @param <K>
  */
-public class CircleLightLook <K extends IWorldEntity> implements Look <K>
+public class CircleLightLook <K extends IEntity> implements Look <K>
 {
 	
 	private IShader penumbraShader;
@@ -94,12 +93,10 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
 		
 		// transforming the FBO plane to fit the light source location and scale:
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
+		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
+		
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
+		
 		gl.glScaled(((double)viewport.get(2)/(double)textureSize),( (double)viewport.get(3)/(double)textureSize), 0);
 		gl.glViewport(0, 0, textureSize, textureSize);
 		gl.glOrtho(-viewport.get(2)/2, viewport.get(2)/2, -viewport.get(3)/2, viewport.get(3)/2, -1, 1);
@@ -120,12 +117,11 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 
 		if(entity.getSensor() != null)
 		{
-			Set <WorldEntity> entities = entity.getSensor().getEntities();
+			Set <IEntity> entities = entity.getSensor().getEntities();
 			List <Vector2D> shadowEdge;
 			Vector2D sourceLoc = entity.getArea().getRefPoint();
-			Vector2D casterLoc;
 		// drawing red polygones for full shadows and penumbra:
-			for(WorldEntity caster : entities)
+			for(IEntity caster : entities)
 			{
 				if(!caster.getLook().isCastsShadow())
 					continue;
@@ -133,11 +129,6 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 				shadowEdge = caster.getArea().getDarkEdge( sourceLoc );
 				if(shadowEdge.size() < 2)
 					continue;
-				
-				casterLoc = caster.getArea().getRefPoint();
-				
-	//			System.out.println(entities.size());
-				Vector2D distance = casterLoc.minus(sourceLoc);
 				
 				// TODO: raycasting?
 				Vector2D casterLeft  = shadowEdge.get(0);
@@ -202,10 +193,8 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		// restoring to original view
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glPopMatrix();
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glPopMatrix();
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
+		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix();
 		gl.glPopAttrib();
 		
 		// setting blending mode for lights:
@@ -246,7 +235,7 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 
 	}
 
-	private void renderTexture(GL gl, IWorldEntity entity)
+	private void renderTexture(GL gl, IEntity entity)
 	{
 		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
@@ -274,4 +263,11 @@ public class CircleLightLook <K extends IWorldEntity> implements Look <K>
 	}
 	
 	public Color getColor() { return color ; }
+
+
+	@Override
+	public float getPriority()
+	{
+		return 0f;
+	}
 }
