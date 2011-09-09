@@ -105,13 +105,5 @@ public abstract class SpatialIndexer <K extends ISpatialObject> implements ISpat
 	 * @param aabb
 	 * @param object
 	 */
-//	protected abstract void updateObject(Area old, Area area, K object);
-	
-	public Set <K> query(Area area)
-	{
-		SetSensor <K> set = new SetSensor<K> ();
-		query(set, area);
-		return set;
-	}
 
 }

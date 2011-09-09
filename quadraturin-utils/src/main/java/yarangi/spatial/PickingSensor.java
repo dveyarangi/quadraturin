@@ -15,8 +15,9 @@ public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor 
 		this.filter = filter;
 	}
 
-	public boolean objectFound(IAreaChunk chunk, K object) {
-		if(filter.accept( object ))
+	public boolean objectFound(IAreaChunk chunk, K object) 
+	{
+		if(filter == null || filter.accept( object ))
 		{
 			this.object = object;
 			return true; // terminating query

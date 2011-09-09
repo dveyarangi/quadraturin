@@ -2,6 +2,10 @@ package yarangi.spatial;
 
 public interface IAreaChunk 
 {
+	/**
+	 * TODO: redundant
+	 * @return
+	 */
 	public Area getArea();
 	public double getX();
 	public double getY();

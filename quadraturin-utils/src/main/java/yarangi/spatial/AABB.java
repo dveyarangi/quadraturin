@@ -148,7 +148,7 @@ public class AABB implements Area
 		double maxy = Math.ceil(  (ref.y()+r)/cellsize ) * cellsize;
 		
 		double currx, curry;
-		
+//		System.out.println(minx + " : " + maxx + " : " + miny + " : " + maxy + " " + cellsize);
 		
 		for(currx = minx; currx <= maxx; currx += cellsize)
 			for(curry = miny; curry <= maxy; curry += cellsize)

@@ -14,13 +14,13 @@ import yarangi.math.Vector2D;
 public interface Area
 {
 	
+//	public IGridIterator <? extends IAreaChunk> iterator(int cellsize);
+	
 	/**
 	 * Iterates over grid cells of specified size that overlaps with this area.
 	 * @param cellsize size of the grid cell
 	 * @return
 	 */
-//	public IGridIterator <? extends IAreaChunk> iterator(int cellsize);
-	
 	public void iterate(int cellsize, IChunkConsumer consumer);
 	
 	/**
@@ -60,6 +60,12 @@ public interface Area
 	 */
 	public double getMaxRadius();
 	
+	/**
+	 * Extracts a area perimeter part that is hidden from specified direction.
+	 * TODO: this method is too specific :) maybe its better to retrieve the whole perimeter
+	 * @param from
+	 * @return
+	 */
 	public List <Vector2D> getDarkEdge(Vector2D from);
 
 	/**
