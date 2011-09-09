@@ -109,7 +109,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		/////
 		// specifies how the pixels are overriden by overlapping objects:
-		gl.glEnable(GL.GL_DEPTH_TEST);
+//		gl.glDisable(GL.GL_DEPTH_TEST);
+		// TODO: fix entity prioritizing:
 	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
 	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
 	    //	    gl.glDepthFunc(GL.GL_ALWAYS);
@@ -277,6 +278,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// scene preprocessing:
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
+		// TODO: fix display times:
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
 		// ////////////////////////////////////////////////////
 		// scene rendering:
