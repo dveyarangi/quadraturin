@@ -2,11 +2,8 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.Behavior;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.simulations.RoughCollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.math.Vector2D;
@@ -19,7 +16,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 	
 	private double veilTime;
 	
-	private EntityShell <ITerrainMap >terrain;
+	private EntityShell <? extends ITerrainMap >terrain;
 	
 	public WorldVeil(int width, int height) 
 	{ 
@@ -46,7 +43,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 		this.engine = engine;
 	}
 
-	public void addTerrain(EntityShell <ITerrainMap> terrain)
+	public void addTerrain(EntityShell <? extends ITerrainMap> terrain)
 	{
 		this.terrain = terrain;
 	}

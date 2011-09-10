@@ -108,7 +108,7 @@ public abstract class Scene
 		// scene world aggregator:
 		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight());
 		
-		EntityShell <ITerrainMap> terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
+		EntityShell <? extends ITerrainMap> terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
 		worldVeil.setPhysicsEngine( config.getEngineConfig().createEngine(worldVeil.getEntityIndex(), terrain.getEssence()));
 		worldVeil.addTerrain(terrain);
 		

@@ -18,7 +18,7 @@ public class EntityShell <E> extends Entity
 	
 	private E essence;
 	
-	public EntityShell(E essense, Behavior <E> behavior, Look <E> look)
+	public EntityShell(E essense, Behavior <? extends E> behavior, Look <? extends E> look)
 	{
 		setEssence( essense );
 		setLook( look );
