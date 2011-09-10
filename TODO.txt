@@ -9,13 +9,16 @@ TODOS:
 	> Animation
 		- Out-of-screen simplified behavior and physics?
 		- some default container for scene dynamics aggregation (scripted events, world AI)
-		- adapt frame length to average FPS.
+			V scene intialization from config.
+			
+		V adapt frame length to average FPS.
 	> Graphics
 		- LOD 
 		- scene entity tree clipping 
 		- scene UI
 		- renderer interface instead of plain JOGL?
 		- import object "looks" from files
+		V look priority (using z-component and depth test?)
 	> Integration
 	    - configurable minimized window behavior
 	    - 
@@ -23,10 +26,12 @@ TODOS:
 * Resource loading
 	> JAXB
 		V configuration
+	> JSON
+		V configuration	
 	> text
 		> ui labels
 		> dialogue
-		> shaders
+		V shaders
 		> scripts
 	> binary
 		> meshes
@@ -36,37 +41,42 @@ TODOS:
 	> Resource managers and bundles
 
 * Navigation
-	> Mouse to world coordinates conversion must be fixed
+	V Mouse to world coordinates conversion must be fixed
 	V Zoom out is broken (objects go out of GL clipping area)
 	> Strafing speed should be visually consistent on different zoom values.
 	> Limit scene dimensions and limit transposition to scene borders
 	
 * Physics
-	> Configurable engine (on/off :)
+	V Configurable engine (on/off :)
 	> Invent interface.
 	> Interface for "interactive" entities
 		- Autodetect the interactive flag (or, maybe, separate functions in Scene)
+			V 
 		- Containing sphere.
 		- Must not have overhead inside animation loop (currently there is (PhysicEntity) casting).
 	> Implement proximity and collision detection 
 		V Start with Quadtree. Optimize for rapid updates. 
 		- Check the BD-tree
 		V hash map
+    > Other
+		- Runga Kutta
+		- fine-grained collisions
 	
 * Profiling/optimization
 	> replace JRE data structures with primitive-specific
-	> A memory manager
-	> Scene load/unload mechanizm.
-	> memory monitoring
-	> cpu monitoring 
-	> scene unloading
+	> replace/optimize Swing event threads?
+	> A memory manager/monitor
+	V Scene load/unload mechanizm.
+	> cpu monitoring / thread load display
+	> debug instrumentation 
 	> performance management
-		- hardware capabilities bundle
+		- hardware capabilities detection, bundle to list of relevant capabilities  
 		- automatic reduction of behavior, physics and rendering quality?
 
 		
 Polygons:
-Graham scan
-Delaunay triangulation
-Voronoi
- Hertel-Mehlhorn heuristic
+	Graham scan
+	Delaunay triangulation
+	Voronoi
+ 	Hertel-Mehlhorn heuristic
+	
