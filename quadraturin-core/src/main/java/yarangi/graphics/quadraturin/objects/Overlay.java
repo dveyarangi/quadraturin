@@ -1,5 +1,8 @@
 package yarangi.graphics.quadraturin.objects;
 
+import javax.media.opengl.GL;
+
+import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.spatial.Area;
 
 public class Overlay implements IVeilEntity
@@ -60,6 +63,13 @@ public class Overlay implements IVeilEntity
 
 	@Override
 	public void markDead()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void render(GL gl, double time, RenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		

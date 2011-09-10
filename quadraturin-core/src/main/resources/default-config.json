@@ -1,0 +1,42 @@
+{
+	"config" : "ekran",
+	"xres" : 640,
+	"yres" : 480,
+	"aa"   : false
+}
+
+{
+	"config" : "input",
+	"scroll-step" : 40,
+	"scale-step" : 0.9,
+	
+	
+	
+	"binding" : [
+		{ "actionId" : "scroll-left",  "buttonId : 37,  "modeId" : 2 },
+		{ "actionId" : "scroll-right",    "buttonId : 39,  "modeId" : 2 },
+		{ "actionId" : "scroll-up",  "buttonId : 38,  "modeId" : 2 },
+		{ "actionId" : "scroll-down",  "buttonId : 40,  "modeId" : 2 },
+		{ "actionId" : "zoom-in",  "buttonId : 33,  "modeId" : 2 },
+		{ "actionId" : "zoom-out",  "buttonId : 34,  "modeId" : 2 }
+	],
+	
+	"binding action ids" : " 
+		PRESSED = 1;
+		TAPPED = 2;
+		RELEASED = 3;
+		DRAGGED = 4;	
+	
+		MOUSE_LEFT_BUTTON = -1;
+		MOUSE_RIGHT_BUTTON = -2;
+		
+		* keyboard key values are identical to KeyEvent.getKeyCode() values.
+	 "
+}
+
+{
+	"config" : "stage",
+	"frame-length" : 1,
+	"max-fps" : 60
+}
+  

@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.debug;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
 import yarangi.spatial.Point;
@@ -15,9 +15,9 @@ public class SceneDebugOverlay extends Overlay
 	@SuppressWarnings("rawtypes")
 	private Look spatialOverlay;
 	
-	SpatialIndexer <IWorldEntity> indexer;
+	SpatialIndexer <IEntity> indexer;
 	
-	public SceneDebugOverlay(SpatialIndexer <IWorldEntity> indexer)
+	public SceneDebugOverlay(SpatialIndexer <IEntity> indexer)
 	{
 		super();
 		
@@ -46,7 +46,7 @@ public class SceneDebugOverlay extends Overlay
 		spatialOverlay.destroy( gl, indexer );
 	}
 
-	public SpatialIndexer <IWorldEntity> getIndexer()
+	public SpatialIndexer <IEntity> getIndexer()
 	{
 		return indexer;
 	}

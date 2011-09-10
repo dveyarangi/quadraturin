@@ -29,13 +29,15 @@ public interface Look <An>
 
 	/**
 	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)
-	 * Ranges from 0 to {@link Quad2DController#MAX_DEPTH_PRIORITY}
+	 * Ranges from 0 to {@link -Quad2DController#MAX_DEPTH_PRIORITY}
+	 * TODO: move to Area?
 	 * @return
 	 */
-//	public double getPriority();
+	public float getPriority();
 	
 	/**
 	 * @return true, if this look should be considered opaque for lighting calculations.
 	 */
 	public boolean isCastsShadow();
+
 }

@@ -8,8 +8,6 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
-import yarangi.graphics.quadraturin.actions.IAction;
-import yarangi.graphics.quadraturin.actions.IActionController;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.events.CursorEvent;
@@ -60,7 +58,7 @@ public class DefaultActionFactory
 			// TODO Auto-generated method stub
 			
 		}
-		
+
 		
 	}
 	
@@ -71,7 +69,6 @@ public class DefaultActionFactory
 		
 		final double scrollStep = config.getScrollStep();
 		final double scaleStep = config.getScaleStep();
-		final double initialFrameLength = scene.getFrameLength();
 		
 		actions.put("scroll-right", new IAction() {
 			public void act(UserActionEvent event) { vp.getCenter().add(-scrollStep/vp.getScale(), 0); }}

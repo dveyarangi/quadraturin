@@ -8,7 +8,7 @@ import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
  * @author dveyarangi
  *
  */
-public interface IWorldEntity extends IVeilEntity, IPhysicalObject
+public interface IEntity extends IVeilEntity, IPhysicalObject
 {
 
 	/**
@@ -33,8 +33,7 @@ public interface IWorldEntity extends IVeilEntity, IPhysicalObject
 	 * How the object behaves
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	public abstract Behavior getBehavior();
+	public abstract Behavior <?> getBehavior();
 
 	/**
 	 * How the entity fits the world
@@ -45,7 +44,8 @@ public interface IWorldEntity extends IVeilEntity, IPhysicalObject
 	 * How the entity feels the world.
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
 	public abstract ISensor getSensor();
+
+	public abstract boolean behave(double time, boolean b);
 
 }

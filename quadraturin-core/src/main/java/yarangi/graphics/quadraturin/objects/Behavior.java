@@ -14,7 +14,7 @@ public interface Behavior <An>
 	 * @param entity Entity this behavior should be applied to
 	 * @param isVisible TODO: states, if the entity is currently visible to invoke simpler behavior
 	 * 
-	 * @return true, if behavior changes the {@link IWorldEntity#getArea()}. 
+	 * @return true, if behavior changes the {@link IEntity#getArea()}. 
 	 * TODO: invalidate Area instead, to remove this illicit dependency.
 	 */
 	public boolean behave(double time, An entity, boolean isVisible);

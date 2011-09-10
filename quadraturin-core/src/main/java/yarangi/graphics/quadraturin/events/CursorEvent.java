@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.events;
 
 import java.awt.Point;
 
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.math.Vector2D;
 
 /**
@@ -26,7 +26,7 @@ public class CursorEvent
 	/**
 	 * Set if the cursor if hovering over and entity.
 	 */
-	private IWorldEntity entity;
+	private IEntity entity;
 
 	private InputHook hook;
 	
@@ -61,11 +61,11 @@ public class CursorEvent
 		return canvasLocation;
 	}
 	
-	public void setSceneEntity(IWorldEntity entity) 
+	public void setSceneEntity(IEntity entity) 
 	{
 		this.entity = entity;
 	}
 	
-	public IWorldEntity getEntity() { return entity; }
+	public IEntity getEntity() { return entity; }
 	
 }

@@ -1,5 +1,8 @@
 package yarangi.graphics.quadraturin.objects;
 
+import javax.media.opengl.GL;
+
+import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.simulations.Body;
@@ -17,7 +20,7 @@ import yarangi.spatial.Area;
  * <p>If {@link #markDead} is called, the entity will be disposed of at the next rendering cycle. 
  *  
  */
-public class WorldEntity implements IWorldEntity
+public class Entity implements IEntity
 {
 	
 	/**
@@ -49,7 +52,7 @@ public class WorldEntity implements IWorldEntity
 	 * Create a new scene entity, wrapped in specified AABB.
 	 * @param aabb
 	 */
-	protected WorldEntity() 
+	protected Entity() 
 	{
 		super();
 	}
@@ -147,4 +150,33 @@ public class WorldEntity implements IWorldEntity
 	{
 		passId = id;
 	}
+	
+	public void render(GL gl, double time, RenderingContext context)
+	{
+		Area area = this.getArea();
+		
+		// storing transformation matrix:
+		gl.glPushMatrix();
+		
+		// transforming into entity coordinates:
+		if(area == null)
+			gl.glTranslatef(0, 0, -this.getLook().getPriority());
+		else
+		{
+			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), -getLook().getPriority());
+			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+		}
+		// rendering this entity:
+		getLook().render(gl, time, this, context);
+		
+		gl.glPopMatrix();
+
+	}
+
+	@Override
+	public boolean behave(double time, boolean b)
+	{
+		return getBehavior().behave( time, this, b );
+	}
+
 }

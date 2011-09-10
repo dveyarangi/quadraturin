@@ -5,9 +5,8 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.RenderingContext;
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.WorldEntity;
 import yarangi.math.FastMath;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.SpatialHashMap;
@@ -21,7 +20,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 	{
 		gridMeshId = gl.glGenLists(1);
 	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
-	    SpatialHashMap<IWorldEntity> map = (SpatialHashMap<IWorldEntity>) debug.getIndexer();
+	    SpatialHashMap<IEntity> map = (SpatialHashMap<IEntity>) debug.getIndexer();
 		double halfCellSize = map.getCellSize() / 2.;
 		for(int y = -map.getHeight()/2; y < map.getHeight()/2; y += map.getCellSize())
 		{
@@ -46,7 +45,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 	{
 		if(context.isForEffect())
 			return;
-	    SpatialHashMap<IWorldEntity> map = (SpatialHashMap<IWorldEntity>) debug.getIndexer();
+	    SpatialHashMap<IEntity> map = (SpatialHashMap<IEntity>) debug.getIndexer();
 
 		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.2f);
 		gl.glCallList(gridMeshId);
@@ -94,5 +93,8 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 
 	@Override
 	public boolean isCastsShadow() { return false; }
+
+	@Override
+	public float getPriority() { return 0; }
 
 }

@@ -29,7 +29,7 @@ import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
@@ -66,12 +66,16 @@ public class QuadVoices implements IEventManager, Loopy
 	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
 	private Scene scene;
+	
+	/** 
+	 * Input definitions provider
+	 */
+	private IActionController controller;
+
 	/**
 	 * Mouse location
 	 */
 	private Point mouseLocation;
-	
-	private IActionController controller;
 
 	/**
 	 * Logging name
@@ -104,19 +108,20 @@ public class QuadVoices implements IEventManager, Loopy
 
 	public void runBody() 
 	{
+		if(scene == null) // TODO: this check should be checked
+			return;
+		
 		// picking object under cursor:
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
-//		if(controller == null)
-//			return;
+		IEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
-		IWorldEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
 		for(CursorListener l : cursorListeners)
 			l.onCursorMotion(cursorEvent);
 		
 		// firing user actions info:
-//		log.debug("User action event in queue: " + userEvents.size());
+//		log.debug("User action events in queue: " + userEvents.size());
 		while(userEvents.size() > 0)
 		{
 			UserActionEvent event = userEvents.poll();
@@ -174,7 +179,6 @@ public class QuadVoices implements IEventManager, Loopy
 	{ 
 		mouseLocation = e.getPoint();
 		InputHook hook = new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()));
-//		System.out.println(hook);
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
@@ -226,19 +230,11 @@ public class QuadVoices implements IEventManager, Loopy
 		mouseLocation = null;
 	}
 	
-
-	
 	/** {@inheritDoc} */
 	public void mouseMoved(MouseEvent e) 
 	{ 
 		mouseLocation = e.getPoint();
 	}
-
-	public Point getMouseLocation() 
-	{
-		return mouseLocation;
-	}
-	
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) 
@@ -252,6 +248,11 @@ public class QuadVoices implements IEventManager, Loopy
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+	}
+
+	public Point getMouseLocation() 
+	{
+		return mouseLocation;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,7 +273,7 @@ public class QuadVoices implements IEventManager, Loopy
 	}
 	
 	/**
-	 * Adds an environment event to the events queue.
+	 * Adds an cursor event to the events queue.
 	 * @param event
 	 */
 	public void declare(CursorEvent event)
@@ -297,11 +298,16 @@ public class QuadVoices implements IEventManager, Loopy
 	public void sceneChanged(Scene nextScene) 
 	{
 		scene = nextScene;
+
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.
 	}
 
+	/**
+	 * Allows for dynamic binding of input definitions.
+	 * @param controller
+	 */
 	public void setActionController(IActionController controller)
 	{
 

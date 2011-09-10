@@ -22,5 +22,11 @@ public class UIVeil extends SceneVeil <Overlay>
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	protected boolean testEntity(Overlay entity)
+	{
+		return entity.getArea() != null && entity.getLook() != null;
+	}
 	
 }

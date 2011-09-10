@@ -8,7 +8,7 @@ public class EntityFactory
 	
 	public static <K> IVeilEntity createEntity(Look <K> look, Behavior <K> behavior, Area area, Body body, ISensor sensor)
 	{
-		WorldEntity entity = new WorldEntity();
+		Entity entity = new Entity();
 		entity.setLook(look);
 		entity.setBehavior(behavior);
 		entity.setArea(area);
