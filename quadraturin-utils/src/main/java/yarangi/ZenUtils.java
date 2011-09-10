@@ -12,7 +12,12 @@ public class ZenUtils
 
 	}
 	
-	public static void methodNotSupported(Class claass)
+	/**
+	 * @param <T>
+	 * @param claass
+	 * @return
+	 */
+	public static <T> T methodNotSupported(Class claass)
 	{
 		throw new IllegalStateException("This method is not supported for class " + claass);
 	}
