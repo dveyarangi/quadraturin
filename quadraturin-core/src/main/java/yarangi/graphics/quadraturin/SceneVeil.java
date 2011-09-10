@@ -1,22 +1,21 @@
 package yarangi.graphics.quadraturin;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 
 import javax.media.opengl.GL;
 
+import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.IVeilEntity;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
-import yarangi.graphics.quadraturin.objects.WorldEntity;
-import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
 
 /**
- * Provides means to manage lifecycles of {@link WorldEntity} objects. 
+ * Provides means to manage lifecycles of {@link Entity} objects. 
  * Also provides {@link SpatialIndexer} to allow object picking and other
  * location-based interactions. 
  * 
@@ -27,7 +26,16 @@ public abstract class SceneVeil <K extends IVeilEntity>
 
 	private int width, height;
 	
-	private Set <K> entities = new HashSet <K> ();
+	private List <K> entities = new ArrayList <K> (100); 
+		
+/*		new TreeSet <K> (
+			new Comparator <K> () {
+				@Override
+				public int compare(K o1, K o2)
+				{
+					return (int)((o1.getLook().getPriority() - o2.getLook().getPriority()) * 1000f);
+				}
+	}); */
 	
 	/**
 	 * Indexes the object's locations
@@ -67,7 +75,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }
 
 
-	protected Set <K> getEntities()
+	protected List <K> getEntities()
 	{
 		return entities;
 	}
@@ -87,8 +95,6 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		if(veilEffect != null)
 			veilEffect.destroy(gl, this);
 	}
-	
-	
 	
 	/**
 	 * Displays the entirety of entities in this scene.
@@ -129,7 +135,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 //			System.out.println("BEGIN ======================================================");
 			for(K entity : entities)
 			{
-				render(gl, time, entity, context);
+				entity.render( gl, time, context );
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);
@@ -159,6 +165,9 @@ public abstract class SceneVeil <K extends IVeilEntity>
 //		if(entity.getAABB() == null)
 //			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
 		
+		if(!testEntity(entity))
+			throw new IllegalArgumentException("Entity " + entity + " is invalid.");
+			
 		bornEntities.add(entity);
 	}
 	
@@ -175,7 +184,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	public int getWidth() {return width; }
 	public int getHeight() {return height; }
 
-	public class ClippingSensor extends HashSet <K> implements ISpatialSensor <K> 
+	public class ClippingSensor implements ISpatialSensor <K> 
 	{
 		private GL gl;
 		private double time;
@@ -189,35 +198,18 @@ public abstract class SceneVeil <K extends IVeilEntity>
 			this.context = context;
 		}
 		@Override
-		public boolean objectFound(IAreaChunk chunk, K object)
+		public boolean objectFound(IAreaChunk chunk, K entity)
 		{
-			if(!contains( object ))
-			{
-				render(gl, time, object, context);
-				add(object);
-			}
+			entity.render(gl, time, context);
 			
 			return false;
 		}
 		
+		@Override
+		public void clear() {}
+		
 	}
 	
-	protected void render(GL gl, double time, K entity, RenderingContext context)
-	{
-		Area area = entity.getArea();
-		
-		// storing transformation matrix:
-		gl.glPushMatrix();
-		
-		// transforming into entity coordinates:
-		gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), 0/* TODO: entity.getLook().getPriority() */);
-		gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
-		
-		// rendering this entity:
-		entity.getLook().render(gl, time, entity, context);
-		
-		gl.glPopMatrix();
 
-	}
-
+	protected abstract boolean testEntity(K entity);
 }

@@ -7,14 +7,19 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.IActionController;
+import yarangi.graphics.quadraturin.config.CreateEntityActionConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.EntityShell;
+import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
-import yarangi.graphics.quadraturin.objects.WorldEntity;
-import yarangi.graphics.quadraturin.simulations.ICollisionManager;
+import yarangi.graphics.quadraturin.objects.Entity;
+import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
@@ -27,7 +32,7 @@ import yarangi.spatial.PickingSensor;
  * Scene is composed of two layers: 
  * <li> {@link UIVeil} responsible to draw and animate user interface control elements.
  * <li> {@link WorldVeil} responsible to draw and animate game world.
- * Veils provide a way to add and remove {@link WorldEntity} objects.
+ * Veils provide a way to add and remove {@link Entity} objects.
  * 
  * In order to link scene automatically, use following configuration example:
  * <pre>
@@ -97,16 +102,15 @@ public abstract class Scene
 		
 		log = Logger.getLogger(name);
 		
-		// checking for physics engine:
-		IPhysicsEngine <IWorldEntity> engine = config.createEngine();
-		if(engine == null)
-			log.info("Physics calculator is not specified.");
-		
 		// initial viewpoint:
 		viewPoint = config.createViewpoint();
 			
 		// scene world aggregator:
-		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight(), engine);
+		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight());
+		
+		EntityShell <ITerrainMap> terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
+		worldVeil.setPhysicsEngine( config.getEngineConfig().createEngine(worldVeil.getEntityIndex(), terrain.getEssence()));
+		worldVeil.addTerrain(terrain);
 		
 		// scene ui aggregator
 		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
@@ -126,7 +130,8 @@ public abstract class Scene
 	
 	
 	/**
-	 * @return second to game time unit ratio
+	 * TODO: fix name
+	 * @return game time unit / sec ratio
 	 */
 	public final double getFrameLength() { return frameLength; }
 	public final void setFrameLength(double length) { this.frameLength = length; }
@@ -139,9 +144,15 @@ public abstract class Scene
 	/**
 	 * Appends a world entity.
 	 */
-	public void addEntity(IWorldEntity entity)
+	public void addEntity(IEntity entity)
 	{
 		worldVeil.addEntity(entity);
+	}
+
+	public void addTerrain(ITerrainMap terrain, 
+			Look <? extends ITerrainMap> look, 
+			Behavior <? extends ITerrainMap> behavior)
+	{
 	}
 	
 	/**
@@ -173,10 +184,17 @@ public abstract class Scene
 	 */
 	final public UIVeil getUIVeil() { return uiVeil; }
 	
-	public IWorldEntity pick(ISpatialFilter<IWorldEntity> pickingFilter, Vector2D worldLocation, Point canvasLocation)
+	/** 
+	 * Selects an entity at {@link CURSOR_PICK_SPAN} radius around cursor location
+
+	 * @param worldLocation
+	 * @param canvasLocation
+	 * @return
+	 */
+	public IEntity pick(ISpatialFilter<IEntity> pickingFilter, Vector2D worldLocation, Point canvasLocation)
 	{
 		// collecting picked entities:
-		PickingSensor <IWorldEntity> sensor = new PickingSensor <IWorldEntity> (pickingFilter);
+		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (pickingFilter);
 		
 //		if(canvasLocation != null)
 //			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
@@ -255,14 +273,14 @@ public abstract class Scene
 	{
 	}
 
-	final public ISpatialIndex <IWorldEntity> getEntityIndex() { return worldVeil.getEntityIndex(); }
+	final public ISpatialIndex <IEntity> getEntityIndex() { return worldVeil.getEntityIndex(); }
 	final public ISpatialIndex <Overlay> getOverlayIndex() { return uiVeil.getEntityIndex(); }
 	
 	public void setActionController(IActionController actionController)
 	{
 		this.voices.setActionController( actionController );
 	}
-	public ICollisionManager getCollisionManager()
+	public ICollider getCollisionManager()
 	{
 		return getWorldVeil().getPhysicsEngine().getCollisionManager();
 	}

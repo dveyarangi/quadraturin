@@ -3,7 +3,7 @@ package yarangi.graphics.quadraturin.simulations;
 import yarangi.math.Vector2D;
 import yarangi.spatial.Area;
 
-public final class Body
+public class Body
 {
 	
 	private Vector2D force = new Vector2D(0,0);

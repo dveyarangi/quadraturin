@@ -18,26 +18,23 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 	/**
 	 * Calculates narrow phase of collision handling.
 	 */
-	private ICollisionManager <K> manager;
+	private ICollider <K> manager;
 	
 	/**
 	 * Spatial query processor for broad phase of collision/interaction test
 	 */
 	private IProximitySensor <K> sensor;
 	
-	public StupidInteractions()
+	public StupidInteractions(ICollider <K> man)
 	{
-		
+		if(man != null)
+		{
+			manager = man;
+			sensor = new DefaultProximitySensor <K>(man);
+		}
 	}
 	
-	public void setCollisionManager(ICollisionManager <K> man)
-	{
-		this.manager = man;
-		this.sensor = new DefaultProximitySensor <K>(man);
-		
-	}
-	
-	public ICollisionManager <K> getCollisionManager() { return manager; }
+	public ICollider <K> getCollisionManager() { return manager; }
 	
 	public void init() { }
 	public void destroy() { }
@@ -54,7 +51,7 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 		
 		Area area;
 
-		Set <K> entities = manager.getObjectIndex().keySet();
+		Set <K> entities = manager.getPhysicalEntities();
 //		log.debug("Entities in index: " + manager.getObjectIndex().size());
 		// TODO: redo! this is highly stupid!
 		// query only to narrow the search, use polygon+velocity collision methods instead
@@ -78,7 +75,7 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			
 			// TODO: querying by area is inefficient (polygon iterator is slow)
 			// TODO: collision prediction (expand area?)
-			manager.getObjectIndex().query(sensor, area);  
+			manager.query(sensor, area);  
 			
 			////////////////////////////////
 			// inert mass point adjustment:
@@ -113,9 +110,9 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 	{
 		protected T source;
 		
-		protected ICollisionManager <T> manager;
+		protected ICollider <T> manager;
 		
-		public DefaultProximitySensor(ICollisionManager <T> manager)
+		public DefaultProximitySensor(ICollider <T> manager)
 		{
 			this.manager = manager;
 		}

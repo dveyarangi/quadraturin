@@ -2,31 +2,53 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.IWorldEntity;
+import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.EntityShell;
+import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.simulations.RoughCollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.SpatialHashMap;
 
-public class WorldVeil extends SceneVeil <IWorldEntity> 
+public class WorldVeil extends SceneVeil <IEntity> 
 {
 
-	private IPhysicsEngine <IWorldEntity> engine;
+	private IPhysicsEngine <IEntity> engine;
 	
 	private double veilTime;
 	
-	public WorldVeil(int width, int height, IPhysicsEngine <IWorldEntity> engine) 
+	private EntityShell <ITerrainMap >terrain;
+	
+	public WorldVeil(int width, int height) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
-		super(width, height, new SpatialHashMap	<IWorldEntity>(width*height/10, 10, width, height));
+		super(width, height, new SpatialHashMap	<IEntity>(width*height/10, 10, width, height));
 		
 		System.out.println("Allocated " + width*height/10 + " cells.");
-			
+	}
+	
+
+	public final IPhysicsEngine <IEntity> getPhysicsEngine() 
+	{
+		return engine; 
+	}
+	
+	/**
+	 * TODO: restore configurable engine and add terrain configuration.
+	 * TODO: collisions on/off
+	 * @param engine
+	 * @param collide
+	 */
+	public final void setPhysicsEngine(IPhysicsEngine <IEntity> engine)
+	{
 		this.engine = engine;
 	}
 
-	public final IPhysicsEngine <IWorldEntity> getPhysicsEngine() 
+	public void addTerrain(EntityShell <ITerrainMap> terrain)
 	{
-		return engine; 
+		this.terrain = terrain;
 	}
 	
 	/**
@@ -37,7 +59,10 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 	{
 		super.init( gl );
 		
-		engine.init();
+		if(engine != null)
+			engine.init();
+		
+		terrain.getLook().init( gl, terrain.getEssence() );
 	}
 	
 	/**
@@ -52,20 +77,28 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 	 */
 	public void postDisplay(GL gl) {}
 	
+	public void display( GL gl, double time, RenderingContext context)
+	{
+		terrain.render( gl, time, context );
+		super.display( gl, time, context );
+	}
+	
 	public void animate(double time)
 	{
 //		boolean changePending = false;
 		
 		// running physics:
-		if(getPhysicsEngine() != null)
-			getPhysicsEngine().calculate(time);
+		if(engine != null)
+			engine.calculate(time);
 		veilTime += time;
 		Vector2D refPoint;
+		
+		terrain.behave( time, true );
 		// TODO: no control on order of executions
-		for(IWorldEntity entity : getEntities())
+		for(IEntity entity : getEntities())
 		{
 			
-			if(entity.getBehavior().behave(time, entity, true))
+			if(entity.behave(time, true))
 			{   // TODO: 
 				if(entity.getArea() != null)
 					getEntityIndex().update(entity.getArea(), entity);
@@ -86,7 +119,10 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 				{
 					refPoint = entity.getArea().getRefPoint();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
+					entity.getSensor().clear();
 					getEntityIndex().query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
+					if(terrain != null && entity.getSensor().isSenseTerrain())
+						terrain.getEssence().query(entity.getSensor(), refPoint.x(), refPoint.y(), entity.getSensor().getSensorRadiusSquare());
 				}
 			}
 		}
@@ -100,7 +136,25 @@ public class WorldVeil extends SceneVeil <IWorldEntity>
 	public void destroy(GL gl)
 	{
 		super.destroy( gl );
+		if(terrain != null)
+			terrain.getLook().destroy( gl, terrain.getEssence() );
+		if(engine != null)
 		engine.destroy();
 	}
+
+
+	@Override
+	protected boolean testEntity(IEntity entity)
+	{
+		
+		return entity.getLook() != null && entity.getBehavior() != null;
+	}
+
+
+	public ITerrainMap getTerrain()
+	{
+		return terrain.getEssence();
+	}
+
 
 }

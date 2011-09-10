@@ -11,7 +11,7 @@ import yarangi.spatial.ISpatialObject;
 public interface IPhysicalObject extends ISpatialObject
 {
 	
-	public Body getBody();
+	Body getBody();
 	
-	public boolean isAlive();
+	boolean isAlive();
 }

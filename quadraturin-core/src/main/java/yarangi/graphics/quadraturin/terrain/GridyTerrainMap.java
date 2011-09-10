@@ -1,5 +1,9 @@
 package yarangi.graphics.quadraturin.terrain;
 
+import java.util.Set;
+
+import yarangi.ZenUtils;
+import yarangi.graphics.quadraturin.QLog;
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.ISpatialSensor;
@@ -10,6 +14,8 @@ public class GridyTerrainMap <K extends IPhysicalObject> extends GridMap<Cell <K
 	public GridyTerrainMap(float width, float height, int cellsize)
 	{
 		super(cellsize, (int)width, (int)height);
+		
+		QLog.structure.debug( "Created grid terrain [" + width + "x" + height + "] with cellsize " + cellsize + ".");
 	}
 
 	@Override
@@ -48,9 +54,15 @@ public class GridyTerrainMap <K extends IPhysicalObject> extends GridMap<Cell <K
 	}
 
 	@Override
-	protected Cell<K> createEmptyCell()
+	protected Cell<K> createEmptyCell(double x, double y)
 	{
 		return new Cell <K> (null);
+	}
+
+	@Override
+	public Set<K> keySet()
+	{
+		return ZenUtils.methodNotSupported( GridyTerrainMap.class );
 	}
 
 }

@@ -19,10 +19,8 @@ public interface IPhysicsEngine <K extends IPhysicalObject>
 	 * @param time
 	 */
 	public void calculate(double time);
-	
-	public void setCollisionManager(ICollisionManager <K> man);
 
-	public ICollisionManager <K> getCollisionManager();
+	public ICollider <K> getCollisionManager();
 
 	public void destroy();
 }
