@@ -40,6 +40,7 @@ public class StageAnimator implements Loopy, StageListener
 	
 	private static final double FROM_NANO = 1./1000000000.;
 	
+	private boolean constantTime = false;
 	/**
 	 * Counter for frame length average.
 	 */
@@ -47,10 +48,14 @@ public class StageAnimator implements Loopy, StageListener
 	
 	private static final int COUNTER_ITERATIONS = 10;
 	
+	private double frameLength;
+	
 	/**
 	 * Average frame length calculated each {@link #COUNTER_ITERATIONS} cycles.
 	 */
 	private double approxFrameLength;
+	
+	private double frameTime;
 	
 	public StageAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
 	{
@@ -84,13 +89,16 @@ public class StageAnimator implements Loopy, StageListener
 
 	public void runBody() 
 	{
+		if(currScene == null)
+			return;
 		//////////////////////////////////////////////////////////
 		// Running scene behaviors:
-		// TODO: give currScene.getFrameLength()
-		currScene.animate(approxFrameLength * currScene.getFrameLength());
+		// TODO: maxFPS not working
 		
+		frameTime = constantTime ? frameLength : approxFrameLength * frameLength;
+		currScene.animate(frameTime);
 		//////////////////////////////////////////////////////////
-		currScene.postAnimate(approxFrameLength * currScene.getFrameLength());
+		currScene.postAnimate(frameTime);
 		
 		long frameDuration = System.nanoTime() - frameStart;
 		
@@ -112,7 +120,7 @@ public class StageAnimator implements Loopy, StageListener
 			try { // spending remaining frame time to match the maxFPS setting:
 				if( log.isTraceEnabled() )
 					log.trace("Going to sleep for " + frameTimeLeft + " ns.");
-				Thread.sleep((long)(frameTimeLeft * FROM_NANO));
+				Thread.sleep((long)(frameTimeLeft * FROM_NANO * 1000));
 			} 
 			catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }
 		
@@ -135,5 +143,13 @@ public class StageAnimator implements Loopy, StageListener
 	public void sceneChanged(Scene currScene) 
 	{
 		this.currScene = currScene;
+		frameLength = currScene.getFrameLength();
+		if(frameLength < 0)
+		{
+			frameLength = -frameLength;
+			constantTime = true;
+		}
+		else
+			constantTime = false;
 	}
 }
