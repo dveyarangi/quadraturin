@@ -113,15 +113,15 @@ public interface Area
 		public void iterate(int cellsize, IChunkConsumer consumer) { }
 		
 		@Override
-		public double getOrientation() { ZenUtils.methodNotSupported(this.getClass()); return Double.NaN;  }
+		public double getOrientation() { return ZenUtils.methodNotSupported(this.getClass()); }
 
 		@Override
 		public void setOrientation(double a) { ZenUtils.methodNotSupported(this.getClass()); }
 
 		@Override
-		public Vector2D getRefPoint() {  ZenUtils.methodNotSupported(this.getClass()); return null; }
+		public Vector2D getRefPoint() { return ZenUtils.methodNotSupported(this.getClass()); }
 
-		public double getMaxRadius() { ZenUtils.methodNotSupported(this.getClass()); return Double.NaN; }
+		public double getMaxRadius() { return ZenUtils.methodNotSupported(this.getClass());  }
 
 		@Override
 		public void translate(double dx, double dy) { ZenUtils.methodNotSupported(this.getClass()); }
