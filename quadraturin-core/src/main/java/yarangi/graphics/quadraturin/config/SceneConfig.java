@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import yarangi.graphics.quadraturin.QuadVoices;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
-import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.java.ReflectionUtil;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
@@ -18,20 +17,23 @@ public class SceneConfig
 	
 	protected String sceneClass;
 	protected String engineClass;
-	protected int frameLength;
+	protected String colliderClass;
+	protected double frameLength;
 	protected EventConfig [] events;
 	
 	protected int width, height;
 	
 	protected ViewPointConfig viewpoint;
+	protected PhysicsEngineConfig engine;
+	protected TerrainConfig terrain;
 	
-	protected Logger log = Logger.getLogger(SceneConfig.class);
+	protected Logger log = Logger.getLogger("q-config");
 
 	public String getName() {
 		return name;
 	}
 
-	public int getFrameLength() {
+	public double getFrameLength() {
 		return frameLength;
 	}
 
@@ -50,13 +52,6 @@ public class SceneConfig
 		return ReflectionUtil.createInstance(sceneClass, this, voices);
 	}
 
-	public IPhysicsEngine createEngine() 
-	{
-		if(engineClass == null)
-			return null;
-		return ReflectionUtil.createInstance(engineClass);
-	}
-
 	public ViewPoint2D createViewpoint() 
 	{
 		return new ViewPoint2D(
@@ -68,4 +63,11 @@ public class SceneConfig
 	}
 
 	public String getSceneClass() { return sceneClass; }
+
+	public PhysicsEngineConfig getEngineConfig()
+	{
+		return engine;
+	}
+	
+	public TerrainConfig getTerrainConfig() { return terrain; }
 }
