@@ -2,6 +2,8 @@ package yarangi.graphics.colors;
 
 import javax.media.opengl.GL;
 
+import yarangi.math.FastMath;
+
 
 final public class Color
 {
@@ -44,5 +46,36 @@ final public class Color
 	public String toString()
 	{
 		return "R:" + r + " G:" + g + " B:" + b + " A:" + a;
+	}
+	public int toInteger()
+	{
+		return FastMath.round(r * 255) << 24 | 
+			   FastMath.round(g * 255) << 16 | 
+			   FastMath.round(b * 255) << 8 | 
+			   FastMath.round(a * 255);
+	}
+	
+	public Color valueOf(int rgba)
+	{
+		return new Color((rgba & 255 << 24) >> 24, 
+						 (rgba & 255 << 16) >> 16,
+						 (rgba & 255 << 8) >> 8,
+						 (rgba & 255));
+	}
+	public byte getRedByte()
+	{
+		return (byte)FastMath.round(r * 255f);
+	}
+	public byte getGreenByte()
+	{
+		return (byte)FastMath.round(g * 255f);
+	}
+	public byte getBlueByte()
+	{
+		return (byte)FastMath.round(b * 255f);
+	}
+	public byte getAlphaByte()
+	{
+		return (byte)FastMath.round(a * 255f);
 	}
 }
