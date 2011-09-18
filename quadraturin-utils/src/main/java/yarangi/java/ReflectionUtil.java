@@ -2,6 +2,7 @@ package yarangi.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 public class ReflectionUtil 
 {
@@ -21,22 +22,28 @@ public class ReflectionUtil
 	 */
 	public static <T> T createInstance(String className, Object ... ctorParams)
 	{
+		
+		Class <?> [] paramTypes = new Class [ctorParams.length];
+		for(int i = 0; i < ctorParams.length; i ++)
+			paramTypes[i] = getClass(ctorParams[i]);
+		
+		return createInstance(className, ctorParams, paramTypes);
+	}
+	
+	public static <T> T createInstance(String className, Object [] ctorParams, Class<?> [] paramTypes)
+	{
 		Class<T> type;
 		try {
 			type = (Class <T>) Class.forName(className);
 		} 
 		catch (ClassNotFoundException e)    { throw new RuntimeException("Class [" + className + "] not found.", e); }
-		
-		Class <?> [] paramTypes = new Class [ctorParams.length];
-		for(int i = 0; i < ctorParams.length; i ++)
-			paramTypes[i] = (Class <?>) ctorParams[i].getClass();
-		
+
 		Constructor <T> ctor;
 		try {
 			ctor = type.getConstructor(paramTypes);
 		} 
 		catch (SecurityException e)         { throw new RuntimeException(e.getMessage(), e); }
-		catch (NoSuchMethodException e)     { throw new RuntimeException("Cannot find public constructor for class [" + className + "] with specified parameters.", e); }
+		catch (NoSuchMethodException e)     { throw new RuntimeException("Cannot find public constructor for class [" + className + "] with parameters [" + Arrays.toString( ctorParams ) + "]", e); }
 		
 		T instance;
 		try {
@@ -49,4 +56,26 @@ public class ReflectionUtil
 		
 		return instance;
 	}
+	
+	private static Class<?> getClass(Object o)
+	{
+		Class <?> cl = o.getClass();
+		if(cl.equals( Boolean.class ))
+			return boolean.class;
+		if(cl.equals( Integer.class ))
+			return int.class;
+		if(cl.equals( Short.class ))
+			return short.class;
+		if(cl.equals( Long.class ))
+			return long.class;
+		if(cl.equals( Float.class ))
+			return float.class;
+		if(cl.equals( Double.class ))
+			return double.class;
+		if(cl.equals( Byte.class ))
+			return byte.class;
+		
+		return cl;
+	}
+	
 }

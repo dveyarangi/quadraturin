@@ -2,7 +2,7 @@ package yarangi.numbers;
 
 public class AverageCounter 
 {
-	private int elements;
+	private double elements;
 	private double sum;
 	
 	public AverageCounter()
@@ -15,6 +15,11 @@ public class AverageCounter
 		sum += value;
 		elements ++;
 	}
+	public void addValue(double value, double weight)
+	{
+		sum += value;
+		elements += weight;
+	}
 	
 	public double getAverage() { return sum / elements; }
 	public double get1DivAverage() { return elements / sum; }
@@ -24,6 +29,6 @@ public class AverageCounter
 		this.sum = 0;
 	}
 	
-	public int getCounter() { return elements; }
+	public double getCounter() { return elements; }
 
 }

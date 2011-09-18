@@ -14,4 +14,5 @@ public interface IAreaChunk
 	public double getMinY();
 	public double getMaxX();
 	public double getMaxY();
+	
 }

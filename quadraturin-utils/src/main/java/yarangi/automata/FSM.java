@@ -68,8 +68,10 @@ public class FSM <K, S extends IState <K>>
 	 */
 	public S nextState(K entity)
 	{
-		currState = getNextState(entity, currState);
-		return currState;
+		S nextState = getNextState(entity, currState);
+//		if(nextState == null)
+//			throw new IllegalStateException("State " + currState + " ")
+		return nextState;
 	}
 	/**
 	 * Retrieves next state without transiting to it.

@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface IGridCell
+public interface ITile
 {
 
 }

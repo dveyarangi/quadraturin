@@ -1,7 +1,7 @@
 package yarangi.spatial;
 
 
-public class Tile <K>
+public class Tile <K> implements ITile
 {
 	private int i, j;
 	
