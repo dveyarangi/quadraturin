@@ -2,9 +2,9 @@ package yarangi.graphics.quadraturin.terrain;
 
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.IGridCell;
+import yarangi.spatial.ITile;
 
-public class Cell <P> implements IAreaChunk, IGridCell
+public class Cell <P> implements IAreaChunk, ITile
 {
 	private P properties;
 	

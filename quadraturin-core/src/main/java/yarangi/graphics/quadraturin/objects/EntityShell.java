@@ -8,6 +8,7 @@ import yarangi.spatial.Area;
 /**
  * Wrapper for entities that do not fit to extend {@link Entity}.
  * Aggregates Entity aspects to work with custom properties object ("essence") 
+ * TODO: probably all entities should be replaced by shells
  * 
  * @author dveyarangi
  *
@@ -15,7 +16,9 @@ import yarangi.spatial.Area;
  */
 public class EntityShell <E> extends Entity
 {
-	
+	/**
+	 * Properties object that will be referenced by look and behavior aspects
+	 */
 	private E essence;
 	
 	public EntityShell(E essense, Behavior <? extends E> behavior, Look <? extends E> look)
@@ -44,7 +47,7 @@ public class EntityShell <E> extends Entity
 		
 		// transforming into entity coordinates:
 		if(area == null)
-			gl.glTranslatef(0, 0, -this.getLook().getPriority());
+			gl.glTranslatef(0, 0, -this.getLook().getPriority()); // just adjusting priority
 		else
 		{
 			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), -getLook().getPriority());

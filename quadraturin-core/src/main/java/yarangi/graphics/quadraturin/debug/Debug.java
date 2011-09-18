@@ -2,6 +2,8 @@ package yarangi.graphics.quadraturin.debug;
 
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.Scene;
+
 public class Debug 
 {
 	public static Logger LOG = Logger.getLogger("q-debug");
@@ -17,6 +19,11 @@ public class Debug
 			LOG.info("To start Quadraturin profiling features, set true '" + DEBUG_MODE + "' JVM variable.");
 		else
 			LOG.info("Quadraturin is started in profiling mode.");
+	}
+
+	public static void instrumentate(Scene scene)
+	{
+		scene.addOverlay(new SceneDebugOverlay(scene.getWorldVeil().getEntityIndex()));
 	}
 	
 }

@@ -41,7 +41,7 @@ public class FSMBehavior <K> implements Behavior <K>
 	@Override
 	public boolean behave(double time, K entity, boolean isVisible) 
 	{
-		while(currState.behave(time, entity, isVisible));
+		while(currState.behave(time, entity, isVisible)) {/* loopy */}
 		
 		currState = fsm.nextState(entity);
 		return true;

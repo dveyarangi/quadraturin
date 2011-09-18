@@ -98,7 +98,7 @@ public class Entity implements IEntity
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void markDead() { this.isAlive = false; } 
+	public void markDead() { this.isAlive = false; } 
 	
 	/**
 	 * {@inheritDoc}

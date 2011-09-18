@@ -7,18 +7,13 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.IActionController;
-import yarangi.graphics.quadraturin.config.CreateEntityActionConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.debug.SceneDebugOverlay;
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
-import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.simulations.ICollider;
-import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
@@ -95,6 +90,7 @@ public abstract class Scene
 	private QuadVoices voices;
 	
 	private Logger log;
+	
 	public Scene(SceneConfig config, QuadVoices voices)
 	{
 		// just for fun:
@@ -108,9 +104,17 @@ public abstract class Scene
 		// scene world aggregator:
 		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight());
 		
-		EntityShell <? extends ITerrainMap> terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
-		worldVeil.setPhysicsEngine( config.getEngineConfig().createEngine(worldVeil.getEntityIndex(), terrain.getEssence()));
-		worldVeil.addTerrain(terrain);
+		EntityShell <? extends ITerrainMap> terrain = null;
+		if(config.getTerrainConfig() != null)
+		{
+			terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
+			log.debug( "Using terrain " + terrain.getEssence() );
+		}
+		else
+			log.debug( "No terrain configuration found." );
+		worldVeil.addTerrain( terrain );
+		worldVeil.setPhysicsEngine( config.getEngineConfig().createEngine(worldVeil.getEntityIndex(), 
+				terrain == null ? null : terrain.getEssence()));
 		
 		// scene ui aggregator
 		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
@@ -119,8 +123,8 @@ public abstract class Scene
 		
 		this.voices = voices;
 		
-//		if(Debug.ON) 
-//			addOverlay(new SceneDebugOverlay(worldVeil.getEntityIndex()));
+		if(Debug.ON) // TODO: maybe actual instrumentation
+			Debug.instrumentate(this);
 	}
 
 	/**
@@ -149,12 +153,7 @@ public abstract class Scene
 		worldVeil.addEntity(entity);
 	}
 
-	public void addTerrain(ITerrainMap terrain, 
-			Look <? extends ITerrainMap> look, 
-			Behavior <? extends ITerrainMap> behavior)
-	{
-	}
-	
+
 	/**
 	 * Schedules entity removal. It will be actually removed at next rendering cycle.
 	 * @param entity

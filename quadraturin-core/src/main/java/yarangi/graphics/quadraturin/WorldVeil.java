@@ -58,8 +58,8 @@ public class WorldVeil extends SceneVeil <IEntity>
 		
 		if(engine != null)
 			engine.init();
-		
-		terrain.getLook().init( gl, terrain.getEssence() );
+		if(terrain != null)
+			terrain.getLook().init( gl, terrain.getEssence() );
 	}
 	
 	/**
@@ -76,7 +76,8 @@ public class WorldVeil extends SceneVeil <IEntity>
 	
 	public void display( GL gl, double time, RenderingContext context)
 	{
-		terrain.render( gl, time, context );
+		if(terrain != null)
+			terrain.render( gl, time, context );
 		super.display( gl, time, context );
 	}
 	
@@ -90,7 +91,8 @@ public class WorldVeil extends SceneVeil <IEntity>
 		veilTime += time;
 		Vector2D refPoint;
 		
-		terrain.behave( time, true );
+		if(terrain != null)
+			terrain.behave( time, true );
 		// TODO: no control on order of executions
 		for(IEntity entity : getEntities())
 		{
