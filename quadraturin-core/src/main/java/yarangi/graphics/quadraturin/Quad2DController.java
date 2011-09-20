@@ -14,6 +14,7 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
+import yarangi.graphics.quadraturin.plugin.PluginFactory;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 import yarangi.math.Vector2D;
@@ -45,11 +46,16 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	private Scene currScene, prevScene;
 	
+	/**
+	 * marks scene transition state.
+	 */
 	private boolean isScenePending = false;
 	
+	/**
+	 * mouse location goes here
+	 */
 	private IEventManager voices;
 	
-	public List <IGraphicsPlugin> plugins = new LinkedList <IGraphicsPlugin> ();
 	
 	public static final float MAX_DEPTH_PRIORITY = 1;
 
@@ -58,21 +64,23 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 //	private float windowRatio;
 	
+	/**
+	 * Set of rendering environment properties for {@link Look} to consider. 
+	 * TODO: rather a small set, to be honest; consider merging with ekranConfig
+	 */
 	private DefaultRenderingContext context;
+	
+	
 	
 	public Quad2DController(String name, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
 		super(name, chain);
 		
 		this.voices = voices;
-//		System.out.println(voices);
-//		this.windowRatio = (float) ekranConfig.getXres() / (float) ekranConfig.getYres();
 		
 		this.context = new DefaultRenderingContext();
 		
 		this.ekranConfig = ekranConfig;
-//		frameLength = QuadConfigFactory.getStageConfig().getFrameLength();
-
 	}
 
 	public void start() { /* nothing here */ }
@@ -344,17 +352,21 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	protected class DefaultRenderingContext implements RenderingContext 
 	{
-		IViewPoint vp;
+		private IViewPoint vp;
+		
+		private List <PluginFactory> plugins;
+
+		public DefaultRenderingContext(EkranConfig config)
+		{
+			plugins = config.getPlugins();
+		}
 		public boolean doPushNames() { return false; }
 		public boolean isForEffect() { return false; }
 		public IViewPoint getViewPoint() { return vp; }
 		
-		protected void setViewPoint(IViewPoint vp) { this.vp = vp; }
-	}
-	
-	public void registerPlugin(IGraphicsPlugin plugin)
-	{
-		this.plugins.add(plugin);
+		private void setViewPoint(IViewPoint vp) { this.vp = vp; }
+		
+		public IGraphicsPlugin getPlugin()
 	}
 
 }
