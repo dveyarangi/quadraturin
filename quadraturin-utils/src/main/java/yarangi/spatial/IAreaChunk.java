@@ -1,5 +1,8 @@
 package yarangi.spatial;
 
+/**
+ * Represents a part of {@link Area} that fits single grid cell. 
+ */
 public interface IAreaChunk 
 {
 	/**

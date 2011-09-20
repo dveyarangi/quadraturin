@@ -20,6 +20,11 @@ public abstract class GridMap <K, O>
 	 * dimensions of area this grid represents
 	 */
 	private float width, height;
+	
+	/**
+	 * edges of represented area
+	 */
+	private float minX, minY, maxX, maxY;
 
 	/**
 	 * size of single grid cell
@@ -36,9 +41,13 @@ public abstract class GridMap <K, O>
 	 */
 	private float halfCellSize;
 	
-	private int gridWidth, gridHeight;
 	/**
-	 * hash cells amounts 
+	 * grid dimensions 
+	 */
+	private int gridWidth, gridHeight;
+	
+	/**
+	 * grid dimensions 
 	 */
 	private int halfGridWidth, halfGridHeight;
 	
@@ -47,8 +56,6 @@ public abstract class GridMap <K, O>
 	 * thusly permits only single threaded usage. 
 	 */
 	private int passId;
-	
-	private float minX, minY, maxX, maxY;
 	
 	/**
 	 * 
@@ -81,9 +88,114 @@ public abstract class GridMap <K, O>
 
 	}
 
+	/**
+	 * Creates an empty grid cell.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	protected abstract K createEmptyCell(double x, double y);
+	
+	/**
+	 * Create a grid array. Array indexes must be consistent with
+	 * {@link #indexAtCell(int, int)} implementation.
+	 * @param cellSize
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	protected abstract K [] createMap(int cellSize, int width, int height);
+	
+	/**
+	 * Calculates {@link GridMap#map} index for cell index.
+	 * @param i cell x cell coordinate (from 0 to gridWidth-1)
+	 * @param j cell y cell coordinate (from 0 to gridHeight-1)
+	 * @return
+	 */
+	protected abstract int indexAtCell(int i, int j);
+	
+	/**
+	 * Converts model coordinates to grid array index.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	protected int indexAtCoord(double x, double y)
+	{
+		return indexAtCell(toGridXIndex(x), toGridYIndex(y));
+	}
 
+	/**
+	 * Converts a model x coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toGridXIndex(double value)
+	{
+		return FastMath.round(value * invCellsize) + halfGridWidth;
+	}
+	
+	/**
+	 * Converts x grid index to model coordinate
+	 * @param i
+	 * @return
+	 */
+	public final double toRealXIndex(int i)
+	{
+		return ((double)(i - halfGridWidth)) * cellSize;
+	}
+	/**
+	 * Converts a model y coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toGridYIndex(double value)
+	{
+		return FastMath.round(value * invCellsize) + halfGridHeight;
+	}
+	
+	/**
+	 * Converts y grid index to model coordinate
+	 * @param i
+	 * @return
+	 */
+	public final double toRealYIndex(int i)
+	{
+		return ((double)(i - halfGridHeight)) * cellSize;
+	}
+	
+	/**
+	 * Query specified cell and feed the results to the sensor.
+	 * 
+	 * @param cell
+	 * @param sensor
+	 * @param queryId may be used to mark objects during query exxecution.
+	 * @return
+	 */
+	protected abstract boolean queryCell(K cell, ISpatialSensor<O> sensor, int queryId);
+	
+	/**
+	 * Implements cell update logic
+	 * @param cell
+	 * @param object
+	 * @return
+	 */
+	protected abstract boolean addToCell(K cell, O object);
+	
+	/**
+	 * Implements cell update logic
+	 * @param cell
+	 * @param object
+	 * @return
+	 */
+	protected abstract boolean removeFromCell(K cell, O object);
+	
+	/**
+	 * Creates an id for query procedure. 
+	 * @return
+	 */
+	protected final int createNextQueryId() { return ++passId; }
+	
 	/**
 	 * @return width of the area, covered by this map
 	 */
@@ -112,95 +224,38 @@ public abstract class GridMap <K, O>
 	 * @param x
 	 * @param y
 	 * @return
+	 * @throws ArrayIndexOutOfBoundsException
 	 */
 	public final K getCell(double x, double y)
 	{
-		int idx = at(x, y);
-		if(idx >= 0 && idx < map.length)
-			return map[at(x, y)];
-		return null;
+		return map[indexAtCoord(x,y)];
 	}
 	
+	/**
+	 * Retrieve contents of cell at specified grid index.
+	 * @param x
+	 * @param y
+	 * @return
+	 * @throws ArrayIndexOutOfBoundsException
+	 */
 	protected final K getCell(int x, int y)
 	{
-		int idx = at(x, y);
-		if(idx >= 0 && idx < map.length)
-			return map[at(x, y)];
-		return null;
+		return map[indexAtCell(x, y)];
 	}
 	
 	public final void put(double x, double y, K cell)
 	{
 		// TODO: dissolve, if hitting not in the cell center?
 //		System.out.println(x + " : " + y + " : " + at(x,y));
-		map[at( x, y )] = cell;
+		map[indexAtCoord(x,y)] = cell;
 	}
 	
 	protected final void put(int x, int y, K cell)
 	{
 		// TODO: dissolve, if hitting not in the cell center?
 //		System.out.println(x + " : " + y + " : " + at(x,y));
-		map[at( x, y )] = cell;
+		map[indexAtCell( x, y )] = cell;
 	}
-	
-	protected final K get(float x, float y)
-	{
-		return map[at(x,y)];
-	}
-
-	/**
-	 * Calculates grid index for point.
-	 * TODO: closure? %)
-	 * @param x cell x cell coordinate (can range from -halfWidth to halfWidth)
-	 * @param y cell y cell coordinate (can range from -halfHeight to halfHeight)
-	 * @return
-	 */
-	protected abstract int at(int x, int y);
-	
-	protected int at(double x, double y)
-	{
-		return at(toGridXIndex(x), toGridYIndex(y));
-	}
-
-	/**
-	 * Converts a "real world" x dimension value to cell dimensional index.
-	 * @param value
-	 * @return
-	 */
-	public final int toGridXIndex(double value)
-	{
-		return FastMath.round(value * invCellsize) + halfGridWidth;
-	}
-	
-	public final double toRealXIndex(int i)
-	{
-		return ((double)(i - halfGridWidth)) * cellSize;
-	}
-	/**
-	 * Converts a "real world" y dimension value to cell dimensional index.
-	 * @param value
-	 * @return
-	 */
-	public final int toGridYIndex(double value)
-	{
-		return FastMath.round(value * invCellsize) + halfGridHeight;
-	}
-	public final double toRealYIndex(int i)
-	{
-		return ((double)(i - halfGridHeight)) * cellSize;
-	}
-	
-	public final boolean isInvalidIndex(int x, int y)
-	{
-		return (x < -halfGridWidth || x > halfGridWidth || y < -halfGridHeight || y > halfGridHeight); 
-	}
-	
-	protected abstract boolean queryCell(K cell, ISpatialSensor<O> sensor, int queryId);
-	protected abstract boolean addToCell(K cell, O object);
-	protected abstract boolean removeFromCell(K cell, O object);
-	
-	protected final int getNextPassId() { return ++passId; }
-	
 
 	/**
 	 * {@inheritDoc}
@@ -246,7 +301,7 @@ public abstract class GridMap <K, O>
 			throw new IllegalArgumentException("Area cannot be null.");
 
 		queryingConsumer.setSensor( sensor );
-		queryingConsumer.setQueryId(getNextPassId());
+		queryingConsumer.setQueryId(createNextQueryId());
 		area.iterate( cellSize, queryingConsumer );
 
 		return sensor;
@@ -264,7 +319,7 @@ public abstract class GridMap <K, O>
 		int miny = Math.max(toGridYIndex(y-radius), 0);
 		int maxx = Math.min(toGridXIndex(x+radius), gridWidth);
 		int maxy = Math.min(toGridYIndex(y+radius), gridHeight);
-		int passId = getNextPassId();
+		int passId = createNextQueryId();
 		K cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
@@ -320,7 +375,7 @@ public abstract class GridMap <K, O>
 		}
 		else { tMaxY = Double.MAX_VALUE; tDeltaY = 0; stepY = 0;}
 		
-		int passId = getNextPassId();
+		int passId = createNextQueryId();
 
 //		System.out.println(currGridx + " : " + currGridy + " : " + tMaxX + " : " + tMaxY);
 		K cell;

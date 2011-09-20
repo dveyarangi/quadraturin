@@ -80,6 +80,9 @@ public class AABB implements Area
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fitTo(double radius)
 	{
@@ -137,6 +140,9 @@ public class AABB implements Area
 		return "AABB [loc:" + ref.x() + ":" + ref.y() + "; r:" + r + "; a:" + a + "]"; 
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void iterate(int cellsize, IChunkConsumer consumer)
 	{

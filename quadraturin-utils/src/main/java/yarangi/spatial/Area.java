@@ -14,15 +14,6 @@ import yarangi.math.Vector2D;
 public interface Area
 {
 	
-//	public IGridIterator <? extends IAreaChunk> iterator(int cellsize);
-	
-	/**
-	 * Iterates over grid cells of specified size that overlaps with this area.
-	 * @param cellsize size of the grid cell
-	 * @return
-	 */
-	public void iterate(int cellsize, IChunkConsumer consumer);
-	
 	/**
 	 * Retrieves area orientation.
 	 * @return
@@ -37,6 +28,9 @@ public interface Area
 
 	/**
 	 * Retrieves area's center reference point.
+	 * Note: returns a living object, changing it may corrupt area object.
+	 * TODO: quadraturin should not frequently use this vector, so get rid of its references
+	 * and replace with cloned vector.
 	 * @return
 	 */
 	public Vector2D getRefPoint();
@@ -55,10 +49,21 @@ public interface Area
 	public void fitTo(double radius);
 
 	/**
-	 * Retrieves area's max radius.
+	 * Retrieves area's span radius.
 	 * @return
 	 */
 	public double getMaxRadius();
+	
+	/**
+	 * Iterates over grid cells of specified size (aligned to zero)
+	 * that overlaps with this area. The cell info is fed to the 
+	 * specified consumer. 
+	 * This method provides appropriate {@link IAreaChunk} objects.
+	 *  
+	 * @param cellsize size of the grid cell
+	 * @return
+	 */
+	public void iterate(int cellsize, IChunkConsumer consumer);
 	
 	/**
 	 * Extracts a area perimeter part that is hidden from specified direction.
