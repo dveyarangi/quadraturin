@@ -20,17 +20,11 @@ public class QuadJsonConfig implements IQuadConfig
 		try {
 			InputStream stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			if(stream == null)
-				throw new IllegalArgumentException("Cannot find " + CONFIG_FILENAME + " file.");
+				throw new RuntimeException("Cannot find " + CONFIG_FILENAME + " file.");
 			fileContents = IOUtils.toString(stream);
 		} 
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		catch (FileNotFoundException e) { throw new RuntimeException("Cannot find " + CONFIG_FILENAME + " file."); } 
+		catch (IOException e) { throw new RuntimeException("Cannot read " + CONFIG_FILENAME + " file."); }
 		
 		QuadJsonConfig config = gson.fromJson(fileContents, QuadJsonConfig.class);
 //		System.out.println(config.getInputConfig().getScrollStep());

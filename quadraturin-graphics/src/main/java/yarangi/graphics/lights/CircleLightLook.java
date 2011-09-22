@@ -18,7 +18,6 @@ import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
 /**
- * 
  * Generates a rough approximation of 2D shadows texture. 
  * 
  * TODO: generalize penumbrae shader to generate correct light distribution (should suply it a single large shadow polygon
@@ -63,21 +62,11 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 //		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
 		fbo = TextureUtils.createFBO(gl, lightTexture, TextureUtils.ILLEGAL_ID);
 		
-		// TODO: move shader initialization elsewhere:
-		lightShader = ShaderFactory.getShader("light");
-		if(lightShader == null)
-		{
-			ShaderFactory.registerShaderFile("light", "shaders/light1.glsl");	
-			lightShader = ShaderFactory.getShader("light");
-			lightShader.init(gl);
-		}
-		penumbraShader = ShaderFactory.getShader("penumbra");
-		if(penumbraShader == null)
-		{
-			ShaderFactory.registerShaderFile("penumbra", "shaders/penumbra.glsl");	
-			penumbraShader = ShaderFactory.getShader("penumbra");
-			penumbraShader.init(gl);
-		}
+		// preparing shaders:
+		ShaderFactory factory = context.getPlugin("shaders");
+		
+		lightShader = factory.getShader("light");
+		penumbraShader = factory.getShader("penumbra");
 	}
 
 	public void render(GL gl, double time, K entity, IRenderingContext context) 
@@ -250,7 +239,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 	}
 
-	public void destroy(GL gl, K entity) 
+	public void destroy(GL gl, K entity, IRenderingContext context) 
 	{
 
 		TextureUtils.destroyFBO(gl, fbo);

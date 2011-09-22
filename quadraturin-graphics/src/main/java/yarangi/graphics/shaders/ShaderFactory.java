@@ -7,7 +7,6 @@ import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.plugin.IPluginFactory;
 import yarangi.graphics.quadraturin.resources.ResourceFactory;
 
@@ -15,8 +14,6 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IPluginF
 {
 	
 	private Logger log = Logger.getLogger(toString());
-	
-	private static ShaderFactory instance;
 	
 	private Map <String, Integer> shaderTypes = new HashMap <String, Integer> ();
 	// GL_AMDX_debug_output GL_AMDX_vertex_shader_tessellator GL_AMD_conservative_depth GL_AMD_debug_output GL_AMD_draw_buffers_blend 
@@ -54,38 +51,40 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IPluginF
 	// GL_NV_explicit_multisample GL_NV_float_buffer GL_NV_half_float GL_NV_primitive_restart GL_NV_texgen_reflection GL_SGIS_generate_mipmap 
 	// GL_SGIS_texture_edge_clamp GL_SGIS_texture_lod GL_SUN_multi_draw_arrays GL_WIN_swap_hint WGL_EXT_swap_control
 	
+	
+	
+	public ShaderFactory(Map <String, String> properties)
+	{
+		for(String name : properties.keySet())
+		{
+			registerResource(name, new FileShader(properties.get(name)));
+		}
+	}
+	
 	public void init(GL gl)
 	{
-		if(instance == null)
-			instance = new ShaderFactory();
 		
 		if(gl.isExtensionAvailable(IShader.TYPE_VERTEX))
 		{
-			instance.shaderTypes.put(IShader.TYPE_VERTEX, GL.GL_VERTEX_SHADER);
+			shaderTypes.put(IShader.TYPE_VERTEX, GL.GL_VERTEX_SHADER);
 			log.debug("GL shader extension [" + IShader.TYPE_VERTEX + "] is available.");
 		}
 		if(gl.isExtensionAvailable(IShader.TYPE_FRAGMENT))
 		{
-			instance.shaderTypes.put(IShader.TYPE_FRAGMENT, GL.GL_FRAGMENT_SHADER);
+			shaderTypes.put(IShader.TYPE_FRAGMENT, GL.GL_FRAGMENT_SHADER);
 			log.debug("GL shader extension [" + IShader.TYPE_FRAGMENT + "] is available.");
 		}
 		
-/*		for(IShader shaderResource : instance.getHandles().values())
+		for(IShader shaderResource : getHandles().values())
 		{
 			shaderResource.init(gl);
-		}*/
+		}
 	}
 	
-	public static void registerShaderFile(String resourceId, String filename)
-	{
-		instance.registerResource(resourceId, new FileShader(filename));
-	}
 	
-	public static IShader getShader(String resourceId)
+	public IShader getShader(String resourceId)
 	{
-		if(instance == null)
-			throw new IllegalStateException("Shader factory plugin is not initialized.");
-		return instance.getResource(resourceId);
+		return getResource(resourceId);
 	}
 
 	public String toString() 

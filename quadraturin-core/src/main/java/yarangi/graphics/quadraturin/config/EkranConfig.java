@@ -94,7 +94,9 @@ public class EkranConfig {
 		Map <String, IPluginFactory> factories = new HashMap <String, IPluginFactory> ();
 		for(GraphicsPluginConfig config : plugins)
 		{
-			IPluginFactory factory = ReflectionUtil.createInstance(config.getFactoryClass());
+			IPluginFactory factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
+					new Object [] {config.getProperties()},
+					new Class  [] {java.util.Map.class});
 			
 			factories.put(config.getName(), factory);
 		}
