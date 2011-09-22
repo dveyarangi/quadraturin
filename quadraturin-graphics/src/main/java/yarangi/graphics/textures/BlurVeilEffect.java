@@ -4,7 +4,7 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
@@ -36,7 +36,7 @@ public class BlurVeilEffect extends VeilEffectSkeleton
 	/**
 	 * TODO: there must be a way to do this without rendering the texture three times.
 	 */
-	public void render(GL gl, double time, SceneVeil entity, RenderingContext defaultContext) 
+	public void render(GL gl, double time, SceneVeil entity, IRenderingContext defaultContext) 
 	{
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		// save viewport and set up new one

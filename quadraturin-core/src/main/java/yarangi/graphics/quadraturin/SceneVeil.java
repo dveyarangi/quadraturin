@@ -84,31 +84,32 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	 * @param gl
 	 * @throws SceneException
 	 */
-	public void init(GL gl)
+	public void init(GL gl, IRenderingContext context)
 	{
 		if(veilEffect != null)
-			veilEffect.init(gl, this);
+			veilEffect.init(gl, this, context);
 	}
 	
-	public void destroy(GL gl)
+	public void destroy(GL gl, IRenderingContext context)
 	{
 		if(veilEffect != null)
-			veilEffect.destroy(gl, this);
+			veilEffect.destroy(gl, this, context);
 	}
 	
 	/**
-	 * Displays the entirety of entities in this scene.
+	 * Displays the entirety of entities in this scene for one scene animation frame.
+	 * Also handles the decomposition of newly created and oldly dead entities.
 	 * @param gl
-	 * @param time
-	 * @param pushNames
+	 * @param time scene frame time
+	 * @param context
 	 */
-	public void display(GL gl, double time, RenderingContext context) 
+	public void display(GL gl, double time, IRenderingContext context) 
 	{	
 		// injecting new entities
 		while(!bornEntities.isEmpty())
 		{
 			K born = bornEntities.poll();
-			born.getLook().init( gl, born );
+			born.getLook().init( gl, born, context );
 			entities.add(born);
 			if(born.getArea() != null)
 				indexer.add(born.getArea(), born);
@@ -117,7 +118,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		while(!deadEntities.isEmpty())
 		{
 			K dead = deadEntities.poll();
-			dead.getLook().destroy( gl, dead );
+			dead.getLook().destroy( gl, dead, context );
 			if(dead.getArea() != null)
 			{
 				indexer.remove(dead);
@@ -188,9 +189,9 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	{
 		private GL gl;
 		private double time;
-		private RenderingContext context;
+		private IRenderingContext context;
 		
-		public ClippingSensor(GL gl, double time, RenderingContext context)
+		public ClippingSensor(GL gl, double time, IRenderingContext context)
 		{
 			super();
 			this.gl = gl;

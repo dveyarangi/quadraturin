@@ -4,7 +4,7 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
 
@@ -108,7 +108,7 @@ public class SpriteLook <T extends SceneEntity> implements Look <T>
 
 	
 	
-	public void render(GL gl, double time, T entity, RenderingContext defaultContext) 
+	public void render(GL gl, double time, T entity, IRenderingContext defaultContext) 
 	{
 //		gl.glEnable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 

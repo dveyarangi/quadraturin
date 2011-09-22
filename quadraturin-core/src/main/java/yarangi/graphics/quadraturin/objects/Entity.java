@@ -2,14 +2,14 @@ package yarangi.graphics.quadraturin.objects;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.spatial.Area;
 
 /**
- * SceneEntity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 
+ * Entity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 
  * 
  * <li>If the {@link #spatialAspect}  is set, entity will be added into spatial indexer of corresponding {@link SceneVeil}.
  * <li>If the {@link #physicalAspect} is set, entity will participate in physics calculations. It requires the 
@@ -24,7 +24,8 @@ public class Entity implements IEntity
 {
 	
 	/**
-	 * Entity look
+	 * Entity graphics 
+	 * @see SceneVeil#display(GL, double, IRenderingContext)
 	 */
 	private Look <?> look;
 	
@@ -151,7 +152,7 @@ public class Entity implements IEntity
 		passId = id;
 	}
 	
-	public void render(GL gl, double time, RenderingContext context)
+	public void render(GL gl, double time, IRenderingContext context)
 	{
 		Area area = this.getArea();
 		

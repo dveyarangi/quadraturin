@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IViewPoint;
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.UIVeil;
 import yarangi.graphics.quadraturin.ViewPoint2D;
@@ -71,7 +71,7 @@ public class GraphScene extends Scene
 	}
 	
 	@Override
-	public void display(GL gl, double time, RenderingContext context) 
+	public void display(GL gl, double time, IRenderingContext context) 
 	{
 //		System.out.println("disp");
 //		super.display(gl, time, context);

@@ -8,9 +8,12 @@
 
 package yarangi.graphics.quadraturin.config;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.java.ReflectionUtil;
 
 public class EkranConfig {
 
@@ -19,7 +22,7 @@ public class EkranConfig {
     protected boolean antialiasing;
     protected int maxFPS;
     
-    protected List <IPluginFactory> plugins; 
+    protected List <GraphicsPluginConfig> plugins; 
     
  
     /**
@@ -86,10 +89,16 @@ public class EkranConfig {
         this.maxFPS = value;
     }
 
-	public List<IPluginFactory> getPlugins()
+	public Map<String, IPluginFactory> getPlugins()
 	{
-		// TODO Auto-generated method stub
-		return plugins;
+		Map <String, IPluginFactory> factories = new HashMap <String, IPluginFactory> ();
+		for(GraphicsPluginConfig config : plugins)
+		{
+			IPluginFactory factory = ReflectionUtil.createInstance(config.getFactoryClass());
+			
+			factories.put(config.getName(), factory);
+		}
+		return factories;
 	}
  
 }

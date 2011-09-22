@@ -12,7 +12,7 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
+import yarangi.graphics.quadraturin.plugin.IPluginFactory;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 import yarangi.math.Vector2D;
@@ -26,9 +26,6 @@ import yarangi.math.Vector2D;
  */
 public class Quad2DController extends ChainedThreadSkeleton implements GLEventListener, StageListener
 {
-	
-	private static final long serialVersionUID = -7140406537457631569L;
-
 	/**
 	 * Display configuration properties.
 	 */
@@ -150,9 +147,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// plugins initialization:
 		for(String name : context.getPluginsNames())
 		{
-			IGraphicsPlugin plugin = context.getPlugin(name);
+			IPluginFactory factory = context.getPlugin(name);
 			log.debug("Initializing plugin [" + name + "]...");
-			plugin.init(gl);
+			factory.init(gl);
 		}
 		
 		log.debug("/////////////////////////////////////////////////////////////");
@@ -218,7 +215,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		GL gl = glDrawable.getGL();
 		if(!this.isAlive())
 		{
-			currScene.destroy(gl);
+			currScene.destroy(gl, context);
 			return;
 		}
 	
@@ -234,11 +231,11 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		if(isScenePending)
 		{
 			if(prevScene != null)
-				prevScene.destroy(gl);
+				prevScene.destroy(gl, context);
 			// initializing stage components:
 			log.debug("Entering '" + currScene.getName() + "' scene...");
 
-			currScene.init(gl);
+			currScene.init(gl, context);
 			
 			isScenePending = false;
 		}

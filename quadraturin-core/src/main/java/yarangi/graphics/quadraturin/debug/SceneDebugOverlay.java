@@ -2,6 +2,7 @@ package yarangi.graphics.quadraturin.debug;
 
 import javax.media.opengl.GL;
 
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.objects.Overlay;
@@ -33,17 +34,17 @@ public class SceneDebugOverlay extends Overlay
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void init(GL gl)
+	public void init(GL gl, IRenderingContext context)
 	{
 //		super.init(gl);
 		
-		spatialOverlay.init(gl, indexer);
+		spatialOverlay.init(gl, indexer, context);
 	}
 
 
-	public void destroy(GL gl)
+	public void destroy(GL gl, IRenderingContext context)
 	{
-		spatialOverlay.destroy( gl, indexer );
+		spatialOverlay.destroy( gl, indexer, context );
 	}
 
 	public SpatialIndexer <IEntity> getIndexer()

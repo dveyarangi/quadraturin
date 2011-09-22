@@ -52,14 +52,14 @@ public class WorldVeil extends SceneVeil <IEntity>
 	 * {@inheritDoc}
 	 * Initializes physics engine.
 	 */
-	public void init(GL gl)
+	public void init(GL gl, IRenderingContext context)
 	{
-		super.init( gl );
+		super.init( gl, context );
 		
 		if(engine != null)
 			engine.init();
 		if(terrain != null)
-			terrain.getLook().init( gl, terrain.getEssence() );
+			terrain.getLook().init( gl, terrain.getEssence(), context );
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 	 */
 	public void postDisplay(GL gl) {}
 	
-	public void display( GL gl, double time, RenderingContext context)
+	public void display( GL gl, double time, IRenderingContext context)
 	{
 		if(terrain != null)
 			terrain.render( gl, time, context );
@@ -132,11 +132,11 @@ public class WorldVeil extends SceneVeil <IEntity>
 	 * {@inheritDoc}
 	 * Stops physics engine.
 	 */
-	public void destroy(GL gl)
+	public void destroy(GL gl, IRenderingContext context)
 	{
-		super.destroy( gl );
+		super.destroy( gl, context );
 		if(terrain != null)
-			terrain.getLook().destroy( gl, terrain.getEssence() );
+			terrain.getLook().destroy( gl, terrain.getEssence(), context );
 		if(engine != null)
 		engine.destroy();
 	}

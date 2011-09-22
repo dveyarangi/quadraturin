@@ -7,7 +7,7 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.IViewPoint;
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
@@ -24,7 +24,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	
-	protected RenderingContext effectContext = new RenderingContext() {
+	protected IRenderingContext effectContext = new IRenderingContext() {
 		public boolean doPushNames() { return false; }
 		public boolean isForEffect() { return true; }
 		public IViewPoint getViewPoint() { return null; }
@@ -59,7 +59,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		log.debug("Background texture size is " + width + "x" + height + ".");
 	}
 
-	public void render(GL gl, double time, SceneVeil entity, RenderingContext context) 
+	public void render(GL gl, double time, SceneVeil entity, IRenderingContext context) 
 	{
 		gl.glEnable(GL.GL_TEXTURE_2D);
 				// save viewport and set up new one

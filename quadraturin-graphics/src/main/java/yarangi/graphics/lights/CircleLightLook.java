@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
@@ -51,7 +51,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	}
 
 	
-	public void init(GL gl, K entity) {
+	public void init(GL gl, K entity, IRenderingContext context) {
 		
 		// rounding texture size to power of 2:
 		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2.));
@@ -80,7 +80,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		}
 	}
 
-	public void render(GL gl, double time, K entity, RenderingContext context) 
+	public void render(GL gl, double time, K entity, IRenderingContext context) 
 	{
 		// TODO: store and restore blending mode
 		if(context.isForEffect())

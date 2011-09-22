@@ -4,7 +4,7 @@ import java.util.Set;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.math.FastMath;
@@ -16,7 +16,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 	
 	private int gridMeshId;
 
-	public void init(GL gl, SceneDebugOverlay debug) 
+	public void init(GL gl, SceneDebugOverlay debug, IRenderingContext context) 
 	{
 		gridMeshId = gl.glGenLists(1);
 	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
@@ -41,7 +41,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 		gl.glEndList();
 	}
 
-	public void render(GL gl, double time, SceneDebugOverlay debug, RenderingContext context) 
+	public void render(GL gl, double time, SceneDebugOverlay debug, IRenderingContext context) 
 	{
 		if(context.isForEffect())
 			return;
@@ -86,7 +86,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 		}
 	}
 
-	public void destroy(GL gl, SceneDebugOverlay debug) 
+	public void destroy(GL gl, SceneDebugOverlay debug, IRenderingContext context) 
 	{
 		gl.glDeleteLists(gridMeshId, 1);
 	}

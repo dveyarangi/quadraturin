@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
@@ -54,7 +54,7 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 		}
 	}
 
-	public void render(GL gl, double time, K entity, RenderingContext context) 
+	public void render(GL gl, double time, K entity, IRenderingContext context) 
 	{
 /*		if(context.isForEffect())
 			return;

@@ -2,7 +2,7 @@ package yarangi.graphics.scene;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 
 /**
@@ -22,7 +22,7 @@ public class BackgroundLook implements Look<BackgroundEntity>
 	
 	private int meshListId = -1;
 	
- 	public void render(GL gl, double time, BackgroundEntity be, RenderingContext context) 
+ 	public void render(GL gl, double time, BackgroundEntity be, IRenderingContext context) 
 	{
 		
 //		gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, this.lightAmbient, 0);

@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.objects;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.RenderingContext;
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.spatial.Area;
 
 /**
@@ -38,7 +38,7 @@ public class EntityShell <E> extends Entity
 		return essence;
 	}
 	
-	public void render(GL gl, double time, RenderingContext context)
+	public void render(GL gl, double time, IRenderingContext context)
 	{
 		Area area = getArea();
 		
