@@ -3,9 +3,6 @@ package yarangi.graphics.quadraturin.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.RenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.quadraturin.config.InputConfig;
@@ -17,18 +14,19 @@ import yarangi.spatial.ISpatialFilter;
 
 public class DefaultActionFactory 
 {
-	public static IActionController createDefaultController(Scene scene)
+	public static ActionController createDefaultController(Scene scene)
 	{
 		return new DefaultActionController(scene);
 	}
 	
-	static class DefaultActionController implements IActionController 
+	static class DefaultActionController extends ActionController 
 	{
 		
 		Map <String, IAction> actions;
 		
 		public DefaultActionController(Scene scene)
 		{
+			super(scene);
 			actions = appendNavActions(new HashMap <String, IAction> (), scene);
 
 		}
@@ -51,15 +49,6 @@ public class DefaultActionFactory
 		{
 			return null;
 		}
-
-		@Override
-		public void display(GL gl, double time, RenderingContext context)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		
 	}
 	
 	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, Scene scene)
@@ -98,7 +87,7 @@ public class DefaultActionFactory
 		return actions;
 	}
 	
-	public static Map <String, IAction> appendNavActions(final Scene scene, IActionController controller)
+	public static Map <String, IAction> appendNavActions(final Scene scene, ActionController controller)
 	{
 		return appendNavActions(controller.getActions(), scene);
 	}

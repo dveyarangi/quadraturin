@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
 import yarangi.graphics.quadraturin.actions.IAction;
-import yarangi.graphics.quadraturin.actions.IActionController;
+import yarangi.graphics.quadraturin.actions.ActionController;
 import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
@@ -44,6 +44,7 @@ import yarangi.graphics.quadraturin.threads.Loopy;
  */
 public class QuadVoices implements IEventManager, Loopy
 {
+	
 	/**
 	 * Holds last cursor motion event.
 	 */
@@ -65,12 +66,10 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
-	private Scene scene;
-	
 	/** 
 	 * Input definitions provider
 	 */
-	private IActionController controller;
+	private ActionController controller;
 
 	/**
 	 * Mouse location
@@ -108,12 +107,12 @@ public class QuadVoices implements IEventManager, Loopy
 
 	public void runBody() 
 	{
-		if(scene == null) // TODO: this check should be checked
+		if(controller == null)
 			return;
 		
 		// picking object under cursor:
 		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
-		IEntity pickedEntity = scene.pick(controller.getPickingFilter(), cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+		IEntity pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
@@ -297,8 +296,6 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void sceneChanged(Scene nextScene) 
 	{
-		scene = nextScene;
-
 //		environmentListeners.clear();
 //		selectionListeners.clear();
 		// TODO: clear listeners and reset from scene.
@@ -308,7 +305,7 @@ public class QuadVoices implements IEventManager, Loopy
 	 * Allows for dynamic binding of input definitions.
 	 * @param controller
 	 */
-	public void setActionController(IActionController controller)
+	public void setActionController(ActionController controller)
 	{
 
 		removeCursorListener( this.controller );
