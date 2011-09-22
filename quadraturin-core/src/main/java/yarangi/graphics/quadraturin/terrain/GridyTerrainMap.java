@@ -25,7 +25,7 @@ public class GridyTerrainMap <K extends IPhysicalObject> extends GridMap<Cell <K
 	}
 
 	@Override
-	public final int at(int x, int y) 
+	public final int indexAtCell(int x, int y) 
 	{
 		return  x + getGridWidth() * y;
 	}

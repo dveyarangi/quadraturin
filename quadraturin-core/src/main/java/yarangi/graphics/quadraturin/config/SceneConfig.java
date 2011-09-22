@@ -47,8 +47,6 @@ public class SceneConfig
 
 	public Scene createScene(QuadVoices voices) 
 	{
-		if(sceneClass == null)
-			throw new ConfigException("Scene class is not set.");
 		return ReflectionUtil.createInstance(sceneClass, this, voices);
 	}
 

@@ -10,8 +10,7 @@ package yarangi.graphics.quadraturin.config;
 
 import java.util.List;
 
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
-import yarangi.graphics.quadraturin.plugin.PluginFactory;
+import yarangi.graphics.quadraturin.plugin.IPluginFactory;
 
 public class EkranConfig {
 
@@ -20,7 +19,7 @@ public class EkranConfig {
     protected boolean antialiasing;
     protected int maxFPS;
     
-    protected List <PluginFactory> plugins; 
+    protected List <IPluginFactory> plugins; 
     
  
     /**
@@ -87,7 +86,7 @@ public class EkranConfig {
         this.maxFPS = value;
     }
 
-	public List<PluginFactory> getPlugins()
+	public List<IPluginFactory> getPlugins()
 	{
 		// TODO Auto-generated method stub
 		return plugins;

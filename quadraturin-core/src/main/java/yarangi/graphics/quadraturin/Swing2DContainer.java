@@ -19,7 +19,6 @@ import yarangi.graphics.quadraturin.config.IQuadConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 
@@ -260,9 +259,5 @@ public class Swing2DContainer extends JFrame
 	{
 		stage.setScene(name);
 	}
-	
-	public void registerPlugin(IGraphicsPlugin plugin)
-	{
-		controller.registerPlugin(plugin);
-	}
+
 }

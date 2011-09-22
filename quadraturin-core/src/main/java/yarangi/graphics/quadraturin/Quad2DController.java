@@ -1,8 +1,6 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
@@ -13,8 +11,8 @@ import javax.media.opengl.glu.GLU;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
+import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
-import yarangi.graphics.quadraturin.plugin.PluginFactory;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 import yarangi.math.Vector2D;
@@ -78,7 +76,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		this.voices = voices;
 		
-		this.context = new DefaultRenderingContext();
+		this.context = new DefaultRenderingContext(ekranConfig);
 		
 		this.ekranConfig = ekranConfig;
 	}
@@ -131,12 +129,12 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glShadeModel(GL.GL_SMOOTH);
 		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
+		// disable lighting (TODO: remove)
+		gl.glDisable(GL.GL_LIGHTING);
+		
 		// disable texture auto-mapping:
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
-		
-		// disable lighting (TODO: remove)
-		gl.glDisable(GL.GL_LIGHTING);
 
 		// enable 2D texture mapping
 		gl.glEnable(GL.GL_TEXTURE_2D);					
@@ -147,17 +145,16 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			gl.glEnable(GL.GL_LINE_SMOOTH);
 		} 
 		else
-		{
 			gl.glDisable(GL.GL_LINE_SMOOTH);
-		}
 
-		// shader factory initialization:
-		
-		for(IGraphicsPlugin plugin : plugins)
+		// plugins initialization:
+		for(String name : context.getPluginsNames())
 		{
-			log.debug("Initializing plugin [" + plugin + "]...");
+			IGraphicsPlugin plugin = context.getPlugin(name);
+			log.debug("Initializing plugin [" + name + "]...");
 			plugin.init(gl);
 		}
+		
 		log.debug("/////////////////////////////////////////////////////////////");
 	}
 
@@ -350,23 +347,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	}
 	
 	
-	protected class DefaultRenderingContext implements RenderingContext 
-	{
-		private IViewPoint vp;
-		
-		private List <PluginFactory> plugins;
 
-		public DefaultRenderingContext(EkranConfig config)
-		{
-			plugins = config.getPlugins();
-		}
-		public boolean doPushNames() { return false; }
-		public boolean isForEffect() { return false; }
-		public IViewPoint getViewPoint() { return vp; }
-		
-		private void setViewPoint(IViewPoint vp) { this.vp = vp; }
-		
-		public IGraphicsPlugin getPlugin()
-	}
 
 }
