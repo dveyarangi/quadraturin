@@ -96,7 +96,7 @@ public class QuadVoices implements IEventManager, Loopy
 		{
 			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
 			binding.put(hook, bind.getActionId());
-			log.debug("Attached hook [" + hook + "] for action [" + bind.getActionId() + "].");
+			log.debug("Attached input hook [" + hook + "] for action [" + bind.getActionId() + "].");
 
 		}
 	}
@@ -111,7 +111,6 @@ public class QuadVoices implements IEventManager, Loopy
 			return;
 		
 		// picking object under cursor:
-		// TODO: move to rendering cycle and remove QuadVoices dependency on the Scene object:
 		IEntity pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		// firing the cursor motion event:

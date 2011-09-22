@@ -33,7 +33,7 @@ public class PolyChunk implements IAreaChunk
 	@Override
 	public boolean overlaps(double xmin, double ymin, double xmax,
 			double ymax) {
-		// TODO Auto-generated method stub
+		// TODO: there should be more logic here :)
 		return true;
 	}
 

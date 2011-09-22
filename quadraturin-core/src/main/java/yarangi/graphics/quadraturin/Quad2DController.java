@@ -61,7 +61,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	/**
 	 * Set of rendering environment properties for {@link Look} to consider. 
-	 * TODO: rather a small set, to be honest; consider merging with ekranConfig
 	 */
 	private DefaultRenderingContext context;
 	
@@ -212,12 +211,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 //		if (!stage.changePending())
 //			return; // nothing changed, nothing to redraw
 		
-		GL gl = glDrawable.getGL();
-		if(!this.isAlive())
-		{
-			currScene.destroy(gl, context);
-			return;
-		}
 	
 		try {
 			waitForRelease();
@@ -228,6 +221,13 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			return;
 		}
 		
+		GL gl = glDrawable.getGL();
+		
+		if(!this.isAlive())
+		{
+			currScene.destroy(gl, context);
+			return;
+		}
 		if(isScenePending)
 		{
 			if(prevScene != null)
@@ -265,15 +265,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		//updateViewPoint(gl, viewPoint);
 		
 		
-
+		// transforming mouse coordinates to world coordinates
 		Point pickPoint = voices.getMouseLocation();
-		Vector2D worldPickPoint = null;
-		// TODO: OPTIMIZE: buffer the pick selection and do nothing if not changed
-		if (pickPoint != null) 
-			worldPickPoint = toWorldCoordinates(gl, pickPoint, viewPoint, viewport);
-
-		voices.declare(new CursorEvent(worldPickPoint, pickPoint));
-
+		if(pickPoint != null)
+			voices.declare(new CursorEvent(toWorldCoordinates(gl, pickPoint, viewPoint, viewport), pickPoint));
 		
 		context.setViewPoint(viewPoint);
 		// ////////////////////////////////////////////////////

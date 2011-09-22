@@ -71,8 +71,6 @@ public class Stage
 	
 	/**
 	 * Adds a scene to the stage.
-	 * TODO: currently, each scene renderer is initialized once on stage creation. 
-	 * This is not flexible and not suitable for game levels sequence design.
 	 * @param scene
 	 * @return
 	 */

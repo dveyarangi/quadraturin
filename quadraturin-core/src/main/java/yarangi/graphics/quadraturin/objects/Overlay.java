@@ -5,6 +5,10 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.spatial.Area;
 
+/**
+ * TODO: this class is not yet implemented
+ * @author dveyarangi
+ */
 public class Overlay implements IVeilEntity
 {
 	/**
@@ -37,15 +41,12 @@ public class Overlay implements IVeilEntity
 	@Override
 	public int getPassId()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void setPassId(int id)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -57,22 +58,17 @@ public class Overlay implements IVeilEntity
 	@Override
 	public boolean isAlive()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void markDead()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void render(GL gl, double time, IRenderingContext context)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 }

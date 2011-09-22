@@ -98,7 +98,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 		{
 			
 			if(entity.behave(time, true))
-			{   // TODO: 
+			{   
 				if(entity.getArea() != null)
 					getEntityIndex().update(entity.getArea(), entity);
 //				changePending = true;

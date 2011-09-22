@@ -121,7 +121,8 @@ public class Swing2DContainer extends JFrame
 		getContentPane().add(canvas, BorderLayout.CENTER);
 		pack();
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+									cursorImg, new Point(0, 0), "blank cursor");
 		getContentPane().setCursor(blankCursor);		
 		
 		log.trace("Linking shutdown hook...");
@@ -238,7 +239,7 @@ public class Swing2DContainer extends JFrame
 	}
 
 	/**
-	 * TODO: injection of event dispatcher into Scene is not good.
+	 * TODO: event dispatcher should be static?
 	 * @return
 	 */
 	public IEventManager getEventManager() 

@@ -158,7 +158,6 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	public void addEntity(K entity) 
 	{	
 
-		// TODO: perhaps children of SceneEntities shall be added here also
 //		if(entity.getLook() == null)
 //			throw new IllegalArgumentException("Entity look cannot be null.");
 //		if(entity.getBehavior() == null)

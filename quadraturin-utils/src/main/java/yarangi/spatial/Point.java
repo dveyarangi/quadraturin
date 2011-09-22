@@ -127,7 +127,6 @@ public class Point implements Area
 	@Override
 	public LinkedList<Vector2D> getDarkEdge(Vector2D from)
 	{
-		// TODO Auto-generated method stub
 		return new LinkedList <Vector2D> ();
 	}
 

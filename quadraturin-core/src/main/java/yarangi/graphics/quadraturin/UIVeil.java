@@ -19,7 +19,7 @@ public class UIVeil extends SceneVeil <Overlay>
 	@Override
 	public void animate(double time)
 	{
-		// TODO Auto-generated method stub
+		// TODO: implementation depends on {@link Overlay} ?
 		
 	}
 
