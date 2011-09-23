@@ -1,24 +1,85 @@
 package yarangi.graphics.quadraturin.terrain;
 
-public class Tile
+import yarangi.graphics.quadraturin.simulations.Body;
+import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
+import yarangi.spatial.Area;
+
+public class Tile  implements IPhysicalObject
 {
-	private int size;
 	
-	private int [][] pixels;
+	private byte [] pixels;
 	
-	public Tile(int size)
+	private int pixelCount;
+	
+	private double x, y;
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param pixels array of pixel color components (r,g,b,a); size = width*height*4
+	 */
+	public Tile(double x, double y, byte [] pixels)
 	{
-		this.size = size;
-		this.pixels = new int[size][size];
+		
+		this.x = x;
+		this.y = y;
+		
+		this.pixels = pixels;
+		pixelCount = 0;
+		for(int i = 0; i < pixels.length/4; i += 4)
+			if(pixels[i] != 0 || pixels[i+1] != 0 || pixels[i+2] != 0 || pixels[i+3] != 0)
+				pixelCount ++;
+			
 	}
 	
-	public void set(int x, int y, int val)
+	public byte [] getPixels()
 	{
-		pixels[x][y] = val;
+		return pixels;
 	}
 	
-	public int get(int x, int y)
+	public boolean isEmpty()
 	{
-		return pixels[x][y];
+		return pixelCount == 0;
 	}
+	
+	public int getPixelCount()
+	{
+		return pixelCount;
+	}
+
+	@Override
+	public Area getArea()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getPassId()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setPassId(int id)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Body getBody()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAlive()
+	{
+		return pixelCount == 0;
+	}
+
 }
