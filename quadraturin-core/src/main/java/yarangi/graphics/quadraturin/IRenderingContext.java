@@ -1,7 +1,7 @@
 package yarangi.graphics.quadraturin;
 
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
 /**
  * Holds some rendering properties, provided to {@link Look} methods
@@ -29,5 +29,5 @@ public interface IRenderingContext
 	 * @param name
 	 * @return
 	 */
-	public <T extends IPluginFactory> T getPlugin(String name);
+	public <T extends IGraphicsPlugin> T getPlugin(String name);
 }

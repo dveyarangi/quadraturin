@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.Set;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
-import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
 public class DefaultRenderingContext implements IRenderingContext 
 {
 	private IViewPoint vp;
 	
-	private Map <String, IPluginFactory> plugins;
+	private Map <String, IGraphicsPlugin> plugins;
 	
 	public DefaultRenderingContext(EkranConfig config)
 	{
@@ -32,7 +32,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends IPluginFactory> T getPlugin(String name) {
+	public <T extends IGraphicsPlugin> T getPlugin(String name) {
 		return (T) plugins.get(name);
 	}
 	

@@ -12,7 +12,7 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 import yarangi.math.Vector2D;
@@ -146,7 +146,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// plugins initialization:
 		for(String name : context.getPluginsNames())
 		{
-			IPluginFactory factory = context.getPlugin(name);
+			IGraphicsPlugin factory = context.getPlugin(name);
 			log.debug("Initializing plugin [" + name + "]...");
 			factory.init(gl);
 		}
