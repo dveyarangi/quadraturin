@@ -2,16 +2,20 @@ package yarangi.graphics.quadraturin.terrain;
 
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ITile;
 
-public class Cell <P> implements IAreaChunk, ITile
+public class Cell <P> implements IAreaChunk
 {
 	private P properties;
 	
 	private int passId;
 	
-	public Cell(P props)
+	private double ox, oy, cellsize;
+	
+	public Cell(double ox, double oy, double cellsize, P props)
 	{
+		this.ox = ox;
+		this.oy = oy;
+		this.cellsize = cellsize;
 		this.properties = props;
 	}
 	
@@ -31,16 +35,17 @@ public class Cell <P> implements IAreaChunk, ITile
 	@Override
 	public Area getArea() { return null; }
 
-	@Override public double getX() { return 0; }
-	@Override public double getY() { return 0; }
+	@Override public double getX() { return ox; }
+	@Override public double getY() { return oy; }
 	@Override
 	public boolean overlaps(double xmin, double ymin, double xmax, double ymax)
 	{
 		return false;
 	}
 
-	@Override public double getMinX() { return 0; }
-	@Override public double getMinY() { return 0; }
-	@Override public double getMaxX() { return 0; }
-	@Override public double getMaxY() { return 0; }
+	@Override public double getMinX() { return ox; }
+	@Override public double getMinY() { return oy; }
+	@Override public double getMaxX() { return ox+cellsize; }
+	@Override public double getMaxY() { return oy+cellsize; }
+
 }
