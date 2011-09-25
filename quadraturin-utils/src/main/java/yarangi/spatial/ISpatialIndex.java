@@ -2,7 +2,7 @@ package yarangi.spatial;
 
 import java.util.Set;
 
-public interface ISpatialIndex <K extends ISpatialObject>
+public interface ISpatialIndex <K>
 {
 	
 	public Set <K> keySet();

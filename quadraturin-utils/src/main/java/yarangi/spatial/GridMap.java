@@ -1,5 +1,8 @@
 package yarangi.spatial;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import yarangi.math.FastMath;
 
 /**
@@ -9,7 +12,7 @@ import yarangi.math.FastMath;
  *
  * @param <K>
  */
-public abstract class GridMap <K, O>
+public abstract class GridMap <K extends IAreaChunk, O>
 {
 	/**
 	 * data array. It is references using {@link #at(int, int)} method.
@@ -34,7 +37,7 @@ public abstract class GridMap <K, O>
 	/** 
 	 * 1/cellSize, to speed up some calculations
 	 */
-	private float invCellsize;
+	private double invCellsize;
 	
 	/** 
 	 * cellSize/2
@@ -56,6 +59,10 @@ public abstract class GridMap <K, O>
 	 * thusly permits only single threaded usage. 
 	 */
 	private int passId;
+	
+	protected List <K> modifiedCells = new LinkedList <K> ();
+	
+	protected List <IGridListener <K>> listeners = new LinkedList <IGridListener <K>> ();
 	
 	/**
 	 * 
@@ -90,8 +97,8 @@ public abstract class GridMap <K, O>
 
 	/**
 	 * Creates an empty grid cell.
-	 * @param x
-	 * @param y
+	 * @param x - cell reference x
+	 * @param y - cell reference y
 	 * @return
 	 */
 	protected abstract K createEmptyCell(double x, double y);
@@ -136,13 +143,32 @@ public abstract class GridMap <K, O>
 	}
 	
 	/**
+	 * Converts a model x coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toLowerGridXIndex(double value)
+	{
+		return FastMath.floor(value * invCellsize) + halfGridWidth;
+	}
+	/**
+	 * Converts a model x coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toHigherGridXIndex(double value)
+	{
+		return FastMath.ceil(value * invCellsize) + halfGridWidth;
+	}
+	
+	/**
 	 * Converts x grid index to model coordinate
 	 * @param i
 	 * @return
 	 */
 	public final double toRealXIndex(int i)
 	{
-		return ((double)(i - halfGridWidth)) * cellSize;
+		return ((double)(i-halfGridWidth)) * cellSize;
 	}
 	/**
 	 * Converts a model y coordinate to cell dimensional index.
@@ -152,6 +178,24 @@ public abstract class GridMap <K, O>
 	public final int toGridYIndex(double value)
 	{
 		return FastMath.round(value * invCellsize) + halfGridHeight;
+	}
+	/**
+	 * Converts a model x coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toLowerGridYIndex(double value)
+	{
+		return FastMath.floor(value * invCellsize) + halfGridHeight;
+	}
+	/**
+	 * Converts a model x coordinate to cell dimensional index.
+	 * @param value
+	 * @return
+	 */
+	public final int toHigherGridYIndex(double value)
+	{
+		return FastMath.ceil(value * invCellsize) + halfGridHeight;
 	}
 	
 	/**
@@ -228,7 +272,10 @@ public abstract class GridMap <K, O>
 	 */
 	public final K getCell(double x, double y)
 	{
-		return map[indexAtCoord(x,y)];
+		int idx = indexAtCoord(x,y);
+		if(idx < 0 || idx > map.length)
+			return null;
+		return map[idx];
 	}
 	
 	/**
@@ -243,11 +290,32 @@ public abstract class GridMap <K, O>
 		return map[indexAtCell(x, y)];
 	}
 	
-	public final void put(double x, double y, K cell)
+	public final void put(double x, double y, O tile)
 	{
 		// TODO: dissolve, if hitting not in the cell center?
 //		System.out.println(x + " : " + y + " : " + at(x,y));
-		map[indexAtCoord(x,y)] = cell;
+		K cell = map[indexAtCoord(x,y)];
+		if(cell == null)
+		{
+			cell = createEmptyCell( FastMath.toGrid( x, cellSize ), FastMath.toGrid( y, cellSize ) );
+			map[indexAtCoord(x,y)] = cell;
+		}
+		if(addToCell( cell, tile ))
+			setModified(cell);
+				
+	}
+	
+	public final void remove(double x, double y, O tile)
+	{
+		// TODO: dissolve, if hitting not in the cell center?
+//		System.out.println(x + " : " + y + " : " + at(x,y));
+		K cell = map[indexAtCoord(x,y)];
+		if(cell == null)
+			return;
+		
+		if(removeFromCell( cell, tile ))
+			setModified(cell);
+				
 	}
 	
 	protected final void put(int x, int y, K cell)
@@ -290,7 +358,42 @@ public abstract class GridMap <K, O>
 		addObject(area, object);
 	}
 
-
+	/**
+	 * Adds a cell to modified cells queue.
+	 * @param cell
+	 */
+	protected void setModified(K cell)
+	{
+		modifiedCells.add( cell );
+	}
+	
+	/**
+	 * Retrieves a list of modified cells.
+	 * @return
+	 */
+	protected List <K> getModifiedCells()
+	{
+		return modifiedCells;
+	}
+	
+	public void addListener(IGridListener <K> l) { this.listeners.add( l ); }
+	public void removeListener(IGridListener <K> l) { this.listeners.add( l ); }
+	
+	/**
+	 * Fires cell modification event to listeners and clears modified cells queue.
+	 */
+	public void fireGridModified()
+	{
+		for(IGridListener <K> l : listeners)
+		{
+			l.cellsModified( modifiedCells );
+		}
+		
+		// resetting modified cells queue:
+		modifiedCells = new LinkedList <K> ();
+	}
+	
+		
 	/**
 	 * {@inheritDoc}
 	 * TODO: slow
@@ -315,10 +418,10 @@ public abstract class GridMap <K, O>
 	{
 		// TODO: spiral iteration, remove this root calculation:
 		double radius = Math.sqrt(radiusSquare);
-		int minx = Math.max(toGridXIndex(x-radius), 0);
-		int miny = Math.max(toGridYIndex(y-radius), 0);
-		int maxx = Math.min(toGridXIndex(x+radius), gridWidth);
-		int maxy = Math.min(toGridYIndex(y+radius), gridHeight);
+		int minx = Math.max(toLowerGridXIndex(x-radius-cellSize), 0);
+		int miny = Math.max(toLowerGridYIndex(y-radius-cellSize), 0);
+		int maxx = Math.min(toHigherGridXIndex(x+radius), gridWidth);
+		int maxy = Math.min(toHigherGridYIndex(y+radius), gridHeight);
 		int passId = createNextQueryId();
 		K cell;
 		for(int tx = minx; tx <= maxx; tx ++)
@@ -326,9 +429,9 @@ public abstract class GridMap <K, O>
 			{
 				cell = getCell(tx, ty);
 				
-				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
-				if(radiusSquare < distanceSquare)
-					continue;
+//				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
+//				if(radiusSquare < distanceSquare)
+//					continue;
 				
 				if(cell != null)
 					if(queryCell(cell, sensor, passId))
@@ -420,14 +523,9 @@ public abstract class GridMap <K, O>
 		@Override
 		public boolean consume(IAreaChunk chunk)
 		{
-			K cell = getCell( chunk.getX(), chunk.getY());
-			if(cell == null)
-			{
-				cell = createEmptyCell(chunk.getX(), chunk.getY());
-				put( chunk.getX(), chunk.getY(), cell );
-			}
+			put( chunk.getX(), chunk.getY(), object );
 			
-			return addToCell( cell, object );
+			return false;
 		}
 	};
 	
@@ -443,11 +541,9 @@ public abstract class GridMap <K, O>
 		@Override
 		public boolean consume(IAreaChunk chunk)
 		{
-			K cell = getCell( chunk.getX(), chunk.getY());
-			if(cell == null)
-				return false;
+			remove(chunk.getX(), chunk.getY(), object);
 			
-			return removeFromCell( cell, object );
+			return false;
 		}
 	};
 	
