@@ -6,6 +6,7 @@ import java.util.Set;
 
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.spatial.Area;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialSensor;
 
@@ -18,13 +19,20 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 	private Map <Class<? extends IPhysicalObject>, ICollisionHandler<K>> handlers = 
 				new HashMap <Class<? extends IPhysicalObject>, ICollisionHandler<K>> ();
 	
+	/**
+	 * Spatial query processor for broad phase of collision/interaction test
+	 */
+	private IProximitySensor <K> worldSensor;
+	private IProximitySensor <K> terrainSensor;
+	
 	public RoughCollider(ISpatialIndex <K> indexer, ITerrainMap <K> terrain)
 	{
 		this.indexer = indexer;
 		this.terrain = terrain;
+		
+		worldSensor = new WorldProximitySensor();
+		terrainSensor = new TerrainProximitySensor();
 	}
-	
-
 	
 	@Override
 	public boolean collide(K source, IPhysicalObject target) 
@@ -44,14 +52,16 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 	}
 
 	@Override
-	public ISpatialSensor<K> query(ISpatialSensor<K> sensor, Area area)
+	public void query(K entity, Area area)
 	{
-		sensor.clear();
-		indexer.query( sensor, area );
+		worldSensor.clear();
+		terrainSensor.clear();
+		worldSensor.setSource( entity );
+		terrainSensor.setSource( entity );
+		indexer.query( worldSensor, area );
 		if(terrain != null)
-			terrain.query(sensor, area);
+			terrain.query(terrainSensor, area);
 		
-		return sensor;
 	}
 
 	@Override
@@ -59,5 +69,54 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 	{
 		return indexer.keySet();
 	}
+	/**
+	 * Spatial query processor
+	 */
+	public interface IProximitySensor <T extends IPhysicalObject> extends ISpatialSensor <T>
+	{
+		/**
+		 * Defines the reference entity for proximity tests.
+		 * @param source
+		 */
+		public void setSource(T source);
+	}
+	
+	public class WorldProximitySensor implements IProximitySensor <K>
+	{
+		protected K source;
+		
+		public final boolean objectFound(IAreaChunk chunk, K target) 
+		{
+//			if(!target.isAlive())
+//				return false; 
+			if(!source.isAlive())
+				return true;
+			
+			return collide(source, target);
+		}
 
+		public final void setSource(K source) { this.source = source; }
+
+		@Override
+		public void clear() { }
+	}
+	public class TerrainProximitySensor implements IProximitySensor <K>
+	{
+		protected K source;
+		
+		public final boolean objectFound(IAreaChunk chunk, K target) 
+		{
+			if(!target.isAlive())
+				return false; 
+			if(!source.isAlive())
+				return true;
+			
+			return collide(source, target);
+		}
+
+		public final void setSource(K source) { this.source = source; }
+
+		@Override
+		public void clear() { }
+	}
 }

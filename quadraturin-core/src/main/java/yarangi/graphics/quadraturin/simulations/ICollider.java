@@ -45,7 +45,7 @@ public interface ICollider <K extends IPhysicalObject>
 	 * @param maxx
 	 * @param maxy
 	 */
-	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, Area area);
+	public void query(K entity, Area area);
 
 	public Set<K> getPhysicalEntities();
 

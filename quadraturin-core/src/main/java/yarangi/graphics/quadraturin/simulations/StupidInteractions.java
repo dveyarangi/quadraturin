@@ -5,8 +5,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import yarangi.spatial.Area;
-import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialSensor;
 
 public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsEngine <K>
 {
@@ -20,18 +18,10 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 	 */
 	private ICollider <K> manager;
 	
-	/**
-	 * Spatial query processor for broad phase of collision/interaction test
-	 */
-	private IProximitySensor <K> sensor;
 	
 	public StupidInteractions(ICollider <K> man)
 	{
-		if(man != null)
-		{
-			manager = man;
-			sensor = new DefaultProximitySensor <K>(man);
-		}
+		manager = man;
 	}
 	
 	public ICollider <K> getCollisionManager() { return manager; }
@@ -71,11 +61,10 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			
 			////////////////////////////////
 			// collision detection broad phase: 
-			sensor.setSource(entity);
 			
 			// TODO: querying by area is inefficient (polygon iterator is slow)
 			// TODO: collision prediction (expand area?)
-			manager.query(sensor, area);  
+			manager.query(entity, area);  
 			
 			////////////////////////////////
 			// inert mass point adjustment:
@@ -94,49 +83,5 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 		}
 	}
 	
-	/**
-	 * Spatial query processor
-	 */
-	public interface IProximitySensor <T extends IPhysicalObject> extends ISpatialSensor <T>
-	{
-		/**
-		 * Defines the reference entity for proximity tests.
-		 * @param source
-		 */
-		public void setSource(T source);
-	}
-	
-	public class DefaultProximitySensor <T extends IPhysicalObject> implements IProximitySensor <T>
-	{
-		protected T source;
-		
-		protected ICollider <T> manager;
-		
-		public DefaultProximitySensor(ICollider <T> manager)
-		{
-			this.manager = manager;
-		}
-		
-		public final boolean objectFound(IAreaChunk chunk, T target) 
-		{
-//			if(!target.isAlive())
-//				return false; 
-			if(!source.isAlive())
-				return true;
-			
-			return manager.collide(source, target);
-			
-		}
 
-		public final void setSource(T source) {
-			this.source = source;
-		}
-
-		@Override
-		public void clear()
-		{
-			
-		}
-		
-	}
 }
