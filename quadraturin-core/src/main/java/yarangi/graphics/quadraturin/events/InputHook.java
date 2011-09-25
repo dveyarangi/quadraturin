@@ -74,7 +74,7 @@ public class InputHook
 	public static int getMouseButton(int modifiers)
 	{
 		return (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0 ? MOUSE_LEFT_BUTTON : 
-		       (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0 ? MOUSE_RIGHT_BUTTON : 0;
+		       (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0 ? MOUSE_RIGHT_BUTTON : 0;
 //		     | modifiers & MouseEvent.BUTTON3_DOWN_MASK << 2;
 	}
 	
