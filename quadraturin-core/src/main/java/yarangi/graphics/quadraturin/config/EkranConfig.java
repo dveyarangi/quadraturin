@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.java.ReflectionUtil;
 
 public class EkranConfig {
@@ -89,12 +89,12 @@ public class EkranConfig {
         this.maxFPS = value;
     }
 
-	public Map<String, IPluginFactory> getPlugins()
+	public Map<String, IGraphicsPlugin> getPlugins()
 	{
-		Map <String, IPluginFactory> factories = new HashMap <String, IPluginFactory> ();
+		Map <String, IGraphicsPlugin> factories = new HashMap <String, IGraphicsPlugin> ();
 		for(GraphicsPluginConfig config : plugins)
 		{
-			IPluginFactory factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
+			IGraphicsPlugin factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
 					new Object [] {config.getProperties()},
 					new Class  [] {java.util.Map.class});
 			
