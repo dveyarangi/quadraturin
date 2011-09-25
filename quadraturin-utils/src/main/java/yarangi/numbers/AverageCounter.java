@@ -31,4 +31,6 @@ public class AverageCounter
 	
 	public double getCounter() { return elements; }
 
+	public double getSum() { return sum; }
+
 }
