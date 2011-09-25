@@ -13,6 +13,9 @@ final public class Color
 	protected float a;
 
 	
+	public Color(byte r, byte g, byte b, byte a) {
+		this(r/255f, g/255f, b/255f, a/255f);
+	}
 	
 	public Color(float r, float g, float b, float a) {
 		super();

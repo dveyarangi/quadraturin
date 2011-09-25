@@ -174,4 +174,10 @@ public class TextureUtils
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
 		gl.glDeleteFramebuffersEXT(1, new int [] {fbo.getFboId()}, 0);
 	}
+
+	public static void destroyTexture(GL gl, int textureId)
+	{
+		if(textureId != ILLEGAL_ID)
+			gl.glDeleteTextures(1, new int [] {textureId}, 0);
+	}
 }
