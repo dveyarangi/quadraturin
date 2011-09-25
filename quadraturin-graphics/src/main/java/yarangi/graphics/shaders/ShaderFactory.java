@@ -7,10 +7,10 @@ import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.plugin.IPluginFactory;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.resources.ResourceFactory;
 
-public class ShaderFactory extends ResourceFactory <IShader> implements IPluginFactory
+public class ShaderFactory extends ResourceFactory <IShader> implements IGraphicsPlugin
 {
 	
 	private Logger log = Logger.getLogger(toString());
