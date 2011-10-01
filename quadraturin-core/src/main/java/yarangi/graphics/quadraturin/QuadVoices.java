@@ -125,8 +125,6 @@ public class QuadVoices implements IEventManager, Loopy
 			UserActionEvent event = userEvents.poll();
 //			log.debug("Firing user action event: " + event.getActionId());
 			
-			// TODO: either prioritize query, so the picks order will be predictable,
-			// or revise to work with picks list: 
 			event.setSceneEntity(pickedEntity);
 			
 			IAction action = controller.getActions().get(event.getActionId());
@@ -209,7 +207,6 @@ public class QuadVoices implements IEventManager, Loopy
 	public void mouseDragged(MouseEvent e) 
 	{ 
 		mouseLocation = e.getPoint();
-		
 		InputHook hook = new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setInput(hook);
 		if(binding.containsKey(hook))
