@@ -12,7 +12,7 @@ import yarangi.math.FastMath;
  *
  * @param <K>
  */
-public abstract class GridMap <K extends IAreaChunk, O>
+public abstract class GridMap <K, O>
 {
 	/**
 	 * data array. It is references using {@link #at(int, int)} method.
@@ -101,7 +101,7 @@ public abstract class GridMap <K extends IAreaChunk, O>
 	 * @param y - cell reference y
 	 * @return
 	 */
-	protected abstract K createEmptyCell(double x, double y);
+	protected abstract K createEmptyCell(int idx, double x, double y);
 	
 	/**
 	 * Create a grid array. Array indexes must be consistent with
@@ -273,7 +273,7 @@ public abstract class GridMap <K extends IAreaChunk, O>
 	public final K getCell(double x, double y)
 	{
 		int idx = indexAtCoord(x,y);
-		if(idx < 0 || idx > map.length)
+		if(idx < 0 || idx >= map.length)
 			return null;
 		return map[idx];
 	}
@@ -285,20 +285,24 @@ public abstract class GridMap <K extends IAreaChunk, O>
 	 * @return
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	protected final K getCell(int x, int y)
+	public final K getCell(int x, int y)
 	{
-		return map[indexAtCell(x, y)];
+		int idx = indexAtCell(x, y);
+		if(idx < 0 || idx >= map.length)
+			return null;
+		return map[idx];
 	}
 	
 	public final void put(double x, double y, O tile)
 	{
 		// TODO: dissolve, if hitting not in the cell center?
 //		System.out.println(x + " : " + y + " : " + at(x,y));
-		K cell = map[indexAtCoord(x,y)];
+		int idx = indexAtCoord(x,y);
+		K cell = map[idx];
 		if(cell == null)
 		{
-			cell = createEmptyCell( FastMath.toGrid( x, cellSize ), FastMath.toGrid( y, cellSize ) );
-			map[indexAtCoord(x,y)] = cell;
+			cell = createEmptyCell( idx, FastMath.toGrid( x, cellSize ), FastMath.toGrid( y, cellSize ) );
+			map[idx] = cell;
 		}
 		if(addToCell( cell, tile ))
 			setModified(cell);
