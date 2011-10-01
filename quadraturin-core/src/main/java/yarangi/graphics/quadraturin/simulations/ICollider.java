@@ -2,7 +2,6 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
-import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialObject;
