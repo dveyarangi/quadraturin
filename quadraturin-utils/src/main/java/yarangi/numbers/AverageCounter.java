@@ -21,8 +21,8 @@ public class AverageCounter
 		elements += weight;
 	}
 	
-	public double getAverage() { return sum / elements; }
-	public double get1DivAverage() { return elements / sum; }
+	public double getAverage() { return elements == 0 ? 0 : sum / elements; }
+	public double get1DivAverage() { return sum == 0 ? 0 : elements / sum; }
 	
 	public void reset() {
 		this.elements = 0;
@@ -32,5 +32,10 @@ public class AverageCounter
 	public double getCounter() { return elements; }
 
 	public double getSum() { return sum; }
+
+	public void setSum(double d)
+	{
+		this.sum = d;
+	}
 
 }
