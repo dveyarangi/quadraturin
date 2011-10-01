@@ -41,7 +41,6 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 		ICollisionHandler<K> handler = handlers.get( source.getClass() );
 		if(handler == null)
 			return false;
-		
 		return handler.setImpactWith( source, target );
 	}
 
@@ -93,6 +92,7 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 				return true;
 			
 			return collide(source, target);
+			
 		}
 
 		public final void setSource(K source) { this.source = source; }
@@ -111,7 +111,13 @@ public class RoughCollider <K extends IPhysicalObject> implements ICollider <K>
 			if(!source.isAlive())
 				return true;
 			
+			if(chunk.overlaps( source.getArea().getRefPoint().x()-source.getArea().getMaxRadius(),
+					source.getArea().getRefPoint().y()-source.getArea().getMaxRadius(),
+					source.getArea().getRefPoint().x()+source.getArea().getMaxRadius(),
+					source.getArea().getRefPoint().y()+source.getArea().getMaxRadius()))
+			
 			return collide(source, target);
+			return false;
 		}
 
 		public final void setSource(K source) { this.source = source; }
