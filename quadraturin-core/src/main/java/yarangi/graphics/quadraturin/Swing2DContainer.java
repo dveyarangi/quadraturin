@@ -149,11 +149,11 @@ public class Swing2DContainer extends JFrame
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
-		log.debug("Creating Quadraturin event manager...");
+		log.debug("Creating event manager...");
 		voices = new QuadVoices(config.getInputConfig());
-		log.trace("Quadraturin event manager created.");
+		log.trace("Event manager created.");
 		
-		log.debug("Creating Quadraturin GL listener...");
+		log.debug("Creating GL listener...");
 		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
 		
@@ -170,8 +170,7 @@ public class Swing2DContainer extends JFrame
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
-//		log.debug("Creating entity stage animator...");
-//		IPhysicsEngine engine = new StupidInteractions();
+		log.debug("Creating stage animator...");
 
 	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
 		log.trace("Entity stage animator created.");

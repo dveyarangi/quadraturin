@@ -159,6 +159,8 @@ public class Vector2D //extends IVector2D
 	final public Vector2D normalize()
 	{
 		double l = this.abs();
+		if(l == 0)
+			return this;
 		this.x = x/l;
 		this.y = y/l;
 		

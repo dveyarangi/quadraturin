@@ -7,14 +7,14 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.terrain.Cell;
-import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
 import yarangi.graphics.quadraturin.terrain.Tile;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.textures.TextureUtils.FBOHandle;
 import yarangi.math.BitUtils;
+import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 
-public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrainMap<T, ?>>, IGridListener<Cell<T>>
+public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGridListener<Cell<T>>
 {
 	private FBOHandle fbo;
 	
@@ -23,7 +23,7 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 	private List <Cell<T>> pendingCells;
 	
 	@Override
-	public void init(GL gl, GridyTerrainMap <T, ?> grid, IRenderingContext context)
+	public void init(GL gl, G grid, IRenderingContext context)
 	{
 		// rounding texture size to power of 2:
 		gridTextureWidth  = BitUtils.po2Ceiling((int)(grid.getMaxX()-grid.getMinX()));
@@ -36,7 +36,7 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 	}
 
 	@Override
-	public void render(GL gl, double time, GridyTerrainMap <T, ?> grid, IRenderingContext context)
+	public void render(GL gl, double time, G grid, IRenderingContext context)
 	{
 		
 		updateFrameBuffer( gl, grid );
@@ -54,10 +54,17 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 		gl.glTexCoord2f(1,0); gl.glVertex2f( maxx, miny );
 		gl.glEnd();
 		gl.glBindTexture( GL.GL_TEXTURE_2D, 0 );
+		gl.glColor3f(1,0,0);
+		gl.glBegin(GL.GL_LINE_STRIP);
+		 gl.glVertex2f( minx, miny );
+		 gl.glVertex2f( minx, maxy );
+		 gl.glVertex2f( maxx, maxy );
+		 gl.glVertex2f( maxx, miny );
+		gl.glEnd();
 	}
 
 	@Override
-	public void destroy(GL gl, GridyTerrainMap <T, ?> entity, IRenderingContext context)
+	public void destroy(GL gl, G entity, IRenderingContext context)
 	{
 		TextureUtils.destroyFBO( gl, fbo );
 	}
@@ -67,8 +74,9 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 	{
 		return false;
 	}
+	
 	@Override
-	public float getPriority() { return 1f; }
+	public float getPriority() { return 0.9f; }
 
 	
 	@Override
@@ -77,7 +85,7 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 		pendingCells = cells;
 	}
 
-	private void beginFrameBufferSpace(GL gl, GridyTerrainMap<T, ?> grid)
+	private void beginFrameBufferSpace(GL gl, G grid)
 	{
 		// transforming the rendering plane to fit the terrain grid:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
@@ -99,23 +107,22 @@ public abstract class TileGridLook <T extends Tile> implements Look <GridyTerrai
 		gl.glPopAttrib();	
 	}
 	
-	private void updateFrameBuffer(GL gl, GridyTerrainMap<T, ?> grid)
+	private void updateFrameBuffer(GL gl, G grid)
 	{
 		if(pendingCells != null && pendingCells.size() > 0)
 		{
-			float cellsize = grid.getCellSize();
-//			System.out.println("modifying!!!");
 			// redrawing changed tiles:
 			
 			beginFrameBufferSpace( gl, grid );
 			for(Cell <T> cell : pendingCells)
-				renderTile(gl, cell, cellsize);
+				renderTile(gl, cell, grid);
 			endFrameBufferSpace( gl );
 			
 			pendingCells = null;
 		}
 	}
 	
-	protected abstract void renderTile(GL gl, Cell<T> cell, double cellsize);
+	protected abstract void renderTile(GL gl, Cell<T> cell, G grid);
+	
 
 }

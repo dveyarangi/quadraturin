@@ -4,6 +4,7 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
 import yarangi.spatial.Area;
+import yarangi.spatial.Point;
 
 public class Tile implements ITile <Color>, IPhysicalObject
 {
@@ -12,7 +13,7 @@ public class Tile implements ITile <Color>, IPhysicalObject
 	
 	private int pixelCount;
 	
-	private double cx, cy;
+	private Point area;
 	
 	private double tilewidth;
 	
@@ -31,8 +32,7 @@ public class Tile implements ITile <Color>, IPhysicalObject
 	public Tile(double cx, double cy, int size, double pixelsize)
 	{
 		
-		this.cx = cx;
-		this.cy = cy;
+		area = new Point(cx, cy);
 		
 		this.pixelsize = pixelsize;
 		
@@ -51,6 +51,7 @@ public class Tile implements ITile <Color>, IPhysicalObject
 //	{
 //		return (int)FastMath.toGrid(x-cx, pixelsize) + (int)(pixelNum * FastMath.toGrid(y-cy, pixelsize));
 //	}
+	
 	
 	protected final boolean hasColor(int offset)
 	{
@@ -162,8 +163,7 @@ public class Tile implements ITile <Color>, IPhysicalObject
 	@Override
 	public Area getArea()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return area;
 	}
 
 	@Override

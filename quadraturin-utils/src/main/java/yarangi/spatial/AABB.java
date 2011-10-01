@@ -1,7 +1,6 @@
 package yarangi.spatial;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import yarangi.math.Vector2D;
@@ -245,6 +244,11 @@ public class AABB implements Area
 		
 		public int hashCode() { return this.getArea().hashCode(); }
 	}
+
+	public double getMinX() { return ref.x() - getMaxRadius(); }
+	public double getMaxX() { return ref.x() + getMaxRadius(); }
+	public double getMinY() { return ref.y() - getMaxRadius(); }
+	public double getMaxY() { return ref.y() + getMaxRadius(); }
 
 
 

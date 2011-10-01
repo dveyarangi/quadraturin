@@ -12,7 +12,7 @@ import yarangi.math.FastMath;
  *
  * @param <K>
  */
-public abstract class GridMap <K, O>
+public abstract class GridMap <K, O> implements IGrid
 {
 	/**
 	 * data array. It is references using {@link #at(int, int)} method.
