@@ -3,7 +3,6 @@ package yarangi.graphics.quadraturin.terrain;
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
-import yarangi.math.FastMath;
 import yarangi.spatial.Area;
 
 public class Tile implements ITile <Color>, IPhysicalObject
@@ -90,6 +89,51 @@ public class Tile implements ITile <Color>, IPhysicalObject
 			pixelCount --;
 		
 		pixels[offset] = pixels[offset+1] = pixels[offset+2] = pixels[offset+3] = 0;
+	}
+	
+	public void subMask(int ioffset, int joffset, byte [] mask)
+	{
+		int minI = Math.max( 0, ioffset );
+		int maxI = Math.min( pixelNum, pixelNum + ioffset );
+		int minJ = Math.max( 0, joffset );
+		int maxJ = Math.min( pixelNum, pixelNum + joffset );
+		int offset;
+		boolean hadColor;
+		for(int i = minI; i < maxI; i ++)
+			for(int j = minJ; j < maxJ; j ++)
+			{
+				offset = 4 * (i + pixelNum * j);
+				
+				hadColor = hasColor(offset);
+				pixels[offset] -= mask[4 * (i - ioffset + pixelNum * (j - joffset))];
+				if(pixels[offset] < 0)
+					pixels[offset] = 0;
+				
+				if(hadColor && !hasColor(offset))
+					pixelCount --;
+			}
+	}
+	
+	public void addMask(int ioffset, int joffset, byte [] mask)
+	{
+		int minI = Math.max( 0, ioffset );
+		int maxI = Math.min( pixelNum, pixelNum + ioffset );
+		int minJ = Math.max( 0, joffset );
+		int maxJ = Math.min( pixelNum, pixelNum + joffset );
+		int offset;
+		boolean hadColor;
+		for(int i = minI; i < maxI; i ++)
+			for(int j = minJ; j < maxJ; j ++)
+			{
+				offset = 4 * (i + pixelNum * j);
+				hadColor = hasColor(offset);
+				pixels[offset] += mask[4 * (i - ioffset + pixelNum * (j - joffset))];
+				if(pixels[offset] > 255)
+					pixels[offset] = (byte)255;
+				
+				if(!hadColor && hasColor(offset))
+					pixelCount ++;
+			}
 	}
 
 	public byte [] getPixels()

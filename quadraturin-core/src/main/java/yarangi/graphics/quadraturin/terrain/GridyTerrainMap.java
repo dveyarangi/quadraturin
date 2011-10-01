@@ -30,7 +30,7 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 	}
 	
 	@Override
-	protected Cell<T> createEmptyCell(double x, double y)
+	protected Cell<T> createEmptyCell(int idx, double x, double y)
 	{
 		return new Cell <T> (x, y, getCellSize(), null);
 	}
@@ -89,6 +89,19 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 	 * @param area
 	 * @return
 	 */
+	public void apply(double ox, double oy, boolean substract, byte [] mask)
+	{
+		MaskingSensor sensor = new MaskingSensor (false, ox, oy, mask);
+		
+		query(sensor, ox, oy, 8);
+	}
+	
+	
+	/**
+	 * Retrieves and removes points in specified radius
+	 * @param area
+	 * @return
+	 */
 	public void produce(double ox, double oy, double radius)
 	{
 		ConsumingSensor sensor = new ConsumingSensor (true, ox, oy, radius*radius);
@@ -132,6 +145,51 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 					else
 						tile.remove( i, j );
 				}
+			
+			if(tile.getPixelCount() != pixelsBefore)
+				setModified( (Cell<T>)chunk );
+			
+			return false;
+		}
+
+		@Override
+		public void clear() { }
+		
+	}
+	
+	public class MaskingSensor implements ISpatialSensor <T>
+	{
+		double ox, oy;
+		byte [] mask;
+		boolean substract;
+		
+		public MaskingSensor (boolean substract, double ox, double oy, byte [] mask)
+		{
+			this.ox = ox;
+			this.oy = oy;
+			
+			this.mask = mask;
+			
+			this.substract = substract;
+		}
+		/**
+		 * @param chunk - current cell
+		 */
+		@Override
+		public boolean objectFound(IAreaChunk chunk, T tile)
+		{
+//			System.out.println(chunk + " : " + tile);
+			int pixelsBefore = tile.getPixelCount();
+			if(pixelsBefore == 0 && substract)
+				return false;
+			
+			int ioffset = (int)((chunk.getMinX() - ox) / getCellSize());
+			int joffset = (int)((chunk.getMinY() - oy) / getCellSize());
+			
+			if(substract)
+				tile.subMask( ioffset, joffset, mask );
+			else
+				tile.addMask( ioffset, joffset, mask );
 			
 			if(tile.getPixelCount() != pixelsBefore)
 				setModified( (Cell<T>)chunk );

@@ -32,15 +32,22 @@ public class Cell <P> implements IAreaChunk
 		return passId;
 	}
 
-	@Override
-	public Area getArea() { return null; }
+	@Override public Area getArea() { return null; }
 
 	@Override public double getX() { return ox; }
 	@Override public double getY() { return oy; }
-	@Override
-	public boolean overlaps(double xmin, double ymin, double xmax, double ymax)
+	@Override public boolean overlaps(double xmin, double ymin, double xmax, double ymax)
 	{
-		return false;
+		return ( (xmax >= ox && xmax <= ox+cellsize) ||
+			     (xmin >= ox && xmin <= ox+cellsize) ||
+			     (xmin >= ox && xmax <= ox+cellsize) ||
+			     (xmin <= ox && xmax >= ox+cellsize)    
+			  ) && ( 
+			     (ymax >= oy && ymax <= oy+cellsize) ||
+			     (ymin >= oy && ymin <= oy+cellsize) ||
+			     (ymin >= oy && ymax <= oy+cellsize) ||
+			     (ymin <= oy && ymax >= oy+cellsize)    
+			   );
 	}
 
 	@Override public double getMinX() { return ox; }
