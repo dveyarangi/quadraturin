@@ -11,7 +11,6 @@ import yarangi.math.Vector2D;
  */
 public class CursorEvent
 {
-
 	
 	/**
 	 * User cursor location in scene coordinates
@@ -67,5 +66,5 @@ public class CursorEvent
 	}
 	
 	public IEntity getEntity() { return entity; }
-	
+
 }

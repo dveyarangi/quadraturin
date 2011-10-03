@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Arrays;
 
+import javax.media.opengl.glu.GLU;
+
 import yarangi.math.FastMath;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
@@ -13,6 +15,7 @@ import yarangi.math.Vector2D;
  */
 public class ViewPoint2D implements IViewPoint
 {
+	public static GLU glu = new GLU();
 
 	//
 	private Vector2D center;
@@ -23,10 +26,9 @@ public class ViewPoint2D implements IViewPoint
 	
 	private Dimension world;
 	
-	private Vector2D scrollSpeed;
-	private Vector2D zoomSpeed;
-	
 	private int [] viewport;
+	private double [] modelview_matrix; 
+	private double [] projection_matrix;
 //	private Rectangle2D.Double viewWindow;
 //	private Rectangle2D.Double virtualWindow;
 
@@ -44,9 +46,7 @@ public class ViewPoint2D implements IViewPoint
 		this.scale = scale;
 		
 		this.world = world;
-//		transpose();
-		scrollSpeed = new Vector2D(0, 0);
-		zoomSpeed = new Vector2D(0, 0);
+
 	}
 	
 /*	private void transpose() {
@@ -97,13 +97,6 @@ public class ViewPoint2D implements IViewPoint
 		
 		return point;
 	}
-	
-	public Vector2D toStagePoint(java.awt.Point p)
-	{
-		double h = scale.getDouble();
-		return new Vector2D((p.x + center.x()*h - window.width/2)/h, (p.y + center.y()*h - window.height/2)/h);
-	}
-
 //	public Rectangle2D.Double getViewWindow() { return viewWindow; }
 
 /*	public int scaleDistance(double dist) {
@@ -142,8 +135,27 @@ public class ViewPoint2D implements IViewPoint
 		
 	}
 
-	public void setViewPort(int[] viewport)
+	public void setPointModel(int[] viewport, double [] modelview_matrix, double [] projection_matrix)
 	{
 		this.viewport = viewport;
+		this.modelview_matrix = modelview_matrix;
+		this.projection_matrix = projection_matrix;
 	}
+	
+	public Vector2D toWorldCoordinates(Point pickPoint) 
+	{
+		int realy = 0;// inverting y coordinate
+		double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
+
+		double x = pickPoint.getX();
+		double y = pickPoint.getY();
+
+		
+		/* note viewport[3] is height of window in pixels */
+		realy = viewport[3] - (int) y;
+		glu.gluUnProject(x, realy, 0.0, modelview_matrix, 0, projection_matrix, 0, viewport, 0, wcoord, 0);
+		return new Vector2D(wcoord[0], wcoord[1]);
+//		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
+	}
+
 }

@@ -245,11 +245,6 @@ public class QuadVoices implements IEventManager, Loopy
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
 
-	public Point getMouseLocation() 
-	{
-		return mouseLocation;
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// ENGINE EVENTS
@@ -271,9 +266,9 @@ public class QuadVoices implements IEventManager, Loopy
 	 * Adds an cursor event to the events queue.
 	 * @param event
 	 */
-	public void declare(CursorEvent event)
+	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
-		cursorEvent = event;
+		cursorEvent = new CursorEvent(viewPoint.toWorldCoordinates(mouseLocation), mouseLocation);
 	}
 
 	/**

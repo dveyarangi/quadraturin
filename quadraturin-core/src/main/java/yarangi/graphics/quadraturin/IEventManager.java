@@ -1,12 +1,10 @@
 package yarangi.graphics.quadraturin;
 
-import java.awt.Point;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 
-import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.events.CursorListener;
 
 /**
@@ -21,18 +19,12 @@ public interface IEventManager extends KeyListener, MouseListener, MouseMotionLi
 	 * @return
 	 */
 //	public abstract IViewPoint getViewPoint();
-
-	/**
-	 * Exposes mouse location within the canvas.
-	 * @return
-	 */
-	public Point getMouseLocation();
 	
 	/**
 	 * TODO: unworthy creation of event object.
 	 * @param event
 	 */
-	public void declare(CursorEvent event);
+	public void updateViewPoint(ViewPoint2D viewPoint);
 	
 	/**
 	 * Register a cursor io listener.
