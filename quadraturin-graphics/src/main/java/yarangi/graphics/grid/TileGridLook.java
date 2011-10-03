@@ -1,13 +1,12 @@
 package yarangi.graphics.grid;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.terrain.Cell;
-import yarangi.graphics.quadraturin.terrain.Tile;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.textures.TextureUtils.FBOHandle;
 import yarangi.math.BitUtils;
@@ -20,7 +19,7 @@ public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGr
 	
 	private int gridTextureWidth, gridTextureHeight;
 	
-	private List <Cell<T>> pendingCells;
+	private Collection <Cell<T>> pendingCells;
 	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
@@ -80,7 +79,7 @@ public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGr
 
 	
 	@Override
-	public void cellsModified(List<Cell<T>> cells)
+	public void cellsModified(Collection<Cell<T>> cells)
 	{
 		pendingCells = cells;
 	}
