@@ -1,7 +1,5 @@
 package yarangi.graphics.quadraturin;
 
-import java.awt.Point;
-
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -10,12 +8,10 @@ import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.events.CursorEvent;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
-import yarangi.math.Vector2D;
 
 /**
  * TODO: nvidia extensions that allow faster rendering 
@@ -251,11 +247,16 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 		
 		int viewport[] = new int[4];
+		double mvmatrix[] = new double[16];
+		double projmatrix[] = new double[16];
 
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		viewPoint.setPointModel(viewport, mvmatrix, projmatrix);
+		
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		
-		viewPoint.setViewPort(viewport);
 		gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
 		gl.glMatrixMode(GL.GL_MODELVIEW);
@@ -264,11 +265,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// TODO: extract matrices to viewPoint for world coordinates calculation:
 		//updateViewPoint(gl, viewPoint);
 		
-		
-		// transforming mouse coordinates to world coordinates
-		Point pickPoint = voices.getMouseLocation();
-		if(pickPoint != null)
-			voices.declare(new CursorEvent(toWorldCoordinates(gl, pickPoint, viewPoint, viewport), pickPoint));
+		// send world transformation event to voices:
+		voices.updateViewPoint(viewPoint);
 		
 		context.setViewPoint(viewPoint);
 		// ////////////////////////////////////////////////////
@@ -309,25 +307,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) { }
 
 
-	private Vector2D toWorldCoordinates(GL gl, Point pickPoint, ViewPoint2D viewPoint, int [] viewport) 
-	{
-		double mvmatrix[] = new double[16];
-		double projmatrix[] = new double[16];
-		int realy = 0;// GL y coord pos
-		double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
 
-		double x = pickPoint.getX();
-		double y = pickPoint.getY();
-
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-		
-		/* note viewport[3] is height of window in pixels */
-		realy = viewport[3] - (int) y;
-		glu.gluUnProject(x, realy, 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, wcoord, 0);
-		return new Vector2D(wcoord[0], wcoord[1]);
-//		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
-	}
 
 	
 	public void sceneChanged(Scene currScene) 
