@@ -268,7 +268,8 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
-		cursorEvent = new CursorEvent(viewPoint.toWorldCoordinates(mouseLocation), mouseLocation);
+		if(mouseLocation != null)
+			cursorEvent = new CursorEvent(viewPoint.toWorldCoordinates(mouseLocation), mouseLocation);
 	}
 
 	/**
