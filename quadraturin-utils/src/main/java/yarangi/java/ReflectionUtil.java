@@ -27,6 +27,8 @@ public class ReflectionUtil
 		for(int i = 0; i < ctorParams.length; i ++)
 			paramTypes[i] = getClass(ctorParams[i]);
 		
+		// TODO: also super class permutations check? :)
+		
 		return createInstance(className, ctorParams, paramTypes);
 	}
 	
