@@ -7,7 +7,7 @@ import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
-import yarangi.graphics.quadraturin.events.CursorEvent;
+import yarangi.graphics.quadraturin.events.ICursorEvent;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.spatial.ISpatialFilter;
@@ -32,7 +32,7 @@ public class DefaultActionFactory
 		}
 
 		@Override
-		public void onCursorMotion(CursorEvent event)
+		public void onCursorMotion(ICursorEvent event)
 		{
 			// TODO Auto-generated method stub
 			

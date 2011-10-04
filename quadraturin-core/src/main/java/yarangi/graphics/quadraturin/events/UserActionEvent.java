@@ -25,15 +25,15 @@ public class UserActionEvent
 	 */
 	private IEntity entity;
 	
-	private CursorEvent cursor;
+	private ICursorEvent cursor;
 
 	
-	public UserActionEvent(String actionId, InputHook hook, CursorEvent cursor)
+	public UserActionEvent(String actionId, InputHook hook, ICursorEvent cursor)
 	{
 		this(actionId, hook, null, cursor);
 	}
 	
-	public UserActionEvent(String actionId, InputHook hook, IEntity entity, CursorEvent cursor)
+	public UserActionEvent(String actionId, InputHook hook, IEntity entity, ICursorEvent cursor)
 	{
 		this.actionId = actionId;
 		this.hook = hook;
@@ -49,7 +49,7 @@ public class UserActionEvent
 	
 	public IEntity getEntity() { return entity; }
 	
-	public CursorEvent getCursor() { return cursor; }
+	public ICursorEvent getCursor() { return cursor; }
 	
 	public String toString()
 	{

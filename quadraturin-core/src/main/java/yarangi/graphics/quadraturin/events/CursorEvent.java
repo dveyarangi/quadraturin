@@ -9,7 +9,7 @@ import yarangi.math.Vector2D;
  * Cursor (mouse, currently) movement-related event. 
  * Allows binding of selected/hovered entity. 
  */
-public class CursorEvent
+public class CursorEvent implements ICursorEvent
 {
 	
 	/**
@@ -26,7 +26,10 @@ public class CursorEvent
 	 * Set if the cursor if hovering over and entity.
 	 */
 	private IEntity entity;
-
+	
+	/**
+	 * 
+	 */
 	private InputHook hook;
 	
 	public CursorEvent(Vector2D worldLocation, Point canvasLocation)
@@ -38,24 +41,30 @@ public class CursorEvent
 	/**
 	 * @param mask
 	 */
-	public void setInput(InputHook hook)
+	public void setInput(InputHook hook, Point canvasLocation)
 	{
 		this.hook = hook;
+		this.canvasLocation = canvasLocation;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public InputHook getInput() { return hook; }
 
-
 	/**
-	 * @return Cursor location in scene coordinates.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Vector2D getWorldLocation() {
 		return worldLocation;
 	}
 
 	/**
-	 * @return Cursor location in canvas coordinates.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Point getCanvasLocation() {
 		return canvasLocation;
 	}
@@ -65,6 +74,14 @@ public class CursorEvent
 		this.entity = entity;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public IEntity getEntity() { return entity; }
+
+	public void setWorldCoordinate(Vector2D worldCoordinates) {
+		this.worldLocation = worldCoordinates;
+	}
 
 }

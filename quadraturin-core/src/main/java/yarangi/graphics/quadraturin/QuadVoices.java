@@ -8,7 +8,6 @@
 
 package yarangi.graphics.quadraturin;
 
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -21,8 +20,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
-import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.actions.ActionController;
+import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
@@ -70,11 +69,6 @@ public class QuadVoices implements IEventManager, Loopy
 	 * Input definitions provider
 	 */
 	private ActionController controller;
-
-	/**
-	 * Mouse location
-	 */
-	private Point mouseLocation;
 
 	/**
 	 * Logging name
@@ -173,9 +167,8 @@ public class QuadVoices implements IEventManager, Loopy
 	/** {@inheritDoc} */
 	public void mousePressed(MouseEvent e) 
 	{ 
-		mouseLocation = e.getPoint();
 		InputHook hook = new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook);
+		cursorEvent.setInput(hook, e.getPoint());
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
@@ -183,11 +176,9 @@ public class QuadVoices implements IEventManager, Loopy
 	/** {@inheritDoc} */
 	public void mouseReleased(MouseEvent e) 
 	{ 
-		mouseLocation = e.getPoint();
-		
 		// TODO: buggy, no button flag are lit on release, and thus input hook constructed incorrectly:
 		InputHook hook = new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook);
+		cursorEvent.setInput(hook, e.getPoint());
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
@@ -195,10 +186,8 @@ public class QuadVoices implements IEventManager, Loopy
 	/** {@inheritDoc} */
 	public void mouseClicked(MouseEvent e) 
 	{
-		mouseLocation = e.getPoint();
-		
 		InputHook hook = new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook);
+		cursorEvent.setInput(hook, e.getPoint());
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
@@ -206,9 +195,8 @@ public class QuadVoices implements IEventManager, Loopy
 	/** {@inheritDoc} */
 	public void mouseDragged(MouseEvent e) 
 	{ 
-		mouseLocation = e.getPoint();
 		InputHook hook = new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook);
+		cursorEvent.setInput(hook, e.getPoint());
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
@@ -216,31 +204,31 @@ public class QuadVoices implements IEventManager, Loopy
 	/** {@inheritDoc} */
 	public void mouseEntered(MouseEvent e) 
 	{ 
-		mouseLocation = e.getPoint();
+		cursorEvent.setInput(null, e.getPoint());
 	}
 	
 	/** {@inheritDoc} */
 	public void mouseExited(MouseEvent e) 
 	{ 
-		mouseLocation = null;
+		cursorEvent.setInput(null, null);
 	}
 	
 	/** {@inheritDoc} */
 	public void mouseMoved(MouseEvent e) 
 	{ 
-		mouseLocation = e.getPoint();
+		cursorEvent.setInput(null, e.getPoint());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) 
 	{
-		mouseLocation = e.getPoint();
 		int notches = e.getWheelRotation();
 		if(notches == 0)
 			return;
 		
 		InputHook hook = new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL);
-		cursorEvent.setInput(hook);
+		cursorEvent.setInput(hook, e.getPoint());
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}
@@ -268,7 +256,7 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
-		cursorEvent = new CursorEvent(viewPoint.toWorldCoordinates(mouseLocation), mouseLocation);
+		cursorEvent.setWorldCoordinate(viewPoint.toWorldCoordinates(cursorEvent.getCanvasLocation()));
 	}
 
 	/**
@@ -279,7 +267,6 @@ public class QuadVoices implements IEventManager, Loopy
 	{
 		userEvents.add(event);
 	}
-	
 
 	/**
 	 * {@inheritDoc}
