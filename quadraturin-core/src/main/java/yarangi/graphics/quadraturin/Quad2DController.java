@@ -6,6 +6,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
+import yarangi.graphics.quadraturin.config.ConfigException;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.objects.Look;
@@ -49,11 +50,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	
 	public static final float MAX_DEPTH_PRIORITY = 1;
-
-	/**
-	 * Current canvas width/height ratio.
-	 */
-//	private float windowRatio;
 	
 	/**
 	 * Set of rendering environment properties for {@link Look} to consider. 
@@ -62,9 +58,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	
 	
 	
-	public Quad2DController(String name, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
+	public Quad2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
-		super(name, chain);
+		super(moduleName, chain);
 		
 		this.voices = voices;
 		
@@ -93,8 +89,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			log.info("GL core is in debug mode.");
 			drawable.setGL(new DebugGL(gl));
 		}
-		
-		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
 		
 		//////////////////////////////////////////////////////////////////
 		// Global settings:
@@ -139,11 +133,18 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		else
 			gl.glDisable(GL.GL_LINE_SMOOTH);
 
+		
 		// plugins initialization:
-		for(String name : context.getPluginsNames())
+		
+		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
+
+		for(String pluginName : context.getPluginsNames())
 		{
-			IGraphicsPlugin factory = context.getPlugin(name);
-			log.debug("Initializing plugin [" + name + "]...");
+			IGraphicsPlugin factory = context.getPlugin(pluginName);
+			for(String extensionName : factory.getRequiredExtensions())
+				if(! gl.isExtensionAvailable(extensionName))
+					throw new ConfigException("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
+			log.debug("Initializing plugin [" + pluginName + "]...");
 			factory.init(gl);
 		}
 		
@@ -253,7 +254,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-		viewPoint.setPointModel(viewport, mvmatrix, projmatrix);
+		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
 		
 		gl.glMatrixMode(GL.GL_PROJECTION);
 		

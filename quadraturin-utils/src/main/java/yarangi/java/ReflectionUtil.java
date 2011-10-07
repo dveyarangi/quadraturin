@@ -4,11 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import yarangi.ZenUtils;
+
 public class ReflectionUtil 
 {
 	private ReflectionUtil()
 	{
-		throw new RuntimeException("All " + Runtime.getRuntime().availableProcessors() + " of your processors are wondering - why would you want to do this?");
+		ZenUtils.staticOnly();
 	}
 	
 	/**
@@ -34,23 +36,18 @@ public class ReflectionUtil
 	
 	public static <T> T createInstance(String className, Object [] ctorParams, Class<?> [] paramTypes)
 	{
-		Class<T> type;
-		try {
-			type = (Class <T>) Class.forName(className);
-		} 
-		catch (ClassNotFoundException e)    { throw new RuntimeException("Class [" + className + "] not found.", e); }
-
-		Constructor <T> ctor;
-		try {
-			ctor = type.getConstructor(paramTypes);
-		} 
-		catch (SecurityException e)         { throw new RuntimeException(e.getMessage(), e); }
-		catch (NoSuchMethodException e)     { throw new RuntimeException("Cannot find public constructor for class [" + className + "] with parameters [" + Arrays.toString( ctorParams ) + "]", e); }
-		
 		T instance;
+		
 		try {
+			Class<T> type = (Class <T>) Class.forName(className);
+
+			Constructor <T> ctor = type.getConstructor(paramTypes);
+		
 			instance = ctor.newInstance(ctorParams);
 		} 
+		catch (ClassNotFoundException e)    { throw new RuntimeException("Class [" + className + "] not found.", e); }
+		catch (SecurityException e)         { throw new RuntimeException(e.getMessage(), e); }
+		catch (NoSuchMethodException e)     { throw new RuntimeException("Cannot find public constructor for class [" + className + "] with parameters [" + Arrays.toString( ctorParams ) + "]", e); }
 		catch (IllegalArgumentException e)  { throw new RuntimeException("Invalid arguments for class [" + className + "] constructor.", e); }
 		catch (InstantiationException e)    { throw new RuntimeException("Cannot instantiate class [" + className + "] (abstract?)." , e); }
 		catch (IllegalAccessException e)    { throw new RuntimeException(e.getMessage(), e); }

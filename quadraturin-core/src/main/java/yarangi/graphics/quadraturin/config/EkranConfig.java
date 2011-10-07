@@ -95,8 +95,8 @@ public class EkranConfig {
 		for(GraphicsPluginConfig config : plugins)
 		{
 			IGraphicsPlugin factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
-					new Object [] {config.getProperties()},
-					new Class  [] {java.util.Map.class});
+					new Object [] {config.getName(),       config.getProperties()},
+					new Class  [] {java.lang.String.class, java.util.Map.class});
 			
 			factories.put(config.getName(), factory);
 		}

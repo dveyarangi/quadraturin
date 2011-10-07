@@ -135,15 +135,31 @@ public class ViewPoint2D implements IViewPoint
 		
 	}
 
-	public void setPointModel(int[] viewport, double [] modelview_matrix, double [] projection_matrix)
+	/**
+	 * Updates view point transformation aspects from GL viewpoint, model-view and 
+	 * projection matrices.
+	 * @param viewport (4 elements)
+	 * @param modelview_matrix (16 elements)
+	 * @param projection_matrix (16 elements)
+	 */
+	public void updatePointModel(int[] viewport, double [] modelview_matrix, double [] projection_matrix)
 	{
 		this.viewport = viewport;
 		this.modelview_matrix = modelview_matrix;
 		this.projection_matrix = projection_matrix;
 	}
 	
+	/**
+	 * Converts specified point in canvas coordinate into world coordinates vector.
+	 * Depends on the last invokation of {@link #setPointModel(int[], double[], double[])}
+	 * method.
+	 * @param pickPoint
+	 * @return
+	 */
 	public Vector2D toWorldCoordinates(Point pickPoint) 
 	{
+		if(pickPoint == null)
+			return null;
 		int realy = 0;// inverting y coordinate
 		double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
 

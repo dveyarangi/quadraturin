@@ -1,11 +1,8 @@
 package yarangi.graphics.shaders;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.media.opengl.GL;
-
-import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.resources.ResourceFactory;
@@ -13,9 +10,6 @@ import yarangi.graphics.quadraturin.resources.ResourceFactory;
 public class ShaderFactory extends ResourceFactory <IShader> implements IGraphicsPlugin
 {
 	
-	private Logger log = Logger.getLogger(toString());
-	
-	private Map <String, Integer> shaderTypes = new HashMap <String, Integer> ();
 	// GL_AMDX_debug_output GL_AMDX_vertex_shader_tessellator GL_AMD_conservative_depth GL_AMD_debug_output GL_AMD_draw_buffers_blend 
 	// GL_AMD_name_gen_delete GL_AMD_performance_monitor GL_AMD_sample_positions GL_AMD_shader_stencil_export GL_AMD_texture_cube_map_array 
 	// GL_AMD_texture_texture4 GL_AMD_vertex_shader_tessellator GL_ARB_blend_func_extended GL_ARB_color_buffer_float GL_ARB_copy_buffer 
@@ -53,28 +47,18 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	
 	
 	
-	public ShaderFactory(Map <String, String> properties)
+	public ShaderFactory(String factoryName, Map <String, String> properties)
 	{
-		for(String name : properties.keySet())
+		super(factoryName);
+		
+		for(String shaderName : properties.keySet())
 		{
-			registerResource(name, new FileShader(properties.get(name)));
+			registerResource(shaderName, new FileShader(properties.get(shaderName)));
 		}
 	}
 	
 	public void init(GL gl)
 	{
-		
-		if(gl.isExtensionAvailable(IShader.TYPE_VERTEX))
-		{
-			shaderTypes.put(IShader.TYPE_VERTEX, GL.GL_VERTEX_SHADER);
-			log.debug("GL shader extension [" + IShader.TYPE_VERTEX + "] is available.");
-		}
-		if(gl.isExtensionAvailable(IShader.TYPE_FRAGMENT))
-		{
-			shaderTypes.put(IShader.TYPE_FRAGMENT, GL.GL_FRAGMENT_SHADER);
-			log.debug("GL shader extension [" + IShader.TYPE_FRAGMENT + "] is available.");
-		}
-		
 		for(IShader shaderResource : getHandles().values())
 		{
 			shaderResource.init(gl);
@@ -90,5 +74,11 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	public String toString() 
 	{
 		return "shader-factory";
+	}
+
+	@Override
+	public String[] getRequiredExtensions()
+	{
+		return new String [] { "GL_ARB_vertex_shader", "GL_ARB_fragment_shader"};
 	}
 }

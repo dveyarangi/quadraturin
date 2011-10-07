@@ -1,5 +1,7 @@
 package yarangi.graphics.quadraturin.threads;
 
+import javax.crypto.spec.OAEPParameterSpec;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -14,17 +16,17 @@ public abstract class ChainedThreadSkeleton implements IChainedThread
 	/**
 	 *  
 	 */
-	protected String name;
+	private String name;
 	
 
-	protected int ordial;
+	private int ordial;
 	
 	
-	protected ThreadChain parentChain;
+	private ThreadChain parentChain;
 	/**
 	 * Thread's stop monitor.
 	 */
-	protected boolean isAlive = true;
+	protected volatile boolean isAlive = true;
 	
 	protected Logger log;
 	
@@ -39,6 +41,8 @@ public abstract class ChainedThreadSkeleton implements IChainedThread
 	public int getOrdial() { return ordial; }
 	
 	public void setOrdial(int ordial) { this.ordial = ordial; }
+	
+	protected final ThreadChain getParentChain() { return parentChain; }
 	
 	public String getName() { return name; }
 	

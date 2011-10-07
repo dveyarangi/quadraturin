@@ -60,7 +60,7 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 			loopy.runBody();
 			
 			// releasing next thread:
-			parentChain.releaseNext(this);
+			getParentChain().releaseNext(this);
 			
 			// postprocessing
 			loopy.runPostLock();

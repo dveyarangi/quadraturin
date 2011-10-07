@@ -4,7 +4,7 @@ import java.util.Set;
 
 import yarangi.ZenUtils;
 import yarangi.graphics.colors.Color;
-import yarangi.graphics.quadraturin.QLog;
+import yarangi.graphics.quadraturin.QServices;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
@@ -20,7 +20,7 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 		
 		this.pixelsize = pixelsize;
 		
-		QLog.structure.debug( "Created grid terrain [" + width + "x" + height + "] with cellsize " + cellsize + ".");
+		QServices.structure.debug( "Created grid terrain [" + width + "x" + height + "] with cellsize " + cellsize + ".");
 	}
 
 	@Override

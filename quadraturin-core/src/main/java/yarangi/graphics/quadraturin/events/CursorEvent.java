@@ -27,11 +27,6 @@ public class CursorEvent implements ICursorEvent
 	 */
 	private IEntity entity;
 	
-	/**
-	 * 
-	 */
-	private InputHook hook;
-	
 	public CursorEvent(Vector2D worldLocation, Point canvasLocation)
 	{
 		this.worldLocation = worldLocation;
@@ -41,18 +36,11 @@ public class CursorEvent implements ICursorEvent
 	/**
 	 * @param mask
 	 */
-	public void setInput(InputHook hook, Point canvasLocation)
+	public void setMouseLocation(Point canvasLocation)
 	{
-		this.hook = hook;
 		this.canvasLocation = canvasLocation;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public InputHook getInput() { return hook; }
-
 	/**
 	 * {@inheritDoc}
 	 */

@@ -21,4 +21,9 @@ public class ZenUtils
 	{
 		throw new IllegalStateException("This method is not supported for class " + claass);
 	}
+
+	public static void staticOnly()
+	{
+		throw new RuntimeException("All " + Runtime.getRuntime().availableProcessors() + " of your processors are wondering - why would you want to do this?");
+	}
 }

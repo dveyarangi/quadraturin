@@ -16,8 +16,6 @@ public interface ICursorEvent {
 	 * @return Cursor location in canvas coordinates.
 	 */
 	public Point getCanvasLocation();
-
-	public InputHook getInput();
 	
 	/**
 	 * @return Entity at the cursor location; null if none

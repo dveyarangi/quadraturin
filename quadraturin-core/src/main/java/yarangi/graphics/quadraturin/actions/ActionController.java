@@ -33,7 +33,7 @@ public abstract class ActionController implements CursorListener
 	}
 	
 	/**
-	 * A map from input name to corresponding {@IAction} 
+	 * A map from user input event name to corresponding {@link IAction} 
 	 * @return
 	 */
 	public abstract Map <String, IAction> getActions();

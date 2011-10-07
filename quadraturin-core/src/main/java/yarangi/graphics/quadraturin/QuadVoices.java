@@ -36,7 +36,7 @@ import yarangi.graphics.quadraturin.threads.Loopy;
  * cursor hover and picking  events and whatever else that will become a requirement in 
  * the future.  Runs in a separate thread. All accumulated event are dispatched at once.
  * 
- * TODO: append CursorMotionEvent listener that fires GUIEvents?
+ * TODO: fire GUIEvents?
  * TODO: replacing the AWT event queue shall be more efficient.
  * 
  * @author Dve Yarangi
@@ -59,7 +59,6 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	private Map <InputHook, String> binding = new HashMap <InputHook, String> ();
 
-	
 	/**
 	 * User actions (key or mouse key hits)
 	 */
@@ -91,11 +90,8 @@ public class QuadVoices implements IEventManager, Loopy
 			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
 			binding.put(hook, bind.getActionId());
 			log.debug("Attached input hook [" + hook + "] for action [" + bind.getActionId() + "].");
-
 		}
 	}
-	
-//	public IViewPoint getViewPoint() { return viewPoint; }
 	
 	public void runPreUnLock() { /* voice of the void? */ }
 
@@ -113,25 +109,17 @@ public class QuadVoices implements IEventManager, Loopy
 			l.onCursorMotion(cursorEvent);
 		
 		// firing user actions info:
-//		log.debug("User action events in queue: " + userEvents.size());
+//		log.trace("User action events in queue: " + userEvents.size());
 		while(userEvents.size() > 0)
 		{
 			UserActionEvent event = userEvents.poll();
-//			log.debug("Firing user action event: " + event.getActionId());
-			
-			event.setSceneEntity(pickedEntity);
+//			log.trace("Firing user action event: " + event.getActionId());
 			
 			IAction action = controller.getActions().get(event.getActionId());
 			if(action != null)
 				action.act( event );
 		}
-		
-/*		if(sceneTime != -1)
-		{
-			for(SceneListener l : sceneListeners)
-				l.timeAdvanced(sceneTime);
-			sceneTime = -1;
-		}*/
+
 	}
 	
 	public void runPostLock() { /* freedom of voice? */ }
@@ -140,83 +128,89 @@ public class QuadVoices implements IEventManager, Loopy
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS TRANSFORMATION
 	
+	/**
+	 * Tests if specified input hoot is mapped to an user action and adds it to action events queue
+	 */
+	private void enqueueUserActionEvent(InputHook hook)
+	{
+		if(binding.containsKey(hook))
+			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+	}	
+	
 	/** {@inheritDoc} */
+	@Override
 	public void keyPressed(KeyEvent ke) 
 	{
-		InputHook hook = new InputHook(InputHook.PRESSED, ke.getKeyCode());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, ke.getKeyCode()));
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void keyReleased(KeyEvent ke) 
 	{ 
-		InputHook hook = new InputHook(InputHook.RELEASED, ke.getKeyCode());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, ke.getKeyCode()));
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void keyTyped(KeyEvent ke) 
 	{ 
-		InputHook hook = new InputHook(InputHook.TAPPED, ke.getKeyCode());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, ke.getKeyCode()));
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mousePressed(MouseEvent e) 
 	{ 
 		InputHook hook = new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook, e.getPoint());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		cursorEvent.setMouseLocation(e.getPoint());
+		enqueueUserActionEvent(hook);
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mouseReleased(MouseEvent e) 
 	{ 
-		// TODO: buggy, no button flag are lit on release, and thus input hook constructed incorrectly:
-		InputHook hook = new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook, e.getPoint());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		// TODO: buggy, no button flags are lit on release, and thus input hook constructed incorrectly:
+		cursorEvent.setMouseLocation(e.getPoint());
+		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx())));
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mouseClicked(MouseEvent e) 
 	{
-		InputHook hook = new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook, e.getPoint());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		cursorEvent.setMouseLocation(e.getPoint());
+		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx())));
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void mouseDragged(MouseEvent e) 
 	{ 
-		InputHook hook = new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()));
-		cursorEvent.setInput(hook, e.getPoint());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		cursorEvent.setMouseLocation(e.getPoint());
+		enqueueUserActionEvent(new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx())));
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mouseEntered(MouseEvent e) 
 	{ 
-		cursorEvent.setInput(null, e.getPoint());
+		cursorEvent.setMouseLocation(e.getPoint());
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mouseExited(MouseEvent e) 
 	{ 
-		cursorEvent.setInput(null, null);
+		cursorEvent.setMouseLocation(null);
 	}
 	
 	/** {@inheritDoc} */
+	@Override
 	public void mouseMoved(MouseEvent e) 
 	{ 
-		cursorEvent.setInput(null, e.getPoint());
+		cursorEvent.setMouseLocation(e.getPoint());
 	}
 
 	/** {@inheritDoc} */
@@ -227,10 +221,8 @@ public class QuadVoices implements IEventManager, Loopy
 		if(notches == 0)
 			return;
 		
-		InputHook hook = new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL);
-		cursorEvent.setInput(hook, e.getPoint());
-		if(binding.containsKey(hook))
-			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
+		cursorEvent.setMouseLocation(e.getPoint());
+		enqueueUserActionEvent( new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL) );
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +248,8 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
-		cursorEvent.setWorldCoordinate(viewPoint.toWorldCoordinates(cursorEvent.getCanvasLocation()));
+		cursorEvent.setWorldCoordinate(
+				viewPoint.toWorldCoordinates(cursorEvent.getCanvasLocation()));
 	}
 
 	/**
@@ -285,11 +278,9 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void setActionController(ActionController controller)
 	{
-
 		removeCursorListener( this.controller );
 		
 		this.controller = controller;
 		addCursorListener( controller );
-		
 	}
 }

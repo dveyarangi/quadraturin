@@ -31,6 +31,7 @@ public class StageAnimator implements Loopy, StageListener
 	private long frameTimeLeft;
 
 	private Scene currScene;
+	
 	/**
 	 * Animator's logger.
 	 */

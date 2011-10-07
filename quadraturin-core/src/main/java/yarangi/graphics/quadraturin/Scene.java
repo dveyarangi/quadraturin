@@ -23,33 +23,11 @@ import yarangi.spatial.ISpatialIndex;
  * <li> {@link WorldVeil} responsible to draw and animate game world.
  * Veils provide a way to add and remove {@link Entity} objects.
  * 
- * In order to link scene automatically, use following configuration example:
- * <pre>
- * 		"scenes" : [
- 			{
-				"name" : "playground",
-				"sceneClass" : "yarangi.game.temple.Playground",
-				"width" : 1000,
-				"height" : 1000,
-				"frameLength" : 1,
-		    	"engineClass" : "yarangi.graphics.quadraturin.simulations.StupidInteractions",
-			    "viewpoint" : { 
-			    	"centerx"  : 0.0,
-			    	"centery"  : 0.0,
-			    	"maxZoom"  : 2,
-			    	"initZoom" : 1,
-			    	"minZoom"  : 0.1
-			    }
-			    
-			}
-		]
- * </pre>
  * Any scene has to define {@link Scene#Scene(SceneConfig, QuadVoices)} constructor.
  * @author dveyarangi
  */
 public abstract class Scene
 {
-	
 	
 	/**
 	 * Just for fun, scene name
@@ -67,7 +45,7 @@ public abstract class Scene
 	private UIVeil uiVeil;
 	
 	/**
-	 * TODO: split?
+	 * TODO: split for world and UI?
 	 */
 	private ViewPoint2D viewPoint;
 	
@@ -255,6 +233,10 @@ public abstract class Scene
 		this.voices.setActionController( actionController );
 	}
 	
+	/**
+	 * Exposes collision manager to register collision handlers
+	 * @return
+	 */
 	public ICollider getCollisionManager()
 	{
 		return getWorldVeil().getPhysicsEngine().getCollisionManager();

@@ -4,12 +4,23 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Provides containment and validation for custom resource type.
+ * @author dveyarangi
+ *
+ * @param <R>
+ */
 public class ResourceFactory <R extends IResource>
 {
 	
 	protected HashMap <String, R> handles = new HashMap <String, R> ();
 	
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected Logger log;
+	
+	public ResourceFactory (String factoryName)
+	{
+		log = Logger.getLogger(factoryName);
+	}
 	
 	public void registerResource(String resourceId, R resource)
 	{
