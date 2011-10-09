@@ -6,11 +6,13 @@ import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
+import yarangi.ZenUtils;
 import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
 import yarangi.graphics.quadraturin.objects.SceneEntity;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.math.BitUtils;
 
 /**
@@ -28,6 +30,11 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		public boolean doPushNames() { return false; }
 		public boolean isForEffect() { return true; }
 		public IViewPoint getViewPoint() { return null; }
+		@Override
+		public <T extends IGraphicsPlugin> T getPlugin(String name)
+		{
+			ZenUtils.methodNotSupported( this.getClass() );
+		}
 	};
 
 	public VeilEffectSkeleton() {

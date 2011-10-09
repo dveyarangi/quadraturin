@@ -5,8 +5,8 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 
 /**
  * Creates and binds the texture of the entity's look. The content
@@ -18,7 +18,7 @@ import yarangi.graphics.quadraturin.objects.SceneEntity;
  * @param height
  * @return texture object handler
  */
-public class SpriteLook <T extends SceneEntity> implements Look <T> 
+public class SpriteLook <T extends IEntity> implements Look <T> 
 {
 	
 	private Look <T> spriteLook;
@@ -50,7 +50,7 @@ public class SpriteLook <T extends SceneEntity> implements Look <T>
 	 * @param height
 	 * @return texture object handler
 	 */
-	public void init(GL gl, T entity) 
+	public void init(GL gl, T entity, IRenderingContext defaultContext) 
 	{
 		if(isInited)
 			return;
@@ -155,12 +155,12 @@ public class SpriteLook <T extends SceneEntity> implements Look <T>
 		
 	}
 
-	public void destroy(GL gl, T entity) 
+	public void destroy(GL gl, T entity, IRenderingContext defaultContext) 
 	{
 		// TODO: something is fishy around here
 //		gl.glDeleteTextures(1, textureHandle);
 	}
-	private void viewOrtho(GL gl, SceneEntity entity)  // Set Up An Ortho View
+	private void viewOrtho(GL gl, IEntity entity)  // Set Up An Ortho View
     {
         gl.glMatrixMode(GL.GL_PROJECTION);  // Select Projection
         gl.glPushMatrix();      // Push The Matrix
@@ -186,5 +186,12 @@ public class SpriteLook <T extends SceneEntity> implements Look <T>
 	{
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public float getPriority()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
