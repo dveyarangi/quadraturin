@@ -11,16 +11,20 @@ import yarangi.graphics.quadraturin.objects.behaviors.DummyBehavior;
 public class Dummy extends Entity
 {
 	
-	public static Look <Entity> LOOK = new Look <Entity> () { 
-		public void render(GL gl, double time, Entity entity, IRenderingContext context) {}
-		public void init(GL gl, Entity entity, IRenderingContext context) { } 
-		public void destroy(GL gl, Entity entity, IRenderingContext context) { }
-		@Override
-		public boolean isCastsShadow() { return false; }
-		@Override
-		public float getPriority() { return 0; } 
-	};
+	public static Look <Entity> LOOK = LOOK();
 	
 	public static Behavior <Entity> BEHAVIOR = new DummyBehavior <Entity> ();
 
+	public static <E> Look <E> LOOK()
+	{
+		return new Look <E> () { 
+			public void render(GL gl, double time, E entity, IRenderingContext context) {}
+			public void init(GL gl, E entity, IRenderingContext context) { } 
+			public void destroy(GL gl, E entity, IRenderingContext context) { }
+			@Override
+			public boolean isCastsShadow() { return false; }
+			@Override
+			public float getPriority() { return 0; }
+		};
+	}
 }

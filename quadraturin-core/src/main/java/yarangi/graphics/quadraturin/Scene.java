@@ -130,10 +130,10 @@ public abstract class Scene
 	 * Schedules entity removal. It will be actually removed at next rendering cycle.
 	 * @param entity
 	 */
-//	public void removeEntity(SceneEntity entity)
-//	{
-//		worldVeil.removeEntity(entity);
-//	}
+	public void removeEntity(IEntity entity)
+	{
+		worldVeil.removeEntity(entity);
+	}
 	
 	public void addOverlay(Overlay entity)
 	{
