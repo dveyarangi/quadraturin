@@ -3,10 +3,8 @@ package yarangi.graphics.quadraturin.terrain;
 import java.util.Set;
 
 import yarangi.ZenUtils;
-import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.QServices;
 import yarangi.spatial.GridMap;
-import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 
 /**
@@ -83,19 +81,6 @@ public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> 
 	 * @param area
 	 * @return
 	 */
-	public void consume(double ox, double oy, double radius)
-	{
-		ConsumingSensor sensor = new ConsumingSensor (false, ox, oy, radius*radius);
-		
-		query(sensor, ox, oy, radius);
-		
-	}
-	
-	/**
-	 * Retrieves and removes points in specified radius
-	 * @param area
-	 * @return
-	 */
 /*	public void apply(double ox, double oy, boolean substract, byte [] mask)
 	{
 		MaskingSensor sensor = new MaskingSensor (false, ox, oy, mask);
@@ -103,66 +88,6 @@ public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> 
 		query(sensor, ox, oy, 8);
 	}*/
 	
-	
-	/**
-	 * Retrieves and removes points in specified radius
-	 * @param area
-	 * @return
-	 */
-	public void produce(double ox, double oy, double radius)
-	{
-		ConsumingSensor sensor = new ConsumingSensor (true, ox, oy, radius*radius);
-		
-		query(sensor, ox, oy, radius);
-		
-	}
-	
-	public class ConsumingSensor implements ISpatialSensor <T>
-	{
-		double ox, oy, radiusSquare;
-		boolean draw = false;
-		
-		public ConsumingSensor (boolean draw, double ox, double oy, double radiusSquare)
-		{
-			this.ox = ox;
-			this.oy = oy;
-			this.radiusSquare = radiusSquare;
-			this.draw = draw;
-		}
-		/**
-		 * @param chunk - current cell
-		 */
-		@Override
-		public boolean objectFound(IAreaChunk chunk, T tile)
-		{
-//			System.out.println(chunk + " : " + tile);
-			int pixelsBefore = tile.getPixelCount();
-			if(pixelsBefore == 0 && !draw)
-				return false;
-			for(int i = 0; i < tile.getSize(); i ++)
-				for(int j = 0; j < tile.getSize(); j ++)
-				{
-					double dx = chunk.getMinX() + i * pixelsize - ox;
-					double dy = chunk.getMinY() + j * pixelsize - oy;
-					if((dx*dx) + (dy*dy) > radiusSquare)
-						continue;
-
-					if(draw)
-						((Tile)tile).put((new Color(0,1,1,1)), i, j );
-					else
-						tile.remove( i, j );
-				}
-			
-			if(tile.getPixelCount() != pixelsBefore)
-				setModified( (Cell<T>)chunk );
-			
-			return false;
-		}
-
-		@Override
-		public void clear() { }
-		
-	}
 	
 /*	public class MaskingSensor implements ISpatialSensor <T>
 	{
@@ -206,4 +131,6 @@ public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> 
 		public void clear() { }
 		
 	}*/
+	
+	public float getPixelSize() { return pixelsize; }
 }

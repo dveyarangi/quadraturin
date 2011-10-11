@@ -7,11 +7,10 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.ZenUtils;
-import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IViewPoint;
 import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.quadraturin.objects.IVeilOverlay;
-import yarangi.graphics.quadraturin.objects.SceneEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.math.BitUtils;
 
@@ -33,7 +32,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		@Override
 		public <T extends IGraphicsPlugin> T getPlugin(String name)
 		{
-			ZenUtils.methodNotSupported( this.getClass() );
+			return ZenUtils.methodNotSupported( this.getClass() );
 		}
 	};
 
@@ -52,7 +51,7 @@ public class VeilEffectSkeleton implements IVeilOverlay
 	 * @param height
 	 * @return texture object handler
 	 */
-	public void init(GL gl, SceneVeil entity) 
+	public void init(GL gl, SceneVeil entity, IRenderingContext context) 
 	{
 		// creating texture that covers the current viewport:
 		
@@ -113,8 +112,9 @@ public class VeilEffectSkeleton implements IVeilOverlay
 		
 	}
 
-	public void destroy(GL gl, SceneVeil entity) {
+	public void destroy(GL gl, SceneVeil entity, IRenderingContext context) {
 		// TODO: something is fishy around here
+		TextureUtils.destroyTexture( gl, textureHandle );
 		// gl.glDeleteTextures(1, textureHandle);
 	}
 
@@ -143,4 +143,11 @@ public class VeilEffectSkeleton implements IVeilOverlay
 
 	@Override
 	public boolean isCastsShadow() { return false; }
+
+	@Override
+	public float getPriority()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

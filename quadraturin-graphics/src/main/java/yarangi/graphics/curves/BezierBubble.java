@@ -2,7 +2,8 @@ package yarangi.graphics.curves;
 
 import yarangi.math.Vector2D;
 
-public class BezierBubble implements IParametricCurve 
+public class BezierBubble
+
 {
 
 	public Vector2D pointAt(double point) {

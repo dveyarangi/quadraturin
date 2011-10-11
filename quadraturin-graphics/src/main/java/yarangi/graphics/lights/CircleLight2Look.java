@@ -8,6 +8,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
@@ -24,7 +25,7 @@ import yarangi.spatial.ISpatialObject;
  *
  * @param <K>
  */
-public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
+public class CircleLight2Look <K extends IEntity> implements Look <K>
 {
 
 	private int lightTexture;
@@ -37,21 +38,22 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 	DoubleBuffer model = DoubleBuffer.allocate(16);
 	DoubleBuffer proj = DoubleBuffer.allocate(16);
 	DoubleBuffer res= DoubleBuffer.allocate(3);
-	public void init(GL gl, K entity) {
+	
+	public void init(GL gl, K entity, IRenderingContext context) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getSensorRadius()*2));
+		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2));
 //		System.out.println(size + " : " + entity.getLightRadius()*2);
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		
 //		
 //		System.out.println("here");
-		lightShader = ShaderFactory.getShader("light");
-		if(lightShader == null)
-		{
-			ShaderFactory.registerShaderFile("light", "shaders/shadowmap.glsl");	
-			lightShader = ShaderFactory.getShader("light");
-			lightShader.init(gl);
-		}
+//		lightShader = ShaderFactory.getShader("light");
+//		if(lightShader == null)
+//		{
+//			ShaderFactory.registerShaderFile("light", "shaders/shadowmap.glsl");	
+//			lightShader = ShaderFactory.getShader("light");
+//			lightShader.init(gl);
+//		}
 	}
 
 	public void render(GL gl, double time, K entity, IRenderingContext context) 
@@ -190,9 +192,23 @@ public class CircleLight2Look <K extends CircleLightEntity> implements Look <K>
 		
 	}
 
-	public void destroy(GL gl, K entity) 
+	public void destroy(GL gl, K entity, IRenderingContext context) 
 	{
 		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);
+	}
+
+	@Override
+	public float getPriority()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean isCastsShadow()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

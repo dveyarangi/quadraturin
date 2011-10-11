@@ -366,7 +366,7 @@ public abstract class GridMap <K, O> implements IGrid <K>
 	 * Adds a cell to modified cells queue.
 	 * @param cell
 	 */
-	protected void setModified(K cell)
+	public void setModified(K cell)
 	{
 		modifiedCells.add( cell );
 	}

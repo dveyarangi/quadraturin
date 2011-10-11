@@ -9,23 +9,30 @@ import yarangi.graphics.quadraturin.SceneVeil;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 
+/**
+ * Required shaders: 
+ * 		vblur - shaders/gaussian-vblur.glsl
+ *		hblur - shaders/gaussian-hblur.glsl
+ *		fade - shaders/fade.glsl
+ *
+ * @author dveyarangi
+ *
+ */
 public class BlurVeilEffect extends VeilEffectSkeleton 
 {
 	private IShader vblurShader;
 	private IShader hblurShader;
 	private IShader fadeShader;
 	
-	public void init(GL gl, SceneVeil entity) 
+	public void init(GL gl, SceneVeil entity, IRenderingContext context) 
 	{
-		super.init(gl, entity);
+		super.init(gl, entity, context);
 		
-		ShaderFactory.registerShaderFile("vblur", "shaders/gaussian-vblur.glsl");
-		ShaderFactory.registerShaderFile("hblur", "shaders/gaussian-hblur.glsl");
-		ShaderFactory.registerShaderFile("fade", "shaders/fade.glsl");
 //		ShaderFactory.registerShaderFile("blur", "shaders/gaussian-blur2.glsl");
-		vblurShader = ShaderFactory.getShader("vblur");
-		hblurShader = ShaderFactory.getShader("hblur");
-		fadeShader = ShaderFactory.getShader("fade");
+		ShaderFactory factory = context.getPlugin( "shaders" );
+		vblurShader = factory.getShader( "vblur" );
+		hblurShader = factory.getShader( "hblur");
+		fadeShader = factory.getShader( "fade");
 		vblurShader.init(gl);
 		hblurShader.init(gl);
 		fadeShader.init(gl);

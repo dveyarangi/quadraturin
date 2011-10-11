@@ -45,8 +45,6 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	// GL_NV_explicit_multisample GL_NV_float_buffer GL_NV_half_float GL_NV_primitive_restart GL_NV_texgen_reflection GL_SGIS_generate_mipmap 
 	// GL_SGIS_texture_edge_clamp GL_SGIS_texture_lod GL_SUN_multi_draw_arrays GL_WIN_swap_hint WGL_EXT_swap_control
 	
-	
-	
 	public ShaderFactory(String factoryName, Map <String, String> properties)
 	{
 		super(factoryName);
