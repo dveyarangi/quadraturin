@@ -12,7 +12,7 @@ import yarangi.math.FastMath;
  *
  * @param <K>
  */
-public abstract class GridMap <K, O> implements IGrid
+public abstract class GridMap <K, O> implements IGrid <K>
 {
 	/**
 	 * data array. It is references using {@link #at(int, int)} method.
@@ -62,7 +62,7 @@ public abstract class GridMap <K, O> implements IGrid
 	
 	protected List <K> modifiedCells = new LinkedList <K> ();
 	
-	protected List <IGridListener <K>> listeners = new LinkedList <IGridListener <K>> ();
+	protected IGridListener <K> listener;
 	
 	/**
 	 * 
@@ -380,18 +380,15 @@ public abstract class GridMap <K, O> implements IGrid
 		return modifiedCells;
 	}
 	
-	public void addListener(IGridListener <K> l) { this.listeners.add( l ); }
-	public void removeListener(IGridListener <K> l) { this.listeners.add( l ); }
+	public void setModificationListener(IGridListener <K> l) { listener = l; }
 	
 	/**
 	 * Fires cell modification event to listeners and clears modified cells queue.
 	 */
 	public void fireGridModified()
 	{
-		for(IGridListener <K> l : listeners)
-		{
-			l.cellsModified( modifiedCells );
-		}
+		if(listener != null)
+			listener.cellsModified( modifiedCells );
 		
 		// resetting modified cells queue:
 		modifiedCells = new LinkedList <K> ();

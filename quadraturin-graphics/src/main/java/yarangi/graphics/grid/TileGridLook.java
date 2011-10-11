@@ -13,7 +13,7 @@ import yarangi.math.BitUtils;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 
-public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGridListener<Cell<T>>
+public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Look <G>, IGridListener<Cell<T>>
 {
 	private FBOHandle fbo;
 	
@@ -31,7 +31,10 @@ public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGr
 		
 		fbo = TextureUtils.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
 		
+		grid.setModificationListener( this );
+		
 		updateFrameBuffer( gl, grid );
+		
 	}
 
 	@Override
@@ -63,8 +66,11 @@ public abstract class TileGridLook <T, G extends IGrid> implements Look <G>, IGr
 	}
 
 	@Override
-	public void destroy(GL gl, G entity, IRenderingContext context)
+	public void destroy(GL gl, G grid, IRenderingContext context)
 	{
+		
+		grid.setModificationListener( null );
+		
 		TextureUtils.destroyFBO( gl, fbo );
 	}
 

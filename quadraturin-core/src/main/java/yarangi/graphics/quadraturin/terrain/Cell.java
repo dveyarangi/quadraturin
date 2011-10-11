@@ -3,24 +3,35 @@ package yarangi.graphics.quadraturin.terrain;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 
-public class Cell <P> implements IAreaChunk
+/**
+ * 
+ * Acts as a container for single grid tile; 
+ * Provides binding to world coordinates of this tile
+ * @author dveyarangi
+ *
+ * @param <T>
+ */
+public class Cell <T> implements IAreaChunk
 {
-	private P properties;
+	/**
+	 * Cell contents
+	 */
+	private T tile;
 	
 	private int passId;
 	
 	private double ox, oy, cellsize;
 	
-	public Cell(double ox, double oy, double cellsize, P props)
+	public Cell(double ox, double oy, double cellsize, T props)
 	{
 		this.ox = ox;
 		this.oy = oy;
 		this.cellsize = cellsize;
-		this.properties = props;
+		this.tile = props;
 	}
 	
-	public P getProperties() { return properties; }
-	public void setProperties(P props) { properties = props; }
+	public T getProperties() { return tile; }
+	public void setProperties(T props) { tile = props; }
 	
 	public void setPassId(int passId) 
 	{

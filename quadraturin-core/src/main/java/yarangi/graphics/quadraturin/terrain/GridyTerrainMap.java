@@ -9,7 +9,14 @@ import yarangi.spatial.GridMap;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 
-public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> implements ITerrainMap <T>
+/**
+ * 
+ * @author dveyarangi
+ *
+ * @param <T> - tile type
+ * @param <P> - tile pixel type
+ */
+public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> implements ITerrainMap <T>
 {
 	
 	private float pixelsize;
@@ -89,12 +96,12 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 	 * @param area
 	 * @return
 	 */
-	public void apply(double ox, double oy, boolean substract, byte [] mask)
+/*	public void apply(double ox, double oy, boolean substract, byte [] mask)
 	{
 		MaskingSensor sensor = new MaskingSensor (false, ox, oy, mask);
 		
 		query(sensor, ox, oy, 8);
-	}
+	}*/
 	
 	
 	/**
@@ -157,7 +164,7 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 		
 	}
 	
-	public class MaskingSensor implements ISpatialSensor <T>
+/*	public class MaskingSensor implements ISpatialSensor <T>
 	{
 		double ox, oy;
 		byte [] mask;
@@ -172,9 +179,7 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 			
 			this.substract = substract;
 		}
-		/**
-		 * @param chunk - current cell
-		 */
+
 		@Override
 		public boolean objectFound(IAreaChunk chunk, T tile)
 		{
@@ -200,5 +205,5 @@ public class GridyTerrainMap <T extends Tile, P> extends GridMap<Cell <T>, T> im
 		@Override
 		public void clear() { }
 		
-	}
+	}*/
 }

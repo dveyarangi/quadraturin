@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface IGrid
+public interface IGrid <C>
 {
 
 	public float getMinX();
@@ -9,4 +9,5 @@ public interface IGrid
 	public float getMaxY();
 	public int getCellSize();
 
+	public void setModificationListener(IGridListener<C> listener);
 }
