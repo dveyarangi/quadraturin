@@ -71,4 +71,18 @@ public class Overlay implements IVeilEntity
 	{
 	}
 
+	@Override
+	public void init(GL gl, IRenderingContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void destroy(GL gl, IRenderingContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -11,16 +11,15 @@ import yarangi.math.FastMath;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.SpatialHashMap;
 
-public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
+public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 {
 	
 	private int gridMeshId;
 
-	public void init(GL gl, SceneDebugOverlay debug, IRenderingContext context) 
+	public void init(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 		gridMeshId = gl.glGenLists(1);
 	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
-	    SpatialHashMap<IEntity> map = (SpatialHashMap<IEntity>) debug.getIndexer();
 		double halfCellSize = map.getCellSize() / 2.;
 		for(int y = -map.getHeight()/2; y < map.getHeight()/2; y += map.getCellSize())
 		{
@@ -41,11 +40,10 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 		gl.glEndList();
 	}
 
-	public void render(GL gl, double time, SceneDebugOverlay debug, IRenderingContext context) 
+	public void render(GL gl, double time, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 		if(context.isForEffect())
 			return;
-	    SpatialHashMap<IEntity> map = (SpatialHashMap<IEntity>) debug.getIndexer();
 
 		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.2f);
 		gl.glCallList(gridMeshId);
@@ -86,7 +84,7 @@ public class DebugSpatialHashMapLook implements Look <SceneDebugOverlay>
 		}
 	}
 
-	public void destroy(GL gl, SceneDebugOverlay debug, IRenderingContext context) 
+	public void destroy(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 		gl.glDeleteLists(gridMeshId, 1);
 	}

@@ -51,6 +51,8 @@ public interface IVeilEntity extends ISpatialObject
 	public abstract void markDead();
 
 
+	public void init(GL gl, IRenderingContext context);
 	public void render(GL gl, double time, IRenderingContext context);
+	public void destroy(GL gl, IRenderingContext context);
 
 }

@@ -109,7 +109,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		while(!bornEntities.isEmpty())
 		{
 			K born = bornEntities.poll();
-			born.getLook().init( gl, born, context );
+			born.init( gl, context );
 			entities.add(born);
 			if(born.getArea() != null)
 				indexer.add(born.getArea(), born);
@@ -118,7 +118,7 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		while(!deadEntities.isEmpty())
 		{
 			K dead = deadEntities.poll();
-			dead.getLook().destroy( gl, dead, context );
+			dead.destroy( gl, context );
 			if(dead.getArea() != null)
 			{
 				indexer.remove(dead);

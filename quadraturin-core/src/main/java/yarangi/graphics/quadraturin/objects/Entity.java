@@ -152,6 +152,11 @@ public class Entity implements IEntity
 		passId = id;
 	}
 	
+	public void init(GL gl, IRenderingContext context)
+	{
+		getLook().init( gl, this, context );
+	}
+	
 	public void render(GL gl, double time, IRenderingContext context)
 	{
 		Area area = this.getArea();
@@ -172,6 +177,11 @@ public class Entity implements IEntity
 		
 		gl.glPopMatrix();
 
+	}
+	
+	public void destroy(GL gl, IRenderingContext context)
+	{
+		getLook().destroy( gl, this, context );
 	}
 
 	@Override

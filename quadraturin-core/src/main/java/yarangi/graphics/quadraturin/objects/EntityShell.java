@@ -38,6 +38,11 @@ public class EntityShell <E> extends Entity
 		return essence;
 	}
 	
+	public void init(GL gl, IRenderingContext context)
+	{
+		getLook().init( gl, essence, context );
+	}
+	
 	public void render(GL gl, double time, IRenderingContext context)
 	{
 		Area area = getArea();
@@ -58,6 +63,11 @@ public class EntityShell <E> extends Entity
 		
 		gl.glPopMatrix();
 
+	}
+	
+	public void destroy(GL gl, IRenderingContext context)
+	{
+		getLook().destroy( gl, essence, context );
 	}
 
 	@Override

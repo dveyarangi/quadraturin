@@ -150,9 +150,9 @@ public class WorldVeil extends SceneVeil <IEntity>
 	}
 
 
-	public ITerrainMap getTerrain()
+	public <T> ITerrainMap <T> getTerrain()
 	{
-		return terrain.getEssence();
+		return  (ITerrainMap <T> )terrain.getEssence();
 	}
 
 
