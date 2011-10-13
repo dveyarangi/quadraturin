@@ -39,6 +39,15 @@ public class FSMBehavior <K> implements Behavior <K>
     {
     	fsm.link(stateId, condition);
     }
+	/**
+	 * Attaches state transition condition to state with specified id
+	 * @param stateId
+	 * @param condition
+	 */
+    public void link(IBehaviorState <K> state, IBehaviorCondition <K> condition)
+    {
+    	fsm.link(state.getId(), condition);
+    }
 
     /**
      * {@inheritDoc}
@@ -46,10 +55,16 @@ public class FSMBehavior <K> implements Behavior <K>
 	@Override
 	public boolean behave(double time, K entity, boolean isVisible) 
 	{
-		while(currState.behave(time, entity, isVisible)) {/* loopy */}
+		double remainingTime = time;
+		// changing state if behavior did not use all frame time:
+		// otherwise the same 
+		while((remainingTime = currState.behave(remainingTime, entity, isVisible)) > 0)
+			currState = fsm.nextState(entity);
 		
-		currState = fsm.nextState(entity);
-		return true;
+		if(remainingTime == 0)
+			currState = fsm.nextState(entity);
+			
+		return true; // TODO: should make true entity change indication 
 	}
 
 

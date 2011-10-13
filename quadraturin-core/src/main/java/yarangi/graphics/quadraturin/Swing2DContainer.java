@@ -103,6 +103,7 @@ public class Swing2DContainer extends JFrame
 		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
 		this.setMinimumSize(new Dimension(xres, yres));
 		this.setLocationRelativeTo(null);
+//		this.setUndecorated( true ); // remove window border and title for fullscreen
 
 		// TODO:  configure GL capabilities.
 		log.debug("Configuring GL capabilities.");

@@ -6,7 +6,7 @@ public class DummyBehaviorState <K> implements IBehaviorState <K>
 	
 	
 	@Override
-	public boolean behave(double time, K entity, boolean isVisible) { return false; }
+	public double behave(double time, K entity, boolean isVisible) { return 0; }
 
 	@Override
 	public int getId()

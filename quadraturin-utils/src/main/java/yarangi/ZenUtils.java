@@ -21,6 +21,15 @@ public class ZenUtils
 	{
 		throw new IllegalStateException("This method is not supported for class " + claass);
 	}
+	/**
+	 * @param <T>
+	 * @param claass
+	 * @return
+	 */
+	public static <T> T methodNotSupported(Class claass, String msg)
+	{
+		throw new IllegalStateException("Method unsupported: " + msg);
+	}
 
 	public static void staticOnly()
 	{
