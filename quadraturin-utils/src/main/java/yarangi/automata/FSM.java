@@ -1,10 +1,6 @@
 package yarangi.automata;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Finite state machine wrapper class. 
@@ -53,15 +49,15 @@ public class FSM <K, S extends IState <K>>
 	
 	/**
 	 * Links a {@link IState} to a {@link ICondition}.
-	 * @param sourceState
+	 * @param id source state id
 	 * @param condition
 	 */
-	public void link(S sourceState, ICondition <K, S> condition)
+	public void link(int id, ICondition <K, S> condition)
 	{
-		if(stateMap.contains(sourceState.getId()))
-			throw new IllegalArgumentException("State " + sourceState + " already contains successor with condition " + condition);
+		if(stateMap.contains(id))
+			throw new IllegalArgumentException("State with id" + id + " already contains successor with condition " + condition);
 		
-		stateMap.put(sourceState.getId(), condition);
+		stateMap.put(id, condition);
 	}
 	
 	/**

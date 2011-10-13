@@ -30,9 +30,14 @@ public class FSMBehavior <K> implements Behavior <K>
 		currState = initState;
 	}
 	
-    public void link(IBehaviorState <K> sourceState, IBehaviorCondition <K> condition)
+	/**
+	 * Attaches state transition condition to state with specified id
+	 * @param stateId
+	 * @param condition
+	 */
+    public void link(int stateId, IBehaviorCondition <K> condition)
     {
-    	fsm.link(sourceState, condition);
+    	fsm.link(stateId, condition);
     }
 
     /**
