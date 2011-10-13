@@ -1,5 +1,8 @@
 package yarangi.automata;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +30,7 @@ public class FSM <K, S extends IState <K>>
 	/**
 	 * state transition mapping
 	 */
-	private Map <S, ICondition<K, S>> stateMap;
+	private TIntObjectHashMap <ICondition<K, S>> stateMap;
 	
 	/**
 	 * Creates a new state with specified initial state.
@@ -37,7 +40,7 @@ public class FSM <K, S extends IState <K>>
 	{
 		currState = this.initState = initState;
 		
-		stateMap = new HashMap <S, ICondition<K, S>> ();
+		stateMap = new TIntObjectHashMap <ICondition<K, S>> ();
 	}
 	
 	/**
@@ -55,10 +58,10 @@ public class FSM <K, S extends IState <K>>
 	 */
 	public void link(S sourceState, ICondition <K, S> condition)
 	{
-		if(stateMap.containsKey(sourceState))
+		if(stateMap.contains(sourceState.getId()))
 			throw new IllegalArgumentException("State " + sourceState + " already contains successor with condition " + condition);
 		
-		stateMap.put(sourceState, condition);
+		stateMap.put(sourceState.getId(), condition);
 	}
 	
 	/**
@@ -81,7 +84,7 @@ public class FSM <K, S extends IState <K>>
 	 */
 	private S getNextState(K entity, S currState)
 	{
-		return stateMap.get(currState).nextState(entity);
+		return stateMap.get(currState.getId()).nextState( entity );
 	}
 	
 }
