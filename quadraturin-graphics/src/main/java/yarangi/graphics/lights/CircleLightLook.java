@@ -44,11 +44,14 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	
 	private Color color;
 	
+	public CircleLightLook()
+	{
+		this.color = new Color(1,1,1,1);
+	}
 	public CircleLightLook(Color color)
 	{
 		this.color = color;
 	}
-
 	
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
@@ -98,7 +101,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		// clearing frame buffer:
 		gl.glClearColor(0,0,0,0);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT/* | GL.GL_DEPTH_BUFFER_BIT*/);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
 		gl.glBlendEquation( GL.GL_MAX );
@@ -252,7 +255,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	}
 	
 	public Color getColor() { return color ; }
-
+	public void setColor(Color color) { this.color = color; }
 
 	@Override
 	public float getPriority()

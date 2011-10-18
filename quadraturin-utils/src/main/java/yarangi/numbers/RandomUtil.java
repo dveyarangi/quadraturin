@@ -16,6 +16,10 @@ public class RandomUtil
 		return d*random.nextDouble();
 	}
 	
+	public static float getRandomGaussian(float center, float scale)
+	{
+		return center + scale * (float)random.nextGaussian();
+	} 
 	public static double getRandomGaussian(double center, double scale)
 	{
 		return center + scale * random.nextGaussian();

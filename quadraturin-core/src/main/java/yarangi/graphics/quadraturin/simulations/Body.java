@@ -14,6 +14,11 @@ public class Body
 	public Body() 
 	{
 	}
+	public Body(double mass, double maxSpeed) 
+	{
+		this.mass = mass;
+		this.maxSpeedSquare = maxSpeed*maxSpeed;
+	}
 	final public Vector2D getVelocity() {	return velocity; }
 
 	final public Vector2D getForce() { return force; }
