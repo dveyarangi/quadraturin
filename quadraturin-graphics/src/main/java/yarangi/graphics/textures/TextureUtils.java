@@ -5,6 +5,13 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import yarangi.math.BitUtils;
+
+/**
+ * Texture and frame buffer utilities
+ * @author FimaR
+ *
+ */
 public class TextureUtils 
 {
 	public static final int ILLEGAL_ID = -1;
@@ -117,7 +124,15 @@ public class TextureUtils
 		return handleBuffer.get(0);
 	}
 	
-	public static FBOHandle createFBO(GL gl, int textureId, int depthId)
+	public static FBO createFBO(GL gl, int width, int height, boolean useDepthBuffer) 
+	{
+		int textureWidth = BitUtils.po2Ceiling(width);
+		int textureHeight = BitUtils.po2Ceiling(height);
+		return TextureUtils.createFBO(gl, TextureUtils.createEmptyTexture2D(gl, textureWidth, textureHeight, false), 
+										  useDepthBuffer ? TextureUtils.createFBODepthBuffer(gl) : ILLEGAL_ID);
+	}
+	
+	public static FBO createFBO(GL gl, int textureId, int depthId)
 	{
 		IntBuffer handleBuffer = IntBuffer.allocate(1);
 		gl.glGenFramebuffersEXT(1, handleBuffer); // Generate one frame buffer and store the ID in fbo  
@@ -137,35 +152,10 @@ public class TextureUtils
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
 		int status = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
 		
-		return new FBOHandle(textureId, depthId, handleBuffer.get(0));
+		return new FBO(textureId, depthId, handleBuffer.get(0));
 	}
 	
-	public static class FBOHandle
-	{
-		private int textureId;
-		private int depthBufferId;
-		private int fboId;
-		
-		
-		protected FBOHandle(int textureId, int depthBufferId, int fboId)
-		{
-			super();
-			this.textureId = textureId;
-			this.depthBufferId = depthBufferId;
-			this.fboId = fboId;
-		}
-		
-		public int getTextureId() { return textureId; }
-		protected void setTextureId(int textureId) { this.textureId = textureId; }
-		public int getDepthBufferId() { return depthBufferId; }
-		protected void setDepthBufferId(int depthBufferId) { this.depthBufferId = depthBufferId; }
-		public int getFboId() { return fboId; }
-		protected void setFboId(int fboId) { this.fboId = fboId; }
-		
-		
-	}
-
-	public static void destroyFBO(GL gl, FBOHandle fbo)
+	public static void destroyFBO(GL gl, FBO fbo)
 	{
 		if(fbo.getTextureId() != ILLEGAL_ID)
 			gl.glDeleteTextures(1, new int [] {fbo.getTextureId()}, 0);

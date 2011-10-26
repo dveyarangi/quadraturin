@@ -7,15 +7,15 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.terrain.Cell;
+import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.graphics.textures.TextureUtils.FBOHandle;
 import yarangi.math.BitUtils;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 
 public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Look <G>, IGridListener<Cell<T>>
 {
-	private FBOHandle fbo;
+	private FBO fbo;
 	
 	private int gridTextureWidth, gridTextureHeight;
 	
@@ -48,14 +48,15 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 		float miny = grid.getMinY();
 		float maxy = grid.getMaxY();
 		
-		gl.glBindTexture( GL.GL_TEXTURE_2D, fbo.getTextureId() );
-		gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0,0); gl.glVertex2f( minx, miny );
-		gl.glTexCoord2f(0,1); gl.glVertex2f( minx, maxy );
-		gl.glTexCoord2f(1,1); gl.glVertex2f( maxx, maxy );
-		gl.glTexCoord2f(1,0); gl.glVertex2f( maxx, miny );
-		gl.glEnd();
-		gl.glBindTexture( GL.GL_TEXTURE_2D, 0 );
+		fbo.bindTexture(gl);
+			gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0,0); gl.glVertex2f( minx, miny );
+				gl.glTexCoord2f(0,1); gl.glVertex2f( minx, maxy );
+				gl.glTexCoord2f(1,1); gl.glVertex2f( maxx, maxy );
+				gl.glTexCoord2f(1,0); gl.glVertex2f( maxx, miny );
+			gl.glEnd();
+		fbo.unbindTexture(gl);
+		
 		gl.glColor3f(1,0,0);
 		gl.glBegin(GL.GL_LINE_STRIP);
 		 gl.glVertex2f( minx, miny );
@@ -100,12 +101,12 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 		gl.glOrtho(grid.getMinX(), grid.getMaxX(), 
 				   grid.getMinY(), grid.getMaxY(), -1, 1);
 
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo.getFboId());
+		fbo.bind(gl);
 	}
 	
 	private void endFrameBufferSpace(GL gl)
 	{
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
+		fbo.unbind(gl);
 		
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix(); 

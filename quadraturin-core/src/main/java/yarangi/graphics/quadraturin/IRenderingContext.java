@@ -12,16 +12,11 @@ import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
  */
 public interface IRenderingContext 
 {
-	/**
-	 * Marks the scope of rendering.
-	 * @return
-	 */
-	public boolean isForEffect();
 	
 	/**
 	 * @return current user viewpoint.
 	 */
-	public IViewPoint getViewPoint();
+	public ViewPoint2D getViewPoint();
 
 	/**
 	 * Retrieves plugin by name.

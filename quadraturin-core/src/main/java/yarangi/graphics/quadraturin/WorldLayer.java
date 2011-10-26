@@ -4,21 +4,22 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.SpatialHashMap;
 
-public class WorldVeil extends SceneVeil <IEntity> 
+public class WorldLayer extends SceneLayer <IEntity> 
 {
 
 	private IPhysicsEngine <IEntity> engine;
 	
-	private double veilTime;
+	private double layerTime;
 	
 	private EntityShell <? extends ITerrainMap >terrain;
 	
-	public WorldVeil(int width, int height) 
+	public WorldLayer(int width, int height) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
 		super(width, height, new SpatialHashMap	<IEntity>(width*height/10, 10, width, height));
@@ -63,14 +64,14 @@ public class WorldVeil extends SceneVeil <IEntity>
 	}
 	
 	/**
-	 * Any rendering preprocessing should be made here.
 	 * @param gl
+	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
 	public void preDisplay(GL gl) {}
 	
 	/**
-	 * Any rendering postprocessing should be made here.
 	 * @param gl
+	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
 	public void postDisplay(GL gl) {}
 	
@@ -88,7 +89,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 		// running physics:
 		if(engine != null)
 			engine.calculate(time);
-		veilTime += time;
+		layerTime += time;
 		Vector2D refPoint;
 		
 		if(terrain != null)
@@ -114,7 +115,7 @@ public class WorldVeil extends SceneVeil <IEntity>
 			{   // filling world objects in sensor range:
 				// TODO: scheduling, perhaps?
 
-				if(entity.getSensor().isSensingNeeded( veilTime ))
+				if(entity.getSensor().isSensingNeeded( layerTime ))
 				{
 					refPoint = entity.getArea().getRefPoint();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency

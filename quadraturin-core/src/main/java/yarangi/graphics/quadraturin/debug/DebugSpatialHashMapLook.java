@@ -42,9 +42,6 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 
 	public void render(GL gl, double time, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
-		if(context.isForEffect())
-			return;
-
 		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.2f);
 		gl.glCallList(gridMeshId);
 		

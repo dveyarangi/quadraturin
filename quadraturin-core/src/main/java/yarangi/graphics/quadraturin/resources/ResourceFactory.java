@@ -13,13 +13,21 @@ import org.apache.log4j.Logger;
 public class ResourceFactory <R extends IResource>
 {
 	
+	protected String factoryName;
+	
 	protected HashMap <String, R> handles = new HashMap <String, R> ();
 	
 	protected Logger log;
 	
 	public ResourceFactory (String factoryName)
 	{
+		this.factoryName = factoryName;
 		log = Logger.getLogger(factoryName);
+	}
+	
+	public String getName()
+	{
+		return factoryName;
 	}
 	
 	public void registerResource(String resourceId, R resource)

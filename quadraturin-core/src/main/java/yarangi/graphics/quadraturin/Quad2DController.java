@@ -49,6 +49,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	private IEventManager voices;
 	
 	
+	public static final float MIN_DEPTH_PRIORITY = 0;
 	public static final float MAX_DEPTH_PRIORITY = 1;
 	
 	/**
@@ -138,6 +139,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
 
+		// TODO: this must be also invoked on screen resizing or resolution change to make FBO plugins work properly
 		for(String pluginName : context.getPluginsNames())
 		{
 			IGraphicsPlugin factory = context.getPlugin(pluginName);
@@ -145,7 +147,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 				if(! gl.isExtensionAvailable(extensionName))
 					throw new ConfigException("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
 			log.debug("Initializing plugin [" + pluginName + "]...");
-			factory.init(gl);
+			factory.init(gl, context);
 		}
 		
 		log.debug("/////////////////////////////////////////////////////////////");
@@ -241,7 +243,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			return;
 
 		// ////////////////////////////////////////////////////
-		// TODO: viewpoint transformations
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
 
@@ -263,10 +264,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
-		// TODO: extract matrices to viewPoint for world coordinates calculation:
-		//updateViewPoint(gl, viewPoint);
 		
-		// send world transformation event to voices:
+		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
 		context.setViewPoint(viewPoint);
@@ -275,6 +274,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
 		// TODO: fix display times:
+		
+		for(IGraphicsPlugin plugin : context.getPlugins())
+			plugin.preRender(gl, context);
+
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
 		// ////////////////////////////////////////////////////
 		// scene rendering:
@@ -287,6 +290,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 		
+		for(IGraphicsPlugin plugin : context.getPlugins())
+			plugin.preRender(gl, context);
+	
 		releaseNext();
 
 		// TODO: ensure that rendering cycle does not start again before this finishes:

@@ -8,8 +8,7 @@ import java.util.Queue;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.Entity;
-import yarangi.graphics.quadraturin.objects.IVeilEntity;
-import yarangi.graphics.quadraturin.objects.IVeilOverlay;
+import yarangi.graphics.quadraturin.objects.ILayerEntity;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
@@ -21,7 +20,7 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneVeil <K extends IVeilEntity>
+public abstract class SceneLayer <K extends ILayerEntity>
 {
 
 	private int width, height;
@@ -36,7 +35,6 @@ public abstract class SceneVeil <K extends IVeilEntity>
 					return (int)((o1.getLook().getPriority() - o2.getLook().getPriority()) * 1000f);
 				}
 	}); */
-	
 	/**
 	 * Indexes the object's locations
 	 */
@@ -52,28 +50,19 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	 */
 	private Queue <K> deadEntities = new LinkedList <K> ();
 	
-	private IVeilOverlay veilEffect;
-	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
-	public SceneVeil(int width, int height, SpatialIndexer <K> indexer)
+	public SceneLayer(int width, int height, SpatialIndexer <K> indexer)
 	{
 		this.indexer = indexer;
 		
 		this.width = width;
 		this.height = height;
 	}
-	
-	public void setOverlayEffect(IVeilOverlay effect)
-	{
-		this.veilEffect = effect;
-	}
-	
 
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }
-
 
 	protected List <K> getEntities()
 	{
@@ -86,14 +75,10 @@ public abstract class SceneVeil <K extends IVeilEntity>
 	 */
 	public void init(GL gl, IRenderingContext context)
 	{
-		if(veilEffect != null)
-			veilEffect.init(gl, this, context);
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		if(veilEffect != null)
-			veilEffect.destroy(gl, this, context);
 	}
 	
 	/**
@@ -127,8 +112,6 @@ public abstract class SceneVeil <K extends IVeilEntity>
 		}
 		
 //		System.out.println(entities.size() + " : " + indexer.size());
-		if(veilEffect == null)
-		{
 //			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
 //			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
 //			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
@@ -140,13 +123,12 @@ public abstract class SceneVeil <K extends IVeilEntity>
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);
-		}
 /*		else
 		{
 			veilEffect.render(gl, time, entities, context);
 		}*/
 	}
-	
+
 	public abstract void animate(double time);
 
 

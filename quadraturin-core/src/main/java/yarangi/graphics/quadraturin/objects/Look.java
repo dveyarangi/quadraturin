@@ -13,6 +13,8 @@ import yarangi.graphics.quadraturin.IRenderingContext;
  */
 public interface Look <An>
 {
+	public static final int DEFAULT_BUFFER = 0;
+	
 	/**
 	 * Initiate graphics (textures, meshes, etc.)
 	 * @param gl
@@ -40,7 +42,7 @@ public interface Look <An>
 
 	/**
 	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)
-	 * Ranges from 0 to {@link Quad2DController#MAX_DEPTH_PRIORITY}
+	 * Ranges from {@link Quad2DController#MIN_DEPTH_PRIORITY} to {@link Quad2DController#MAX_DEPTH_PRIORITY}
 	 * TODO: move to Area?
 	 * @return
 	 */

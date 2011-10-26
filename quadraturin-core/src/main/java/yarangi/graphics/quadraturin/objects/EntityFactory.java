@@ -6,7 +6,7 @@ import yarangi.spatial.Area;
 public class EntityFactory 
 {
 	
-	public static <K> IVeilEntity createEntity(Look <K> look, Behavior <K> behavior, Area area, Body body, ISensor sensor)
+	public static <K> ILayerEntity createEntity(Look <K> look, Behavior <K> behavior, Area area, Body body, ISensor sensor)
 	{
 		Entity entity = new Entity();
 		entity.setLook(look);

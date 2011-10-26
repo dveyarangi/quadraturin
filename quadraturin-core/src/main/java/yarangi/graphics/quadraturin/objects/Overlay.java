@@ -9,7 +9,7 @@ import yarangi.spatial.Area;
  * TODO: this class is not yet implemented
  * @author dveyarangi
  */
-public class Overlay implements IVeilEntity
+public class Overlay implements ILayerEntity
 {
 	/**
 	 * Overlay look

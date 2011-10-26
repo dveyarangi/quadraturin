@@ -19,9 +19,7 @@ public class ViewPoint2D implements IViewPoint
 
 	//
 	private Vector2D center;
-	
-	private Dimension window;
-	
+
 	private RangedDouble scale;
 	
 	private Dimension world;
@@ -40,8 +38,6 @@ public class ViewPoint2D implements IViewPoint
 	public ViewPoint2D(Vector2D center, Dimension window, RangedDouble scale, Dimension world)
 	{
 		this.center = center;
-		
-		this.window = window;
 
 		this.scale = scale;
 		
@@ -73,10 +69,6 @@ public class ViewPoint2D implements IViewPoint
 	{
 		this.scale = scale;
 	}
-	public void setWindow(Dimension window)
-	{
-		this.window = window;
-	}
 
 /*	public boolean isInView(Vector2D phyp)
 	{
@@ -103,8 +95,8 @@ public class ViewPoint2D implements IViewPoint
 		return (int)(dist/scale);
 	}*/
 
-	public int getPortWidth() { return  FastMath.floor(viewport[2] * getScale()); }
-	public int getPortHeight() { return FastMath.floor(viewport[3] * getScale());}
+	public int getPortWidth() { return  FastMath.floor(viewport[2]); }
+	public int getPortHeight() { return FastMath.floor(viewport[3]); }
 
 	public Vector2D getCenter() { return center; }
 
@@ -120,7 +112,6 @@ public class ViewPoint2D implements IViewPoint
 		
 		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
 		this.center = new Vector2D(vp.getCenter().x(), vp.getCenter().y());
-		this.window = new Dimension(vp.getPortWidth(), vp.getPortHeight());
 		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
 		this.world = new Dimension(vp.world.width, vp.world.height);
 		viewport = Arrays.copyOf( vp.viewport, 4 );

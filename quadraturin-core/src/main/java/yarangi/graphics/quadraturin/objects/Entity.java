@@ -4,14 +4,14 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.SceneVeil;
+import yarangi.graphics.quadraturin.SceneLayer;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.spatial.Area;
 
 /**
  * Entity is a basic animate object in {@link Scene}. It provides means to render and animate itself, 
  * 
- * <li>If the {@link #spatialAspect}  is set, entity will be added into spatial indexer of corresponding {@link SceneVeil}.
+ * <li>If the {@link #spatialAspect}  is set, entity will be added into spatial indexer of corresponding {@link SceneLayer}.
  * <li>If the {@link #physicalAspect} is set, entity will participate in physics calculations. It requires the 
  * {@link #spatialAspect} to be set.
  * <li>If the {@link #sensorAspect} is set, it will be automatically updated with set of proximity data. It requires the 
@@ -25,7 +25,7 @@ public class Entity implements IEntity
 	
 	/**
 	 * Entity graphics 
-	 * @see SceneVeil#display(GL, double, IRenderingContext)
+	 * @see SceneLayer#display(GL, double, IRenderingContext)
 	 */
 	private Look <?> look;
 	

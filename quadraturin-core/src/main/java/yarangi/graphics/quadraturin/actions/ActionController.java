@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Map;
 
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.WorldVeil;
+import yarangi.graphics.quadraturin.WorldLayer;
 import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.math.Vector2D;
@@ -21,15 +21,15 @@ public abstract class ActionController implements CursorListener
 {
 	
 	/**
-	 * Picking area span (veil coordinates)
+	 * Picking area span (scene section coordinates)
 	 */
 	public static final double CURSOR_PICK_SPAN = 5;
 	
-	private WorldVeil worldVeil;
+	private WorldLayer worldLayer;
 	
 	public ActionController(Scene scene)
 	{
-		worldVeil = scene.getWorldVeil();
+		worldLayer = scene.getWorldLayer();
 	}
 	
 	/**
@@ -60,9 +60,9 @@ public abstract class ActionController implements CursorListener
 //		if(canvasLocation != null)
 //			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
-		// testing world veil:
+		// testing world section:
 		if(sensor.getObject() == null && worldLocation != null)
-			worldVeil.getEntityIndex().query(sensor, new AABB(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
+			worldLayer.getEntityIndex().query(sensor, new AABB(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
 		
 		// TODO: terrain picks
 		// TODO: flexible pick priorities

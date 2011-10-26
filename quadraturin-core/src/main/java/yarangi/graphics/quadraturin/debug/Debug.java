@@ -23,7 +23,7 @@ public class Debug
 
 	public static void instrumentate(Scene scene)
 	{
-		scene.addOverlay(new SceneDebugOverlay(scene.getWorldVeil().getEntityIndex()));
+		scene.addOverlay(new SceneDebugOverlay(scene.getWorldLayer().getEntityIndex()));
 	}
 	
 }

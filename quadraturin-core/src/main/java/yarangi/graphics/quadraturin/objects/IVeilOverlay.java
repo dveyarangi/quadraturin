@@ -1,9 +1,9 @@
 package yarangi.graphics.quadraturin.objects;
 
-import yarangi.graphics.quadraturin.SceneVeil;
+import yarangi.graphics.quadraturin.SceneLayer;
 
 
-public interface IVeilOverlay extends Look <SceneVeil>
+public interface IVeilOverlay extends Look <SceneLayer>
 {
 
 }

@@ -12,9 +12,8 @@ import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
+import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.graphics.textures.TextureUtils.FBOHandle;
-import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
 /**
@@ -38,9 +37,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	private int textureSize;
 	private IntBuffer viewport = IntBuffer.allocate(4);
 	
-	private FBOHandle fbo;
-	
-	private int lightTexture;
+	private FBO fbo;
 	
 	private Color color;
 	
@@ -56,17 +53,12 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
 		// rounding texture size to power of 2:
-		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2.));
+		int size = (int)(entity.getSensor().getRadius()*2.);
 		
-		// creating empty texture for lighting:
-		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
-		
-		// creating 
-//		int depthBuffer = TextureUtils.createFBODepthBuffer(gl);
-		fbo = TextureUtils.createFBO(gl, lightTexture, TextureUtils.ILLEGAL_ID);
+		fbo = TextureUtils.createFBO(gl, size, size, true);
 		
 		// preparing shaders:
-		ShaderFactory factory = context.getPlugin("shaders");
+		ShaderFactory factory = context.getPlugin(ShaderFactory.NAME);
 		
 		lightShader = factory.getShader("light");
 		penumbraShader = factory.getShader("penumbra");
@@ -75,9 +67,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	public void render(GL gl, double time, K entity, IRenderingContext context) 
 	{
 		// TODO: store and restore blending mode
-		if(context.isForEffect())
-			return;
-		
+
 		// saving modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
@@ -95,7 +85,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// binding FBO:
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo.getFboId());
+		fbo.bind(gl);
 		
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		
@@ -181,7 +171,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		}
 		
 		// exiting framebuffer:
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
+		fbo.unbind(gl);
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		// restoring to original view
@@ -201,15 +191,17 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		// drawing light:
 		// TODO: shader too costly, replace with prepared texture:
-		gl.glBindTexture(GL.GL_TEXTURE_2D, lightTexture);
-		lightShader.begin(gl);
-		lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-		lightShader.setFloat1Uniform(gl, "height", 2f);
-		lightShader.setFloat1Uniform(gl, "size", 0.01f);
-		lightShader.setFloat1Uniform(gl, "cutoff",5f);
-		renderTexture(gl, entity);
-		lightShader.end(gl);
-		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+		fbo.bindTexture(gl);
+			lightShader.begin(gl);
+				lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+				lightShader.setFloat1Uniform(gl, "height", 2f);
+				lightShader.setFloat1Uniform(gl, "size", 0.01f);
+				lightShader.setFloat1Uniform(gl, "cutoff",5f);
+				
+				renderTexture(gl, entity);
+			lightShader.end(gl);
+		fbo.unbindTexture(gl);
+		
 		gl.glBlendEquation( GL.GL_FUNC_ADD );
 //		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_FUNC_ADD);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);

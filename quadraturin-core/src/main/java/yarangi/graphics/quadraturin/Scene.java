@@ -11,6 +11,7 @@ import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Overlay;
+import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
 import yarangi.spatial.ISpatialIndex;
@@ -19,8 +20,8 @@ import yarangi.spatial.ISpatialIndex;
  * Represents current engine task. 
  * 
  * Scene is composed of two layers: 
- * <li> {@link UIVeil} responsible to draw and animate user interface control elements.
- * <li> {@link WorldVeil} responsible to draw and animate game world.
+ * <li> {@link UILayer} responsible to draw and animate user interface control elements.
+ * <li> {@link WorldLayer} responsible to draw and animate game world.
  * Veils provide a way to add and remove {@link Entity} objects.
  * 
  * Any scene has to define {@link Scene#Scene(SceneConfig, QuadVoices)} constructor.
@@ -37,12 +38,12 @@ public abstract class Scene
 	/**
 	 * Game world layer.
 	 */
-	private WorldVeil worldVeil;
+	private WorldLayer worldSection;
 	
 	/**
 	 * User interface layer.
 	 */
-	private UIVeil uiVeil;
+	private UILayer uiLayer;
 	
 	/**
 	 * TODO: split for world and UI?
@@ -69,25 +70,25 @@ public abstract class Scene
 		viewPoint = config.createViewpoint();
 			
 		// scene world aggregator:
-		this.worldVeil = new WorldVeil(config.getWidth(), config.getHeight());
+		this.worldSection = new WorldLayer(config.getWidth(), config.getHeight());
 		
 		// initializing terrain:
 		EntityShell <? extends ITerrainMap> terrain = null;
 		if(config.getTerrainConfig() != null)
 		{
 			terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
-			worldVeil.addTerrain( terrain );
+			worldSection.addTerrain( terrain );
 			log.debug( "Using terrain " + terrain.getEssence() );
 		}
 		else
 			log.debug( "No terrain configuration found." );
 
 		// initializing physics engine:
-		worldVeil.setPhysicsEngine( config.getEngineConfig().createEngine(worldVeil.getEntityIndex(), 
+		worldSection.setPhysicsEngine( config.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
 				terrain == null ? null : terrain.getEssence()));
 		
 		// scene ui aggregator
-		this.uiVeil = new UIVeil(config.getWidth(), config.getHeight());
+		this.uiLayer = new UILayer(config.getWidth(), config.getHeight());
 		
 		// scene time / second
 		this.frameLength = config.getFrameLength();
@@ -122,7 +123,7 @@ public abstract class Scene
 	 */
 	public void addEntity(IEntity entity)
 	{
-		worldVeil.addEntity(entity);
+		worldSection.addEntity(entity);
 	}
 
 
@@ -132,54 +133,55 @@ public abstract class Scene
 	 */
 	public void removeEntity(IEntity entity)
 	{
-		worldVeil.removeEntity(entity);
+		worldSection.removeEntity(entity);
 	}
 	
 	public void addOverlay(Overlay entity)
 	{
-		uiVeil.addEntity(entity);
+		uiLayer.addEntity(entity);
 	}
 	
 	 final public void removeOverlay(Overlay entity)
 	{
-		uiVeil.removeEntity(entity);
+		uiLayer.removeEntity(entity);
 	}
 
 	/**
-	 * @return Reference to {@link WorldVeil}.
+	 * @return Reference to {@link WorldLayer}.
 	 */
-	final public WorldVeil getWorldVeil() { return worldVeil; }
+	final public WorldLayer getWorldLayer() { return worldSection; }
 	
 	/**
-	 * @return Reference to {@link UIVeil}.
+	 * @return Reference to {@link UILayer}.
 	 */
-	final public UIVeil getUIVeil() { return uiVeil; }
+	final public UILayer getUILayer() { return uiLayer; }
 	
 
 	/**
-	 * Initializing world and UI veils
+	 * Initializing world and UI layers
 	 * @param gl
 	 */
 	public void init(GL gl, IRenderingContext context)
 	{
-		getWorldVeil().init(gl, context);
-		getUIVeil().init(gl, context);
+		getWorldLayer().init(gl, context);
+		getUILayer().init(gl, context);
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		getWorldVeil().destroy(gl, context);
-		getUIVeil().destroy(gl, context);
+		getWorldLayer().destroy(gl, context);
+		getUILayer().destroy(gl, context);
 	}
 
 	
 	/**
 	 * Invoked before the drawing occurs.
 	 * @param gl
+	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
 	public void preDisplay(GL gl, double time, boolean pushNames) 
 	{	
-		getWorldVeil().preDisplay(gl); 
+		getWorldLayer().preDisplay(gl); 
 	}
 	
 	/**
@@ -190,19 +192,20 @@ public abstract class Scene
 	 */
 	public void display(GL gl, double time, IRenderingContext context)
 	{
-		getWorldVeil().display(gl, time, context);
+		getWorldLayer().display(gl, time, context);
 	}
 
 	
 	/**
 	 * Invoked after the drawing is finished.
 	 * @param gl
+	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
 	public void postDisplay(GL gl, double time, IRenderingContext context) 
 	{ 
-		getWorldVeil().postDisplay(gl);
+		getWorldLayer().postDisplay(gl);
 		
-		getUIVeil().display(gl, time, context);
+		getUILayer().display(gl, time, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,9 +214,9 @@ public abstract class Scene
 
 	public void animate(double time)
 	{
-		getUIVeil().animate(time);
+		getUILayer().animate(time);
 		
-		getWorldVeil().animate(time);
+		getWorldLayer().animate(time);
 	}
 
 
@@ -221,8 +224,8 @@ public abstract class Scene
 	{
 	}
 
-	final public ISpatialIndex <IEntity> getEntityIndex() { return worldVeil.getEntityIndex(); }
-	final public ISpatialIndex <Overlay> getOverlayIndex() { return uiVeil.getEntityIndex(); }
+	final public ISpatialIndex <IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
+	final public ISpatialIndex <Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
 	
 	/**
 	 * Set user action controller. May be set any time after scene initialization.
@@ -239,7 +242,7 @@ public abstract class Scene
 	 */
 	public ICollider getCollisionManager()
 	{
-		return getWorldVeil().getPhysicsEngine().getCollisionManager();
+		return getWorldLayer().getPhysicsEngine().getCollisionManager();
 	}
 
 }
