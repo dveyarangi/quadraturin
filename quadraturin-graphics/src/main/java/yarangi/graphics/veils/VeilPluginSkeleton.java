@@ -23,30 +23,27 @@ public abstract class VeilPluginSkeleton implements IGraphicsPlugin
 
 	@Override
 	public void init(GL gl, IRenderingContext context) {
-		veil = TextureUtils.createFBO(gl, context.getViewPoint().getPortWidth(), context.getViewPoint().getPortHeight(), true);
+		veil = TextureUtils.createFBO(gl, context.getScreenWidth(), context.getScreenHeight(), true);
 	}
 	
 	@Override
 	public void preRender(GL gl, IRenderingContext context)
 	{
 		// just clearing the frame buffer texture:
-		veil.bindTexture(gl);
+		veil.bind(gl);
 		gl.glClearColor(0,0,0,0);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		veil.unbindTexture(gl);
+		veil.unbind(gl);
 	}
 
 	@Override
 	public void postRender(GL gl, IRenderingContext context) { }
 
-	@Override
-	public abstract String[] getRequiredExtensions();
-
 	/**
 	 * Binds veil's buffer; after invocation all GL rendering will go to this buffer 
 	 * @param gl
 	 */
-	public void weave(GL gl)
+	public void weave(GL gl, Area area, IRenderingContext context)
 	{
 		veil.bind(gl);
 	}
@@ -59,4 +56,17 @@ public abstract class VeilPluginSkeleton implements IGraphicsPlugin
 	{
 		veil.unbind(gl);
 	}
+	
+	protected FBO getFBO() 
+	{
+		return veil;
+	}
+	
+	@Override
+	public String[] getRequiredExtensions()
+	{
+		// TODO: verify that this is enough:
+		return new String [] { "GL_ARB_framebuffer_object" };
+	}
+
 }

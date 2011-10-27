@@ -16,7 +16,8 @@ public interface IRenderingContext
 	/**
 	 * @return current user viewpoint.
 	 */
-	public ViewPoint2D getViewPoint();
+	public int getScreenWidth();
+	public int getScreenHeight();
 
 	/**
 	 * Retrieves plugin by name.

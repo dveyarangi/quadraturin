@@ -86,6 +86,8 @@ public class Swing2DContainer extends JFrame
 		
 		String applicationName = "Quadraturin " + V; 
 		setName(applicationName);
+		this.setLocationRelativeTo(null);
+//		this.setUndecorated( true ); // remove window border and title for fullscreen
 		
 		log.info("/////////////////////////////////////////////////////////////");
 		log.info(applicationName + " container is being expanded...");
@@ -97,14 +99,6 @@ public class Swing2DContainer extends JFrame
 		IQuadConfig config = QuadConfigFactory.getConfig();	
 		
 		
-		int xres = config.getEkranConfig().getXres();
-		int yres = config.getEkranConfig().getYres();
-		// TODO: full-screen
-		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
-		this.setMinimumSize(new Dimension(xres, yres));
-		this.setLocationRelativeTo(null);
-//		this.setUndecorated( true ); // remove window border and title for fullscreen
-
 		// TODO:  configure GL capabilities.
 		log.debug("Configuring GL capabilities.");
 	    GLCapabilities capabilities = new GLCapabilities();
@@ -113,14 +107,22 @@ public class Swing2DContainer extends JFrame
 	    capabilities.setGreenBits(8);
 	    capabilities.setAlphaBits(8);
 	    canvas = new GLCanvas(capabilities);
-	    canvas.setMinimumSize( this.getSize() );
+	    
+		int xres = config.getEkranConfig().getXres();
+		int yres = config.getEkranConfig().getYres();
+		// TODO: full-screen
+		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
+		canvas.setMinimumSize(new Dimension(xres, yres));
+		canvas.setPreferredSize(new Dimension(xres, yres));
 	    
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// organizing JFrame contents:
 	    log.trace("Packing swing frame...");
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(canvas, BorderLayout.CENTER);
+		getContentPane().validate();
 		pack();
+		
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
 									cursorImg, new Point(0, 0), "blank cursor");
@@ -166,6 +168,7 @@ public class Swing2DContainer extends JFrame
 		canvas.addMouseMotionListener(voices);
 		canvas.addMouseWheelListener(voices);
 		canvas.addKeyListener(voices);
+
 		log.trace("Quadraturin controller created.");
 		
 		

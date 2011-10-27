@@ -138,6 +138,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// plugins initialization:
 		
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
+		
+		context.setScreenResolution( ekranConfig.getXres(), ekranConfig.getYres() );
+//		context.setViewPoint(viewPoint);
+
 
 		// TODO: this must be also invoked on screen resizing or resolution change to make FBO plugins work properly
 		for(String pluginName : context.getPluginsNames())
@@ -268,7 +272,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
-		context.setViewPoint(viewPoint);
+//		context.setViewPoint(viewPoint);
 		// ////////////////////////////////////////////////////
 		// scene preprocessing:
 		gl.glPushMatrix();

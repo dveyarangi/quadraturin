@@ -22,28 +22,28 @@ public class FBO
 		this.fboId = fboId;
 	}
 	
-	protected int getTextureId() { return textureId; }
-	protected void setTextureId(int textureId) { this.textureId = textureId; }
-	protected int getDepthBufferId() { return depthBufferId; }
-	protected void setDepthBufferId(int depthBufferId) { this.depthBufferId = depthBufferId; }
-	protected int getFboId() { return fboId; }
-	protected void setFboId(int fboId) { this.fboId = fboId; }
+	final protected int getTextureId() { return textureId; }
+	final protected void setTextureId(int textureId) { this.textureId = textureId; }
+	final protected int getDepthBufferId() { return depthBufferId; }
+	final protected void setDepthBufferId(int depthBufferId) { this.depthBufferId = depthBufferId; }
+	final protected int getFboId() { return fboId; }
+	final protected void setFboId(int fboId) { this.fboId = fboId; }
 	
-	public void bindTexture(GL gl)
+	final public void bindTexture(GL gl)
 	{
 		gl.glBindTexture(GL.GL_TEXTURE_2D, textureId);
 	}
-	public void unbindTexture(GL gl)
+	final public void unbindTexture(GL gl)
 	{
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 	}
 	
-	public void bind(GL gl)
+	final public void bind(GL gl)
 	{
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fboId);
 	}
 	
-	public void unbind(GL gl)
+	final public void unbind(GL gl)
 	{
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
 	}

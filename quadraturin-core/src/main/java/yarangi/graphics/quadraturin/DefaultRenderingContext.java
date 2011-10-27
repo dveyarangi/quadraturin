@@ -9,13 +9,19 @@ import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
 public class DefaultRenderingContext implements IRenderingContext 
 {
-	private ViewPoint2D vp;
+	private int width, height;
 	
 	private Map <String, IGraphicsPlugin> plugins;
 	
 	public DefaultRenderingContext(EkranConfig config)
 	{
 		plugins = config.getPlugins();
+	}
+	
+	public void setScreenResolution(int width, int height) 
+	{
+		this.width = width;
+		this.height = height;
 	}
 	
 	/**
@@ -25,9 +31,9 @@ public class DefaultRenderingContext implements IRenderingContext
 	/**
 	 * {@inheritDoc}
 	 */
-	public ViewPoint2D getViewPoint() { return vp; }
+//	public ViewPoint2D getViewPoint() { return vp; }
 	
-	void setViewPoint(ViewPoint2D vp) { this.vp = vp; }
+//	void setViewPoint(ViewPoint2D vp) { this.vp = vp; }
 	
 	/**
 	 * {@inheritDoc}
@@ -45,5 +51,17 @@ public class DefaultRenderingContext implements IRenderingContext
 	public Set <String> getPluginsNames()
 	{
 		return plugins.keySet();
+	}
+
+	@Override
+	public int getScreenWidth()
+	{
+		return width;
+	}
+
+	@Override
+	public int getScreenHeight()
+	{
+		return height;
 	}
 }

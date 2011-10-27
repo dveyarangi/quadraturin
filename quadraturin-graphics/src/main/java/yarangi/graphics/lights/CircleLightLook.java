@@ -14,6 +14,7 @@ import yarangi.graphics.shaders.IShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
+import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
 /**
@@ -54,8 +55,10 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		// rounding texture size to power of 2:
 		int size = (int)(entity.getSensor().getRadius()*2.);
+		textureSize = BitUtils.po2Ceiling(size);
+
 		
-		fbo = TextureUtils.createFBO(gl, size, size, true);
+		fbo = TextureUtils.createFBO(gl, textureSize, textureSize, true);
 		
 		// preparing shaders:
 		ShaderFactory factory = context.getPlugin(ShaderFactory.NAME);

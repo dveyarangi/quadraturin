@@ -126,9 +126,7 @@ public class TextureUtils
 	
 	public static FBO createFBO(GL gl, int width, int height, boolean useDepthBuffer) 
 	{
-		int textureWidth = BitUtils.po2Ceiling(width);
-		int textureHeight = BitUtils.po2Ceiling(height);
-		return TextureUtils.createFBO(gl, TextureUtils.createEmptyTexture2D(gl, textureWidth, textureHeight, false), 
+		return TextureUtils.createFBO(gl, TextureUtils.createEmptyTexture2D(gl, width, height, false), 
 										  useDepthBuffer ? TextureUtils.createFBODepthBuffer(gl) : ILLEGAL_ID);
 	}
 	
