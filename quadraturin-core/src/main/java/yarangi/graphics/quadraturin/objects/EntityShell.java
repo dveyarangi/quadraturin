@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 import yarangi.spatial.Area;
 
 /**
@@ -45,24 +46,8 @@ public class EntityShell <E> extends Entity
 	
 	public void render(GL gl, double time, IRenderingContext context)
 	{
-		Area area = getArea();
-		
-		// storing transformation matrix:
-		gl.glPushMatrix();
-		
-		// transforming into entity coordinates:
-		if(area == null)
-			gl.glTranslatef(0, 0, -this.getLook().getPriority()); // just adjusting priority
-		else
-		{
-			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), -getLook().getPriority());
-			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
-		}
 		// rendering this entity:
 		getLook().render(gl, time, essence, context);
-		
-		gl.glPopMatrix();
-
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)

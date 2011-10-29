@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.behaviors.DummyBehavior;
 
 /**
@@ -25,6 +26,8 @@ public class Dummy extends Entity
 			public boolean isCastsShadow() { return false; }
 			@Override
 			public float getPriority() { return 0; }
+			@Override
+			public IVeil getVeil() { return IVeil.ORIENTING; }
 		};
 	}
 }

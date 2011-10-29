@@ -12,7 +12,7 @@ import yarangi.spatial.ISpatialObject;
  * 
  * @author dveyarangi
  */
-public interface ILayerEntity extends ISpatialObject
+public interface IVeilEntity extends ISpatialObject
 {
 
 	/**

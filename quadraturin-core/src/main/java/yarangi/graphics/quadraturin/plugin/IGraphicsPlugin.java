@@ -72,6 +72,8 @@ public interface IGraphicsPlugin {
 	 * @param context
 	 */
 	public void postRender(GL gl, IRenderingContext context);
+	
+	public void destroy(GL gl);
 
 	/**
 	 * @return Array of GL extensions required by this plugin.

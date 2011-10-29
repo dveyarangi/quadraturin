@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 
 /**
  * Generic graphics interface for {@link IEntity}-s; implements entity view aspect.
@@ -52,5 +53,11 @@ public interface Look <An>
 	 * @return true, if this look should be considered opaque for lighting calculations.
 	 */
 	public boolean isCastsShadow();
+
+	/**
+	 * Can be used to set special rendering environment for the look; null if default veil is used
+	 * @return
+	 */
+	public IVeil getVeil();
 
 }

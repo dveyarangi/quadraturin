@@ -17,7 +17,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	private double layerTime;
 	
-	private EntityShell <? extends ITerrainMap >terrain;
+	private EntityShell <? extends ITerrainMap > terrain;
+	
 	
 	public WorldLayer(int width, int height) 
 	{ 
@@ -146,14 +147,16 @@ public class WorldLayer extends SceneLayer <IEntity>
 	@Override
 	protected boolean testEntity(IEntity entity)
 	{
+		assert entity.getLook() != null;
+		assert entity.getBehavior() != null;
 		
-		return entity.getLook() != null && entity.getBehavior() != null;
+		return true;
 	}
 
 
 	public <T> ITerrainMap <T> getTerrain()
 	{
-		return  (ITerrainMap <T> )terrain.getEssence();
+		return  terrain == null ? null : (ITerrainMap <T> )terrain.getEssence();
 	}
 
 

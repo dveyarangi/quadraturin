@@ -159,24 +159,8 @@ public class Entity implements IEntity
 	
 	public void render(GL gl, double time, IRenderingContext context)
 	{
-		Area area = this.getArea();
-		
-		// storing transformation matrix:
-		gl.glPushMatrix();
-		
-		// transforming into entity coordinates:
-		if(area == null)
-			gl.glTranslatef(0, 0, -this.getLook().getPriority());
-		else
-		{
-			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), -getLook().getPriority());
-			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
-		}
 		// rendering this entity:
 		getLook().render(gl, time, this, context);
-		
-		gl.glPopMatrix();
-
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)

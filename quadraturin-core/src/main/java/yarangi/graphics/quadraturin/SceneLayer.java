@@ -8,7 +8,7 @@ import java.util.Queue;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.Entity;
-import yarangi.graphics.quadraturin.objects.ILayerEntity;
+import yarangi.graphics.quadraturin.objects.IVeilEntity;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
@@ -20,7 +20,7 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneLayer <K extends ILayerEntity>
+public abstract class SceneLayer <K extends IVeilEntity>
 {
 
 	private int width, height;
@@ -41,7 +41,7 @@ public abstract class SceneLayer <K extends ILayerEntity>
 	private SpatialIndexer <K> indexer;
 
 	/**
-	 * Queue of entites waitong to be added to the veil.
+	 * Queue of entities waiting to be added to the veil.
 	 */
 	private Queue <K> bornEntities = new LinkedList<K> ();
 
@@ -111,6 +111,7 @@ public abstract class SceneLayer <K extends ILayerEntity>
 			}
 		}
 		
+		IVeil veil;
 //		System.out.println(entities.size() + " : " + indexer.size());
 //			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
 //			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
@@ -119,7 +120,12 @@ public abstract class SceneLayer <K extends ILayerEntity>
 //			System.out.println("BEGIN ======================================================");
 			for(K entity : entities)
 			{
+				veil = entity.getLook().getVeil();
+				assert veil != null;
+//				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
+				veil.weave( gl, entity, context );
 				entity.render( gl, time, context );
+				veil.tear( gl );
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);
