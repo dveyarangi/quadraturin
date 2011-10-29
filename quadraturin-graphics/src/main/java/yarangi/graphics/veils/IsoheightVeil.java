@@ -21,15 +21,13 @@ import yarangi.graphics.textures.FBO;
  * @author dveyarangi
  *
  */
-public class BlurVeil extends VeilPluginSkeleton 
+public class IsoheightVeil extends VeilPluginSkeleton 
 {
-	public static final String NAME = "blur-veil";
+	public static final String NAME = "isoheight-veil";
 	
-	private IShader vblurShader;
-	private IShader hblurShader;
-	private IShader fadeShader;
+	private IShader isoheightShader;
 		
-	public BlurVeil (Map <String, String> props) {
+	public IsoheightVeil (Map <String, String> props) {
 		
 	}
 	
@@ -45,28 +43,26 @@ public class BlurVeil extends VeilPluginSkeleton
 		super.init(gl, context);
 		
 		ShaderFactory factory = context.getPlugin( ShaderFactory.NAME );
-		vblurShader = factory.getShader( "vblur" );
-		hblurShader = factory.getShader( "hblur");
-		fadeShader = factory.getShader( "fade");
+		isoheightShader = factory.getShader( "isoheight" );
+	}
+	
+	public void preRender(GL gl, IRenderingContext context)
+	{
+		// just clearing the frame buffer texture:
+		getFBO().bind(gl);
+		gl.glClearColor(0,0,0,0.0f);
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+		getFBO().unbind(gl);
 	}
 	
 	public void postRender(GL gl, IRenderingContext defaultContext) 
 	{
-		getFBO().bind( gl );
-		gl.glDisable(GL.GL_BLEND);
-/*		vblurShader.begin( gl );
+		isoheightShader.begin( gl );
+		isoheightShader.setFloat4Uniform( gl, "min", 0.2f, 0f, 0.5f, 0.5f );
+		isoheightShader.setFloat4Uniform( gl, "max", 0.4f, 0f, 0.55f, 1.0f );
+		isoheightShader.setFloat4Uniform( gl, "target", 1f, 0f, 1.0f, 1.0f );
 		renderTexture(gl);
-		vblurShader.end(gl);
-		hblurShader.begin( gl );
-		renderTexture(gl);
-		hblurShader.end(gl);*/
-		fadeShader.begin( gl );
-		fadeShader.setFloat1Uniform( gl, "decay", 0.1f );
-		renderTexture(gl);
-		fadeShader.end(gl);
-		getFBO().unbind( gl );
-		gl.glEnable(GL.GL_BLEND);
-		renderTexture(gl);
+		isoheightShader.end(gl);
 	}
 
 

@@ -1,3 +1,4 @@
+
 [fragment_shader]
 
 uniform sampler2D sceneTex; // 0
@@ -6,11 +7,11 @@ void main()
 {
 	vec4 tc = texture2D(sceneTex, gl_TexCoord[0].xy).rgba;
 
-	float tc0 = decay; if(tc.r <= decay) tc0 = tc.r;
-	float tc1 = decay; if(tc.g <= decay) tc1 = tc.g;
-	float tc2 = decay; if(tc.b <= decay) tc2 = tc.b;
-	float tc3 = decay; if(tc.a <= decay) tc3 = tc.a;
+	float tc0 = tc.r-decay; if(tc0 < 0.01) tc0 = 0;
+	float tc1 = tc.g-decay; if(tc1 < 0.01) tc1 = 0;
+	float tc2 = tc.b-decay; if(tc2 < 0.01) tc2 = 0;
+	float tc3 = tc.a-decay; if(tc3 < 0.01) tc3 = 0;
 	
-    gl_FragColor = tc - vec4(tc0, tc1, tc2, tc3);
+    gl_FragColor =  vec4(tc0, tc1, 0, tc3);
 
 }

@@ -5,6 +5,7 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 
@@ -194,4 +195,7 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public IVeil getVeil() { return IVeil.ORIENTING; }
 }

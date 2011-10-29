@@ -8,6 +8,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.IShader;
@@ -257,4 +258,6 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	{
 		return 0f;
 	}
+	@Override
+	public IVeil getVeil() { return IVeil.ORIENTING; }
 }

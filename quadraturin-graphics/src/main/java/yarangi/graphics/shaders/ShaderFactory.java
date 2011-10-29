@@ -46,4 +46,10 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	{
 		return new String [] { "GL_ARB_vertex_shader", "GL_ARB_fragment_shader"};
 	}
+
+	@Override
+	public void destroy(GL gl)
+	{
+		// hmm...
+	}
 }
