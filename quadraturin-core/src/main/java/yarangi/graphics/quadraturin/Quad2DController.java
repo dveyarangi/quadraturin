@@ -4,7 +4,6 @@ import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.config.ConfigException;
 import yarangi.graphics.quadraturin.config.EkranConfig;
@@ -31,7 +30,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * OpenGL utilities.
 	 */
-	private GLU glu = new GLU();
+//	private GLU glu = new GLU();
 	
 	/**
 	 * Stage controls entities' look and behaviors
@@ -197,6 +196,15 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		}
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glLoadIdentity();
+		
+		context.setScreenResolution( width, height );
+		for(String pluginName : context.getPluginsNames())
+		{
+			System.out.println("resetting plugin " + pluginName);
+			IGraphicsPlugin factory = context.getPlugin(pluginName);
+			factory.destroy(gl);
+			factory.init(gl, context);
+		}
 
 	}
 
@@ -272,12 +280,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
-//		context.setViewPoint(viewPoint);
 		// ////////////////////////////////////////////////////
 		// scene preprocessing:
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
-		// TODO: fix display times:
 		
 		for(IGraphicsPlugin plugin : context.getPlugins())
 			plugin.preRender(gl, context);
@@ -295,7 +301,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 		
 		for(IGraphicsPlugin plugin : context.getPlugins())
-			plugin.preRender(gl, context);
+			plugin.postRender(gl, context);
 	
 		releaseNext();
 
