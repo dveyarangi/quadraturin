@@ -39,7 +39,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * marks scene transition state.
 	 */
-	private boolean isScenePending = false;
+	private volatile boolean isScenePending = false;
 	
 	/**
 	 * mouse location goes here
@@ -201,10 +201,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	public void display(GLAutoDrawable glDrawable) 
 	{
-
-//		if (!stage.changePending())
-//			return; // nothing changed, nothing to redraw
-		
 	
 		try {
 			waitForRelease();
@@ -218,11 +214,12 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		GL gl = glDrawable.getGL();
 		
 		if(!this.isAlive())
-		{
+		{   // terminating GL listener
 			currScene.destroy(gl, context);
 			return;
 		}
-		if(isScenePending)
+		
+		if(isScenePending) // on scene change
 		{
 			if(prevScene != null)
 				prevScene.destroy(gl, context);
@@ -234,47 +231,42 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 			isScenePending = false;
 		}
 		
-		if(currScene == null)
+		if(currScene == null) // nothing to display
 			return;
 
-		// ////////////////////////////////////////////////////
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glLoadIdentity();
-
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
+		int viewport[] = new int[4]; gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
-		int viewport[] = new int[4];
-		double mvmatrix[] = new double[16];
-		double projmatrix[] = new double[16];
-
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
-		
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		
-		gl.glLoadIdentity();
+		// applying top-down orthogonal projection with zoom scaling
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
+		
+		// applying view point translation:
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
+		
+		double mvmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		double projmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		
+		// updating view point transformation parameters:
+		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
 		
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
 		// ////////////////////////////////////////////////////
-		// scene preprocessing:
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
+		// scene preprocessing, in untranslated coordinates:
+		gl.glPushMatrix(); gl.glLoadIdentity(); 
 		
 		for(IGraphicsPlugin plugin : context.getPlugins())
-			plugin.preRender(gl, context);
-
+				plugin.preRender(gl, context);
+	
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
+		gl.glPopMatrix();
+		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		gl.glPopMatrix();
 		currScene.display(gl, currScene.getFrameLength(), context);
 
 		// ////////////////////////////////////////////////////
@@ -286,6 +278,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		for(IGraphicsPlugin plugin : context.getPlugins())
 			plugin.postRender(gl, context);
 	
+		// proceeding to next thread:
 		releaseNext();
 
 		// TODO: ensure that rendering cycle does not start again before this finishes:
