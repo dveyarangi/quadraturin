@@ -5,7 +5,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import yarangi.graphics.quadraturin.config.ConfigException;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.objects.Look;
@@ -139,19 +138,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
 		
 		context.setScreenResolution( ekranConfig.getXres(), ekranConfig.getYres() );
-//		context.setViewPoint(viewPoint);
-
+		context.init(gl);
 
 		// TODO: this must be also invoked on screen resizing or resolution change to make FBO plugins work properly
-		for(String pluginName : context.getPluginsNames())
-		{
-			IGraphicsPlugin factory = context.getPlugin(pluginName);
-			for(String extensionName : factory.getRequiredExtensions())
-				if(! gl.isExtensionAvailable(extensionName))
-					throw new ConfigException("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
-			log.debug("Initializing plugin [" + pluginName + "]...");
-			factory.init(gl, context);
-		}
 		
 		log.debug("/////////////////////////////////////////////////////////////");
 	}
@@ -198,13 +187,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		gl.glLoadIdentity();
 		
 		context.setScreenResolution( width, height );
-		for(String pluginName : context.getPluginsNames())
-		{
-			System.out.println("resetting plugin " + pluginName);
-			IGraphicsPlugin factory = context.getPlugin(pluginName);
-			factory.destroy(gl);
-			factory.init(gl, context);
-		}
+		context.reinit(gl);
 
 	}
 

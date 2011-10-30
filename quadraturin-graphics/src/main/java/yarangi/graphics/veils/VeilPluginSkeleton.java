@@ -29,11 +29,22 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 
 	private GLU glu = new GLU();
 	
+	private boolean isInited = false;
+	
 	@Override
 	public void init(GL gl, IRenderingContext context) {
 		this.width = context.getScreenWidth();
 		this.height = context.getScreenHeight();
 		veil = TextureUtils.createFBO(gl, width, height, true);
+		
+		isInited = true;
+	}
+	
+	public void reinit(GL gl, IRenderingContext context) {
+		if(!isInited)
+			return;
+		destroy(gl);
+		init(gl, context);
 	}
 	
 	public final int getWidth()  { return width; }
@@ -123,7 +134,12 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	@Override
 	public void destroy(GL gl)
 	{
+		if(!isInited)
+			return;
 		TextureUtils.destroyFBO( gl, veil );
 	}
+	
+	@Override
+	public boolean isAvailable() { return isInited; }
 
 }

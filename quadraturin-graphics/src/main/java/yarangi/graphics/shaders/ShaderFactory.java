@@ -8,9 +8,11 @@ import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.resources.ResourceFactory;
 
-public class ShaderFactory extends ResourceFactory <IShader> implements IGraphicsPlugin
+public class ShaderFactory extends ResourceFactory <GLSLShader> implements IGraphicsPlugin
 {
 	public static final String NAME = "shaders";
+	
+	private boolean isInited = false;
 	
 	public ShaderFactory(Map <String, String> properties)
 	{
@@ -24,10 +26,18 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	
 	public void init(GL gl, IRenderingContext context)
 	{
-		for(IShader shaderResource : getHandles().values())
+		if(isInited) return;
+		
+		for(GLSLShader shaderResource : getHandles().values())
 		{
 			shaderResource.init(gl);
 		}
+		isInited = true;
+	}
+	
+	public void reinit(GL gl, IRenderingContext context)
+	{
+		// lazy
 	}
 
 	@Override
@@ -36,7 +46,7 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	@Override
 	public void postRender(GL gl, IRenderingContext context) { /* also useless */ }
 	
-	public IShader getShader(String resourceId)
+	public GLSLShader getShader(String resourceId)
 	{
 		return getResource(resourceId);
 	}
@@ -50,6 +60,16 @@ public class ShaderFactory extends ResourceFactory <IShader> implements IGraphic
 	@Override
 	public void destroy(GL gl)
 	{
-		// hmm...
+		if(!isInited)
+			throw new IllegalStateException("Trying to destroy not initialized plugin");
+		for(GLSLShader shaderResource : getHandles().values())
+		{
+			shaderResource.destroy(gl);
+		}
+		
+		isInited = false;
 	}
+
+	@Override
+	public boolean isAvailable() { return isInited; }
 }

@@ -2,7 +2,6 @@ package yarangi.graphics.lights;
 
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
-import java.util.Map;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -11,14 +10,9 @@ import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.shaders.IShader;
-import yarangi.graphics.shaders.ShaderFactory;
+import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.math.Angles;
 import yarangi.math.BitUtils;
-import yarangi.math.Vector2D;
-import yarangi.spatial.AABB;
-import yarangi.spatial.ISpatialObject;
 
 /**
  * No FBO and not working.
@@ -31,7 +25,7 @@ public class CircleLight2Look <K extends IEntity> implements Look <K>
 
 	private int lightTexture;
 	
-	private IShader lightShader;
+	private GLSLShader lightShader;
 	
 	private int textureSize;
 	private GLU glu = new GLU();
