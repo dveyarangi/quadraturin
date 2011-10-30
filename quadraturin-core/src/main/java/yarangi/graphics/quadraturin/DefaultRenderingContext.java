@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.media.opengl.GL;
 
+import org.apache.log4j.Logger;
+
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
@@ -17,27 +19,24 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	private Map <String, IGraphicsPlugin> plugins;
 	
+	private EkranConfig config;
+	
+	private Logger log = QServices.rendering;
+	
+	public static final float MIN_DEPTH_PRIORITY = 0;
+	public static final float MAX_DEPTH_PRIORITY = 1;
+	
 	public DefaultRenderingContext(EkranConfig config)
 	{
+		this.config = config;
 		plugins = config.getPlugins();
 	}
 	
-	public void setScreenResolution(int width, int height) 
+	protected void setScreenResolution(int width, int height) 
 	{
 		this.width = width;
 		this.height = height;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isForEffect() { return false; }
-	/**
-	 * {@inheritDoc}
-	 */
-//	public ViewPoint2D getViewPoint() { return vp; }
-	
-//	void setViewPoint(ViewPoint2D vp) { this.vp = vp; }
 	
 	/**
 	 * {@inheritDoc}
@@ -47,7 +46,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		return (T) plugins.get(name);
 	}
 	
-	Collection <IGraphicsPlugin> getPlugins()
+	protected Collection <IGraphicsPlugin> getPlugins()
 	{
 		return plugins.values();
 	}
@@ -69,7 +68,53 @@ public class DefaultRenderingContext implements IRenderingContext
 		return height;
 	}
 
-	public void init(GL gl) {
+	protected void init(GL gl) {
+		
+		setScreenResolution( config.getXres(), config.getYres() );
+		
+//		gl.glDisable(GL.GL_CULL_FACE);
+//		gl.glCullFace(GL.GL_BACK);
+		
+		/////
+		// specifies how the pixels are overriden by overlapping objects:
+//		gl.glDisable(GL.GL_DEPTH_TEST);
+		// TODO: fix entity prioritizing:
+	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
+	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
+	    //	    gl.glDepthFunc(GL.GL_ALWAYS);
+		
+	    /////
+	    // color blending function:
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glShadeModel(GL.GL_SMOOTH);
+		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+		
+		// disable lighting (TODO: remove)
+		gl.glDisable(GL.GL_LIGHTING);
+		
+		// disable texture auto-mapping:
+		gl.glDisable(GL.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL.GL_TEXTURE_GEN_T);
+
+		// enable 2D texture mapping
+		gl.glEnable(GL.GL_TEXTURE_2D);					
+
+		// antialiasing:
+		if (config.isAntialiasing()) {
+			gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
+			gl.glEnable(GL.GL_LINE_SMOOTH);
+		} 
+		else
+			gl.glDisable(GL.GL_LINE_SMOOTH);
+
+		
+		// plugins initialization:
+		
+		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
+
+		
 		List <String> unavailablePlugins = new LinkedList <String> ();
 		for(String pluginName : getPluginsNames())
 		{
@@ -78,7 +123,7 @@ public class DefaultRenderingContext implements IRenderingContext
 			for(String extensionName : factory.getRequiredExtensions())
 				if(! gl.isExtensionAvailable(extensionName)) 
 				{
-					QServices.rendering.error("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
+					log.error("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
 					isPluginAvailable = false;
 				}
 			
@@ -88,7 +133,7 @@ public class DefaultRenderingContext implements IRenderingContext
 				continue;
 			}
 			
-			QServices.rendering.debug("Initializing plugin [" + pluginName + "]...");
+			log.debug("Initializing plugin [" + pluginName + "]...");
 			factory.init(gl, this);
 		}
 		
@@ -97,7 +142,9 @@ public class DefaultRenderingContext implements IRenderingContext
 			plugins.remove(pluginName);
 	}
 	
-	public void reinit(GL gl) {
+	protected void reinit(int width, int height, GL gl) {
+		
+		setScreenResolution(width, height);
 		for(String pluginName : getPluginsNames())
 		{
 			QServices.rendering.debug("Resetting plugin [" + pluginName + "]");
