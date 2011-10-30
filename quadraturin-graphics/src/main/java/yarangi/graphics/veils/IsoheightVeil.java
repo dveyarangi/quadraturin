@@ -59,7 +59,7 @@ public class IsoheightVeil extends VeilPluginSkeleton
 	{
 		isoheightShader.begin( gl );
 		isoheightShader.setFloat4Uniform( gl, "min", 0.2f, 0f, 0.5f, 0.5f );
-		isoheightShader.setFloat4Uniform( gl, "max", 0.4f, 0f, 0.55f, 1.0f );
+		isoheightShader.setFloat4Uniform( gl, "max", 0.4f, 0f, 0.8f, 0.6f );
 		isoheightShader.setFloat4Uniform( gl, "target", 1f, 0f, 1.0f, 1.0f );
 		renderTexture(gl);
 		isoheightShader.end(gl);
