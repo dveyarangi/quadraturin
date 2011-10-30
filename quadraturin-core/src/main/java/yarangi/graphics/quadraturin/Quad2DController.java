@@ -1,11 +1,12 @@
 package yarangi.graphics.quadraturin;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 
-import yarangi.graphics.quadraturin.config.ConfigException;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.objects.Look;
@@ -22,10 +23,6 @@ import yarangi.graphics.quadraturin.threads.ThreadChain;
  */
 public class Quad2DController extends ChainedThreadSkeleton implements GLEventListener, StageListener
 {
-	/**
-	 * Display configuration properties.
-	 */
-	private EkranConfig ekranConfig;
 
 	/**
 	 * OpenGL utilities.
@@ -40,23 +37,17 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	/**
 	 * marks scene transition state.
 	 */
-	private boolean isScenePending = false;
+	private volatile AtomicBoolean isScenePending = new AtomicBoolean(false);
 	
 	/**
 	 * mouse location goes here
 	 */
 	private IEventManager voices;
 	
-	
-	public static final float MIN_DEPTH_PRIORITY = 0;
-	public static final float MAX_DEPTH_PRIORITY = 1;
-	
 	/**
 	 * Set of rendering environment properties for {@link Look} to consider. 
 	 */
 	private DefaultRenderingContext context;
-	
-	
 	
 	public Quad2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
@@ -65,8 +56,6 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		this.voices = voices;
 		
 		this.context = new DefaultRenderingContext(ekranConfig);
-		
-		this.ekranConfig = ekranConfig;
 	}
 
 	public void start() { /* nothing here */ }
@@ -81,77 +70,25 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	public void init(GLAutoDrawable drawable) 
 	{
-		drawable.setAutoSwapBufferMode(false);
 		log.debug("// JOGL INIT ////////////////////////////////////////////////");
-		GL gl = drawable.getGL();
 
 		if (Debug.ON) {
 			log.info("GL core is in debug mode.");
-			drawable.setGL(new DebugGL(gl));
+			drawable.setGL(new DebugGL(drawable.getGL()));
 		}
+		
+		GL gl = drawable.getGL();
 		
 		//////////////////////////////////////////////////////////////////
 		// Global settings:
-		// TODO: extract to EkranConfig / Scene initialization
-		
+		// TODO: extract scene-specific parts
 		log.debug("Setting global GL properties...");
+		context.init(gl);
 		
-//		gl.glDisable(GL.GL_CULL_FACE);
-//		gl.glCullFace(GL.GL_BACK);
-		
-		/////
-		// specifies how the pixels are overriden by overlapping objects:
-//		gl.glDisable(GL.GL_DEPTH_TEST);
-		// TODO: fix entity prioritizing:
-	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
-	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
-	    //	    gl.glDepthFunc(GL.GL_ALWAYS);
-		
-	    /////
-	    // color blending function:
-		gl.glEnable(GL.GL_BLEND);
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		
-		gl.glShadeModel(GL.GL_SMOOTH);
-		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-		
-		// disable lighting (TODO: remove)
-		gl.glDisable(GL.GL_LIGHTING);
-		
-		// disable texture auto-mapping:
-		gl.glDisable(GL.GL_TEXTURE_GEN_S);
-		gl.glDisable(GL.GL_TEXTURE_GEN_T);
-
-		// enable 2D texture mapping
-		gl.glEnable(GL.GL_TEXTURE_2D);					
-
-		// antialiasing:
-		if (ekranConfig.isAntialiasing()) {
-			gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST);
-			gl.glEnable(GL.GL_LINE_SMOOTH);
-		} 
-		else
-			gl.glDisable(GL.GL_LINE_SMOOTH);
-
-		
-		// plugins initialization:
-		
-		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
-		
-		context.setScreenResolution( ekranConfig.getXres(), ekranConfig.getYres() );
-//		context.setViewPoint(viewPoint);
-
+		// control buffer swapping:
+		drawable.setAutoSwapBufferMode(false);
 
 		// TODO: this must be also invoked on screen resizing or resolution change to make FBO plugins work properly
-		for(String pluginName : context.getPluginsNames())
-		{
-			IGraphicsPlugin factory = context.getPlugin(pluginName);
-			for(String extensionName : factory.getRequiredExtensions())
-				if(! gl.isExtensionAvailable(extensionName))
-					throw new ConfigException("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
-			log.debug("Initializing plugin [" + pluginName + "]...");
-			factory.init(gl, context);
-		}
 		
 		log.debug("/////////////////////////////////////////////////////////////");
 	}
@@ -178,33 +115,11 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	{
 		final GL gl = glDrawable.getGL();
 
-		if (height <= 0) // avoid a divide by zero error!
-			height = 1;
-
-//		windowRatio = (float) width / (float) height;
-		gl.glViewport(0, 0, width, height);
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		gl.glLoadIdentity();
-		if(currScene != null)
-		{
-			ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
-			if(viewPoint != null)
-			{
-				gl.glOrtho(-width*viewPoint.getScale(), width*viewPoint.getScale(), -height*viewPoint.getScale(), height*viewPoint.getScale(), -1, 1);
-				gl.glViewport(0, 0, width, height);
-			}
-		}
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glLoadIdentity();
+		// adjusting viewport (implicit)
+//		gl.glViewport(0, 0, width, height);
 		
-		context.setScreenResolution( width, height );
-		for(String pluginName : context.getPluginsNames())
-		{
-			System.out.println("resetting plugin " + pluginName);
-			IGraphicsPlugin factory = context.getPlugin(pluginName);
-			factory.destroy(gl);
-			factory.init(gl, context);
-		}
+		// resetting context:
+		context.reinit( width, height, gl);
 
 	}
 
@@ -218,80 +133,81 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	public void display(GLAutoDrawable glDrawable) 
 	{
-
-//		if (!stage.changePending())
-//			return; // nothing changed, nothing to redraw
-		
 	
 		try {
 			waitForRelease();
 		} catch (InterruptedException e1) {
 			// TODO: should this interrupt the AWT event thread?
 			// TODO: check for GLContext overriding
-			log.debug("Renderer thread was interrupted.");
+			log.warn("Renderer thread was interrupted.");
+			releaseNext();
 			return;
 		}
 		
 		GL gl = glDrawable.getGL();
 		
 		if(!this.isAlive())
-		{
-			currScene.destroy(gl, context);
+		{   // terminating GL listener:
+			if(currScene != null)
+				currScene.destroy(gl, context);
+			
+			releaseNext();
 			return;
 		}
-		if(isScenePending)
-		{
+		
+		if(isScenePending.getAndSet(false))
+		{	// swapping scene:
 			if(prevScene != null)
 				prevScene.destroy(gl, context);
-			// initializing stage components:
-			log.debug("Entering '" + currScene.getName() + "' scene...");
-
-			currScene.init(gl, context);
 			
-			isScenePending = false;
+			// initializing new scene:
+			log.debug("Entering '" + currScene.getName() + "' scene...");
+			// TODO: should not be locked in here, render a placeholder/progress bar instead:
+			currScene.init(gl, context);
 		}
 		
 		if(currScene == null)
+		{ 	// nothing to display:
+			releaseNext();
 			return;
+		}
 
-		// ////////////////////////////////////////////////////
-		gl.glMatrixMode(GL.GL_MODELVIEW);
-		gl.glLoadIdentity();
-
+		////////////////////////////////////////////////////////////////////
+		// rendering current frame:
+		
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
+		int viewport[] = new int[4]; gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
-		int viewport[] = new int[4];
-		double mvmatrix[] = new double[16];
-		double projmatrix[] = new double[16];
-
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
-		
-		gl.glMatrixMode(GL.GL_PROJECTION);
-		
-		gl.glLoadIdentity();
+		// applying top-down orthogonal projection with zoom scaling
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
+		
+		// applying view point translation:
 		gl.glMatrixMode(GL.GL_MODELVIEW);
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
+		
+		double mvmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		double projmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		
+		// updating view point transformation parameters:
+		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
 		
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
 		// ////////////////////////////////////////////////////
-		// scene preprocessing:
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
+		// scene preprocessing, in untranslated coordinates:
+		gl.glPushMatrix(); gl.glLoadIdentity(); 
 		
 		for(IGraphicsPlugin plugin : context.getPlugins())
-			plugin.preRender(gl, context);
-
+				plugin.preRender(gl, context);
+	
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
+		gl.glPopMatrix();
+		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		gl.glPopMatrix();
 		currScene.display(gl, currScene.getFrameLength(), context);
 
 		// ////////////////////////////////////////////////////
@@ -303,6 +219,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		for(IGraphicsPlugin plugin : context.getPlugins())
 			plugin.postRender(gl, context);
 	
+		// proceeding to next thread:
 		releaseNext();
 
 		// TODO: ensure that rendering cycle does not start again before this finishes:
@@ -332,7 +249,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		this.prevScene = this.currScene;
 		this.currScene = currScene;
 		
-		this.isScenePending = true;
+		if(isScenePending.getAndSet(true)) // sanity
+			throw new IllegalStateException("Previous scene was not yet processed.");
 	}
 	
 	

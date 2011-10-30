@@ -60,6 +60,13 @@ public interface IGraphicsPlugin {
 	public void init(GL gl, IRenderingContext context);
 	
 	/**
+	 * Reinitializes plugin; 
+	 * TODO: should be also invoked on resolution change or window resizing.
+	 * @param gl
+	 */
+	public void reinit(GL gl, IRenderingContext context);
+	
+	/**
 	 * Allows the plugin to perform tasks prior to {@link Scene} frame rendering.
 	 * @param gl
 	 * @param context
@@ -80,4 +87,6 @@ public interface IGraphicsPlugin {
 	 * @see GL.glGetString(GL.GL_EXTENSIONS)
 	 */
 	public String [] getRequiredExtensions();
+	
+	public boolean isAvailable();
 }

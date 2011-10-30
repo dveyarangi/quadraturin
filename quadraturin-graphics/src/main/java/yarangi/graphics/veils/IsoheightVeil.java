@@ -3,12 +3,10 @@ package yarangi.graphics.veils;
 import java.util.Map;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.shaders.IShader;
+import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
-import yarangi.graphics.textures.FBO;
 
 /**
  * Blur effect plugin.
@@ -25,7 +23,7 @@ public class IsoheightVeil extends VeilPluginSkeleton
 {
 	public static final String NAME = "isoheight-veil";
 	
-	private IShader isoheightShader;
+	private GLSLShader isoheightShader;
 		
 	public IsoheightVeil (Map <String, String> props) {
 		

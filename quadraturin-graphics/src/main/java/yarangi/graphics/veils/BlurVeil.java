@@ -3,12 +3,10 @@ package yarangi.graphics.veils;
 import java.util.Map;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.shaders.IShader;
+import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
-import yarangi.graphics.textures.FBO;
 
 /**
  * Blur effect plugin.
@@ -25,9 +23,9 @@ public class BlurVeil extends VeilPluginSkeleton
 {
 	public static final String NAME = "blur-veil";
 	
-	private IShader vblurShader;
-	private IShader hblurShader;
-	private IShader fadeShader;
+	private GLSLShader vblurShader;
+	private GLSLShader hblurShader;
+	private GLSLShader fadeShader;
 		
 	public BlurVeil (Map <String, String> props) {
 		

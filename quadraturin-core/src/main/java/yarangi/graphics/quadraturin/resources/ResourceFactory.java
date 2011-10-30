@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
  *
  * @param <R>
  */
-public class ResourceFactory <R extends IResource>
+public class ResourceFactory <R>
 {
 	
 	protected String factoryName;
@@ -36,8 +36,6 @@ public class ResourceFactory <R extends IResource>
 			throw new IllegalArgumentException("Resource id cannot be null.");
 		if(handles.containsKey(resourceId))
 			throw new IllegalArgumentException("Resource with id " + resourceId + " is already registered.");
-		if(!resource.validate(log))
-			throw new IllegalArgumentException("Invalid resource, see resource factory log.");
 		
 		handles.put(resourceId, resource);
 	}

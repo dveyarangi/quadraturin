@@ -5,8 +5,6 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-import yarangi.math.BitUtils;
-
 /**
  * Texture and frame buffer utilities
  * @author FimaR
