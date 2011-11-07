@@ -1,12 +1,17 @@
 package yarangi.graphics.quadraturin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.media.opengl.GL;
 
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.ActionController;
+import yarangi.graphics.quadraturin.actions.ICameraMan;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
+import yarangi.graphics.quadraturin.objects.Behavior;
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
@@ -58,6 +63,12 @@ public abstract class Scene
 	private QuadVoices voices;
 	
 	private Logger log;
+	
+	
+	private List <Behavior<Scene>> workers = new ArrayList <Behavior<Scene>> ();
+
+	private ICameraMan cameraMan;
+	
 	
 	public Scene(SceneConfig config, QuadVoices voices)
 	{
@@ -116,7 +127,7 @@ public abstract class Scene
 	/**
 	 * @return Current viewpoint
 	 */
-	public IViewPoint getViewPoint() { return viewPoint; }
+	public IBeholder getViewPoint() { return viewPoint; }
 	
 	/**
 	 * Appends a world entity.
@@ -217,8 +228,20 @@ public abstract class Scene
 		getUILayer().animate(time);
 		
 		getWorldLayer().animate(time);
+
+		for(Behavior <Scene> worker : workers)
+			worker.behave( time, this, true );
+//	return changePending;
 	}
 
+	public void addWorker(Behavior <Scene> worker)
+	{
+		this.workers.add( worker );
+	}
+	public void removeWorker(Behavior <Scene> worker)
+	{
+		this.workers.remove( worker );
+	}
 
 	public void postAnimate(double time) 
 	{
@@ -233,7 +256,16 @@ public abstract class Scene
 	 */
 	public void setActionController(ActionController actionController)
 	{
+		if(cameraMan != null)
+			removeWorker( cameraMan );
+		
+		cameraMan = actionController.getCameraManager(); 
+		if(cameraMan != null)
+			addWorker( cameraMan );
+		
 		this.voices.setActionController( actionController );
+		
+		
 	}
 	
 	/**

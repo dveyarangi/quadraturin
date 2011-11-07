@@ -13,7 +13,7 @@ import yarangi.math.Vector2D;
 /**
  * 
  */
-public class ViewPoint2D implements IViewPoint
+public class ViewPoint2D implements IBeholder
 {
 	public static GLU glu = new GLU();
 
@@ -105,7 +105,7 @@ public class ViewPoint2D implements IViewPoint
 	public double getMinScale() { return scale.getMin(); }
 	public double getMaxScale() { return scale.getMax(); }
 	
-	public void copyFrom(IViewPoint viewPoint)
+	public void copyFrom(IBeholder viewPoint)
 	{
 		if(!(viewPoint instanceof ViewPoint2D))
 			throw new IllegalArgumentException("Must be copied from " + this.getClass() + " type.");

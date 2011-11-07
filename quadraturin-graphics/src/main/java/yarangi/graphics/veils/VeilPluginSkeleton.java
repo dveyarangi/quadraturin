@@ -33,8 +33,8 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	
 	@Override
 	public void init(GL gl, IRenderingContext context) {
-		this.width = context.getScreenWidth();
-		this.height = context.getScreenHeight();
+		this.width = context.getViewPort().getWidth();
+		this.height = context.getViewPort().getHeight();
 		veil = TextureUtils.createFBO(gl, width, height, true);
 		
 		isInited = true;

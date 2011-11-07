@@ -15,7 +15,7 @@ import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
 public class DefaultRenderingContext implements IRenderingContext 
 {
-	private int width, height;
+	private ViewPort viewPort;
 	
 	private Map <String, IGraphicsPlugin> plugins;
 	
@@ -32,10 +32,9 @@ public class DefaultRenderingContext implements IRenderingContext
 		plugins = config.getPlugins();
 	}
 	
-	protected void setScreenResolution(int width, int height) 
+	protected void setViewPort(int refx, int refy, int width, int height) 
 	{
-		this.width = width;
-		this.height = height;
+		this.viewPort = new ViewPort(refx, refy, width, height);
 	}
 	
 	/**
@@ -57,20 +56,14 @@ public class DefaultRenderingContext implements IRenderingContext
 	}
 
 	@Override
-	public int getScreenWidth()
+	public ViewPort getViewPort()
 	{
-		return width;
-	}
-
-	@Override
-	public int getScreenHeight()
-	{
-		return height;
+		return viewPort;
 	}
 
 	protected void init(GL gl) {
 		
-		setScreenResolution( config.getXres(), config.getYres() );
+		setViewPort( 0, 0, config.getXres(), config.getYres() );
 		
 //		gl.glDisable(GL.GL_CULL_FACE);
 //		gl.glCullFace(GL.GL_BACK);
@@ -144,7 +137,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	protected void reinit(int width, int height, GL gl) {
 		
-		setScreenResolution(width, height);
+		setViewPort( 0, 0, width, height );
 		for(String pluginName : getPluginsNames())
 		{
 			QServices.rendering.debug("Resetting plugin [" + pluginName + "]");

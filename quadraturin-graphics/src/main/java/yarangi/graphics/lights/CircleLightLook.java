@@ -103,6 +103,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 
 		if(entity.getSensor() != null)
 		{
+			System.out.println(entity + " : " + entity.getSensor().getEntities().size());
 			Set <IEntity> entities = entity.getSensor().getEntities();
 			List <Vector2D> shadowEdge;
 			Vector2D sourceLoc = entity.getArea().getRefPoint();
