@@ -2,6 +2,8 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
+import org.apache.log4j.Logger;
+
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -19,13 +21,14 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	private EntityShell <? extends ITerrainMap > terrain;
 	
+	private Logger log = Logger.getLogger("q-world");
 	
 	public WorldLayer(int width, int height) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
 		super(width, height, new SpatialHashMap	<IEntity>(width*height/10, 10, width, height));
 		
-		System.out.println("Allocated " + width*height/10 + " cells.");
+		log.debug("Allocated " + width*height/10 + " cells.");
 	}
 	
 
@@ -35,8 +38,6 @@ public class WorldLayer extends SceneLayer <IEntity>
 	}
 	
 	/**
-	 * TODO: restore configurable engine and add terrain configuration.
-	 * TODO: collisions on/off
 	 * @param engine
 	 * @param collide
 	 */
@@ -99,17 +100,17 @@ public class WorldLayer extends SceneLayer <IEntity>
 		for(IEntity entity : getEntities())
 		{
 			
+			if (!entity.isAlive())
+			{   // scheduling for removal:
+				removeEntity(entity);
+				continue;
+			}
+			
 			if(entity.behave(time, true))
 			{   
 				if(entity.getArea() != null)
 					getEntityIndex().update(entity.getArea(), entity);
 //				changePending = true;
-			}
-			
-			if (!entity.isAlive())
-			{   // scheduling for removal:
-				removeEntity(entity);
-				continue;
 			}
 			
 			if(entity.getSensor() != null)

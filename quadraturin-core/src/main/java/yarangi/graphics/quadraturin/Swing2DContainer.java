@@ -38,7 +38,7 @@ public class Swing2DContainer extends JFrame
 
 	private static final long serialVersionUID = 5840442002396512390L;
 	
-	public static final String V = "0.0.1";
+	public static final String V = "0.0.4";
 	
 	/**
 	 * AWT-JOGL bridge component.
