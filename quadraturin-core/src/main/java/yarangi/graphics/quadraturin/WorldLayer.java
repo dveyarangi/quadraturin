@@ -1,9 +1,16 @@
 package yarangi.graphics.quadraturin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.media.opengl.GL;
 
+<<<<<<< HEAD
 import org.apache.log4j.Logger;
 
+=======
+import yarangi.graphics.quadraturin.objects.Behavior;
+>>>>>>> branch 'master' of https://dveyarangi@github.com/dveyarangi/quadraturin.git
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -128,9 +135,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 				}
 			}
 		}
-//		return changePending;
+		
 	}
-
 	/**
 	 * {@inheritDoc}
 	 * Stops physics engine.

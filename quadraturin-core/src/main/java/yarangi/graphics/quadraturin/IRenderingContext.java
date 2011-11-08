@@ -14,10 +14,9 @@ public interface IRenderingContext
 {
 	
 	/**
-	 * @return current user viewpoint.
+	 * @return current user {@link ViewPort}.
 	 */
-	public int getScreenWidth();
-	public int getScreenHeight();
+	public ViewPort getViewPort();
 
 	/**
 	 * Retrieves plugin by name.

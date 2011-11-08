@@ -73,4 +73,6 @@ public abstract class ActionController implements CursorListener
 		return null;
 	}
 
+	public abstract ICameraMan getCameraManager();
+
 }

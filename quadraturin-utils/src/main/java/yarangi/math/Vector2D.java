@@ -149,6 +149,8 @@ public class Vector2D //extends IVector2D
 //		if(normalized) return;
 		
 		double l = this.abs();
+		if(l == 0)
+			return new Vector2D(0,0);
 		return new Vector2D(x/l, y/l);
 	}
 	

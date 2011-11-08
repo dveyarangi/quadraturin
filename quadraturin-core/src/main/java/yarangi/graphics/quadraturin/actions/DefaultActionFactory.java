@@ -24,11 +24,14 @@ public class DefaultActionFactory
 		
 		Map <String, IAction> actions;
 		
+		ICameraMan cameraMover;
+		
 		public DefaultActionController(Scene scene)
 		{
 			super(scene);
-			actions = appendNavActions(new HashMap <String, IAction> (), scene);
-
+			
+			cameraMover = new CameraMover((ViewPoint2D) scene.getViewPoint());
+			actions = appendNavActions(new HashMap <String, IAction> (), cameraMover, scene);
 		}
 
 		@Override
@@ -49,39 +52,37 @@ public class DefaultActionFactory
 		{
 			return null;
 		}
+
+		@Override
+		public ICameraMan getCameraManager()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	
-	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, Scene scene)
+	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, final ICameraMan mover, Scene scene)
 	{
 		final ViewPoint2D vp = (ViewPoint2D)scene.getViewPoint();
 		InputConfig config = QuadConfigFactory.getConfig().getInputConfig();
 		
-		final double scrollStep = config.getScrollStep();
-		final double scaleStep = config.getScaleStep();
-		
 		actions.put("scroll-right", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().add(-scrollStep/vp.getScale(), 0); }}
+			public void act(UserActionEvent event) { mover.moveRight(); }}
 			);
 		actions.put("scroll-left", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().add(scrollStep/vp.getScale(), 0); }}
+			public void act(UserActionEvent event) { mover.moveLeft(); }}
 		);
 		actions.put("scroll-up", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().add(0, -scrollStep/vp.getScale()); }}
+			public void act(UserActionEvent event) { mover.moveUp(); }}
 		);
 		actions.put("scroll-down", new IAction() {
-			public void act(UserActionEvent event) { vp.getCenter().add(0, scrollStep/vp.getScale()); }}
+			public void act(UserActionEvent event) { mover.moveDown(); }}
 		);
 		actions.put("zoom-in", new IAction() {
-			public void act(UserActionEvent event) {
-				double s = vp.getScale() * scaleStep;
-				vp.setScale(s > vp.getMinScale() ? s : vp.getMinScale()); 
-			}}
+			public void act(UserActionEvent event) { mover.zoomIn(); }}
 		);
 		actions.put("zoom-out", new IAction() {
-			public void act(UserActionEvent event) {
-				double s = vp.getScale() / scaleStep;
-				vp.setScale(s < vp.getMaxScale() ? s : vp.getMaxScale());
-			 }}
+			public void act(UserActionEvent event) { mover.zoomOut(); }}
 		);
 
 		return actions;
@@ -89,7 +90,11 @@ public class DefaultActionFactory
 	
 	public static Map <String, IAction> appendNavActions(final Scene scene, ActionController controller)
 	{
-		return appendNavActions(controller.getActions(), scene);
+		if(controller.getCameraManager() == null)
+		{
+			throw new IllegalArgumentException("Action controller must provide camera manager.");
+		}
+		return appendNavActions(controller.getActions(), controller.getCameraManager(), scene);
 	}
 	
 
