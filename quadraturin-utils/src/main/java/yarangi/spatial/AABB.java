@@ -76,7 +76,6 @@ public class AABB implements Area
 	@Override
 	final public void translate(double dx, double dy) {
 		ref.add(dx, dy);
-
 	}
 
 	/**
