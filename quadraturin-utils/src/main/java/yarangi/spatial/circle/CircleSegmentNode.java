@@ -3,7 +3,7 @@ package yarangi.spatial.circle;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CircleSegmentNode {
+class CircleSegmentNode {
 	
 	/**
 	 * Center point for intervals in this node.

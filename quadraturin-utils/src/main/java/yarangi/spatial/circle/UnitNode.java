@@ -5,7 +5,7 @@ import java.util.Set;
 
 import yarangi.math.Vector2D;
 
-public class UnitNode {
+class UnitNode {
 	protected Set <UnitInterval> intervals = new HashSet <UnitInterval> ();
 	
 	protected Vector2D center;
