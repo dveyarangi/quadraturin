@@ -69,6 +69,8 @@ public abstract class Scene
 
 	private ICameraMan cameraMan;
 	
+	private ActionController actionController;
+	
 	
 	public Scene(SceneConfig config, QuadVoices voices)
 	{
@@ -204,6 +206,9 @@ public abstract class Scene
 	public void display(GL gl, double time, IRenderingContext context)
 	{
 		getWorldLayer().display(gl, time, context);
+		
+		if(actionController.getLook() != null)
+			actionController.getLook().render(gl, time, actionController, context);
 	}
 
 	
@@ -265,7 +270,7 @@ public abstract class Scene
 		
 		this.voices.setActionController( actionController );
 		
-		
+		this.actionController = actionController;
 	}
 	
 	/**

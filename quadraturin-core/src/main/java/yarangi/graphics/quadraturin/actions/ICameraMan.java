@@ -1,12 +1,10 @@
 package yarangi.graphics.quadraturin.actions;
 
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.quadraturin.objects.Behavior;
 
 public interface ICameraMan extends Behavior <Scene>
 {
-
 	public abstract boolean behave(double time, Scene scene, boolean isVisible);
 
 	public abstract void moveRight();

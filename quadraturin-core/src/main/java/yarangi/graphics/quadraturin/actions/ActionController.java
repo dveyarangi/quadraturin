@@ -7,6 +7,7 @@ import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.WorldLayer;
 import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
@@ -44,6 +45,11 @@ public abstract class ActionController implements CursorListener
 	 */
 	public abstract ISpatialFilter <IEntity> getPickingFilter();
 	
+	/**
+	 * @return Graphical overlay of this controller 
+	 */
+	public abstract Look <ActionController> getLook();
+	
 	/** 
 	 * Selects an entity at {@link CURSOR_PICK_SPAN} radius around cursor location
 
@@ -73,6 +79,10 @@ public abstract class ActionController implements CursorListener
 		return null;
 	}
 
+	/**
+	 * Defines camera moving functions
+	 * @return
+	 */
 	public abstract ICameraMan getCameraManager();
 
 }

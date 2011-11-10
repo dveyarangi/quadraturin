@@ -10,6 +10,7 @@ import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.events.ICursorEvent;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.spatial.ISpatialFilter;
 
 public class DefaultActionFactory 
@@ -37,8 +38,6 @@ public class DefaultActionFactory
 		@Override
 		public void onCursorMotion(ICursorEvent event)
 		{
-			// TODO Auto-generated method stub
-			
 		}
 
 		@Override
@@ -56,16 +55,17 @@ public class DefaultActionFactory
 		@Override
 		public ICameraMan getCameraManager()
 		{
-			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Look <ActionController> getLook() {
 			return null;
 		}
 	}
 	
 	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, final ICameraMan mover, Scene scene)
 	{
-		final ViewPoint2D vp = (ViewPoint2D)scene.getViewPoint();
-		InputConfig config = QuadConfigFactory.getConfig().getInputConfig();
-		
 		actions.put("scroll-right", new IAction() {
 			public void act(UserActionEvent event) { mover.moveRight(); }}
 			);
