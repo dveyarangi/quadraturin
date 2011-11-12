@@ -43,12 +43,6 @@ public class Sensor implements ISensor <IEntity>
 	}
 
 	@Override
-	public double getSensorRadiusSquare()
-	{
-		return radiusSquare;
-	}
-	
-	@Override
 	public double getRadius() { return radius; }
 	
 	public ISpatialFilter <IEntity> getFilter() { return filter; }

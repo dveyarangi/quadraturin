@@ -12,8 +12,6 @@ public interface ISensor <K> extends ISpatialSensor <K>
 	 */
 	public abstract Set<K> getEntities();
 
-	public abstract double getSensorRadiusSquare();
-
 	public abstract double getRadius();
 	
 	public boolean isSensingNeeded(double time);
