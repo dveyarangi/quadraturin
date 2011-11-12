@@ -17,7 +17,6 @@ public class Sensor implements ISensor <IEntity>
 	private Set <IEntity> entities;
 	
 	private double radius;
-	private double radiusSquare;
 	
 	private ISpatialFilter <IEntity> filter;
 	
@@ -29,7 +28,6 @@ public class Sensor implements ISensor <IEntity>
 
 	public Sensor(double radius, double interval, ISpatialFilter <IEntity>filter, boolean senseTerrain )
 	{
-		this.radiusSquare = radius * radius;
 		this.radius = radius;
 		this.filter = filter;
 		this.interval = interval;

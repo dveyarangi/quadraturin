@@ -10,5 +10,8 @@ public interface ISpatialSensor <K>
 	 */
 	public boolean objectFound(IAreaChunk chunk, K object);
 	
+	/**
+	 * Resets sensor collections; called by {@link ISpatialIndex} at start of each query.
+	 */
 	public void clear();
 }
