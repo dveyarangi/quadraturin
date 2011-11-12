@@ -34,7 +34,7 @@ class CircleSegmentNode {
 	{
 		this.min = min;
 		this.max = max;
-		this.center = (max - min) / 2;
+		this.center = (max - min) / 2 + min;
 	}
 	
 	/**
@@ -50,10 +50,10 @@ class CircleSegmentNode {
 					
 		double position = point - center;
 				
-		if(position > 0 && nodeCCW != null)
-			return nodeCCW.getAny(point);
-		else if(position < 0 && cwNode != null)
-			return cwNode.getAny(point);
+		if(position < 0)
+			return nodeCCW == null ? null : nodeCCW.getAny(point);
+		else if(position > 0)
+			return cwNode == null ? null : cwNode.getAny(point);
 		
 		return null;
 	}
@@ -63,19 +63,19 @@ class CircleSegmentNode {
 		double position = interval.calcPosition(center);
 		if(position == 0) 
 			intervals.add(interval);
-		else if(position > 0)
+		else if(position < 0)
 		{
 			if(nodeCCW == null)
 				nodeCCW = new CircleSegmentNode(center, max);
 			
 			nodeCCW.add(interval);
 		}
-		else if(position < 0)
+		else if(position > 0)
 		{
 			if(cwNode == null)
 				cwNode = new CircleSegmentNode(min, center);
 			
-			nodeCCW.add(interval);
+			cwNode.add(interval);
 		}
 	}
 	
@@ -84,9 +84,9 @@ class CircleSegmentNode {
 		double position = interval.calcPosition(center);
 		if(position == 0)
 			intervals.remove(interval);
-		else if(position > 0 && nodeCCW != null)
+		else if(position < 0 && nodeCCW != null)
 			nodeCCW.remove(interval);
-		else if(position < 0 && cwNode != null)
+		else if(position > 0 && cwNode != null)
 			cwNode.remove(interval);
 	}
 

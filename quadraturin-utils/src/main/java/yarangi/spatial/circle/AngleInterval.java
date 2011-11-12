@@ -45,4 +45,11 @@ public class AngleInterval {
 		// FIXME: bullshit:
 		return (int)(max*31+min*17);
 	}
+	
+	public String toString() 
+	{
+		return new StringBuilder()
+			.append("angles [").append(min).append( ":" ).append(max).append( "]" )
+			.toString();
+	}
 }

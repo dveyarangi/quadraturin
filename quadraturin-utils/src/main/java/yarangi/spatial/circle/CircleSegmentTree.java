@@ -10,13 +10,13 @@ public class CircleSegmentTree {
 	/**
 	 * List for angle intervals that include pi/2 point.
 	 */
-	private Set <AngleInterval> criticalIntervals = new HashSet<AngleInterval> ();
+	private Set <AngleInterval> criticalIntervals;
 	
 	private CircleSegmentNode centerNode;
 	
 	public CircleSegmentTree()
 	{
-		centerNode = new CircleSegmentNode(Angles.PI_div_2, -Angles.PI_div_2);
+		clear();
 	}
 	
 	public void add(AngleInterval interval)
@@ -43,5 +43,11 @@ public class CircleSegmentTree {
 				return interval;
 				
 		return centerNode.getAny(angle);
+	}
+	
+	public void clear()
+	{
+		criticalIntervals = new HashSet<AngleInterval> ();
+		centerNode = new CircleSegmentNode(-Angles.PI_div_2, Angles.PI_div_2 );
 	}
 }
