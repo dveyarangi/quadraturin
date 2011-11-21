@@ -373,7 +373,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			{
 //				for(IAreaChunk ch : map[hash(x,y)].keySet())
 //					System.out.println(ch.getArea() + " :: " + chunk.getArea());
-				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (obj:" + object + ").");
+//				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (obj:" + object + ").");
 			}
 			return true;
 		}

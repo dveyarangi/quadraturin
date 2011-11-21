@@ -15,6 +15,7 @@ import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
+import yarangi.graphics.veils.BlurVeil;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
@@ -43,6 +44,8 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	
 	private Color color;
 	
+	private BlurVeil veil;
+	
 	public CircleLightLook()
 	{
 		this.color = new Color(1,1,1,1);
@@ -66,6 +69,8 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		lightShader = factory.getShader("light");
 		penumbraShader = factory.getShader("penumbra");
+		
+		veil = context.getPlugin( BlurVeil.NAME );
 	}
 
 	public void render(GL gl, double time, K entity, IRenderingContext context) 
@@ -259,5 +264,5 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		return 0f;
 	}
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return veil; }
 }

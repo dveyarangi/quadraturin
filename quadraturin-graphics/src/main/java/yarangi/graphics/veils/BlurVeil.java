@@ -17,6 +17,8 @@ import yarangi.graphics.shaders.ShaderFactory;
  *		fade - shaders/fade.glsl
  *
  * @author dveyarangi
+ * 
+ * TODO: scale and transpose according to viewpoint
  *
  */
 public class BlurVeil extends VeilPluginSkeleton 

@@ -1,4 +1,4 @@
-package yarangi.spatial.circle;
+package yarangi.intervals;
 
 public class UnitVectorTree {
 	

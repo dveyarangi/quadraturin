@@ -69,6 +69,7 @@ public class Overlay implements IVeilEntity
 	@Override
 	public void render(GL gl, double time, IRenderingContext context)
 	{
+		this.getLook().render( gl, time, this, context );
 	}
 
 	@Override

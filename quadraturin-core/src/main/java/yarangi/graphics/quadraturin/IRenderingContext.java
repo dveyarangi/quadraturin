@@ -24,5 +24,5 @@ public interface IRenderingContext
 	 * @param name
 	 * @return
 	 */
-	public <T extends IGraphicsPlugin> T getPlugin(String name);
+	public <T> T getPlugin(String name);
 }

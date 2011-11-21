@@ -1,4 +1,4 @@
-package yarangi.spatial.circle;
+package yarangi.intervals;
 
 import yarangi.math.Vector2D;
 

@@ -41,7 +41,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends IGraphicsPlugin> T getPlugin(String name) {
+	public <T> T getPlugin(String name) {
 		return (T) plugins.get(name);
 	}
 	

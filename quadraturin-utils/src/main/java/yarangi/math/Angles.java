@@ -34,7 +34,7 @@ public class Angles
 	 */
 	public static double normalize(double angle)
 	{
-		return angle < -180 ? angle+360 : angle > 180 ? angle-360 : angle;
+		return angle < -PI_div_2 ? angle+PI_2 : angle > PI_div_2 ? angle-PI_2 : angle;
 	}
 	
 	/** 

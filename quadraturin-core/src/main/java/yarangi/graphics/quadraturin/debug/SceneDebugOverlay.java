@@ -40,6 +40,11 @@ public class SceneDebugOverlay extends Overlay
 		
 		spatialOverlay.init(gl, indexer, context);
 	}
+	
+	public void render(GL gl, double time, IRenderingContext context)
+	{
+		spatialOverlay.render( gl, time, indexer, context );
+	}
 
 
 	public void destroy(GL gl, IRenderingContext context)

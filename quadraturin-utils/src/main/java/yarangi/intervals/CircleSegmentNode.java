@@ -1,7 +1,8 @@
-package yarangi.spatial.circle;
+package yarangi.intervals;
 
 import java.util.HashSet;
 import java.util.Set;
+
 
 class CircleSegmentNode {
 	
