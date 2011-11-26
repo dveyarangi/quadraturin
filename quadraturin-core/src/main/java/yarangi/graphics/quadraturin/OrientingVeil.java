@@ -2,14 +2,14 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.IVeilEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.spatial.Area;
 
 public class OrientingVeil implements IVeil
 {
 
 	@Override
-	public void weave(GL gl, IVeilEntity entity, IRenderingContext context)
+	public void weave(GL gl, ILayerObject entity, IRenderingContext context)
 	{
 		Area area = entity.getArea();
 		

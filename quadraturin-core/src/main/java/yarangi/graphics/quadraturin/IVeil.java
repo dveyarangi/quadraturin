@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.IVeilEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 
 /**
  * Represents a rendering space, that may be customized for 
@@ -25,7 +25,7 @@ public interface IVeil
 	 * @param entity
 	 * @param context
 	 */
-	public void weave(GL gl, IVeilEntity entity, IRenderingContext context);
+	public void weave(GL gl, ILayerObject entity, IRenderingContext context);
 	
 	/**
 	 * Marks end of the veil rendering.

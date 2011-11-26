@@ -8,7 +8,7 @@ import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
  * @author dveyarangi
  *
  */
-public interface IEntity extends IVeilEntity, IPhysicalObject
+public interface IEntity extends ILayerObject, IPhysicalObject
 {
 
 	/**

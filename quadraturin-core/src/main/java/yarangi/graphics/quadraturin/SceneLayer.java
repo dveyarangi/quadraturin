@@ -8,7 +8,7 @@ import java.util.Queue;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.Entity;
-import yarangi.graphics.quadraturin.objects.IVeilEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
@@ -20,7 +20,7 @@ import yarangi.spatial.SpatialIndexer;
  * 
  * @author Dve Yarangi
  */
-public abstract class SceneLayer <K extends IVeilEntity>
+public abstract class SceneLayer <K extends ILayerObject>
 {
 
 	private int width, height;
