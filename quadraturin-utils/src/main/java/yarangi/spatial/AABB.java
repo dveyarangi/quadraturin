@@ -26,6 +26,8 @@ public class AABB implements Area
 	 */
 	private double a;
 	
+	private int passId;
+	
 	/**
 	 * C'tor
 	 * @param x box center x
@@ -166,6 +168,10 @@ public class AABB implements Area
 	public double getMinY() { return ref.y() - getMaxRadius(); }
 	public double getMaxY() { return ref.y() + getMaxRadius(); }
 
+	@Override
+	public int getPassId() { return passId; }
 
+	@Override
+	public void setPassId(int id) {	this.passId = id; }
 
 }

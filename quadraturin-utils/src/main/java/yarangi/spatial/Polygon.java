@@ -19,6 +19,8 @@ public class Polygon implements Area
 	
 	private double radius = 1;
 	
+	private int passId;
+	
 	public Polygon(double x, double y) 
 	{ 
 		this.ref = new Vector2D(x, y);
@@ -407,4 +409,9 @@ public class Polygon implements Area
 	}
 
 
+	@Override
+	public int getPassId() { return passId; }
+
+	@Override
+	public void setPassId(int id) {	this.passId = id; }
 }

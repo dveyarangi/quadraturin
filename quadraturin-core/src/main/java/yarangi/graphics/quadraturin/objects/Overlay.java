@@ -9,7 +9,7 @@ import yarangi.spatial.Area;
  * TODO: this class is not yet implemented
  * @author dveyarangi
  */
-public class Overlay implements IVeilEntity
+public class Overlay implements ILayerObject
 {
 	/**
 	 * Overlay look
@@ -36,17 +36,6 @@ public class Overlay implements IVeilEntity
 	{
 		
 		return area;
-	}
-
-	@Override
-	public int getPassId()
-	{
-		return 0;
-	}
-
-	@Override
-	public void setPassId(int id)
-	{
 	}
 
 	@Override

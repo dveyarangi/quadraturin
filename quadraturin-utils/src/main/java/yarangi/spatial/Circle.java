@@ -12,6 +12,8 @@ public class Circle implements Area
 	
 	private double radius;
 	
+	private int passId;
+	
 	
 	public Circle(double cx, double cy, double radius) 
 	{
@@ -76,4 +78,9 @@ public class Circle implements Area
 		return new Circle( center.x(), center.y(), radius );
 	}
 
+	@Override
+	public int getPassId() { return passId; }
+
+	@Override
+	public void setPassId(int id) {	this.passId = id; }
 }

@@ -233,7 +233,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 				for(IAreaChunk chunk : cell.keySet())
 				{
 					object = cell.get(chunk);
-					if(object.getPassId() == passId)
+					if(object.getArea().getPassId() == passId)
 						continue;
 					
 //					double distanceSquare = FastMath.powOf2(x - chunk.getX()) + FastMath.powOf2(y - chunk.getY());
@@ -245,7 +245,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 						if(sensor.objectFound(chunk, object/*, distanceSquare*/))
 							break;
 					
-					object.setPassId( passId );
+					object.getArea().setPassId( passId );
 				}
 
 			}
@@ -309,13 +309,13 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			for(IAreaChunk chunk : cell.keySet())
 			{
 				object =  cell.get(chunk);
-				if(object.getPassId() == passId)
+				if(object.getArea().getPassId() == passId)
 					continue;
 				if(toGridIndex(chunk.getX()) == currGridx && toGridIndex(chunk.getY()) == currGridy)
 				if(sensor.objectFound(chunk, cell.get(chunk)))
 					break;
 				
-				object.setPassId( passId );
+				object.getArea().setPassId( passId );
 			}	
 		}		
 		
@@ -416,13 +416,13 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			for(IAreaChunk c : cell.keySet())
 			{
 				object = cell.get(c);
-				if(object.getPassId() == passId)
+				if(object.getArea().getPassId() == passId)
 					continue;
 				
 				if(chunk.overlaps(c.getMinX(), c.getMinY(), c.getMaxX(), c.getMaxY()))
 //					System.out.println(cell.get(c));
 				{
-					object.setPassId( passId );
+					object.getArea().setPassId( passId );
 					if(processor.objectFound(c, object))
 						break;
 					

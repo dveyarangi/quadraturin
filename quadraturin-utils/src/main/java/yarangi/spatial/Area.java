@@ -86,6 +86,19 @@ public interface Area
 	 */
 	public Area clone();
 	
+	
+	/**
+	 * Service method for spatial query: query id
+	 * @return
+	 */
+	public int getPassId();
+	
+	/**
+	 * Sets spatial query id (used by {@link SpatialHashMap}
+	 */
+	public void setPassId(int id);
+	
+	
 //	public void traverse(IChunkObserver observer);
 //	public void traverse(IChunkObserver observer);
 	//////////////////////////////////////////////////
@@ -141,6 +154,12 @@ public interface Area
 			ZenUtils.methodNotSupported(this.getClass());
 			return new ArrayList <Vector2D> (0);
 		}
+
+		@Override
+		public int getPassId() { return 0; }
+
+		@Override
+		public void setPassId(int id) { }
 	
 	};
 	

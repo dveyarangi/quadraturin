@@ -14,6 +14,8 @@ public class Point implements Area
 {
 	private Vector2D ref;
 	
+	private int passId;
+	
 	public Point(double x, double y)
 	{
 		ref = new Vector2D(x, y);
@@ -130,5 +132,10 @@ public class Point implements Area
 		return new LinkedList <Vector2D> ();
 	}
 
-	
+
+	@Override
+	public int getPassId() { return passId; }
+
+	@Override
+	public void setPassId(int id) {	this.passId = id; }
 }

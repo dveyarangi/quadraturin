@@ -46,8 +46,6 @@ public class Entity implements IEntity
 	 * Dead entities are automatically removed from the stage.
 	 */
 	private boolean isAlive = true;
-	
-	private int passId;
 
 	/**
 	 * Create a new scene entity, wrapped in specified AABB.
@@ -134,24 +132,7 @@ public class Entity implements IEntity
 	@SuppressWarnings("rawtypes")
 	public final ISensor getSensor() { return sensorAspect; }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getPassId()
-	{
-		return passId;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setPassId(int id)
-	{
-		passId = id;
-	}
-	
 	public void init(GL gl, IRenderingContext context)
 	{
 		getLook().init( gl, this, context );
