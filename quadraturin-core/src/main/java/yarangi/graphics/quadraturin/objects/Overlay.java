@@ -64,15 +64,13 @@ public class Overlay implements ILayerObject
 	@Override
 	public void init(GL gl, IRenderingContext context)
 	{
-		// TODO Auto-generated method stub
-		
+		this.getLook().init( gl, this, context );
 	}
 
 	@Override
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		// TODO Auto-generated method stub
-		
+		this.getLook().destroy( gl, this, context );
 	}
 
 }

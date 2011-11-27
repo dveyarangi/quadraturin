@@ -19,8 +19,9 @@ public class AABB implements Area
 	/**
 	 * half-width of the square
 	 */
-	private double r;
-	
+	private double rx;
+	private double ry;
+	private double rmax;
 	/** 
 	 * angle of the square (degrees)
 	 */
@@ -38,7 +39,17 @@ public class AABB implements Area
 	public AABB(double x, double y, double r, double a)
 	{
 		this.ref = new Vector2D(x, y);
-		this.r = r;
+		this.rx = ry = rmax = r;
+		this.a = a;
+	}
+	public AABB(double x1, double y1, double x2, double y2, double a)
+	{
+		rx = (x2 - x1) / 2.;  
+		ry = (y2 - y1) / 2.;
+		rmax = Math.max(rx, ry);
+		
+		this.ref = new Vector2D(x1+rx, y1+ry);
+		
 		this.a = a;
 	}
 	
@@ -48,14 +59,14 @@ public class AABB implements Area
 	 */
 	protected AABB(AABB aabb)
 	{
-		this(aabb.ref.x(), aabb.ref.y(), aabb.r, aabb.a);
+		this(aabb.ref.x(), aabb.ref.y(), aabb.getMaxRadius(), aabb.getOrientation());
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 
-	public double getMaxRadius() { return r; }
+	public double getMaxRadius() { return rmax; }
 	
 	/**
 	 * {@inheritDoc}
@@ -88,20 +99,32 @@ public class AABB implements Area
 	{
 		if(radius < 0)
 			throw new IllegalArgumentException("AABB radius must be positive.");
-		this.r = radius;
+		
+		if(rx > ry) 
+		{
+			rx = radius;
+			ry *= rx/radius;  
+		}
+		else
+		{
+			rx *= rx/radius;  
+			ry = radius;
+
+		}
+		this.rmax = radius;
 	}
 	
 	public boolean overlaps(double minx, double miny, double maxx, double maxy)
 	{
-		return ( (maxx >= ref.x()-r && maxx <= ref.x()+r) ||
-			     (minx >= ref.x()-r && minx <= ref.x()+r) ||
-			     (minx >= ref.x()-r && maxx <= ref.x()+r) ||
-			     (minx <= ref.x()-r && maxx >= ref.x()+r)    
+		return ( (maxx >= ref.x()-rx && maxx <= ref.x()+rx) ||
+			     (minx >= ref.x()-rx && minx <= ref.x()+rx) ||
+			     (minx >= ref.x()-rx && maxx <= ref.x()+rx) ||
+			     (minx <= ref.x()-rx && maxx >= ref.x()+rx)    
 			  ) && ( 
-			     (maxy >= ref.y()-r && maxy <= ref.y()+r) ||
-			     (miny >= ref.y()-r && miny <= ref.y()+r) ||
-			     (miny >= ref.y()-r && maxy <= ref.y()+r) ||
-			     (miny <= ref.y()-r && maxy >= ref.y()+r)    
+			     (maxy >= ref.y()-ry && maxy <= ref.y()+ry) ||
+			     (miny >= ref.y()-ry && miny <= ref.y()+ry) ||
+			     (miny >= ref.y()-ry && maxy <= ref.y()+ry) ||
+			     (miny <= ref.y()-ry && maxy >= ref.y()+ry)    
 			   );
 
 	}
@@ -137,7 +160,7 @@ public class AABB implements Area
 	 */
 	public String toString()
 	{
-		return "AABB [loc:" + ref.x() + ":" + ref.y() + "; r:" + r + "; a:" + a + "]"; 
+		return "AABB [loc:" + ref.x() + ":" + ref.y() + "; r:(" + rx +"," +ry +"); a:" + a + "]"; 
 	}
 	
 	/**
@@ -147,11 +170,11 @@ public class AABB implements Area
 	public void iterate(int cellsize, IChunkConsumer consumer)
 	{
 		
-		double minx = Math.floor( (ref.x()-r)/cellsize ) * cellsize;
-		double miny = Math.floor( (ref.y()-r)/cellsize ) * cellsize;
+		double minx = Math.floor( (ref.x()-rx)/cellsize ) * cellsize;
+		double miny = Math.floor( (ref.y()-ry)/cellsize ) * cellsize;
 		
-		double maxx = Math.ceil(  (ref.x()+r)/cellsize ) * cellsize;
-		double maxy = Math.ceil(  (ref.y()+r)/cellsize ) * cellsize;
+		double maxx = Math.ceil(  (ref.x()+rx)/cellsize ) * cellsize;
+		double maxy = Math.ceil(  (ref.y()+ry)/cellsize ) * cellsize;
 		
 		double currx, curry;
 //		System.out.println(minx + " : " + maxx + " : " + miny + " : " + maxy + " " + cellsize);

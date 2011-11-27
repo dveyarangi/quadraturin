@@ -8,7 +8,7 @@ import yarangi.spatial.ISpatialObject;
 
 
 /**
- * A renderable entity that is managed by {@link SceneVeil} container.
+ * A renderable entity that is managed by {@link SceneLayer} container.
  * 
  * @author dveyarangi
  */

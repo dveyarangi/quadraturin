@@ -212,7 +212,9 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
-		gl.glLoadIdentity();
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
+		gl.glOrtho(-viewport[2], viewport[2], -viewport[3], viewport[3], -1, 1);
+		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity();
 
 		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 		

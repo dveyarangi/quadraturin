@@ -5,7 +5,7 @@ import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.OrientingVeil;
-import yarangi.graphics.quadraturin.objects.IVeilEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
@@ -67,7 +67,7 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	 * Binds veil's buffer; after invocation all GL rendering will go to this buffer 
 	 * @param gl
 	 */
-	public void weave(GL gl, IVeilEntity entity, IRenderingContext context)
+	public void weave(GL gl, ILayerObject entity, IRenderingContext context)
 	{
 		veil.bind(gl);
 		

@@ -18,4 +18,12 @@ public class ViewPort
 	public final int getRefY() { return refy; }
 	public final int getWidth() { return width; }
 	public final int getHeight() { return height; } 
+	
+	public String toString() {
+		return new StringBuilder()
+			.append( "viewport [" )
+			.append( "center:(" ).append(refx).append( "," ).append(refy).append(")")
+			.append( "dimensions:(" ).append(width).append( "," ).append(height).append(")")
+			.toString();
+	}
 }
