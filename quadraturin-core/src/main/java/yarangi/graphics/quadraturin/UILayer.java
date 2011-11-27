@@ -17,7 +17,7 @@ public class UILayer extends SceneLayer <Overlay>
 	public UILayer(int width, int height)
 	{
 		super(width, height, new SpatialHashMap	<Overlay>(100, 10, width, height));
-		basePanel = new Panel(new ViewPort(0, 0, width, height), new Insets(0,0,0,0));
+		basePanel = new Panel(new ViewPort(0, 0, width, height));
 //		this.viewPoint = viewPoint;
 	}
 

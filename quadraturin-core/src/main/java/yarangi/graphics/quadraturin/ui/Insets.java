@@ -2,6 +2,7 @@ package yarangi.graphics.quadraturin.ui;
 
 public class Insets
 {
+	public static final Insets ZERO = new Insets(0,0,0,0);
 	private int left, right, top, bottom;
 
 	public Insets(int left, int right, int top, int bottom)

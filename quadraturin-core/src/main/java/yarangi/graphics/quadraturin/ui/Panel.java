@@ -6,34 +6,68 @@ import java.util.Map;
 import yarangi.graphics.quadraturin.ViewPort;
 import yarangi.spatial.AABB;
 
+/**
+ * Basic UI layout element. Allows vertical or horizontal sub division.
+ * Should not be created directly, but splitted from {@link UILayer#getBasePanel()}
+ * 
+ * @author dveyarangi
+ *
+ */
 public class Panel
 {
+	
+	/**
+	 * Rectangular screen segment, associated with this panel.
+	 */
 	private ViewPort viewport;
 
+	/**
+	 * Panel layout direction.
+	 */
 	private Direction direction;
 	
-	private Insets insets;
+	/**
+	 * Inner offsets from viewport
+	 */
+	private Insets insets = Insets.ZERO;
 	
+	/**
+	 * Subpanels
+	 */
 	private Panel [] children;
 	
+	/**
+	 * Mapping of subdivision proportions to revalidate children on viewport changes
+	 */
 	private Map <Panel, Integer> properties = new HashMap <Panel, Integer> ();
 	
+	/**
+	 * Actual working area of panel (viewport - insets)
+	 */
 	private AABB area;
 	
 	
-	public Panel(ViewPort viewport, Insets insets) 
+	public Panel(ViewPort viewport) 
 	{
 		this.viewport = viewport;
-		this.insets = insets;
 		
 		revalidate(viewport);
 	}
 	
-	private Panel(Insets insets)
+	private Panel()
 	{
-		this.insets = insets;
 	}
 	
+	public void setInsets(Insets insets)
+	{
+		this.insets = insets;
+		revalidate(viewport);
+	}
+	
+	/**
+	 * Updates panel's viewport and propagates changes to children
+	 * @param viewport
+	 */
 	public void revalidate(ViewPort viewport)
 	{
 		int minx = viewport.getMinX()+insets.getLeft();
@@ -65,18 +99,25 @@ public class Panel
 		}
 	}
 
-	public Panel [] split(int [] percents, Insets [] childInsets, Direction direction) 
+	/**
+	 * Creates sub-panels with specified width percentages.
+	 * This procedure may be invoked once per panel
+	 * @param percents
+	 * @param childInsets
+	 * @param direction
+	 * @return
+	 */
+	public Panel [] split(int [] percents, Direction direction) 
 	{
-		if(percents.length != childInsets.length)
-			throw new IllegalArgumentException("Number of layouts and split pivots must be the same.");
-		
+		if(children != null)
+			throw new IllegalStateException("Panel may only be splitted once.");
 		this.direction = direction;
 		
 		children = new Panel[percents.length];
 		
 		for(int idx = 0; idx < percents.length; idx ++)
 		{
-			Panel child = new Panel( childInsets[idx] );
+			Panel child = new Panel( );
 			
 			properties.put( child, percents[idx] );
 			
@@ -88,23 +129,14 @@ public class Panel
 		return children;
 	}
 	
+	/**
+	 * @return working area of the panel
+	 */
 	public AABB getAABB() { return area; }
-	
-	public static final class LayoutProps
-	{
-		private ViewPort viewport;
-		private int percents;
-		
-		public LayoutProps(ViewPort viewport, int percents)
-		{
-			this.viewport = viewport;
-			this.percents = percents;
-		}
 
-		protected ViewPort getViewport() { return viewport; }
-		protected int getPercents() { return percents; }
-	}
-
+	/** 
+	 * @return viewport of this panel
+	 */
 	public ViewPort getViewPort()
 	{
 		return viewport;
