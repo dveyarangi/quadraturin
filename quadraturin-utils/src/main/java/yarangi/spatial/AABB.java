@@ -186,15 +186,17 @@ public class AABB implements Area
 			}
 	}
 
-	public double getMinX() { return ref.x() - getMaxRadius(); }
-	public double getMaxX() { return ref.x() + getMaxRadius(); }
-	public double getMinY() { return ref.y() - getMaxRadius(); }
-	public double getMaxY() { return ref.y() + getMaxRadius(); }
+	public double getMinX() { return ref.x() - rx; }
+	public double getMaxX() { return ref.x() + rx; }
+	public double getMinY() { return ref.y() - ry; }
+	public double getMaxY() { return ref.y() + ry; }
 
 	@Override
 	public int getPassId() { return passId; }
 
 	@Override
 	public void setPassId(int id) {	this.passId = id; }
+	public double getRX() {return rx; }
+	public double getRY() {return ry; }
 
 }
