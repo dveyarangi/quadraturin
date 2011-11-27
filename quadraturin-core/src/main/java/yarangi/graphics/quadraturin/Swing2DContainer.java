@@ -98,14 +98,13 @@ public class Swing2DContainer extends JFrame
 		// initializing JOGL engine
 		IQuadConfig config = QuadConfigFactory.getConfig();	
 		
-		
-		// TODO:  configure GL capabilities.
 		log.debug("Configuring GL capabilities.");
 	    GLCapabilities capabilities = new GLCapabilities();
 	    capabilities.setRedBits(8);
 	    capabilities.setBlueBits(8);
 	    capabilities.setGreenBits(8);
 	    capabilities.setAlphaBits(8);
+
 	    canvas = new GLCanvas(capabilities);
 	    
 		int xres = config.getEkranConfig().getXres();

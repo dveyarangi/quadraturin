@@ -202,7 +202,6 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	
 	/**
 	 * {@inheritDoc}
-	 * TODO: actually queries a rectangle with sqrt(radiusSquare) span
 	 */
 	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double x, double y, double radiusSquare)
 	{

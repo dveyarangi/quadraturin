@@ -185,14 +185,12 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 	@Override
 	public boolean isCastsShadow()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public float getPriority()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

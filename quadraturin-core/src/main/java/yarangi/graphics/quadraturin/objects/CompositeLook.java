@@ -15,7 +15,7 @@ import yarangi.graphics.quadraturin.IVeil;
  *
  * @param <E>
  */
-public class CompositeLook <E extends ILayerObject> implements Look <E> 
+public abstract class CompositeLook <E extends ILayerObject> implements Look <E> 
 {
 	private List <Look<E>> chain = new LinkedList <Look<E>> ();
 	
@@ -62,16 +62,10 @@ public class CompositeLook <E extends ILayerObject> implements Look <E>
 	}
 
 	@Override
-	public float getPriority() {
-		// 
-		return 0;
-	}
+	public abstract float getPriority();
 
 	@Override
-	public boolean isCastsShadow() {
-		// TODO: figure this out
-		return false;
-	}
+	public abstract boolean isCastsShadow();
 
 	@Override
 	public IVeil getVeil() { return IVeil.ORIENTING; }

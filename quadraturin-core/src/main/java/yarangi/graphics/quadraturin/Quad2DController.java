@@ -81,14 +81,11 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		//////////////////////////////////////////////////////////////////
 		// Global settings:
-		// TODO: extract scene-specific parts
 		log.debug("Setting global GL properties...");
 		context.init(gl);
 		
 		// control buffer swapping:
 		drawable.setAutoSwapBufferMode(false);
-
-		// TODO: this must be also invoked on screen resizing or resolution change to make FBO plugins work properly
 		
 		log.debug("/////////////////////////////////////////////////////////////");
 	}

@@ -24,8 +24,6 @@ public class UILayer extends SceneLayer <Overlay>
 	@Override
 	public void animate(double time)
 	{
-		// TODO: implementation depends on {@link Overlay} ?
-		
 	}
 
 	@Override

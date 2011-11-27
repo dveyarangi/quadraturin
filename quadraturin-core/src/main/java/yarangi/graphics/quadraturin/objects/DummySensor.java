@@ -41,7 +41,6 @@ public class DummySensor implements ISensor <IEntity>
 	@Override
 	public boolean isSenseTerrain()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

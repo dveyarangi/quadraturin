@@ -46,14 +46,11 @@ public class PanelLook implements Look <Overlay>
 	@Override
 	public void destroy(GL gl, Overlay entity, IRenderingContext context)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public float getPriority()
 	{
-		// TODO Auto-generated method stub
 		return -1;
 	}
 

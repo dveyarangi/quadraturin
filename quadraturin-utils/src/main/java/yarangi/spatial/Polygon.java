@@ -99,7 +99,6 @@ public class Polygon implements Area
 		this.radius = radius;
 	}
 
-	// TODO!
 	@Override
 	public double getMaxRadius() { return radius; }
 	
@@ -317,7 +316,7 @@ public class Polygon implements Area
 		@Override
 		public boolean overlaps(double xmin, double ymin, double xmax,
 				double ymax) {
-			// TODO Auto-generated method stub
+			// TODO: implement overlapping test
 			return true;
 		}
 		

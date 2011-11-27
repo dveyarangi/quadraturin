@@ -413,7 +413,6 @@ public abstract class GridMap <K, O> implements IGrid <K>
 	
 	/**
 	 * {@inheritDoc}
-	 * TODO: actually queries a rectangle with sqrt(radiusSquare) span
 	 */
 	public final ISpatialSensor <O> query(ISpatialSensor <O> sensor, double x, double y, double radiusSquare)
 	{
@@ -430,9 +429,9 @@ public abstract class GridMap <K, O> implements IGrid <K>
 			{
 				cell = getCell(tx, ty);
 				
-//				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
-//				if(radiusSquare < distanceSquare)
-//					continue;
+				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
+				if(radiusSquare < distanceSquare)
+					continue;
 				
 				if(cell != null)
 					if(queryCell(cell, sensor, passId))

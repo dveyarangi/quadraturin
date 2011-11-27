@@ -25,7 +25,7 @@ import yarangi.math.Vector2D;
  * TODO: generalize penumbrae shader to generate correct light distribution (should suply it a single large shadow polygon
  * and light source coords and size. 
  * 
- * TODO: add capabilities detection (FBO, fragment shaders)
+ * TODO: convert to {@link IVeil} plugin?
  * 
  * @author dveyarangi
  *

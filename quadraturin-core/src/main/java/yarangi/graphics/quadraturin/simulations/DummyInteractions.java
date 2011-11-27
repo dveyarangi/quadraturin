@@ -34,8 +34,6 @@ public class DummyInteractions implements IPhysicsEngine {
 	@Override
 	public void destroy()
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 }

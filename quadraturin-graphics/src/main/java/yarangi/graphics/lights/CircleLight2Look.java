@@ -195,22 +195,19 @@ public class CircleLight2Look <K extends IEntity> implements Look <K>
 	@Override
 	public float getPriority()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean isCastsShadow()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public IVeil getVeil() {
 		
-		// TODO Auto-generated method stub
-		return null;
+		return IVeil.ORIENTING;
 	}
 	
 }

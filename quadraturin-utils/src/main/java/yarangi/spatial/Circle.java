@@ -69,7 +69,6 @@ public class Circle implements Area
 	@Override
 	public List<Vector2D> getDarkEdge(Vector2D from)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
