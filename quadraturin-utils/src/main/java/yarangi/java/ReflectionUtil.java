@@ -51,7 +51,7 @@ public class ReflectionUtil
 		catch (IllegalArgumentException e)  { throw new RuntimeException("Invalid arguments for class [" + className + "] constructor.", e); }
 		catch (InstantiationException e)    { throw new RuntimeException("Cannot instantiate class [" + className + "] (abstract?)." , e); }
 		catch (IllegalAccessException e)    { throw new RuntimeException(e.getMessage(), e); }
-		catch (InvocationTargetException e) { throw new RuntimeException(e.getCause().getMessage(), e); } // what, no more? no fun.
+		catch (InvocationTargetException e) { throw new RuntimeException(e.getCause().getMessage(), e.getCause()); } // what, no more? no fun.
 		
 		return instance;
 	}
