@@ -3,6 +3,11 @@ package yarangi.graphics.quadraturin.debug;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.Scene;
+import yarangi.graphics.quadraturin.objects.EntityShell;
+import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.spatial.SpatialHashMap;
+import yarangi.spatial.SpatialIndexer;
 
 public class Debug 
 {
@@ -23,7 +28,13 @@ public class Debug
 
 	public static void instrumentate(Scene scene)
 	{
-		scene.addOverlay(new SceneDebugOverlay(scene.getWorldLayer().getEntityIndex()));
+		SpatialIndexer <IEntity> indexer = scene.getWorldLayer().getEntityIndex();
+		Look spatialOverlay = null;
+		if(indexer instanceof SpatialHashMap)
+			spatialOverlay = new DebugSpatialHashMapLook();
+
+		scene.addEntity( new EntityShell(scene.getWorldLayer().getEntityIndex(), null, spatialOverlay) );
+//		scene.addOverlay(new SceneDebugOverlay(scene.getWorldLayer().getEntityIndex()));
 	}
 	
 }

@@ -180,10 +180,10 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		// applying top-down orthogonal projection with zoom scaling
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
-		gl.glOrtho(-viewport[2]*viewPoint.getScale(), viewport[2]*viewPoint.getScale(), -viewport[3]*viewPoint.getScale(), viewport[3]*viewPoint.getScale(), -1, 1);
+		gl.glOrtho(-viewport[2]/2*viewPoint.getScale(), viewport[2]/2*viewPoint.getScale(), -viewport[3]/2*viewPoint.getScale(), viewport[3]/2*viewPoint.getScale(), -1, 1);
 		
 		// applying view point translation:
-		gl.glMatrixMode(GL.GL_MODELVIEW);
+		gl.glMatrixMode(GL.GL_MODELVIEW);  gl.glLoadIdentity();
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
 		
@@ -212,14 +212,15 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
-		gl.glOrtho(-viewport[2], viewport[2], -viewport[3], viewport[3], -1, 1);
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity();
+		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
+		gl.glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
 
-		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 		
 		for(IGraphicsPlugin plugin : context.getPlugins())
 			plugin.postRender(gl, context);
+		
+		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 	
 		// proceeding to next thread:
 		releaseNext();

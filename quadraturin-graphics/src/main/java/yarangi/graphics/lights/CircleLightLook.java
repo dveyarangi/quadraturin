@@ -187,12 +187,11 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix();
 		gl.glPopAttrib();
+
+		// storing blending modes:
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
 		
 		// setting blending mode for lights:
-		
-//		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_MAX);
-//		gl.glBlendFuncSeparate(GL.GL_SRC_COLOR, GL.GL_DST_COLOR, GL.GL_ZERO, GL.GL_ONE);
-//		gl.glBlendFuncSeparate(GL.GL_ONE, GL.GL_ONE, GL.GL_ONE, GL.GL_ONE);		
 		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 //		System.out.println(textureSize);
@@ -214,16 +213,8 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		gl.glBlendEquation( GL.GL_FUNC_ADD );
 //		gl.glBlendEquationSeparate(GL.GL_FUNC_ADD, GL.GL_FUNC_ADD);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-/*		gl.glColor3f(1, 1, 1);
-		gl.glBegin(GL.GL_LINE_STRIP);
-		 gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
-		gl.glVertex2f((float)(+textureSize/2), (float)(-textureSize/2));
-		gl.glVertex2f((float)(+textureSize/2), (float)(+textureSize/2));
-		gl.glVertex2f((float)(-textureSize/2), (float)(+textureSize/2));
-		gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
-		gl.glEnd();*/
-		
-		// shadow blending setting:
+		gl.glPopAttrib(); // recover blending modes:
+
 
 
 	}

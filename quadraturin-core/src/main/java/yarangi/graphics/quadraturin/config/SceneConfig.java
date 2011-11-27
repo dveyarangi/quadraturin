@@ -45,9 +45,9 @@ public class SceneConfig
 
 	public int getHeight() { return height; }
 
-	public Scene createScene(QuadVoices voices) 
+	public Scene createScene(EkranConfig ekranConfig, QuadVoices voices) 
 	{
-		return ReflectionUtil.createInstance(sceneClass, this, voices);
+		return ReflectionUtil.createInstance(sceneClass, this, ekranConfig, voices);
 	}
 
 	public ViewPoint2D createViewpoint() 

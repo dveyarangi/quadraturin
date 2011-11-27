@@ -56,10 +56,6 @@ public class Entity implements IEntity
 		super();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void setLook(Look <?> look) { this.look = look; }
 	
 	/**
@@ -68,11 +64,6 @@ public class Entity implements IEntity
 	@Override
 	public void setBehavior(Behavior <?>behavior) { this.behavior = behavior; }
 
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public void setArea(Area area) { this.spatialAspect = area; }
 
 	/**

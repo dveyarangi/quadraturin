@@ -6,7 +6,6 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.objects.Overlay;
 import yarangi.spatial.AABB;
 
 public class PanelLook implements Look <Overlay>
@@ -30,16 +29,18 @@ public class PanelLook implements Look <Overlay>
 	@Override
 	public void render(GL gl, double time, Overlay entity, IRenderingContext context)
 	{
-		double halfWidth = context.getViewPort().getWidth()/2;
-		double refx = 
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		color.apply( gl );
 		final AABB area = (AABB)entity.getArea();
 		gl.glBegin( GL.GL_QUADS );
-			gl.glVertex2d( area.getMinX(), area.getMinY() );
-			gl.glVertex2d( area.getMinX(), area.getMaxY() );
-			gl.glVertex2d( area.getMaxX(), area.getMaxY() );
-			gl.glVertex2d( area.getMaxX(), area.getMinY() );
+			gl.glVertex2d( -area.getRX(), -area.getRY() );
+			gl.glVertex2d( area.getRX(), -area.getRY() );
+			gl.glVertex2d( area.getRX(), area.getRY() );
+			gl.glVertex2d( -area.getRX(), area.getRY() );
 		gl.glEnd();
+		gl.glPopAttrib();
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class PanelLook implements Look <Overlay>
 	public float getPriority()
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
 	@Override

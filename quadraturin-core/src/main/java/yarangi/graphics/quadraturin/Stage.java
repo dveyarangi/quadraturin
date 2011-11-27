@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 
@@ -51,12 +52,12 @@ public class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	public Stage(StageConfig stageConfig, QuadVoices voices)
+	public Stage(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
 	{
 		
 		for(SceneConfig scene : stageConfig.getScenes())
 		{
-			addScene(scene.createScene(voices));
+			addScene(scene.createScene(ekranConfig, voices));
 			log.info("Registered scene " + scene.getName() + " (class: " + scene.getSceneClass());
 		}
 		

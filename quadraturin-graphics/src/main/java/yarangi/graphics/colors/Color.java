@@ -81,4 +81,5 @@ final public class Color
 	{
 		return (byte)FastMath.round(a * 255f);
 	}
+
 }

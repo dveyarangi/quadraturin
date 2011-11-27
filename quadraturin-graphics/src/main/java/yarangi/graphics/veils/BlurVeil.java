@@ -53,6 +53,7 @@ public class BlurVeil extends VeilPluginSkeleton
 	public void postRender(GL gl, IRenderingContext defaultContext) 
 	{
 		getFBO().bind( gl );
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
 		gl.glDisable(GL.GL_BLEND);
 /*		vblurShader.begin( gl );
 		renderTexture(gl);
@@ -64,8 +65,8 @@ public class BlurVeil extends VeilPluginSkeleton
 		fadeShader.setFloat1Uniform( gl, "decay", 0.03f );
 		renderTexture(gl);
 		fadeShader.end(gl);
+		gl.glPopAttrib();
 		getFBO().unbind( gl );
-		gl.glEnable(GL.GL_BLEND);
 		renderTexture(gl);
 	}
 

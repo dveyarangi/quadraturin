@@ -1,6 +1,10 @@
 package yarangi.graphics.quadraturin;
 
-import yarangi.graphics.quadraturin.objects.Overlay;
+import javax.media.opengl.GL;
+
+import yarangi.graphics.quadraturin.ui.Insets;
+import yarangi.graphics.quadraturin.ui.Overlay;
+import yarangi.graphics.quadraturin.ui.Panel;
 import yarangi.spatial.SpatialHashMap;
 
 public class UILayer extends SceneLayer <Overlay>
@@ -8,11 +12,12 @@ public class UILayer extends SceneLayer <Overlay>
 
 //	private List <ActionOverlay> actionIOverlays = new LinkedList <ActionOverlay> ();
 
-	
+	private Panel basePanel;
 
 	public UILayer(int width, int height)
 	{
 		super(width, height, new SpatialHashMap	<Overlay>(100, 10, width, height));
+		basePanel = new Panel(new ViewPort(0, 0, width, height), new Insets(0,0,0,0));
 //		this.viewPoint = viewPoint;
 	}
 
@@ -27,6 +32,21 @@ public class UILayer extends SceneLayer <Overlay>
 	protected boolean testEntity(Overlay entity)
 	{
 		return entity.getArea() != null && entity.getLook() != null;
+	}
+
+	public Panel getBasePanel()
+	{
+		return basePanel;
+	}
+	
+	public void display(GL gl, double time, IRenderingContext context) 
+	{
+		if(basePanel.getViewPort() != context.getViewPort())
+		{
+			basePanel.revalidate( context.getViewPort() );
+		}
+		
+		super.display( gl, time, context );
 	}
 	
 }

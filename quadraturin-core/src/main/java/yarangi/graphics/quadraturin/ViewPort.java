@@ -26,4 +26,9 @@ public class ViewPort
 			.append( "dimensions:(" ).append(width).append( "," ).append(height).append(")")
 			.toString();
 	}
+
+	public int getMinX() { return refx; }
+	public int getMaxX() { return refx + width; }
+	public int getMinY() { return refy; }
+	public int getMaxY() { return refy + height; }
 }

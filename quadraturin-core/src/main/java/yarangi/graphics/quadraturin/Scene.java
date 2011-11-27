@@ -9,16 +9,17 @@ import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.ActionController;
 import yarangi.graphics.quadraturin.actions.ICameraMan;
+import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.objects.Behavior;
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Overlay;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
+import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.spatial.ISpatialIndex;
 
 /**
@@ -72,24 +73,24 @@ public abstract class Scene
 	private ActionController actionController;
 	
 	
-	public Scene(SceneConfig config, QuadVoices voices)
+	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QuadVoices voices)
 	{
 		// just for fun:
-		this.name = config.getName();
+		this.name = sceneConfig.getName();
 		
 		log = Logger.getLogger(name);
 		
 		// initial viewpoint:
-		viewPoint = config.createViewpoint();
+		viewPoint = sceneConfig.createViewpoint();
 			
 		// scene world aggregator:
-		this.worldSection = new WorldLayer(config.getWidth(), config.getHeight());
+		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
 		
 		// initializing terrain:
 		EntityShell <? extends ITerrainMap> terrain = null;
-		if(config.getTerrainConfig() != null)
+		if(sceneConfig.getTerrainConfig() != null)
 		{
-			terrain = config.getTerrainConfig().createTerrain( config.getWidth(), config.getHeight() );
+			terrain = sceneConfig.getTerrainConfig().createTerrain( sceneConfig.getWidth(), sceneConfig.getHeight() );
 			worldSection.addTerrain( terrain );
 			log.debug( "Using terrain " + terrain.getEssence() );
 		}
@@ -97,14 +98,14 @@ public abstract class Scene
 			log.debug( "No terrain configuration found." );
 
 		// initializing physics engine:
-		worldSection.setPhysicsEngine( config.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
+		worldSection.setPhysicsEngine( sceneConfig.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
 				terrain == null ? null : terrain.getEssence()));
 		
 		// scene ui aggregator
-		this.uiLayer = new UILayer(config.getWidth(), config.getHeight());
+		this.uiLayer = new UILayer(ekranConfig.getXres(), ekranConfig.getYres());
 		
 		// scene time / second
-		this.frameLength = config.getFrameLength();
+		this.frameLength = sceneConfig.getFrameLength();
 		
 		// storing event manager:
 		this.voices = voices;
