@@ -114,13 +114,6 @@ public class Swing2DContainer extends JFrame
 		canvas.setMinimumSize(new Dimension(xres, yres));
 		canvas.setPreferredSize(new Dimension(xres, yres));
 	    
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// organizing JFrame contents:
-	    log.trace("Packing swing frame...");
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(canvas, BorderLayout.CENTER);
-		getContentPane().validate();
-		pack();
 		
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
@@ -158,19 +151,6 @@ public class Swing2DContainer extends JFrame
 		log.debug("Creating GL listener...");
 		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	    log.trace("Registering Quadraturin controller...");
-	    canvas.addGLEventListener(controller);
-		
-		canvas.addMouseListener(voices);
-		canvas.addMouseMotionListener(voices);
-		canvas.addMouseWheelListener(voices);
-		canvas.addKeyListener(voices);
-
-		log.trace("Quadraturin controller created.");
-		
-		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
 		log.debug("Creating stage animator...");
@@ -191,7 +171,27 @@ public class Swing2DContainer extends JFrame
 		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
 		chain.addThread(controller);
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    log.trace("Registering Quadraturin controller...");
+	    canvas.addGLEventListener(controller);
+		
+		canvas.addMouseListener(voices);
+		canvas.addMouseMotionListener(voices);
+		canvas.addMouseWheelListener(voices);
+		canvas.addKeyListener(voices);
 
+		log.trace("Quadraturin controller created.");
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// organizing JFrame contents:
+	    log.trace("Packing swing frame...");
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(canvas, BorderLayout.CENTER);
+		getContentPane().validate();
+		pack();
+		
+		
+		
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
 	}
