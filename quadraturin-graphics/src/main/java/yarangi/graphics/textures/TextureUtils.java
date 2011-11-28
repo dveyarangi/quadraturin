@@ -5,6 +5,8 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import org.apache.log4j.Logger;
+
 /**
  * Texture and frame buffer utilities
  * @author FimaR
@@ -14,8 +16,11 @@ public class TextureUtils
 {
 	public static final int ILLEGAL_ID = -1;
 	
+	public static Logger log = Logger.getLogger(TextureUtils.class);
+	
 	public static int createEmptyTexture2D(GL gl, int width, int height, boolean mipmap)
 	{
+		log.trace("Creating texture " + width + "x" + height);
 		// texture handle buffer
 		IntBuffer textureHandleBuffer = IntBuffer.allocate(1);
 		
@@ -23,7 +28,7 @@ public class TextureUtils
 		ByteBuffer colorBits = ByteBuffer.allocate( width * height * 4 );
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		
+
 		// creating texture:
 		gl.glGenTextures(1,textureHandleBuffer);
 		int textureHandle = textureHandleBuffer.get(0);
@@ -128,6 +133,13 @@ public class TextureUtils
 										  useDepthBuffer ? TextureUtils.createFBODepthBuffer(gl) : ILLEGAL_ID);
 	}
 	
+	/**
+	 * http://oss.sgi.com/projects/ogl-sample/registry/EXT/framebuffer_object.txt
+	 * @param gl
+	 * @param textureId
+	 * @param depthId
+	 * @return
+	 */
 	public static FBO createFBO(GL gl, int textureId, int depthId)
 	{
 		IntBuffer handleBuffer = IntBuffer.allocate(1);
@@ -153,12 +165,17 @@ public class TextureUtils
 	
 	public static void destroyFBO(GL gl, FBO fbo)
 	{
+
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, fbo.getFboId());
+		gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, 0); 
+		gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, 0, 0);
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
+		gl.glDeleteFramebuffersEXT(1, new int [] {fbo.getFboId()}, 0);
+		
 		if(fbo.getTextureId() != ILLEGAL_ID)
 			gl.glDeleteTextures(1, new int [] {fbo.getTextureId()}, 0);
 		if(fbo.getDepthBufferId() != ILLEGAL_ID)
 			gl.glDeleteRenderbuffersEXT(1, new int [] { fbo.getDepthBufferId() }, 0);
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0);
-		gl.glDeleteFramebuffersEXT(1, new int [] {fbo.getFboId()}, 0);
 	}
 
 	public static void destroyTexture(GL gl, int textureId)
