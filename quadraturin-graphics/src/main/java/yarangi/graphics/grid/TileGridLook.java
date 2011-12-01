@@ -29,7 +29,7 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 		gridTextureHeight = BitUtils.po2Ceiling((int)(grid.getMaxY()-grid.getMinY()));
 		int texture = TextureUtils.createEmptyTexture2D( gl, gridTextureWidth, gridTextureHeight, false );
 		
-		fbo = TextureUtils.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
+		fbo = FBO.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
 		
 		grid.setModificationListener( this );
 		
@@ -72,7 +72,7 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 		
 		grid.setModificationListener( null );
 		
-		TextureUtils.destroyFBO( gl, fbo );
+		fbo.destroy( gl );
 	}
 
 	@Override

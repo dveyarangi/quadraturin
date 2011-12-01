@@ -9,7 +9,6 @@ import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
-import yarangi.graphics.textures.TextureUtils;
 
 /**
  * Allows rendering into separate frame buffer, for post-processing effects.
@@ -35,14 +34,17 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	public void init(GL gl, IRenderingContext context) {
 		this.width = context.getViewPort().getWidth();
 		this.height = context.getViewPort().getHeight();
-		veil = TextureUtils.createFBO(gl, width, height, true);
+		int textureWidth = width;//BitUtils.po2Ceiling(width);
+		int textureHeight = height;//BitUtils.po2Ceiling(height);
+		veil = FBO.createFBO(gl, textureWidth, textureHeight, true);
 		
-		isInited = true;
+		if(veil == null)
+			throw new IllegalStateException("Failed to create veil frame buffer object.");
 	}
 	
 	public void reinit(GL gl, IRenderingContext context) {
-		if(!isInited)
-			return;
+		if(veil == null)
+			throw new IllegalStateException("Cannot reinit not initiated veil,");
 		destroy(gl);
 		init(gl, context);
 	}
@@ -51,14 +53,7 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	public final int getHeight() { return height; }
 	
 	@Override
-	public void preRender(GL gl, IRenderingContext context)
-	{
-		// just clearing the frame buffer texture:
-/*		veil.bind(gl);
-		gl.glClearColor(0,0,0,0.0f);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		veil.unbind(gl);*/
-	}
+	public void preRender(GL gl, IRenderingContext context) { }
 
 	@Override
 	public void postRender(GL gl, IRenderingContext context) { }
@@ -82,6 +77,7 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	public void tear(GL gl)
 	{
 		super.tear( gl );
+		
 		veil.unbind(gl);
 	}
 	
@@ -114,15 +110,15 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 	
-		/* note viewport[3] is height of window in pixels */
-		glu.gluUnProject(viewport[0], viewport[1], 0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
-		glu.gluUnProject(viewport[2],viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
+		// 
+		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
+		glu.gluUnProject(viewport[2], viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
 		
 		getFBO().bindTexture( gl );
 		gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)lower[0],  (float)lower[1]);	// Bottom Left Of The Texture and Quad
-		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)higher[0], (float)lower[1]);	// Bottom Right Of The Texture and Quad
-		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)higher[0], (float)higher[1]);	// Top Right Of The Texture and Quad
+		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)lower[0],  (float)lower[1]);
+		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)higher[0], (float)lower[1]);
+		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)higher[0], (float)higher[1]);
 		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)lower[0],  (float)higher[1]);
 		gl.glEnd();
 		gl.glColor4f( 1,1,1,1 );
@@ -134,9 +130,11 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	@Override
 	public void destroy(GL gl)
 	{
-		if(!isInited)
-			return;
-		TextureUtils.destroyFBO( gl, veil );
+		if(veil == null)
+			throw new IllegalStateException("Cannot destroy not initiated veil.");
+		
+		veil.destroy( gl );
+		veil = null;
 	}
 	
 	@Override

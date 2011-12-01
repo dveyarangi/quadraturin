@@ -14,7 +14,6 @@ import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
-import yarangi.graphics.textures.TextureUtils;
 import yarangi.graphics.veils.BlurVeil;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
@@ -62,7 +61,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		textureSize = BitUtils.po2Ceiling(size);
 
 		
-		fbo = TextureUtils.createFBO(gl, textureSize, textureSize, true);
+		fbo = FBO.createFBO(gl, textureSize, textureSize, true);
 		
 		// preparing shaders:
 		ShaderFactory factory = context.getPlugin(ShaderFactory.NAME);
@@ -236,8 +235,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 
 	public void destroy(GL gl, K entity, IRenderingContext context) 
 	{
-
-		TextureUtils.destroyFBO(gl, fbo);
+		fbo.destroy(gl);
 	}
 
 
