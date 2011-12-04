@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.java.ReflectionUtil;
 
@@ -94,11 +95,16 @@ public class EkranConfig {
 		Map <String, IGraphicsPlugin> factories = new HashMap <String, IGraphicsPlugin> ();
 		for(GraphicsPluginConfig config : plugins)
 		{
-			IGraphicsPlugin factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
+			try {
+				IGraphicsPlugin factory = ReflectionUtil.createInstance(config.getFactoryClass(), 
 					new Object [] {config.getProperties()},
 					new Class  [] {java.util.Map.class});
 			
-			factories.put(factory.getName(), factory);
+				factories.put(factory.getName(), factory);
+			}
+			catch(Exception e) {
+				Q.config.warn("Ignoring malformed configuration object " + config);
+			}
 		}
 		return factories;
 	}

@@ -12,4 +12,11 @@ public class GraphicsPluginConfig {
 	{
 		return properties; 
 	}
+	
+	public String toString() {
+		return new StringBuilder()
+			.append( "factory class: ").append( factoryClass )
+			.append(", properties: ").append( properties )
+			.toString();
+	}
 }

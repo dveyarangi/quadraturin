@@ -141,17 +141,21 @@ public class WorldLayer extends SceneLayer <IEntity>
 		if(terrain != null)
 			terrain.getLook().destroy( gl, terrain.getEssence(), context );
 		if(engine != null)
-		engine.destroy();
+			engine.destroy();
 	}
 
 
 	@Override
-	protected boolean testEntity(IEntity entity)
+	protected boolean testEntity(Logger log, IEntity entity)
 	{
-		assert entity.getLook() != null;
-		assert entity.getBehavior() != null;
+		boolean test = super.testEntity(log, entity);
 		
-		return true;
+		if(entity.getBehavior() == null) {
+			log.warn( "Entity [" + entity + "] must define behavior aspect." );
+			test = false;
+		}
+		
+		return test;
 	}
 
 

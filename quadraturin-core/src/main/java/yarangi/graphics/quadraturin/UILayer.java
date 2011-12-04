@@ -2,7 +2,8 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.ui.Insets;
+import org.apache.log4j.Logger;
+
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.graphics.quadraturin.ui.Panel;
 import yarangi.spatial.SpatialHashMap;
@@ -27,9 +28,16 @@ public class UILayer extends SceneLayer <Overlay>
 	}
 
 	@Override
-	protected boolean testEntity(Overlay entity)
+	protected boolean testEntity(Logger log, Overlay entity)
 	{
-		return entity.getArea() != null && entity.getLook() != null;
+		boolean test = super.testEntity(log, entity);
+		
+		if(entity.getArea() == null) {
+			log.warn( "Entity [" + entity + "] must define area aspect." );
+			test = false;
+		}
+		
+		return test;
 	}
 
 	public Panel getBasePanel()

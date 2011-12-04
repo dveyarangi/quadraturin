@@ -61,4 +61,10 @@ public class EntityShell <E> extends Entity
 		return getBehavior().behave( time, essence, b );
 	}
 
+	public String toString()
+	{
+		return new StringBuilder()
+			.append( "entity shell [" ).append(essence).append("]")
+			.toString();
+	}
 }

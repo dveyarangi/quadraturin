@@ -7,6 +7,8 @@ import java.util.Queue;
 
 import javax.media.opengl.GL;
 
+import org.apache.log4j.Logger;
+
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.spatial.IAreaChunk;
@@ -49,6 +51,8 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 * Queue of dead entities to be cleaned up.
 	 */
 	private Queue <K> deadEntities = new LinkedList <K> ();
+	
+	private Logger log = Q.structure;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
@@ -121,8 +125,10 @@ public abstract class SceneLayer <K extends ILayerObject>
 			for(K entity : entities)
 			{
 				veil = entity.getLook().getVeil();
-				assert veil != null;
+				if(veil == null)
+					veil = IVeil.ORIENTING;
 //				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
+				
 				veil.weave( gl, entity, context );
 				entity.render( gl, time, context );
 				veil.tear( gl );
@@ -153,10 +159,8 @@ public abstract class SceneLayer <K extends ILayerObject>
 //		if(entity.getAABB() == null)
 //			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
 		
-		if(!testEntity(entity))
-			throw new IllegalArgumentException("Entity " + entity + " is invalid.");
-			
-		bornEntities.add(entity);
+		if(testEntity(log, entity))
+			bornEntities.add(entity);
 	}
 	
 	/**
@@ -199,5 +203,15 @@ public abstract class SceneLayer <K extends ILayerObject>
 	}
 	
 
-	protected abstract boolean testEntity(K entity);
+	protected boolean testEntity(Logger logger, K entity) 
+	{
+		boolean test = true;
+		if(entity.getLook() == null) {
+			log.warn( "Entity [" + entity + "] must define look object." );
+			test = false;
+		}
+		
+		return test;
+
+	}
 }

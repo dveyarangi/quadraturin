@@ -21,7 +21,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	private EkranConfig config;
 	
-	private Logger log = QServices.rendering;
+	private Logger log = Q.rendering;
 	
 	public static final float MIN_DEPTH_PRIORITY = 0;
 	public static final float MAX_DEPTH_PRIORITY = 1;
@@ -121,7 +121,7 @@ public class DefaultRenderingContext implements IRenderingContext
 				}
 			
 			if(!isPluginAvailable) {
-				QServices.rendering.debug("Plugin [" + pluginName + "] is not supported by hardware.");
+				Q.rendering.debug("Plugin [" + pluginName + "] is not supported by hardware.");
 				unavailablePlugins.add(pluginName);
 				continue;
 			}
@@ -140,7 +140,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		setViewPort( 0, 0, width, height );
 		for(String pluginName : getPluginsNames())
 		{
-			QServices.rendering.debug("Resetting plugin [" + pluginName + "]");
+			Q.rendering.debug("Resetting plugin [" + pluginName + "]");
 			IGraphicsPlugin factory = getPlugin(pluginName);
 			factory.reinit(gl, this);
 		}

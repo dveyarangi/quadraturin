@@ -3,7 +3,7 @@ package yarangi.graphics.quadraturin.terrain;
 import java.util.Set;
 
 import yarangi.ZenUtils;
-import yarangi.graphics.quadraturin.QServices;
+import yarangi.graphics.quadraturin.Q;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.ISpatialSensor;
 
@@ -25,7 +25,7 @@ public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> 
 		
 		this.pixelsize = pixelsize;
 		
-		QServices.structure.debug( "Created grid terrain [" + width + "x" + height + "] with cellsize " + cellsize + ".");
+		Q.structure.debug( "Created grid terrain [" + width + "x" + height + "] with cellsize " + cellsize + ".");
 	}
 
 	@Override

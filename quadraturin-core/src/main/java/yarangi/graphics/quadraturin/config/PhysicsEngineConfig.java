@@ -1,5 +1,6 @@
 package yarangi.graphics.quadraturin.config;
 
+import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
@@ -26,7 +27,7 @@ public class PhysicsEngineConfig
 
 		IPhysicsEngine engine = ReflectionUtil.createInstance(engineClass, 
 				new Object[] {manager}, new Class <?> [] {ICollider.class});
-		IQuadConfig.LOG.debug("Created physics engine " + engine);
+		Q.config.debug("Created physics engine " + engine);
 		return engine;
 	}
 
