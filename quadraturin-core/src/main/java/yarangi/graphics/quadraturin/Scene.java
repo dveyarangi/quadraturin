@@ -26,7 +26,7 @@ import yarangi.spatial.ISpatialIndex;
  * Represents current engine task. 
  * 
  * Scene is composed of two layers: 
- * <li> {@link UILayer} responsible to draw and animate user interface control elements.
+ * <li> {@link UserLayer} responsible to draw and animate user interface control elements.
  * <li> {@link WorldLayer} responsible to draw and animate game world.
  * Veils provide a way to add and remove {@link Entity} objects.
  * 
@@ -49,7 +49,7 @@ public abstract class Scene
 	/**
 	 * User interface layer.
 	 */
-	private UILayer uiLayer;
+	private UserLayer uiLayer;
 	
 	/**
 	 * TODO: split for world and UI?
@@ -102,7 +102,7 @@ public abstract class Scene
 				terrain == null ? null : terrain.getEssence()));
 		
 		// scene ui aggregator
-		this.uiLayer = new UILayer(ekranConfig.getXres(), ekranConfig.getYres());
+		this.uiLayer = new UserLayer(ekranConfig.getXres(), ekranConfig.getYres());
 		
 		// scene time / second
 		this.frameLength = sceneConfig.getFrameLength();
@@ -166,9 +166,9 @@ public abstract class Scene
 	final public WorldLayer getWorldLayer() { return worldSection; }
 	
 	/**
-	 * @return Reference to {@link UILayer}.
+	 * @return Reference to {@link UserLayer}.
 	 */
-	final public UILayer getUILayer() { return uiLayer; }
+	final public UserLayer getUILayer() { return uiLayer; }
 	
 
 	/**
@@ -268,11 +268,11 @@ public abstract class Scene
 		cameraMan = actionController.getCameraManager(); 
 		if(cameraMan != null)
 			addWorker( cameraMan );
-		
-		this.voices.setActionController( actionController );
-		
+
 		this.actionController = actionController;
 	}
+	
+	public  ActionController getActionController() { return actionController; }
 	
 	/**
 	 * Exposes collision manager to register collision handlers

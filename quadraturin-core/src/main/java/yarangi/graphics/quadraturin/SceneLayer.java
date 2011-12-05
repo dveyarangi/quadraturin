@@ -100,7 +100,9 @@ public abstract class SceneLayer <K extends ILayerObject>
 			K born = bornEntities.poll();
 			born.init( gl, context );
 			entities.add(born);
-			if(born.getArea() != null)
+			
+			
+			if(born.isIndexed())
 				indexer.add(born.getArea(), born);
 		}
 		
@@ -108,7 +110,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 		{
 			K dead = deadEntities.poll();
 			dead.destroy( gl, context );
-			if(dead.getArea() != null)
+			if(dead.isIndexed())
 			{
 				indexer.remove(dead);
 				entities.remove(dead);

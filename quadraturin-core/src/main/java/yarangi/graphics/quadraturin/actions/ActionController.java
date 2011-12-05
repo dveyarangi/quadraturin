@@ -4,21 +4,20 @@ import java.awt.Point;
 import java.util.Map;
 
 import yarangi.graphics.quadraturin.Scene;
+import yarangi.graphics.quadraturin.UserLayer;
 import yarangi.graphics.quadraturin.WorldLayer;
-import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.math.Vector2D;
-import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
-import yarangi.spatial.PickingSensor;
 
 /**
  * Input definitions interface
  * 
  * @author dveyarangi
  */
-public abstract class ActionController implements CursorListener
+public abstract class ActionController
 {
 	
 	/**
@@ -28,9 +27,13 @@ public abstract class ActionController implements CursorListener
 	
 	private WorldLayer worldLayer;
 	
+	private UserLayer uiLayer;
+	
 	public ActionController(Scene scene)
 	{
 		worldLayer = scene.getWorldLayer();
+		
+		uiLayer = scene.getUILayer();
 	}
 	
 	/**
@@ -57,26 +60,25 @@ public abstract class ActionController implements CursorListener
 	 * @param canvasLocation
 	 * @return
 	 */
-	public IEntity pick(Vector2D worldLocation, Point canvasLocation)
+	public ILayerObject pick(Vector2D worldLocation, Point canvasLocation)
 	{
-		// collecting picked entities:
-		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (getPickingFilter());
 		
-		// TODO: ui picks
-//		if(canvasLocation != null)
-//			uiVeil.getEntityIndex().query(sensor, new AABB(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
+		// ui picks
+		// TODO: introduce filter from
+		ILayerObject picked = null;
+		if(canvasLocation != null)
+			picked = uiLayer.processPick(canvasLocation);
 		
-		// testing world section:
-		if(sensor.getObject() == null && worldLocation != null)
-			worldLayer.getEntityIndex().query(sensor, new AABB(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
+		if(picked != null)
+			return picked;
+		
+		if(worldLocation != null)
+			picked = worldLayer.processPick(worldLocation);
 		
 		// TODO: terrain picks
 		// TODO: flexible pick priorities
 		
-		if(sensor.getObject() != null)
-			return sensor.getObject();
-		
-		return null;
+		return picked;
 	}
 
 	/**

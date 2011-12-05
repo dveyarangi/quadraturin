@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.events;
 
 import java.awt.Point;
 
-import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.math.Vector2D;
 
 public interface ICursorEvent {
@@ -20,6 +20,6 @@ public interface ICursorEvent {
 	/**
 	 * @return Entity at the cursor location; null if none
 	 */
-	public IEntity getEntity();
+	public ILayerObject getEntity();
 
 }

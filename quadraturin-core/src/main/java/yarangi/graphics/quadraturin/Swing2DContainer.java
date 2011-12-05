@@ -115,10 +115,10 @@ public class Swing2DContainer extends JFrame
 		canvas.setPreferredSize(new Dimension(xres, yres));
 	    
 		
-		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+/*		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
 									cursorImg, new Point(0, 0), "blank cursor");
-		getContentPane().setCursor(blankCursor);		
+		getContentPane().setCursor(blankCursor);	*/	
 		
 		log.trace("Linking shutdown hook...");
 		// TODO: add real JVM shutdown hook

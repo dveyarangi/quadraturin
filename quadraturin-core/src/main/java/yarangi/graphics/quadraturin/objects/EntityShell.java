@@ -3,8 +3,6 @@ package yarangi.graphics.quadraturin.objects;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.IVeil;
-import yarangi.spatial.Area;
 
 /**
  * Wrapper for entities that do not fit to extend {@link Entity}.

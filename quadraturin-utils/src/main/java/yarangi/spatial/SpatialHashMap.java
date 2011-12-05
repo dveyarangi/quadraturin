@@ -345,7 +345,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 				return false;
 			
 			map[hash(x, y)].put(chunk, object);
-			return true;
+			return false;
 		}
 	};
 	
@@ -374,7 +374,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 //					System.out.println(ch.getArea() + " :: " + chunk.getArea());
 //				throw new IllegalArgumentException("Bucket (loc:[" + x + "," + y + "]; size:" + map[hash(x, y)].size() + ") does not contain object (obj:" + object + ").");
 			}
-			return true;
+			return false;
 		}
 	};
 	private interface IQueryingConsumer <T extends ISpatialObject> extends IChunkConsumer
@@ -411,6 +411,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 			if(isInvalidIndex(x, y)) 
 				return false;
 			
+			boolean terminate = false;
 			cell = map[hash(x, y)];
 			for(IAreaChunk c : cell.keySet())
 			{
@@ -422,13 +423,14 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 //					System.out.println(cell.get(c));
 				{
 					object.getArea().setPassId( passId );
-					if(processor.objectFound(c, object))
-						break;
+					terminate = processor.objectFound(c, object);
+					if(terminate)
+						return true;
 					
 				}
 			}
 			
-			return true;
+			return false;
 		}
 	};
 

@@ -6,10 +6,14 @@ import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrainMap;
+import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.math.Vector2D;
+import yarangi.spatial.AABB;
+import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
 public class WorldLayer extends SceneLayer <IEntity> 
@@ -22,6 +26,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	private EntityShell <? extends ITerrainMap > terrain;
 	
 	private Logger log = Logger.getLogger("q-world");
+	
+	public static final double CURSOR_PICK_SPAN = 5;
+
 	
 	public WorldLayer(int width, int height) 
 	{ 
@@ -162,6 +169,20 @@ public class WorldLayer extends SceneLayer <IEntity>
 	public <T> ITerrainMap <T> getTerrain()
 	{
 		return  terrain == null ? null : (ITerrainMap <T> )terrain.getEssence();
+	}
+
+
+	public ILayerObject processPick(Vector2D worldLocation)
+	{
+		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> ();
+		getEntityIndex().query(sensor, AABB.createSquare(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
+		
+		IEntity entity = sensor.getObject();
+		if(entity == null)
+			return null;
+		
+		
+		return entity;
 	}
 
 

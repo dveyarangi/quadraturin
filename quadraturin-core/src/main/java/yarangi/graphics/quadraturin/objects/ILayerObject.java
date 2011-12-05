@@ -37,6 +37,12 @@ public interface ILayerObject extends ISpatialObject
 	 * Marks entity "dead", forcing it's disposal at the start of the next rendering cycle.
 	 */
 	public abstract void markDead();
+	
+	/**
+	 * Defines either the entity needs to be added to spatial indexer in corresponding layer.
+	 * @return
+	 */
+	public boolean isIndexed();
 
 
 	public void init(GL gl, IRenderingContext context);

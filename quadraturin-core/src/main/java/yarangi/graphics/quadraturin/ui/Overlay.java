@@ -20,10 +20,17 @@ public class Overlay implements ILayerObject
 	
 	private Panel parent;
 	
+	/**
+	 * Defines either the element is pickable by controller
+	 */
+	private boolean isPickable;
 	
-	public Overlay(Panel parent) 
+	
+	public Overlay(Panel parent, boolean isPickable) 
 	{
 		this.parent = parent;
+		
+		this.isPickable = isPickable;
 	}
 	
 	/** 
@@ -40,21 +47,19 @@ public class Overlay implements ILayerObject
 	public final Look getLook() { return look; }
 
 	@Override
-	public Area getArea()
-	{
+	public Area getArea() {
+		// parent panel defines the pickable area:
 		return parent.getAABB();
 	}
 
 	@Override
-	public boolean isAlive()
-	{
-		return false;
-	}
+	public boolean isAlive() { return false; }
 
 	@Override
-	public void markDead()
-	{
-	}
+	public void markDead() { /* UI elements are static */ }
+	
+	@Override
+	public boolean isIndexed() { return isPickable; }
 
 	@Override
 	public void render(GL gl, double time, IRenderingContext context)

@@ -12,8 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -25,10 +23,9 @@ import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.config.InputBinding;
 import yarangi.graphics.quadraturin.config.InputConfig;
 import yarangi.graphics.quadraturin.events.CursorEvent;
-import yarangi.graphics.quadraturin.events.CursorListener;
 import yarangi.graphics.quadraturin.events.InputHook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
-import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
 /**
@@ -52,7 +49,7 @@ public class QuadVoices implements IEventManager, Loopy
 	/**
 	 * List of listeners for the CursorMotionEvent-s
 	 */
-	private List <CursorListener> cursorListeners = new LinkedList <CursorListener> ();
+//	private List <CursorListener> cursorListeners = new LinkedList <CursorListener> ();
 	
 	/**
 	 * Maps input code to action id. 
@@ -93,7 +90,7 @@ public class QuadVoices implements IEventManager, Loopy
 		}
 	}
 	
-	public void runPreUnLock() { /* voice of the void? */ }
+	public void runPreUnLock() { /* Abyssus abyssum invocat */ }
 
 	public void runBody() 
 	{
@@ -101,12 +98,12 @@ public class QuadVoices implements IEventManager, Loopy
 			return;
 		
 		// picking object under cursor:
-		IEntity pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
+		ILayerObject pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
 		
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
-		for(CursorListener l : cursorListeners)
-			l.onCursorMotion(cursorEvent);
+//		for(CursorListener l : cursorListeners)
+//			l.onCursorMotion(cursorEvent);
 		
 		// firing user actions info:
 //		log.trace("User action events in queue: " + userEvents.size());
@@ -122,7 +119,7 @@ public class QuadVoices implements IEventManager, Loopy
 
 	}
 	
-	public void runPostLock() { /* freedom of voice? */ }
+	public void runPostLock() { }
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,14 +230,14 @@ public class QuadVoices implements IEventManager, Loopy
 	 * Removes listener for entity pick events. 
 	 * @param entityId
 	 */
-	public void addCursorListener(CursorListener listener)
+/*	public void addCursorListener(CursorListener listener)
 	{
 		cursorListeners.add(listener);
 	}
 	public void removeCursorListener(CursorListener listener)
 	{
 		cursorListeners.remove(listener);
-	}
+	}*/
 	
 	/**
 	 * Adds an cursor event to the events queue.
@@ -267,20 +264,8 @@ public class QuadVoices implements IEventManager, Loopy
 	 */
 	public void sceneChanged(Scene nextScene) 
 	{
-//		environmentListeners.clear();
-//		selectionListeners.clear();
-		// TODO: clear listeners and reset from scene.
-	}
+		this.controller = nextScene.getActionController();
 
-	/**
-	 * Allows for dynamic binding of input definitions.
-	 * @param controller
-	 */
-	public void setActionController(ActionController controller)
-	{
-		removeCursorListener( this.controller );
-		
-		this.controller = controller;
-		addCursorListener( controller );
+		// TODO: clear listeners and reset from scene.
 	}
 }

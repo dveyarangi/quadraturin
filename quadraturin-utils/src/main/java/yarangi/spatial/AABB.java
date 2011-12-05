@@ -29,6 +29,25 @@ public class AABB implements Area
 	
 	private int passId;
 	
+
+	public static AABB createSquare(double x, double y, double r, double a)
+	{
+		return new AABB(x, y, r, r, a);
+	}
+	
+	public static AABB createFromEdges(double x1, double y1, double x2, double y2, double a)
+	{
+		double rx = (x2 - x1) / 2.;  
+		double ry = (y2 - y1) / 2.;
+		
+		return new AABB(x1+rx, y1+ry, rx, ry, a);
+	}
+	
+	public static AABB createFromCenter(double cx, double cy, double rx, double ry, double a)
+	{
+		return new AABB(cx, cy, rx, ry, a);
+	}
+	
 	/**
 	 * C'tor
 	 * @param x box center x
@@ -36,20 +55,13 @@ public class AABB implements Area
 	 * @param r half box width
 	 * @param a box orientation (degrees)
 	 */
-	public AABB(double x, double y, double r, double a)
+	
+	private AABB(double x, double y, double rx, double ry, double a)
 	{
 		this.ref = new Vector2D(x, y);
-		this.rx = ry = rmax = r;
-		this.a = a;
-	}
-	public AABB(double x1, double y1, double x2, double y2, double a)
-	{
-		rx = (x2 - x1) / 2.;  
-		ry = (y2 - y1) / 2.;
 		rmax = Math.max(rx, ry);
-		
-		this.ref = new Vector2D(x1+rx, y1+ry);
-		
+		this.rx = rx;
+		this.ry = ry;
 		this.a = a;
 	}
 	
@@ -59,7 +71,7 @@ public class AABB implements Area
 	 */
 	protected AABB(AABB aabb)
 	{
-		this(aabb.ref.x(), aabb.ref.y(), aabb.getMaxRadius(), aabb.getOrientation());
+		this(aabb.ref.x(), aabb.ref.y(), aabb.getRX(), aabb.getRY(), aabb.getOrientation());
 	}
 	
 	/**
@@ -182,7 +194,8 @@ public class AABB implements Area
 		for(currx = minx; currx <= maxx; currx += cellsize)
 			for(curry = miny; curry <= maxy; curry += cellsize)
 			{
-				consumer.consume( new CellChunk(this, currx, curry, cellsize));
+				if(consumer.consume( new CellChunk(this, currx, curry, cellsize)))
+					return;
 			}
 	}
 

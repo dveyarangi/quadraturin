@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.events;
 
 import java.awt.Point;
 
-import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.math.Vector2D;
 
 /**
@@ -23,9 +23,9 @@ public class CursorEvent implements ICursorEvent
 	private Point canvasLocation;
 
 	/**
-	 * Set if the cursor if hovering over and entity.
+	 * Set if the cursor if hovering over an entity.
 	 */
-	private IEntity entity;
+	private ILayerObject entity;
 	
 	public CursorEvent(Vector2D worldLocation, Point canvasLocation)
 	{
@@ -57,7 +57,7 @@ public class CursorEvent implements ICursorEvent
 		return canvasLocation;
 	}
 	
-	public void setSceneEntity(IEntity entity) 
+	public void setSceneEntity(ILayerObject entity) 
 	{
 		this.entity = entity;
 	}
@@ -66,7 +66,7 @@ public class CursorEvent implements ICursorEvent
 	 * {@inheritDoc}
 	 */
 	@Override
-	public IEntity getEntity() { return entity; }
+	public ILayerObject getEntity() { return entity; }
 
 	public void setWorldCoordinate(Vector2D worldCoordinates) {
 		this.worldLocation = worldCoordinates;

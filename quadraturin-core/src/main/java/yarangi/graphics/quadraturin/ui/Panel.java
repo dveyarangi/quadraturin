@@ -8,7 +8,7 @@ import yarangi.spatial.AABB;
 
 /**
  * Basic UI layout element. Allows vertical or horizontal sub division.
- * Should not be created directly, but splitted from {@link UILayer#getBasePanel()}
+ * Should not be created directly, but splitted from {@link UserLayer#getBasePanel()}
  * 
  * @author dveyarangi
  *
@@ -76,7 +76,7 @@ public class Panel
 		int maxy = viewport.getMaxY()-insets.getTop();
 		
 		this.viewport = viewport;
-		this.area = new AABB(minx, miny, maxx, maxy, 0);
+		this.area = AABB.createFromEdges(minx, miny, maxx, maxy, 0);
 		
 		if(children == null)
 			return;

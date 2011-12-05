@@ -145,5 +145,11 @@ public class Entity implements IEntity
 	{
 		return getBehavior().behave( time, this, b );
 	}
+	
+	@Override
+	public boolean isIndexed()
+	{
+		return spatialAspect != null;
+	}
 
 }

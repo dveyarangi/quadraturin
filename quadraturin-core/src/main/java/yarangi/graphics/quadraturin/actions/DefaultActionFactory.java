@@ -5,9 +5,6 @@ import java.util.Map;
 
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
-import yarangi.graphics.quadraturin.config.InputConfig;
-import yarangi.graphics.quadraturin.config.QuadConfigFactory;
-import yarangi.graphics.quadraturin.events.ICursorEvent;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
@@ -33,11 +30,6 @@ public class DefaultActionFactory
 			
 			cameraMover = new CameraMover((ViewPoint2D) scene.getViewPoint());
 			actions = appendNavActions(new HashMap <String, IAction> (), cameraMover, scene);
-		}
-
-		@Override
-		public void onCursorMotion(ICursorEvent event)
-		{
 		}
 
 		@Override

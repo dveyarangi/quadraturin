@@ -30,6 +30,6 @@ public interface IEventManager extends KeyListener, MouseListener, MouseMotionLi
 	 * Register a cursor io listener.
 	 * @param listener
 	 */
-	public void addCursorListener(CursorListener listener);
-	public void removeCursorListener(CursorListener listener);
+//	public void addCursorListener(CursorListener listener);
+//	public void removeCursorListener(CursorListener listener);
 }
