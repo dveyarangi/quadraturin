@@ -58,15 +58,18 @@ public abstract class SceneLayer <K extends ILayerObject>
 	/**
 	 * 
 	 */
-	public SceneLayer(int width, int height, SpatialIndexer <K> indexer)
+	public SceneLayer(int width, int height)
 	{
-		this.indexer = indexer;
-		
 		this.width = width;
 		this.height = height;
 	}
 
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }
+	
+	protected void setEntityIndex(SpatialIndexer <K> indexer)
+	{
+		this.indexer = indexer;
+	}
 
 	protected List <K> getEntities()
 	{

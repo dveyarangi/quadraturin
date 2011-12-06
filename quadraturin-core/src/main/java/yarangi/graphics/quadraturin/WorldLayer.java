@@ -33,7 +33,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	public WorldLayer(int width, int height) 
 	{ 
 //		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
-		super(width, height, new SpatialHashMap	<IEntity>(width*height/10, 10, width, height));
+		super(width, height);
+		
+		setEntityIndex( new SpatialHashMap	<IEntity>(width*height/10, 10, width, height) );
 		
 		log.debug("Allocated " + width*height/10 + " cells.");
 	}

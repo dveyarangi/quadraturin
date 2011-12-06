@@ -1,8 +1,13 @@
 package yarangi.graphics.quadraturin.debug;
 
+import javax.media.opengl.GL;
+
 import org.apache.log4j.Logger;
 
+import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
+import yarangi.graphics.quadraturin.UserLayer;
+import yarangi.graphics.quadraturin.objects.Dummy;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
@@ -18,6 +23,7 @@ public class Debug
 	public static final String DEBUG_MODE = "yarangi.graphics.quadraturin.debug";
 
 	public static boolean ON = Boolean.valueOf(System.getProperty(DEBUG_MODE));
+	static Look userLayerSpatialOverlay = null;
 	
 	static {
 		if(!ON) 
@@ -29,12 +35,16 @@ public class Debug
 	public static void instrumentate(Scene scene)
 	{
 		SpatialIndexer <IEntity> indexer = scene.getWorldLayer().getEntityIndex();
-		Look spatialOverlay = null;
 		if(indexer instanceof SpatialHashMap)
-			spatialOverlay = new DebugSpatialHashMapLook();
+			userLayerSpatialOverlay = new DebugSpatialHashMapLook();
 
-		scene.addEntity( new EntityShell(scene.getWorldLayer().getEntityIndex(), null, spatialOverlay) );
+//		scene.addEntity( new EntityShell(scene.getUILayer().getEntityIndex(), Dummy.BEHAVIOR, spatialOverlay) );
 //		scene.addOverlay(new SceneDebugOverlay(scene.getWorldLayer().getEntityIndex()));
+	}
+
+	public static void drawUserLayerOverlay(GL gl, UserLayer layer, IRenderingContext context)
+	{
+		userLayerSpatialOverlay.render( gl, 0, layer.getEntityIndex(), context );
 	}
 	
 }

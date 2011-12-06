@@ -110,8 +110,8 @@ public abstract class Scene
 		// storing event manager:
 		this.voices = voices;
 		
-//		if(Debug.ON) // TODO: maybe actual instrumentation
-//			Debug.instrumentate(this);
+		if(Debug.ON) // TODO: maybe actual instrumentation
+			Debug.instrumentate(this);
 	}
 
 	/**

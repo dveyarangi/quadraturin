@@ -4,6 +4,8 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import yarangi.graphics.quadraturin.Q;
+
 /**
  * Encloses frame buffer object handles and provides binding method.
  * 
@@ -27,7 +29,7 @@ public class FBO
 	public static FBO createFBO(GL gl, int width, int height, boolean useDepthBuffer) 
 	{
 		return createFBO(gl, TextureUtils.createEmptyTexture2D(gl, width, height, false), 
-										  useDepthBuffer ? createFBODepthBuffer(gl) : TextureUtils.ILLEGAL_ID);
+										  useDepthBuffer ? createFBODepthBuffer(gl, width, height) : TextureUtils.ILLEGAL_ID);
 	}
 	
 	/**
@@ -46,16 +48,20 @@ public class FBO
 		
 		if(textureId != TextureUtils.ILLEGAL_ID)
 		{
-			gl.glBindTexture(GL.GL_TEXTURE_2D, textureId);
+//			gl.glBindTexture(GL.GL_TEXTURE_2D, textureId);
+			System.out.println(textureId);
 			gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, textureId, 0);
-			gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+//			gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 		}
-		
 		if(depthId != TextureUtils.ILLEGAL_ID)
 			gl.glFramebufferRenderbufferEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_DEPTH_ATTACHMENT_EXT, GL.GL_RENDERBUFFER_EXT, depthId); // Attach the depth buffer fbo_depth to our frame buffer
 //		…  
-		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
+		
 		int status = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
+		if(status != GL.GL_FRAMEBUFFER_COMPLETE_EXT)
+			Q.rendering.error( "Failed to create framebuffer; status code " + status);
+		
+		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
 		
 		if(handleBuffer.get(0) < 0)
 			return null;
@@ -105,12 +111,12 @@ public class FBO
 	}
 
 	
-	public static int createFBODepthBuffer(GL gl)
+	public static int createFBODepthBuffer(GL gl, int width, int height)
 	{
 		IntBuffer handleBuffer = IntBuffer.allocate(1);
 		gl.glGenRenderbuffersEXT(1, handleBuffer);   
 		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, handleBuffer.get(0)); // Bind the fbo_depth render buffer  
-//		...  
+		gl.glRenderbufferStorageEXT(GL.GL_RENDERBUFFER_EXT, GL.GL_DEPTH_COMPONENT, width, height);//		...  
 		gl.glBindRenderbufferEXT(GL.GL_RENDERBUFFER_EXT, 0); // Unbind the render buffer
 		
 		return handleBuffer.get(0);

@@ -253,5 +253,5 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		return 0f;
 	}
 	@Override
-	public IVeil getVeil() { return veil; }
+	public IVeil getVeil() { return IVeil.ORIENTING; }
 }

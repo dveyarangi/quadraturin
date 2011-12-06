@@ -84,5 +84,13 @@ public class CellChunk implements IAreaChunk
 	}
 	
 	public int hashCode() { return this.getArea().hashCode(); }
+	
+	public String toString() 
+	{
+		return new StringBuilder()
+			.append( "cellchunk [").append(minx).append(",").append(miny).append(";").append( maxx ).append(",").append(maxy).append( "]" )
+			.append(" area [").append(area).append( "]" )
+			.toString();
+	}
 }
 

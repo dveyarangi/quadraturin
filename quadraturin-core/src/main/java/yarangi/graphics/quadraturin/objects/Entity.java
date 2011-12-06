@@ -62,7 +62,7 @@ public class Entity implements IEntity
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setBehavior(Behavior <?>behavior) { this.behavior = behavior; }
+	public void setBehavior(Behavior <?> behavior) { this.behavior = behavior; }
 
 	public void setArea(Area area) { this.spatialAspect = area; }
 
