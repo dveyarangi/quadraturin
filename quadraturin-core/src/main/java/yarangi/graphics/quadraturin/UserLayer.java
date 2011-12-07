@@ -25,7 +25,7 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	private double halfWidth, halfHeight;
 
-
+	protected Logger log = Logger.getLogger("q-userlayer");
 	public UserLayer(int width, int height)
 	{
 		super(width, height);
@@ -65,19 +65,21 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	public void destroy(GL gl, IRenderingContext context)
 	{
+		
 	}
 	
 	public void display(GL gl, double time, IRenderingContext context) 
 	{
 		if(basePanel.getViewPort() != context.getViewPort())
 		{
+			log.debug("Layer vieweport has changed.");
 			basePanel.revalidate( context.getViewPort() );
 			int width = context.getViewPort().getWidth();
 			int height = context.getViewPort().getHeight();
 			this.halfHeight = height/2;
 			this.halfWidth = width/2;
 			// TODO: might be a bit heavy:
-			
+			log.debug("Creating new spatial hash map (" + width + "x" +height + ")");
 			setEntityIndex( new SpatialHashMap<Overlay>(width*height/100, 10, width, height) );
 			
 			for(Overlay overlay : getEntities())
@@ -85,8 +87,8 @@ public class UserLayer extends SceneLayer <Overlay>
 					getEntityIndex().add( overlay.getArea(), overlay );
 		}
 		
-//		if(Debug.ON)
-//			Debug.drawUserLayerOverlay(gl, this, context);
+		if(Debug.ON)
+			Debug.drawUserLayerOverlay(gl, this, context);
 		
 		super.display( gl, time, context );
 	}
@@ -96,7 +98,8 @@ public class UserLayer extends SceneLayer <Overlay>
 		// collecting picked entities:
 		PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
 		
-		getEntityIndex().query(sensor, AABB.createSquare(canvasLocation.x+halfWidth, halfHeight-canvasLocation.y, CURSOR_PICK_SPAN, 0));
+//		log.debug("picking at: " + (canvasLocation.x+halfWidth) + "," + (halfHeight-canvasLocation.y));
+		getEntityIndex().query(sensor, AABB.createSquare(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
 		Overlay pickedObject = sensor.getObject();
 		if(pickedObject == null)
