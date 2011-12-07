@@ -177,12 +177,16 @@ public abstract class Scene
 	 */
 	public void init(GL gl, IRenderingContext context)
 	{
+		
 		getWorldLayer().init(gl, context);
 		getUILayer().init(gl, context);
+		
+		Debug.init(gl, this, context);
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)
 	{
+		Debug.destroy(gl, this, context);
 		getWorldLayer().destroy(gl, context);
 		getUILayer().destroy(gl, context);
 	}
@@ -270,6 +274,7 @@ public abstract class Scene
 			addWorker( cameraMan );
 
 		this.actionController = actionController;
+		
 	}
 	
 	public  ActionController getActionController() { return actionController; }

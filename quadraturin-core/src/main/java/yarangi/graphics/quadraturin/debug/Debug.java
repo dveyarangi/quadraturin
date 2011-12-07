@@ -46,5 +46,12 @@ public class Debug
 	{
 		userLayerSpatialOverlay.render( gl, 0, layer.getEntityIndex(), context );
 	}
+
+	public static void init(GL gl, Scene scene, IRenderingContext context) {
+		userLayerSpatialOverlay.init(gl, scene.getUILayer().getEntityIndex(), context);
+	}
+	public static void destroy(GL gl, Scene scene, IRenderingContext context) {
+		userLayerSpatialOverlay.destroy(gl, scene.getUILayer().getEntityIndex(), context);
+	}
 	
 }

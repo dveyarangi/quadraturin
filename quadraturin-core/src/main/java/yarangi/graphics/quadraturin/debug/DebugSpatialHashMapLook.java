@@ -19,14 +19,19 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 
 	public void init(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
-		gridMeshId = gl.glGenLists(1);
-	    gl.glNewList(gridMeshId, GL.GL_COMPILE);
-		gl.glColor4f(0.1f, 0.6f, 0.8f, 0.1f);
-		double halfCellSize = map.getCellSize() / 2.;
-		float minx = (float)(-map.getWidth()/2-halfCellSize);
-		float maxx = (float)(map.getWidth()/2+halfCellSize);
-		float miny = (float)(-map.getHeight()/2-halfCellSize);
-		float maxy = (float)(map.getHeight()/2+halfCellSize);
+	}
+
+	public void render(GL gl, double time, SpatialHashMap<IEntity> map, IRenderingContext context) 
+	{
+		gl.glEnable( GL.GL_BLEND );
+		int cellX, cellY;
+		float cellsize = (float)map.getCellSize();
+		float halfCellSize = cellsize / 2.f;
+		float minx = -halfCellSize;
+		float maxx = map.getWidth()+halfCellSize;
+		float miny = -halfCellSize;
+		float maxy = map.getHeight()+halfCellSize;
+		gl.glColor4f(0f, 0f, 0.4f, 0.5f);
 		for(float y = miny; y <= maxy; y += map.getCellSize())
 		{
 			gl.glBegin(GL.GL_LINE_STRIP);
@@ -42,22 +47,9 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 			gl.glVertex3f(x, maxy, 0f);
 			gl.glEnd();
 		}
-		
-		gl.glEndList();
-	}
 
-	public void render(GL gl, double time, SpatialHashMap<IEntity> map, IRenderingContext context) 
-	{
-		gl.glEnable( GL.GL_BLEND );
-		gl.glCallList(gridMeshId);
 		
-		int cellX, cellY;
-		float cellsize = (float)map.getCellSize();
-		float halfCellSize = cellsize / 2.f;
-		float minx = -map.getWidth()/2-halfCellSize;
-		float maxx = map.getWidth()/2+halfCellSize;
-		float miny = -map.getHeight()/2-halfCellSize;
-		float maxy = map.getHeight()/2+halfCellSize;
+		Set <IAreaChunk> bucket = null;
 		for(float y = miny; y <= maxy; y += map.getCellSize())
 		{
 			cellY = FastMath.round(y / map.getCellSize());
@@ -65,9 +57,14 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 			{
 				cellX = FastMath.round(x / map.getCellSize());
 				boolean isReal = false;
-				Set <IAreaChunk> bucket = map.getBucket(cellX, cellY).keySet();
+				try {
+					bucket = map.getBucket(cellX, cellY).keySet();
+				}
+				catch(ArrayIndexOutOfBoundsException e) {
+					
+				}
 //				if(bucket.size() > 0)
-//				System.out.println(bucket.size() + " ::: " + x + " " + y);
+				if(bucket != null)
 				for(IAreaChunk chunk : bucket)
 				{
 //					System.out.println(chunk);
@@ -77,6 +74,19 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 						break;
 					}
 				}
+				if(bucket == null) {
+					gl.glColor4f(1f, 0f, 0.0f, 0.5f);
+					gl.glBegin(GL.GL_LINE_STRIP);
+						gl.glVertex3f(x, y, 0f);
+						gl.glVertex3f(x+cellsize, y+cellsize, 0f);
+					gl.glEnd();
+					gl.glBegin(GL.GL_LINE_STRIP);
+						gl.glVertex3f(x, y+cellsize, 0f);
+						gl.glVertex3f(x+cellsize, y, 0f);
+					gl.glEnd();
+
+				}
+				else
 				if(bucket.size() != 0)
 				{
 					if(isReal)		
@@ -97,7 +107,6 @@ public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
 
 	public void destroy(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
-		gl.glDeleteLists(gridMeshId, 1);
 	}
 
 	@Override
