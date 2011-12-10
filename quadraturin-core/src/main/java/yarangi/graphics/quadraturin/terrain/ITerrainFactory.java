@@ -4,5 +4,5 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 
 public interface ITerrainFactory
 {
-	public EntityShell <? extends ITerrainMap> generateTerrain(float width, float height, int cellsize);
+	public EntityShell <? extends ITileMap> generateTerrain(float width, float height, int cellsize);
 }

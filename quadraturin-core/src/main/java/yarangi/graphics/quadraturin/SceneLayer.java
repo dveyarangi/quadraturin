@@ -181,7 +181,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 	public int getWidth() {return width; }
 	public int getHeight() {return height; }
 
-	public class ClippingSensor implements ISpatialSensor <K> 
+	public class ClippingSensor implements ISpatialSensor <IAreaChunk, K> 
 	{
 		private GL gl;
 		private double time;

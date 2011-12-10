@@ -9,7 +9,7 @@ import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
-import yarangi.graphics.quadraturin.terrain.ITerrainMap;
+import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
@@ -23,7 +23,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	private double layerTime;
 	
-	private EntityShell <? extends ITerrainMap > terrain;
+	private EntityShell <? extends ITileMap > terrain;
 	
 	private Logger log = Logger.getLogger("q-world");
 	
@@ -55,7 +55,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 		this.engine = engine;
 	}
 
-	public void addTerrain(EntityShell <? extends ITerrainMap> terrain)
+	public void addTerrain(EntityShell <? extends ITileMap> terrain)
 	{
 		this.terrain = terrain;
 	}
@@ -168,9 +168,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	}
 
 
-	public <T> ITerrainMap <T> getTerrain()
+	public <T> ITileMap <T> getTerrain()
 	{
-		return  terrain == null ? null : (ITerrainMap <T> )terrain.getEssence();
+		return  terrain == null ? null : (ITileMap <T> )terrain.getEssence();
 	}
 
 

@@ -2,9 +2,10 @@ package yarangi.graphics.quadraturin.objects;
 
 import java.util.Set;
 
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 
-public interface ISensor <K> extends ISpatialSensor <K>
+public interface ISensor <K> extends ISpatialSensor <IAreaChunk, K>
 {
 	/**
 	 * Sensed entities.

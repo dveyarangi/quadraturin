@@ -3,7 +3,7 @@ package yarangi.graphics.quadraturin.config;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
-import yarangi.graphics.quadraturin.terrain.ITerrainMap;
+import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.java.ReflectionUtil;
 import yarangi.spatial.ISpatialIndex;
 
@@ -13,7 +13,7 @@ public class PhysicsEngineConfig
     protected String colliderClass;
 
     
-	public IPhysicsEngine createEngine(ISpatialIndex index, ITerrainMap terrain) 
+	public IPhysicsEngine createEngine(ISpatialIndex index, ITileMap terrain) 
 	{
 		if(engineClass == null)
 			return null;
@@ -22,7 +22,7 @@ public class PhysicsEngineConfig
 		if(colliderClass != null)
 			manager = ReflectionUtil.createInstance(colliderClass, 
 					new Object[] {index, terrain},
-					new Class <?> [] {ISpatialIndex.class, ITerrainMap.class}
+					new Class <?> [] {ISpatialIndex.class, ITileMap.class}
 		);
 
 		IPhysicsEngine engine = ReflectionUtil.createInstance(engineClass, 

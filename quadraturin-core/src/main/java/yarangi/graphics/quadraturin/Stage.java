@@ -10,11 +10,14 @@ import org.apache.log4j.Logger;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
+import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.ui.Overlay;
 
 /**
  * Scene series configurator and container.
  * The entity stage coordinates the animator and rendering threads, and provides
- * {@link Scene}-s life-cycle operations.
+ * {@link Scene}-s life-cycle operations 
+ * Also provides scene entity injections.
  * 
  * It also fires scene-change events for {@link StageAnimator}, {@link QuadVoices} and graphics thread (currently {@link Quad2DController})
  * 
@@ -23,8 +26,20 @@ import yarangi.graphics.quadraturin.config.StageConfig;
  *  
  * @author Dve Yarangi
  */
-public class Stage 
+public final class Stage 
 {
+	
+	private static Stage singleton;
+	
+	static Stage init(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
+	{
+		if(singleton != null)
+			throw new IllegalStateException("Stage is already initialized.");
+		
+		singleton = new Stage( stageConfig, ekranConfig, voices );
+		
+		return singleton;
+	}
 	
 	/**
 	 * List of scenes.
@@ -52,7 +67,7 @@ public class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	public Stage(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
+	private Stage(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
 	{
 		
 		for(SceneConfig scene : stageConfig.getScenes())
@@ -64,6 +79,8 @@ public class Stage
 		scene = scenes.get(stageConfig.getInitialScene());
 		if(scene == null)
 			throw new IllegalArgumentException("Initial scene [" + stageConfig.getInitialScene() + "] is not defined.");
+		
+		setInitialScene();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,12 +92,12 @@ public class Stage
 	 * @param scene
 	 * @return
 	 */
-	public void addScene(Scene scene)
+	void addScene(Scene scene)
 	{
 		scenes.put(scene.getName(), scene);
 	}
 	
-	public void setInitialScene()
+	void setInitialScene()
 	{
 		// setting initial scene:
 		fireStageChanged(scene);
@@ -97,20 +114,20 @@ public class Stage
 		fireStageChanged(scene);
 	}
 	
-	public void addListener(StageListener l)
+	void addListener(StageListener l)
 	{
-		listeners.add(l);
+		singleton.listeners.add(l);
 	}
 	
-	public void removeListener(StageListener l)
+	void removeListener(StageListener l)
 	{
-		listeners.remove(l);
+		singleton.listeners.remove(l);
 	}
 	
 	/**
 	 * Informs listeners about scene changes.
 	 */
-	protected void fireStageChanged(Scene currScene)
+	private void fireStageChanged(Scene currScene)
 	{
 		for(StageListener l : listeners)
 			l.sceneChanged(currScene);
@@ -118,9 +135,34 @@ public class Stage
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// SCENE RENDERING
+	// SCENE ACCESS
+
+	/**
+	 * Appends a world entity.
+	 */
+	public static void addEntity(IEntity entity)
+	{
+		singleton.scene.addEntity( entity );
+	}
+
+	/**
+	 * Schedules entity removal. It will be actually removed at next rendering cycle.
+	 * @param entity
+	 */
+	public static void removeEntity(IEntity entity)
+	{
+		singleton.scene.removeEntity( entity );
+	}
 	
+	public static void addOverlay(Overlay entity)
+	{
+		singleton.scene.addOverlay( entity );
+	}
 	
+	public static void removeOverlay(Overlay entity)
+	{
+		singleton.scene.removeOverlay( entity );
+	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SERVICE

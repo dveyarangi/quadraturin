@@ -12,4 +12,13 @@ public class Q
 	public static final Logger structure = Logger.getLogger( "q-structure" );
 	public static final Logger rendering = Logger.getLogger( "q-renderer" );
 	public static final Logger config    = Logger.getLogger( "q-configurer" );
+	
+	public static Stage go()
+	{
+		Swing2DContainer container = new Swing2DContainer();
+
+		container.start();
+		
+		return container.getStage();
+	}
 }

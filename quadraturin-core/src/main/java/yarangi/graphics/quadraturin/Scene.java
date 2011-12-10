@@ -18,8 +18,9 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
-import yarangi.graphics.quadraturin.terrain.ITerrainMap;
+import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.graphics.quadraturin.ui.Overlay;
+import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialIndex;
 
 /**
@@ -87,7 +88,7 @@ public abstract class Scene
 		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
 		
 		// initializing terrain:
-		EntityShell <? extends ITerrainMap> terrain = null;
+		EntityShell <? extends ITileMap> terrain = null;
 		if(sceneConfig.getTerrainConfig() != null)
 		{
 			terrain = sceneConfig.getTerrainConfig().createTerrain( sceneConfig.getWidth(), sceneConfig.getHeight() );
@@ -135,7 +136,7 @@ public abstract class Scene
 	/**
 	 * Appends a world entity.
 	 */
-	public void addEntity(IEntity entity)
+	final public void addEntity(IEntity entity)
 	{
 		worldSection.addEntity(entity);
 	}
@@ -145,17 +146,17 @@ public abstract class Scene
 	 * Schedules entity removal. It will be actually removed at next rendering cycle.
 	 * @param entity
 	 */
-	public void removeEntity(IEntity entity)
+	final public void removeEntity(IEntity entity)
 	{
 		worldSection.removeEntity(entity);
 	}
 	
-	public void addOverlay(Overlay entity)
+	final public void addOverlay(Overlay entity)
 	{
 		uiLayer.addEntity(entity);
 	}
 	
-	 final public void removeOverlay(Overlay entity)
+	final public void removeOverlay(Overlay entity)
 	{
 		uiLayer.removeEntity(entity);
 	}
@@ -257,8 +258,8 @@ public abstract class Scene
 	{
 	}
 
-	final public ISpatialIndex <IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
-	final public ISpatialIndex <Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
+	final public ISpatialIndex <IAreaChunk, IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
+	final public ISpatialIndex <IAreaChunk, Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
 	
 	/**
 	 * Set user action controller. May be set any time after scene initialization.

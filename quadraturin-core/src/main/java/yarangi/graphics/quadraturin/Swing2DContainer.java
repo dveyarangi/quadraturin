@@ -159,9 +159,9 @@ public class Swing2DContainer extends JFrame
 		log.trace("Entity stage animator created.");
 		
 		log.debug("Creating entity stage...");
-		stage = new Stage(config.getStageConfig(), config.getEkranConfig(), voices);
+		stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
 		
-		stage.setInitialScene(); // TODO: ugly
+		 // TODO: ugly
 		stage.addListener(voices);
 		stage.addListener(controller);
 		stage.addListener(animator);
@@ -248,19 +248,10 @@ public class Swing2DContainer extends JFrame
 	{
 		return voices; 
 	}
-	
-	public void addScene(Scene scene)
-	{
-		stage.addScene(scene);
-	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public void activateScene(String name) 
+	public Stage getStage()
 	{
-		stage.setScene(name);
+		return stage;
 	}
 
 }

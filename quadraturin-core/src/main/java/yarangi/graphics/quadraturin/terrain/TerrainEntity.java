@@ -4,11 +4,11 @@ import yarangi.graphics.quadraturin.objects.Entity;
 
 public class TerrainEntity extends Entity
 {
-	private ITerrainMap terrain;
-	public TerrainEntity(ITerrainMap terrain)
+	private ITileMap terrain;
+	public TerrainEntity(ITileMap terrain)
 	{
 		this.terrain = terrain;
 	}
 	
-	public ITerrainMap getTerrain() { return terrain; }
+	public ITileMap getTerrain() { return terrain; }
 }

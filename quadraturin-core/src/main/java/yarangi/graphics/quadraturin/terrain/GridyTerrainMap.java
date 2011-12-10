@@ -5,7 +5,7 @@ import java.util.Set;
 import yarangi.ZenUtils;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.spatial.GridMap;
-import yarangi.spatial.ISpatialSensor;
+import yarangi.spatial.Tile;
 
 /**
  * 
@@ -14,7 +14,7 @@ import yarangi.spatial.ISpatialSensor;
  * @param <T> - tile type
  * @param <P> - tile pixel type
  */
-public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> implements ITerrainMap <T>
+public class GridyTerrainMap <O> extends GridMap<Tile <O>, O> implements ITileMap <O>
 {
 	
 	private float pixelsize;
@@ -29,49 +29,25 @@ public class GridyTerrainMap <T extends ITile <?>> extends GridMap<Cell <T>, T> 
 	}
 
 	@Override
-	public Cell<T>[] createMap(int cellSize, int width, int height)
+	public Tile <O>[] createMap(int cellSize, int width, int height)
 	{
-		return (Cell <T> []) new Cell [width*height]; // ugly, as always	
+		return (Tile <O> []) new Tile [width*height]; // ugly, as always	
 	}
 	
 	@Override
-	protected Cell<T> createEmptyCell(int idx, double x, double y)
+	protected Tile<O> createEmptyCell(int idx, double x, double y)
 	{
-		return new Cell <T> (x, y, getCellSize(), null);
+		return new Tile <O> (x, y, getCellSize(), getCellSize());
 	}
 
 	@Override
-	public final int indexAtCell(int x, int y) 
+	public final int indexAtTile(int x, int y) 
 	{
 		return  x + getGridWidth() * y;
 	}
 
 	@Override
-	protected boolean queryCell(Cell<T> cell, ISpatialSensor<T> sensor, int queryId)
-	{
-		if(cell.getProperties() == null)
-			return false;
-		
-		return sensor.objectFound( cell, cell.getProperties() );
-	}
-
-	@Override
-	protected boolean addToCell(Cell<T> cell, T object)
-	{
-		cell.setProperties( object );
-		return true;
-	}
-
-	@Override
-	protected boolean removeFromCell(Cell<T> cell, T object)
-	{
-		cell.setProperties( null );
-		return true;
-	}
-
-
-	@Override
-	public Set<T> keySet()
+	public Set<O> keySet()
 	{
 		return ZenUtils.methodNotSupported( GridyTerrainMap.class );
 	}

@@ -58,7 +58,7 @@ public class FSMBehavior <K> implements Behavior <K>
 		double remainingTime = time;
 		// changing state if behavior did not use all frame time:
 		// otherwise the same 
-		while((remainingTime = currState.behave(remainingTime, entity, isVisible)) > 0)
+		while((remainingTime = currState.behave(remainingTime, entity)) > 0)
 			currState = fsm.nextState(entity);
 		
 		if(remainingTime == 0)
