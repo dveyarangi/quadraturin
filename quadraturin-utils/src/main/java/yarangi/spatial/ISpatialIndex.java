@@ -2,10 +2,10 @@ package yarangi.spatial;
 
 import java.util.Set;
 
-public interface ISpatialIndex <K>
+public interface ISpatialIndex <T, O>
 {
 	
-	public Set <K> keySet();
+	public Set <O> keySet();
 	/**
 	 * Iterates over specified area, reporting fully or partially fitting objects in index. 
 	 * {@link ISpatialSensor} must implement object observing logic. They can also modify 
@@ -20,7 +20,7 @@ public interface ISpatialIndex <K>
 	 * @param maxx
 	 * @param maxy
 	 */
-	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, Area area);
+	public ISpatialSensor <T, O> query(ISpatialSensor <T, O> sensor, Area area);
 //	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, AABB area);
 	
 	/**
@@ -30,7 +30,7 @@ public interface ISpatialIndex <K>
 	 * @param maxx
 	 * @param maxy
 	 */
-	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double x, double y, double radiusSquare);
+	public ISpatialSensor <T, O> query(ISpatialSensor <T, O> sensor, double x, double y, double radiusSquare);
 	
 	/**
 	 * Iterates over a line, originating at (ox, oy) width (dx, dy) length
@@ -42,6 +42,6 @@ public interface ISpatialIndex <K>
 	 * @param dy
 	 * @return
 	 */
-	public ISpatialSensor <K> query(ISpatialSensor <K> sensor, double ox, double oy, double dx, double dy);
+	public ISpatialSensor <T, O> query(ISpatialSensor <T, O> sensor, double ox, double oy, double dx, double dy);
 
 }

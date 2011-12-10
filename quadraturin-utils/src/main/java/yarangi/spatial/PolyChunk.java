@@ -9,9 +9,9 @@ public class PolyChunk implements IAreaChunk
 {
 	private double x, y;
 	
-	private Polygon parent;
+	private PolygonArea parent;
 	
-	public PolyChunk(Polygon parent, double x, double y) {
+	public PolyChunk(PolygonArea parent, double x, double y) {
 		this.x = x;
 		this.y = y;
 		
@@ -20,7 +20,7 @@ public class PolyChunk implements IAreaChunk
 	}
 
 	@Override public Area getArea() { return parent; }
-	public Polygon getParent() { return parent; }
+	public PolygonArea getParent() { return parent; }
 
 	@Override public double getX() { return x; }
 	@Override public double getY() { return y; }

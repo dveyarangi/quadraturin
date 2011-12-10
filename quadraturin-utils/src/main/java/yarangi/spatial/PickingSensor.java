@@ -4,7 +4,7 @@ package yarangi.spatial;
  * Sensor that picks a single object from the indexer.
  * @param <K> indexer ojbects type
  */
-public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor <K> 
+public class PickingSensor <K extends ISpatialObject> implements ISpatialSensor <IAreaChunk, K> 
 {
 	
 	/**

@@ -10,15 +10,15 @@ import yarangi.math.FastMath;
  * 
  * Note: cannot be used in multi-threaded environment, due to passId optimization (and lack of any type of synchronization).
  * TODO: refactor to extend {@link GridMap}
- * @param <T>
+ * @param <O>
  */
-public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
+public class SpatialHashMap <O extends ISpatialObject> extends SpatialIndexer<O>
 {
 	/**
 	 * buckets array.
 	 * TODO: hashmap is slow!!!
 	 */
-	protected Map <IAreaChunk, T> [] map;
+	protected Map <IAreaChunk, O> [] map;
 	
 	/**
 	 * number of buckets
@@ -76,7 +76,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		this.halfCellSize = cellSize/2.;
 		map = new Map [size];
 		for(int idx = 0; idx < size; idx ++)
-			map[idx] = new HashMap <IAreaChunk, T> ();
+			map[idx] = new HashMap <IAreaChunk, O> ();
 //		System.out.println(halfWidth + " : " + halfHeight);
 	}
 	
@@ -114,7 +114,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * @param y
 	 * @return
 	 */
-	public final Map <IAreaChunk, T> getBucket(int x, int y)
+	public final Map <IAreaChunk, O> getBucket(int x, int y)
 	{
 		return map[hash(x, y)];
 	}
@@ -139,7 +139,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	protected void addObject(Area area, T object) 
+	protected void addObject(Area area, O object) 
 	{
 		if(object == null)
 			throw new NullPointerException();
@@ -150,7 +150,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	protected T removeObject(Area area, T object) 
+	protected O removeObject(Area area, O object) 
 	{
 		removingConsumer.setObject( object );
 		area.iterate( cellSize, removingConsumer );
@@ -162,7 +162,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * {@inheritDoc}
 	 * TODO: not efficient for large polygons:
 	 */
-	protected void updateObject(Area old, Area area, T object) 
+	protected void updateObject(Area old, Area area, O object) 
 	{
 		removeObject(old, object);
 		addObject(area, object);
@@ -172,7 +172,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	 * {@inheritDoc}
 	 * TODO: slow
 	 */
-	public ISpatialSensor <T> query(ISpatialSensor <T> sensor, Area area)
+	public ISpatialSensor <IAreaChunk, O> query(ISpatialSensor <IAreaChunk, O> sensor, Area area)
 	{
 		if(area == null)
 			throw new IllegalArgumentException("Area cannot be null.");
@@ -203,7 +203,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double x, double y, double radiusSquare)
+	public final ISpatialSensor <IAreaChunk, O> query(ISpatialSensor <IAreaChunk, O> sensor, double x, double y, double radiusSquare)
 	{
 		// TODO: spiral iteration, remove this root calculation:
 		double radius = Math.sqrt(radiusSquare);
@@ -212,11 +212,11 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		int maxx = Math.min(toGridIndex(x+radius),  halfGridWidth);
 		int maxy = Math.min(toGridIndex(y+radius),  halfGridHeight);
 		int passId = getNextPassId();
-		T object;
+		O object;
 		
 //		System.out.println("dim: " + minx + " " + maxx + " " + miny + " " + maxy + "area size: " + (maxx-minx)*(maxy-miny));
 		// removing the object from all overlapping buckets:
-		Map <IAreaChunk, T> cell;
+		Map <IAreaChunk, O> cell;
 		for(int tx = minx; tx <= maxx; tx ++)
 			for(int ty = miny; ty <= maxy; ty ++)
 			{
@@ -252,7 +252,7 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		return sensor;
 	}
 	
-	public final ISpatialSensor <T> query(ISpatialSensor <T> sensor, double ox, double oy, double dx, double dy)
+	public final ISpatialSensor <IAreaChunk, O> query(ISpatialSensor <IAreaChunk, O> sensor, double ox, double oy, double dx, double dy)
 	{
 		int currGridx = toGridIndex(ox);
 		int currGridy = toGridIndex(oy);
@@ -290,8 +290,8 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		else { tMaxY = Double.MAX_VALUE; tDeltaY = 0; stepY = 0;}
 		
 		int passId = getNextPassId();
-		T object;
-		Map <IAreaChunk, T> cell;
+		O object;
+		Map <IAreaChunk, O> cell;
 		while(tMaxX <= 1 || tMaxY <= 1)
 		{
 			if(tMaxX < tMaxY)
@@ -326,12 +326,12 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		public void setObject(T object);
 	}
 	
-	private IObjectConsumer <T> addingConsumer = new IObjectConsumer <T>()
+	private IObjectConsumer <O> addingConsumer = new IObjectConsumer <O>()
 	{
-		private T object;
+		private O object;
 		private int x, y;
 		
-		public void setObject(T object)
+		public void setObject(O object)
 		{
 			this.object = object;
 		}
@@ -349,12 +349,12 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 		}
 	};
 	
-	private IObjectConsumer <T> removingConsumer = new IObjectConsumer <T>()
+	private IObjectConsumer <O> removingConsumer = new IObjectConsumer <O>()
 	{
-		private T object;
+		private O object;
 		private int x, y;
 		
-		public void setObject(T object)
+		public void setObject(O object)
 		{
 			this.object = object;
 		}
@@ -379,20 +379,20 @@ public class SpatialHashMap <T extends ISpatialObject> extends SpatialIndexer<T>
 	};
 	private interface IQueryingConsumer <T extends ISpatialObject> extends IChunkConsumer
 	{
-		public void setSensor(ISpatialSensor <T> sensor);
+		public void setSensor(ISpatialSensor <IAreaChunk, T> sensor);
 
 		public void setQueryId(int nextPassId);
 	}
 	
-	private IQueryingConsumer <T> queryingConsumer = new IQueryingConsumer <T>()
+	private IQueryingConsumer <O> queryingConsumer = new IQueryingConsumer <O>()
 	{
-		private T object;
+		private O object;
 		private int x, y;
-		private Map <IAreaChunk, T> cell;
-		private ISpatialSensor <T> processor;
+		private Map <IAreaChunk, O> cell;
+		private ISpatialSensor <IAreaChunk, O> processor;
 		private int passId;
 		
-		public void setSensor(ISpatialSensor <T> processor)
+		public void setSensor(ISpatialSensor <IAreaChunk, O> processor)
 		{
 			this.processor = processor;
 		}
