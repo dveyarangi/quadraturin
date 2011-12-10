@@ -6,20 +6,20 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.terrain.Cell;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.math.BitUtils;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
+import yarangi.spatial.Tile;
 
-public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Look <G>, IGridListener<Cell<T>>
+public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Look <G>, IGridListener<Tile<O>>
 {
 	private FBO fbo;
 	
 	private int gridTextureWidth, gridTextureHeight;
 	
-	private Collection <Cell<T>> pendingCells;
+	private Collection <Tile<O>> pendingTiles;
 	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
@@ -86,9 +86,9 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 
 	
 	@Override
-	public void cellsModified(Collection<Cell<T>> cells)
+	public void cellsModified(Collection<Tile<O>> tiles)
 	{
-		pendingCells = cells;
+		pendingTiles = tiles;
 	}
 
 	private void beginFrameBufferSpace(GL gl, G grid)
@@ -115,20 +115,20 @@ public abstract class TileGridLook <T, G extends IGrid <Cell<T>>> implements Loo
 	
 	private void updateFrameBuffer(GL gl, G grid)
 	{
-		if(pendingCells != null && pendingCells.size() > 0)
+		if(pendingTiles != null && pendingTiles.size() > 0)
 		{
 			// redrawing changed tiles:
 			
 			beginFrameBufferSpace( gl, grid );
-			for(Cell <T> cell : pendingCells)
-				renderTile(gl, cell, grid);
+			for(Tile<O> tile : pendingTiles)
+				renderTile(gl, tile, grid);
 			endFrameBufferSpace( gl );
 			
-			pendingCells = null;
+			pendingTiles = null;
 		}
 	}
 	
-	protected abstract void renderTile(GL gl, Cell<T> cell, G grid);
+	protected abstract void renderTile(GL gl, Tile<O> tile, G grid);
 	
 
 }
