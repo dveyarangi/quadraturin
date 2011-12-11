@@ -21,7 +21,7 @@ public interface Area
 	public double getOrientation();
 	
 	/**
-	 * Sets area orientation
+	 * Sets area orientation (degrees)
 	 * @param a
 	 */
 	public void setOrientation(double a);
