@@ -10,7 +10,6 @@ import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITileMap;
-import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
 import yarangi.spatial.PickingSensor;
@@ -88,9 +87,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	public void display( GL gl, double time, IRenderingContext context)
 	{
+		super.display( gl, time, context );
 		if(terrain != null)
 			terrain.render( gl, time, context );
-		super.display( gl, time, context );
 	}
 	
 	public void animate(double time)

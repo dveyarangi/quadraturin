@@ -6,8 +6,8 @@ import yarangi.spatial.Area;
 public class Body
 {
 	
-	private Vector2D force = new Vector2D(0,0);
-	private Vector2D velocity = new Vector2D(0,0);
+	private Vector2D force = Vector2D.ZERO();
+	private Vector2D velocity = Vector2D.ZERO();
 	private double mass = 1;
 	private double maxSpeedSquare = 1;
 	

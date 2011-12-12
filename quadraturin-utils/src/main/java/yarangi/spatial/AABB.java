@@ -58,7 +58,7 @@ public class AABB implements Area
 	
 	private AABB(double x, double y, double rx, double ry, double a)
 	{
-		this.ref = new Vector2D(x, y);
+		this.ref = Vector2D.R(x, y);
 		rmax = Math.max(rx, ry);
 		this.rx = rx;
 		this.ry = ry;

@@ -88,7 +88,7 @@ public class UserLayer extends SceneLayer <Overlay>
 		}
 		
 		if(Debug.ON)
-			Debug.drawUserLayerOverlay(gl, this, context);
+//			Debug.drawUserLayerOverlay(gl, this, context);
 		
 		super.display( gl, time, context );
 	}

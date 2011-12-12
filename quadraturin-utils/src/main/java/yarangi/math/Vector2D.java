@@ -42,20 +42,25 @@ public class Vector2D //extends IVector2D
 	/**
 	 * @return Total vectors created.
 	 */
-	public static int getCount() { return count; } 
-
+	public static int getCount() { return count; }
+	
 	/**
 	 * Create a new vector with specified coordinate values.
 	 * @param x
 	 * @param y
 	 */
-	public Vector2D(double x, double y) 
+	protected Vector2D(double x, double y) 
 	{
 		this.x = x;
 		this.y = y;
 		count ++;
 	}
 	
+	public static Vector2D R(double x, double y)
+	{
+		return new Vector2D(x, y);
+	}
+
 	/**
 	 * Creates a vector that originates at (x,y), has a length r and direction a.  
 	 * @param ox - origin x
@@ -63,11 +68,10 @@ public class Vector2D //extends IVector2D
 	 * @param r - length
 	 * @param a - direction (radians
 	 */
-	public Vector2D(double ox, double oy, double r, double a)
+	public static Vector2D POLAR(double ox, double oy, double r, double a)
 	{
-		this.x = ox+r*Math.cos(a);
-		this.y = oy+r*Math.sin(a);
 		count ++;
+		return new Vector2D(ox+r*Math.cos(a), oy+r*Math.sin(a));
 	}
 	
 	/**
@@ -76,19 +80,10 @@ public class Vector2D //extends IVector2D
 	 * @param b - y or a
 	 * @param radial if true, a and b a are considered radial coordinates.
 	 */
-	public Vector2D(double a, double b, boolean radial)
+	public static Vector2D POLAR(double r, double thet)
 	{
-		if(radial)
-		{
-			this.x = a*Math.cos(b);
-			this.y = a*Math.sin(b);
-		}
-		else
-		{
-			this.x = a;
-			this.y = b;
-		}
 		count ++;
+		return new Vector2D(r*Math.cos(thet), r*Math.sin(thet));
 	}
 	
 	/**
@@ -96,10 +91,10 @@ public class Vector2D //extends IVector2D
 	 * @param x
 	 * @param y
 	 */
-	public Vector2D(Vector2D vector) 
+	public static Vector2D COPY(Vector2D v) 
 	{
-		this(vector.x, vector.y);
 		count ++;
+		return new Vector2D(v.x, v.y);
 	}
 
 	/**

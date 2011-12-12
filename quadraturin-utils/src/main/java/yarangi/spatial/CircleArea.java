@@ -17,7 +17,7 @@ public class CircleArea implements Area
 	
 	public CircleArea(double cx, double cy, double radius) 
 	{
-		this.center = new Vector2D(cx, cy);
+		this.center = Vector2D.R(cx, cy);
 		this.radius = radius;
 	}
 

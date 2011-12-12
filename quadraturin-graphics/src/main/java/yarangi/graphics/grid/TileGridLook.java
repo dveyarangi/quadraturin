@@ -82,7 +82,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	}
 	
 	@Override
-	public float getPriority() { return 0.9f; }
+	public float getPriority() { return -1f; }
 
 	
 	@Override

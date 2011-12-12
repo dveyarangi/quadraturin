@@ -250,7 +250,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 	@Override
 	public float getPriority()
 	{
-		return 0f;
+		return 1f;
 	}
 	@Override
 	public IVeil getVeil() { return IVeil.ORIENTING; }

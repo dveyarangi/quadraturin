@@ -11,7 +11,7 @@ public class CameraMover implements ICameraMan
 	
 	private double targetScale;
 	
-	private Vector2D speed = new Vector2D(0,0);
+	private Vector2D speed = Vector2D.ZERO();
 	
 	private static final double FORCE = 0.01;
 	private static final double MAX_SPEED = 1;
@@ -25,7 +25,7 @@ public class CameraMover implements ICameraMan
 	{
 		this.viewPoint = viewPoint;
 		this.targetScale = viewPoint.getScale();
-		this.target = new Vector2D(viewPoint.getCenter());
+		this.target = Vector2D.COPY(viewPoint.getCenter());
 	}
 	
 	public void setTargetLocation(double x, double y)

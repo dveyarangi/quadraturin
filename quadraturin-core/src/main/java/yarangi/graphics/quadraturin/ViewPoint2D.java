@@ -111,7 +111,7 @@ public class ViewPoint2D implements IBeholder
 			throw new IllegalArgumentException("Must be copied from " + this.getClass() + " type.");
 		
 		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
-		this.center = new Vector2D(vp.getCenter().x(), vp.getCenter().y());
+		this.center = Vector2D.COPY(vp.getCenter());
 		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
 		this.world = new Dimension(vp.world.width, vp.world.height);
 		viewport = Arrays.copyOf( vp.viewport, 4 );
@@ -161,7 +161,7 @@ public class ViewPoint2D implements IBeholder
 		/* note viewport[3] is height of window in pixels */
 		realy = viewport[3] - (int) y;
 		glu.gluUnProject(x, realy, 0.0, modelview_matrix, 0, projection_matrix, 0, viewport, 0, wcoord, 0);
-		return new Vector2D(wcoord[0], wcoord[1]);
+		return Vector2D.R(wcoord[0], wcoord[1]);
 //		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
 	}
 

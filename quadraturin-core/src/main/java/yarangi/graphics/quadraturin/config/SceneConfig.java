@@ -53,7 +53,7 @@ public class SceneConfig
 	public ViewPoint2D createViewpoint() 
 	{
 		return new ViewPoint2D(
-				new Vector2D(viewpoint.getCenterX(), viewpoint.getCenterY()), 
+				Vector2D.R(viewpoint.getCenterX(), viewpoint.getCenterY()), 
 				null,
 				new RangedDouble(viewpoint.getMinZoom(), viewpoint.getInitZoom(), viewpoint.getMaxZoom()),
 				new Dimension(getWidth(), getHeight())

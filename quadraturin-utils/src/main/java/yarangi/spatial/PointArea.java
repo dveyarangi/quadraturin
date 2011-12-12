@@ -18,7 +18,7 @@ public class PointArea implements Area
 	
 	public PointArea(double x, double y)
 	{
-		ref = new Vector2D(x, y);
+		ref = Vector2D.R(x, y);
 	}
 	
 	/**
@@ -79,39 +79,40 @@ public class PointArea implements Area
 			.toString();
 	}
 	
-	class PointChunk extends Vector2D implements IAreaChunk
+	class PointChunk implements IAreaChunk
 	{
+		private Vector2D ref;
 
 		public PointChunk(Vector2D ref)
 		{
-			super(ref);
+			this.ref = ref;
 		}
 
 		@Override
 		public Area getArea() { return PointArea.this; }
 
 		@Override
-		public double getX() { return x(); }
+		public double getX() { return ref.x(); }
 
 		@Override
-		public double getY() { return y(); }
+		public double getY() { return ref.y(); }
 
 		@Override
 		public boolean overlaps(double xmin, double ymin, double xmax, double ymax) {
-			return x() >= xmin && x() <= xmax && y() >= ymin && y() <= ymax; 
+			return ref.x() >= xmin && ref.x() <= xmax && ref.y() >= ymin && ref.y() <= ymax; 
 		}
 
 		@Override
-		public double getMinX() { return x(); }
+		public double getMinX() { return getX(); }
 
 		@Override
-		public double getMinY() { return y(); }
+		public double getMinY() { return getY(); }
 
 		@Override
-		public double getMaxX() { return x(); }
+		public double getMaxX() { return getX(); }
 
 		@Override
-		public double getMaxY() { return y(); }
+		public double getMaxY() { return getY(); }
 		
 		public boolean equals(Object o)
 		{

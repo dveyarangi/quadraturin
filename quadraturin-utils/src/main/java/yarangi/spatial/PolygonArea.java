@@ -23,7 +23,7 @@ public class PolygonArea implements Area
 	
 	public PolygonArea(double x, double y) 
 	{ 
-		this.ref = new Vector2D(x, y);
+		this.ref = Vector2D.R(x, y);
 	}
 	
 	private PolygonArea(PolygonArea polygon)
@@ -37,7 +37,7 @@ public class PolygonArea implements Area
 		maxy = polygon.maxy;
 		miny = polygon.miny;
 		
-		ref = new Vector2D(polygon.ref);
+		ref = Vector2D.COPY(polygon.ref);
 	}
 	
 	public void add(int idx, double x, double y) 
@@ -400,9 +400,9 @@ public class PolygonArea implements Area
 //		res.add( new Vector2D(maxPoint.x(), maxPoint.y()) );
 		
 		if(minPoint != null)
-			res.add( new Vector2D(minPoint) );
+			res.add( Vector2D.COPY( minPoint ) );
 		if(maxPoint != null)
-			res.add( new Vector2D(maxPoint) );
+			res.add( Vector2D.COPY(maxPoint) );
 
 		return res;
 	}

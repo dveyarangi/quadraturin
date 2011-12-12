@@ -47,7 +47,7 @@ public class Geometry
 	public static void main(String [] args)
 	{
 		
-		System.out.println(calcDistanceToLine(new Vector2D(0,0), new Vector2D(-1, 1), new Vector2D(5, 0)));
+		System.out.println(calcDistanceToLine(Vector2D.ZERO(), Vector2D.R(-1, 1), Vector2D.R(5, 0)));
 	}
 	public static double calcTriangleArea(double x1, double y1, double x2, double y2, double x3, double y3)
 	{
@@ -100,7 +100,7 @@ public class Geometry
 		
 		double s = (v.y() * w.x() - v.x() * w.y()) / perp;
 		
-		return new Vector2D(P.x() + u.x() * s, P.y() + u.y() * s);
+		return Vector2D.R(P.x() + u.x() * s, P.y() + u.y() * s);
 	}
 	
 	/**
@@ -117,10 +117,10 @@ public class Geometry
 		double perp = (v.x() * u.y() - v.y() * u.x());
 		if(perp == 0)
 			return null;
-		
+		// TODO: sort out math:
 		double s = (v.y() * w.x() - v.x() * w.y()) / perp;
 		double t = (u.y() * w.x() - u.x() * w.y()) / (u.x() * v.y() - u.y() * v.x());
 	
-		return new Vector2D(s, t);
+		return Vector2D.R(s, t);
 	}
 }
