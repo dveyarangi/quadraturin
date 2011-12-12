@@ -2,6 +2,7 @@ package yarangi.spatial;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import yarangi.math.FastMath;
 
@@ -60,7 +61,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 */
 	private int passId;
 	
-	protected List <T> modifiedTiles = new LinkedList <T> ();
+	protected Queue <T> modifiedTiles = new LinkedList <T> ();
 	
 	protected IGridListener <T> listener;
 	
@@ -137,9 +138,9 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @param value
 	 * @return
 	 */
-	public final int toGridXIndex(double value)
+	public final int toGridXIndex(double x)
 	{
-		return FastMath.round(value * invCellsize) + halfGridWidth;
+		return FastMath.floor(x * invCellsize) + halfGridWidth;
 	}
 	
 	/**
@@ -147,18 +148,18 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @param value
 	 * @return
 	 */
-	public final int toLowerGridXIndex(double value)
+	public final int toLowerGridXIndex(double x)
 	{
-		return FastMath.floor(value * invCellsize) + halfGridWidth;
+		return FastMath.floor(x * invCellsize) + halfGridWidth;
 	}
 	/**
 	 * Converts a model x coordinate to cell dimensional index.
 	 * @param value
 	 * @return
 	 */
-	public final int toHigherGridXIndex(double value)
+	public final int toHigherGridXIndex(double x)
 	{
-		return FastMath.ceil(value * invCellsize) + halfGridWidth;
+		return FastMath.ceil(x * invCellsize) + halfGridWidth;
 	}
 	
 	/**
@@ -168,34 +169,35 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 */
 	public final double toRealXIndex(int i)
 	{
-		return ((double)(i-halfGridWidth)) * cellSize;
+		return (i-halfGridWidth) * cellSize;
 	}
 	/**
 	 * Converts a model y coordinate to cell dimensional index.
 	 * @param value
 	 * @return
 	 */
-	public final int toGridYIndex(double value)
+	public final int toGridYIndex(double x)
 	{
-		return FastMath.round(value * invCellsize) + halfGridHeight;
+//		System.out.println(x + " " + x*invCellsize + " " + FastMath.round(x * invCellsize) + halfGridHeight);
+		return FastMath.floor(x * invCellsize) + halfGridHeight;
 	}
 	/**
 	 * Converts a model x coordinate to cell dimensional index.
 	 * @param value
 	 * @return
 	 */
-	public final int toLowerGridYIndex(double value)
+	public final int toLowerGridYIndex(double y)
 	{
-		return FastMath.floor(value * invCellsize) + halfGridHeight;
+		return FastMath.floor(y * invCellsize) + halfGridHeight;
 	}
 	/**
 	 * Converts a model x coordinate to cell dimensional index.
 	 * @param value
 	 * @return
 	 */
-	public final int toHigherGridYIndex(double value)
+	public final int toHigherGridYIndex(double y)
 	{
-		return FastMath.ceil(value * invCellsize) + halfGridHeight;
+		return FastMath.ceil(y * invCellsize) + halfGridHeight;
 	}
 	
 	/**
@@ -203,11 +205,18 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @param i
 	 * @return
 	 */
-	public final double toRealYIndex(int i)
+	public final double toRealYIndex(int j)
 	{
-		return ((double)(i - halfGridHeight)) * cellSize;
+		return (j - halfGridHeight) * cellSize;
 	}
 	
+	/** 
+	 * calculates lower coord value for tile row that contains specified value 
+	 */
+	public final double toLowerCoord(double x)
+	{
+		return FastMath.toGrid( x, cellSize );
+	}
 	
 	/**
 	 * Creates an id for query procedure. 
@@ -260,17 +269,17 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @return
 	 * @throws ArrayIndexOutOfBoundsException
 	 */
-	public final T getTileByIndex(int x, int y)
+	public final T getTileByIndex(int i, int j)
 	{
-		int idx = indexAtTile(x, y);
+		int idx = indexAtTile(i, j);
 		if(idx < 0 || idx >= map.length)
 			return null;
 		return map[idx];
 	}
 	
-	public final O getContentByIndex(int x, int y)
+	public final O getContentByIndex(int i, int j)
 	{
-		T tile = getTileByIndex( x, y );
+		T tile = getTileByIndex( i, j );
 		if(tile != null)
 			return tile.get();
 		
@@ -289,7 +298,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 		T tile = map[idx];
 		if(tile == null)
 		{
-			tile = createEmptyCell( idx, FastMath.toGrid( x, cellSize ), FastMath.toGrid( y, cellSize ) );
+			tile = createEmptyCell( idx, toLowerCoord( x ), toLowerCoord( y ) );
 			map[idx] = tile;
 		}
 		if(tile.put( object ))
@@ -368,7 +377,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * Retrieves a list of modified cells.
 	 * @return
 	 */
-	protected List <T> getModifiedTiles()
+	protected Queue <T> getModifiedTiles()
 	{
 		return modifiedTiles;
 	}

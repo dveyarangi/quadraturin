@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.terrain;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 
-public interface ITerrainFactory
+public interface ITerrainFactory <G>
 {
-	public EntityShell <? extends ITileMap> generateTerrain(float width, float height, int cellsize);
+	public EntityShell <G> generateTerrain(float width, float height, int cellsize);
 }

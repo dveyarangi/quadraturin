@@ -3,7 +3,9 @@ package yarangi.graphics.quadraturin.terrain;
 import java.util.Set;
 
 import yarangi.ZenUtils;
+import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.Q;
+import yarangi.math.FastMath;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.Tile;
 
@@ -14,7 +16,7 @@ import yarangi.spatial.Tile;
  * @param <T> - tile type
  * @param <P> - tile pixel type
  */
-public class GridyTerrainMap <O> extends GridMap<Tile <O>, O> implements ITileMap <O>
+public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements ITileMap <Bitmap>
 {
 	
 	private float pixelsize;
@@ -29,15 +31,15 @@ public class GridyTerrainMap <O> extends GridMap<Tile <O>, O> implements ITileMa
 	}
 
 	@Override
-	public Tile <O>[] createMap(int cellSize, int width, int height)
+	public Tile <Bitmap>[] createMap(int cellSize, int width, int height)
 	{
-		return (Tile <O> []) new Tile [width*height]; // ugly, as always	
+		return (Tile <Bitmap> []) new Tile [width*height]; // ugly, as always	
 	}
 	
 	@Override
-	protected Tile<O> createEmptyCell(int idx, double x, double y)
+	protected Tile<Bitmap> createEmptyCell(int idx, double x, double y)
 	{
-		return new Tile <O> (x, y, getCellSize(), getCellSize());
+		return new Tile <Bitmap> (x, y, getCellSize(), getCellSize());
 	}
 
 	@Override
@@ -47,9 +49,42 @@ public class GridyTerrainMap <O> extends GridMap<Tile <O>, O> implements ITileMa
 	}
 
 	@Override
-	public Set<O> keySet()
+	public Set<Bitmap> keySet()
 	{
 		return ZenUtils.methodNotSupported( GridyTerrainMap.class );
+	}
+	
+	public Tile<Bitmap> createTileAt(int i, int j) 
+	{
+		double x = toRealXIndex( i );
+		double y = toRealYIndex( j );
+		Bitmap bitmap = new Bitmap(toRealXIndex( i ), toRealYIndex( j ), getCellSize(), 1);
+		Tile <Bitmap> tile = getTileByIndex( i, j );
+		if(tile == null)
+		{
+			tile = new Tile <Bitmap> (x, y, getCellSize(), getCellSize());
+			putAtIndex( i, j, tile );
+		}
+		tile.put( bitmap );
+		
+		return tile;
+	}
+	
+	public Tile <Bitmap> setPixel(double x, double y, Color color)
+	{
+		if(x < getMinX() || x > getMaxX() || y < getMinY() || y > getMaxY())
+			return null;
+		Tile <Bitmap> tile = getTile( x, y );
+		if(tile == null)
+			return null;
+		
+		int dx = FastMath.floor(x - tile.getX());
+		int dy = FastMath.floor(y - tile.getY());
+		
+//		Color c = tile.get().at( dx, dy );
+		tile.get().put( color, dx, dy );
+		
+		return tile;
 	}
 
 	/**
