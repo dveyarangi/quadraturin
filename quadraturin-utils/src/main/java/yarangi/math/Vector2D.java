@@ -87,6 +87,18 @@ public class Vector2D //extends IVector2D
 	}
 	
 	/**
+	 * Creates a vector
+	 * @param a - x or r
+	 * @param b - y or a
+	 * @param radial if true, a and b a are considered radial coordinates.
+	 */
+	public static Vector2D UNIT(double thet)
+	{
+		count ++;
+		return new Vector2D(Math.cos(thet), Math.sin(thet));
+	}
+	
+	/**
 	 * Copy the specified vector.
 	 * @param x
 	 * @param y
