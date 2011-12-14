@@ -139,4 +139,11 @@ public class PointArea implements Area
 
 	@Override
 	public void setPassId(int id) {	this.passId = id; }
+
+	@Override
+	public boolean overlaps(AABB area)
+	{
+		return ref.x() >= area.getMinX() && ref.x() <= area.getMaxX()
+		    && ref.y() >= area.getMinY() && ref.y() <= area.getMaxY();
+	}
 }

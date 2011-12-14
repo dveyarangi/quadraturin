@@ -160,8 +160,13 @@ public interface Area
 
 		@Override
 		public void setPassId(int id) { }
+
+		@Override
+		public boolean overlaps(AABB area) { return false; }
 	
 	};
+
+	public boolean overlaps(AABB area);
 	
 
 }

@@ -126,7 +126,7 @@ public class AABB implements Area
 		this.rmax = radius;
 	}
 	
-	public boolean overlaps(double minx, double miny, double maxx, double maxy)
+	public final boolean overlaps(double minx, double miny, double maxx, double maxy)
 	{
 		return ( (maxx >= ref.x()-rx && maxx <= ref.x()+rx) ||
 			     (minx >= ref.x()-rx && minx <= ref.x()+rx) ||
@@ -140,7 +140,12 @@ public class AABB implements Area
 			   );
 
 	}
-	
+	@Override
+	public boolean overlaps(AABB area)
+	{
+		return overlaps( area.getMinX(), area.getMinY(), area.getMaxX(), area.getMaxY() );
+	}
+
 	@Override
 	public List<Vector2D> getDarkEdge(Vector2D from)
 	{
@@ -211,5 +216,6 @@ public class AABB implements Area
 	public void setPassId(int id) {	this.passId = id; }
 	public double getRX() {return rx; }
 	public double getRY() {return ry; }
+
 
 }
