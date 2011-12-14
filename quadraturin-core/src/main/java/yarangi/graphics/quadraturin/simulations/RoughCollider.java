@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import yarangi.graphics.quadraturin.terrain.ITileMap;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialSensor;
-import yarangi.spatial.ITile;
 import yarangi.spatial.Tile;
 
 public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
@@ -43,7 +43,12 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 		ICollisionHandler<O> handler = handlers.get( source.getClass() );
 		if(handler == null)
 			return false;
-		return handler.setImpactWith( source, target );
+		if(!(target.getArea() instanceof AABB))
+			return false; //throw new IllegalArgumentException("Collision with non-AABB areas is not yet supported (target: " + target + ")");
+		if(source.getArea().overlaps( (AABB)target.getArea() ))
+			return handler.setImpactWith( source, target );
+		
+		return false;
 	}
 
 	@Override
