@@ -67,7 +67,7 @@ public class CameraMover implements ICameraMan
 	@Override
 	public void moveRight()
 	{
-		System.out.println(viewPoint.getCenter() + " : " + target);
+		// System.out.println(viewPoint.getCenter() + " : " + target);
 		target.setx( viewPoint.getCenter().x() - scrollStep*viewPoint.getScale() );
 	}
 

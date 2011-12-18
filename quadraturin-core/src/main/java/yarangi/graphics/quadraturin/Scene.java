@@ -99,8 +99,9 @@ public abstract class Scene
 			log.debug( "No terrain configuration found." );
 
 		// initializing physics engine:
-		worldSection.setPhysicsEngine( sceneConfig.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
-				terrain == null ? null : terrain.getEssence()));
+		if(sceneConfig.getEngineConfig() != null)
+			worldSection.setPhysicsEngine( sceneConfig.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
+					terrain == null ? null : terrain.getEssence()));
 		
 		// scene ui aggregator
 		this.uiLayer = new UserLayer(ekranConfig.getXres(), ekranConfig.getYres());
@@ -200,6 +201,7 @@ public abstract class Scene
 	 */
 	public void preDisplay(GL gl, double time, boolean pushNames) 
 	{	
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		getWorldLayer().preDisplay(gl); 
 	}
 	
@@ -213,7 +215,7 @@ public abstract class Scene
 	{
 		getWorldLayer().display(gl, time, context);
 		
-		if(actionController.getLook() != null)
+		if(actionController != null && actionController.getLook() != null)
 			actionController.getLook().render(gl, time, actionController, context);
 	}
 

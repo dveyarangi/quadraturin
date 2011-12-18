@@ -47,7 +47,7 @@ public class DefaultActionFactory
 		@Override
 		public ICameraMan getCameraManager()
 		{
-			return null;
+			return cameraMover;
 		}
 
 		@Override
