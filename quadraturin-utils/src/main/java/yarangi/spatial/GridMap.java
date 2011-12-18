@@ -1,8 +1,7 @@
 package yarangi.spatial;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.HashSet;
+import java.util.Set;
 
 import yarangi.math.FastMath;
 
@@ -61,7 +60,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 */
 	private int passId;
 	
-	protected Queue <T> modifiedTiles = new LinkedList <T> ();
+	protected Set <T> modifiedTiles = new HashSet <T> ();
 	
 	protected IGridListener <T> listener;
 	
@@ -87,10 +86,10 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 		this.halfCellSize = cellSize/2f;
 		
 
-		minX = -width/2f;
-		maxX = width/2f;
-		minY = -height/2f;
-		maxY = height/2f;
+		minX = (float)Math.ceil( -width/2f);
+		maxX = (float)Math.floor(width/2f);
+		minY = (float)Math.ceil(-height/2f);
+		maxY = (float)Math.floor(height/2f);
 		
 		map = createMap( cellSize, gridWidth, gridHeight );
 
@@ -130,7 +129,11 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 */
 	protected int indexAtCoord(double x, double y)
 	{
-		return indexAtTile(toGridXIndex(x), toGridYIndex(y));
+		int i = toGridXIndex(x);
+		int j = toGridYIndex(y);
+		if(i < 0 || i >= gridWidth || j < 0 || j >= gridHeight)
+			return -1;
+		return indexAtTile(i, j);
 	}
 
 	/**
@@ -167,7 +170,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @param i
 	 * @return
 	 */
-	public final double toRealXIndex(int i)
+	public final double toXCoord(int i)
 	{
 		return (i-halfGridWidth) * cellSize;
 	}
@@ -205,7 +208,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @param i
 	 * @return
 	 */
-	public final double toRealYIndex(int j)
+	public final double toYCoord(int j)
 	{
 		return (j - halfGridHeight) * cellSize;
 	}
@@ -377,7 +380,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * Retrieves a list of modified cells.
 	 * @return
 	 */
-	protected Queue <T> getModifiedTiles()
+	protected Set <T> getModifiedTiles()
 	{
 		return modifiedTiles;
 	}
@@ -393,7 +396,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 			listener.cellsModified( modifiedTiles );
 		
 		// resetting modified cells queue:
-		modifiedTiles = new LinkedList <T> ();
+		modifiedTiles = new HashSet <T> ();
 	}
 	
 		
@@ -431,7 +434,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 			{
 				tile = getTileByIndex(tx, ty);
 				
-				double distanceSquare = FastMath.powOf2(x - tx*cellSize) + FastMath.powOf2(y - ty*cellSize);
+				double distanceSquare = FastMath.powOf2(x - toXCoord( tx )) + FastMath.powOf2(y - toYCoord( ty ));
 				if(radiusSquare < distanceSquare)
 					continue;
 				

@@ -49,7 +49,7 @@ public class FBO
 		if(textureId != TextureUtils.ILLEGAL_ID)
 		{
 //			gl.glBindTexture(GL.GL_TEXTURE_2D, textureId);
-			System.out.println(textureId);
+//			System.out.println(textureId);
 			gl.glFramebufferTexture2DEXT(GL.GL_FRAMEBUFFER_EXT, GL.GL_COLOR_ATTACHMENT0_EXT, GL.GL_TEXTURE_2D, textureId, 0);
 //			gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
 		}
@@ -74,7 +74,7 @@ public class FBO
 	final protected void setTextureId(int textureId) { this.textureId = textureId; }
 	final protected int getDepthBufferId() { return depthBufferId; }
 	final protected void setDepthBufferId(int depthBufferId) { this.depthBufferId = depthBufferId; }
-	final protected int getFboId() { return fboId; }
+	final public int getFboId() { return fboId; }
 	final protected void setFboId(int fboId) { this.fboId = fboId; }
 	
 	final public void bindTexture(GL gl)

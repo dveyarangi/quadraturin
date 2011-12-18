@@ -2,7 +2,7 @@ package yarangi.graphics.colors;
 
 public class MaskUtil
 {
-	public static byte [] createCircleMask(int radius)
+	public static byte [] createCircleMask(int radius, Color color)
 	{
 		int width = 2*radius;
 		byte [] mask = new byte [4 * width * width];
@@ -13,12 +13,12 @@ public class MaskUtil
 			for(int j = 0; j < width; j ++)
 			{
 				offset = 4 * ( i + width*j );  
-				if(i*i + j*j < radiusSquare)
+				if((i-radius)*(i-radius) + (j-radius)*(j-radius) < radiusSquare)
 				{
-					mask[offset]   = (byte)255;
-					mask[offset+1] = (byte)255;
-					mask[offset+2] = (byte)255;
-					mask[offset+3] = (byte)255;
+					mask[offset]   = color.getRedByte();
+					mask[offset+1] = color.getGreenByte();
+					mask[offset+2] = color.getBlueByte();
+					mask[offset+3] = color.getAlphaByte();
 				}
 				else
 				{

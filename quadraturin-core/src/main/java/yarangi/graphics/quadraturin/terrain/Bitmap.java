@@ -15,40 +15,39 @@ public class Bitmap implements IPhysicalObject
 	
 	private PointArea area;
 	
-	private int pixelNum;
+	private int size;
 	
 	private int textureId = -1;
-	
-	private double pixelsize;
+
 	
 	/**
 	 * 
 	 * @param x
 	 * @param y
-	 * @param pixels array of pixel color components (r,g,b,a); size = width*height*4
+	 * @param pixels array of pixel color components (r,g,b,a); 
 	 */
-	public Bitmap(double cx, double cy, int size, double pixelsize)
+	public Bitmap(double cx, double cy, int size)
 	{
 		
 		area = new PointArea(cx, cy);
 		
 		this.pixels = new byte[size*size*4];
 		
-		this.pixelNum = size;
-		
-		this.pixelsize = pixelsize;
+		this.size = size;
 		
 		pixelCount = 0;
-		for(int i = 0; i < pixels.length/4; i += 4)
-			if(pixels[i] != 0 || pixels[i+1] != 0 || pixels[i+2] != 0 || pixels[i+3] != 0)
-				pixelCount ++;
+		for(int i = 0; i < pixels.length; i += 4)
+			pixels[i] = 1;
+			/*if(pixels[i] != 0 || pixels[i+1] != 0 || pixels[i+2] != 0 || pixels[i+3] != 0)
+				pixelCount ++;*/
 			
 	}
 	
-//	protected final int getCoordOffset(double x, double y)
-//	{
-//		return (int)FastMath.toGrid(x-cx, pixelsize) + (int)(pixelNum * FastMath.toGrid(y-cy, pixelsize));
-//	}
+
+	private final int offset(int x, int y) 
+	{
+		return 4 * (x + size * y);
+	}
 	
 	
 	protected final boolean hasColor(int offset)
@@ -58,13 +57,13 @@ public class Bitmap implements IPhysicalObject
 	
 	public Color at(int x, int y)
 	{
-		int offset = 4 * (x + pixelNum * y);
+		int offset = offset(x, y);
 		return new Color(pixels[offset], pixels[offset+1], pixels[offset+2], pixels[offset+3]);
 	}
 	
 	public void put(Color p, int x, int y)
 	{
-		int offset = 4 * (x + pixelNum * y);
+		int offset = offset(x, y);
 			
 		if(hasColor(offset))
 			pixelCount --;
@@ -80,7 +79,7 @@ public class Bitmap implements IPhysicalObject
 	
 	public void remove(int x, int y)
 	{
-		int offset = 4 * (x + pixelNum * y);
+		int offset = offset(x, y);
 		
 		if(hasColor(offset))
 			pixelCount --;
@@ -88,49 +87,82 @@ public class Bitmap implements IPhysicalObject
 		pixels[offset] = pixels[offset+1] = pixels[offset+2] = pixels[offset+3] = 0;
 	}
 	
-	public void subMask(int ioffset, int joffset, byte [] mask)
+	public boolean subMask(int ioffset, int joffset, byte [] mask)
 	{
 		int minI = Math.max( 0, ioffset );
-		int maxI = Math.min( pixelNum, pixelNum + ioffset );
+		int maxI = Math.min( size, size + ioffset );
 		int minJ = Math.max( 0, joffset );
-		int maxJ = Math.min( pixelNum, pixelNum + joffset );
+		int maxJ = Math.min( size, size + joffset );
 		int offset;
 		boolean hadColor;
-		for(int i = minI; i < maxI; i ++)
-			for(int j = minJ; j < maxJ; j ++)
+		boolean changed = false;
+
+		for(int i = minI; i <= maxI; i ++)
+			for(int j = minJ; j <= maxJ; j ++)
 			{
-				offset = 4 * (i + pixelNum * j);
+				offset = offset(i, j);
 				
 				hadColor = hasColor(offset);
-				pixels[offset] -= mask[4 * (i - ioffset + pixelNum * (j - joffset))];
+				pixels[offset] -= mask[4 * (i - ioffset + size * (j - joffset))];
 				if(pixels[offset] < 0)
 					pixels[offset] = 0;
 				
 				if(hadColor && !hasColor(offset))
 					pixelCount --;
+				
+				changed = true;
 			}
+		return changed;
 	}
 	
-	public void addMask(int ioffset, int joffset, byte [] mask)
+	public boolean addMask(int ioffset, int joffset, int maskWidth, byte [] mask)
 	{
-		int minI = Math.max( 0, ioffset );
-		int maxI = Math.min( pixelNum, pixelNum + ioffset );
-		int minJ = Math.max( 0, joffset );
-		int maxJ = Math.min( pixelNum, pixelNum + joffset );
+		int minI = Math.max( -ioffset, 0);
+		int maxI = Math.min( maskWidth - ioffset, size);
+		int minJ = Math.max( -joffset, 0);
+		int maxJ = Math.min( maskWidth - joffset, size);
 		int offset;
+		boolean changed = false;
 		boolean hadColor;
 		for(int i = minI; i < maxI; i ++)
 			for(int j = minJ; j < maxJ; j ++)
 			{
-				offset = 4 * (i + pixelNum * j);
+				offset = offset(i, j);
+//				if(offset < 0 || offset >= pixels.length)
+//					continue;
 				hadColor = hasColor(offset);
-				pixels[offset] += mask[4 * (i - ioffset + pixelNum * (j - joffset))];
-				if(pixels[offset] > 255)
-					pixels[offset] = (byte)255;
+				int maskOffset = 4*((i+ioffset) + maskWidth*(j+joffset));
+				if(maskOffset < 0 || maskOffset >= mask.length)
+					continue;			
+
+	//			pixels[offset] += mask[maskOffset];
+	//			if(pixels[offset] > 255)
+	//				pixels[offset] = (byte)255;				
+				addPixel(offset, maskOffset, mask);
 				
 				if(!hadColor && hasColor(offset))
 					pixelCount ++;
+				
+				changed = true;
 			}
+		return changed;
+	}
+	
+	final private void addPixel(int bitmapOffset, int maskOffset, byte [] mask) 
+	{
+		pixels[bitmapOffset] += mask[maskOffset];
+		if(pixels[bitmapOffset] >= 255)
+			pixels[bitmapOffset] = (byte)254;
+		pixels[bitmapOffset+1] += mask[maskOffset+1];
+		if(pixels[bitmapOffset+1] >= 255)
+			pixels[bitmapOffset+1] = (byte)254;
+		pixels[bitmapOffset+2] += mask[maskOffset+2];
+		if(pixels[bitmapOffset+2] >= 255)
+			pixels[bitmapOffset+2] = (byte)254;
+		pixels[bitmapOffset+3] += mask[maskOffset+3];
+		if(pixels[bitmapOffset+3] >= 255)
+			pixels[bitmapOffset+3] = (byte)254;
+
 	}
 
 	public byte [] getPixels()
@@ -156,7 +188,7 @@ public class Bitmap implements IPhysicalObject
 	public int getTextureId() { return textureId; }
 	public boolean hasTexture() { return textureId != -1; }
 
-	public double getPixelSize() { return pixelsize; }
+//	public double getPixelSize() { return pixelsize; }
 	@Override
 	public Area getArea()
 	{
@@ -177,7 +209,7 @@ public class Bitmap implements IPhysicalObject
 
 	public int getSize()
 	{
-		return pixelNum;
+		return size;
 	}
 
 }

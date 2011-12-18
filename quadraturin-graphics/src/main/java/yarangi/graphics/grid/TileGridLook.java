@@ -1,10 +1,12 @@
 package yarangi.graphics.grid;
 
+import java.awt.Point;
 import java.util.Collection;
 
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
@@ -21,26 +23,39 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	
 	private Collection <Tile<O>> pendingTiles;
 	
+	private boolean debug = false;
+	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
 	{
+//		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
-		gridTextureWidth  = BitUtils.po2Ceiling((int)(grid.getMaxX()-grid.getMinX()));
-		gridTextureHeight = BitUtils.po2Ceiling((int)(grid.getMaxY()-grid.getMinY()));
-		int texture = TextureUtils.createEmptyTexture2D( gl, gridTextureWidth, gridTextureHeight, false );
+		Point dim = getFBODimensions( grid );
+		int tx = BitUtils.po2Ceiling( dim.x );
+		int ty = BitUtils.po2Ceiling( dim.y );
+		// TODO: divide to 1024x1024 textures
+		int texture = TextureUtils.createEmptyTexture2D( gl, tx, ty, false );
+//		Q.rendering.debug( "Created terrain FBO texture - size:[" + tx + "x" + ty + "], texture id:" + texture);
+		
+		gl.glBindTexture( GL.GL_TEXTURE_2D, texture );
+		gl.glTexParameteri( GL.GL_TEXTURE_2D,  GL.GL_TEXTURE_MIN_FILTER,  GL.GL_NEAREST);
+		gl.glTexParameteri( GL.GL_TEXTURE_2D,  GL.GL_TEXTURE_MAG_FILTER,  GL.GL_NEAREST);		
+		gl.glBindTexture( GL.GL_TEXTURE_2D, 0 );
 		
 		fbo = FBO.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
+//		Q.rendering.debug( "Created terrain FBO - id:" + fbo.getFboId());
 		
 		grid.setModificationListener( this );
 		
 		updateFrameBuffer( gl, grid );
-		
 	}
+	
+	protected abstract Point getFBODimensions(G grid);
 
 	@Override
 	public void render(GL gl, double time, G grid, IRenderingContext context)
 	{
-		
+		// redrawing changed tiles to frame buffer
 		updateFrameBuffer( gl, grid );
 		
 		float minx = grid.getMinX();
@@ -48,6 +63,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		float miny = grid.getMinY();
 		float maxy = grid.getMaxY();
 		
+		// rendering frame buffer texture:
 		fbo.bindTexture(gl);
 			gl.glBegin(GL.GL_QUADS);
 				gl.glTexCoord2f(0,0); gl.glVertex2f( minx, miny );
@@ -57,13 +73,46 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 			gl.glEnd();
 		fbo.unbindTexture(gl);
 		
-		gl.glColor3f(1,0,0);
-		gl.glBegin(GL.GL_LINE_STRIP);
-		 gl.glVertex2f( minx, miny );
-		 gl.glVertex2f( minx, maxy );
-		 gl.glVertex2f( maxx, maxy );
-		 gl.glVertex2f( maxx, miny );
-		gl.glEnd();
+		// rendering debug overlay:
+		if(debug) {
+			gl.glColor4f(0,0.5f,0, 0.5f);
+			// border
+			gl.glBegin(GL.GL_LINE_STRIP);
+			 gl.glVertex2f( minx, miny );
+			 gl.glVertex2f( minx, maxy );
+			 gl.glVertex2f( maxx, maxy );
+			 gl.glVertex2f( maxx, miny );
+			 gl.glVertex2f( minx, miny );
+			gl.glEnd();
+			// x axis
+			gl.glColor4f(0,0.5f,0, 0.5f);
+			gl.glBegin(GL.GL_LINE_STRIP);
+			gl.glVertex2f( 0, miny );
+		 	gl.glVertex2f( 0, maxy );
+		 	gl.glEnd();
+			// y axis
+			gl.glBegin(GL.GL_LINE_STRIP);
+			gl.glVertex2f( minx, 0);
+		 	gl.glVertex2f( maxx, 0);
+		 	gl.glEnd();
+			
+		 	// tiles
+			gl.glColor4f(0,0.5f,0, 0.2f);
+			for(float x = minx; x <= maxx; x += grid.getCellSize())
+			{
+				gl.glBegin(GL.GL_LINE_STRIP);
+				gl.glVertex2f( x, miny );
+			 	gl.glVertex2f( x, maxy );
+			 	gl.glEnd();
+			}
+			for(float y = minx; y <= maxx; y += grid.getCellSize())
+			{
+				gl.glBegin(GL.GL_LINE_STRIP);
+				gl.glVertex2f( minx, y);
+			 	gl.glVertex2f( maxx, y);
+			 	gl.glEnd();
+			}
+		}
 	}
 
 	@Override
@@ -130,5 +179,8 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	
 	protected abstract void renderTile(GL gl, Tile<O> tile, G grid);
 	
-
+	public void setDebugOverlay(boolean debug)
+	{
+		this.debug = debug;
+	}
 }
