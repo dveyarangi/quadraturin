@@ -7,5 +7,5 @@ void main()
 	float sum = atan((coord.y)/(coord.x));
 
 	// pixel angle ranges from 0 to pi/2	
-	gl_FragColor = vec4(3.14159/2-2*sum,0,0,0);
+	gl_FragColor = vec4(3.14159/2.0-2.0*sum,0,0,0);
 }
