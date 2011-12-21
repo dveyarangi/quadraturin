@@ -36,12 +36,20 @@ public class Body
 	{
 		force.setxy(x, y);
 	}
+	final public void setForce(Vector2D force)
+	{
+		this.force.setxy(force.x(), force.y());
+	}
 /*	final public void setVelocity(double x, double y)
 	{
 		velocity.x = x;
 		velocity.y = y;
 	}*/
 	
+	final public void addForce(Vector2D force)
+	{
+		this.force.add(force.x(), force.y());
+	}
 	final public void addForce(double x, double y)
 	{
 		force.add(x, y);
@@ -54,6 +62,10 @@ public class Body
 		double abs = velocity.x() * velocity.x() + velocity.y()*velocity.y();
 		if(abs > getMaxSpeedSquare())
 			velocity.multiply(getMaxSpeedSquare()/abs);
+	}
+	final public void addVelocity(Vector2D v)
+	{
+		addVelocity( v.x(), v.y());
 	}
 
 	public final double getMaxSpeedSquare() { return maxSpeedSquare; }
