@@ -90,7 +90,7 @@ public class EkranConfig {
         this.maxFPS = value;
     }
 
-	public Map<String, IGraphicsPlugin> getPlugins()
+	public Map<String, IGraphicsPlugin> createPlugins()
 	{
 		Map <String, IGraphicsPlugin> factories = new HashMap <String, IGraphicsPlugin> ();
 		for(GraphicsPluginConfig config : plugins)
