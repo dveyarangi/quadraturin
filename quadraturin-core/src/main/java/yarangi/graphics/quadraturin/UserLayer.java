@@ -87,7 +87,7 @@ public class UserLayer extends SceneLayer <Overlay>
 					getEntityIndex().add( overlay.getArea(), overlay );
 		}
 		
-		if(Debug.ON)
+//		if(Debug.ON)
 //			Debug.drawUserLayerOverlay(gl, this, context);
 		
 		super.display( gl, time, context );
