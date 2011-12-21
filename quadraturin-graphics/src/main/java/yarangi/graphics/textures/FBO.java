@@ -58,9 +58,12 @@ public class FBO
 //		…  
 		
 		int status = gl.glCheckFramebufferStatusEXT(GL.GL_FRAMEBUFFER_EXT);
+
 		if(status != GL.GL_FRAMEBUFFER_COMPLETE_EXT)
-			Q.rendering.error( "Failed to create framebuffer; status code " + status);
-		
+			Q.rendering.warn( "Failed to create framebuffer; status code " + status);
+//		else
+//			Q.rendering.trace( "Create framebuffer; status code " + status);
+
 		gl.glBindFramebufferEXT(GL.GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
 		
 		if(handleBuffer.get(0) < 0)
