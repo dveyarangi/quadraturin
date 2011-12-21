@@ -110,6 +110,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	public void reshape(GLAutoDrawable glDrawable, int x, int y, int width, int height) 
 	{
+		Q.rendering.debug( "Resizing GL canvas to [" + width + "x" + height + "]");
 		final GL gl = glDrawable.getGL();
 
 		// adjusting viewport (implicit)
@@ -117,6 +118,8 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 		
 		// resetting context:
 		context.reinit( width, height, gl);
+		
+		Q.rendering.trace( "GL canvas successfully resized.");
 
 	}
 
