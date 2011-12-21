@@ -29,7 +29,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	public DefaultRenderingContext(EkranConfig config)
 	{
 		this.config = config;
-		plugins = config.getPlugins();
+		plugins = config.createPlugins();
 	}
 	
 	protected void setViewPort(int refx, int refy, int width, int height) 
@@ -66,15 +66,14 @@ public class DefaultRenderingContext implements IRenderingContext
 		setViewPort( 0, 0, config.getXres(), config.getYres() );
 		
 //		gl.glDisable(GL.GL_CULL_FACE);
-//		gl.glCullFace(GL.GL_BACK);
 		
 		/////
 		// specifies how the pixels are overriden by overlapping objects:
-//		gl.glDisable(GL.GL_DEPTH_TEST);
+//		gl.glEnable(GL.GL_DEPTH_TEST);
 		// TODO: fix entity prioritizing:
 	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
 	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
-	    //	    gl.glDepthFunc(GL.GL_ALWAYS);
+//	    gl.glDepthFunc(GL.GL_ALWAYS);
 		
 	    /////
 	    // color blending function:
@@ -87,12 +86,13 @@ public class DefaultRenderingContext implements IRenderingContext
 		// disable lighting (TODO: remove)
 		gl.glDisable(GL.GL_LIGHTING);
 		
+		// enable 2D texture mapping
+		gl.glEnable(GL.GL_TEXTURE_2D);	
+		
 		// disable texture auto-mapping:
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 
-		// enable 2D texture mapping
-		gl.glEnable(GL.GL_TEXTURE_2D);					
 
 		// antialiasing:
 		if (config.isAntialiasing()) {
@@ -103,11 +103,11 @@ public class DefaultRenderingContext implements IRenderingContext
 			gl.glDisable(GL.GL_LINE_SMOOTH);
 
 		
-		// plugins initialization:
 		
-		log.trace("GL extensions: " + gl.glGetString(GL.GL_EXTENSIONS));
-
+		log.trace("Following GL extensions available:\n" + gl.glGetString(GL.GL_EXTENSIONS));
 		
+		////////////////////////////////////////////////////////////////////////////
+		// testing and initiating plugins:
 		List <String> unavailablePlugins = new LinkedList <String> ();
 		for(String pluginName : getPluginsNames())
 		{
