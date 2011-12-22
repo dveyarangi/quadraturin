@@ -4,6 +4,8 @@ import yarangi.automata.IState;
 
 public interface IBehaviorState <K> extends IState <K>
 {
+	public static final double CONTINUE = -1;
+	public static final double TERMINATE = 0;
 	/**
 	 * Performs the behavior for this state.
 	 * State is changed if behavior did not use all frame time;
