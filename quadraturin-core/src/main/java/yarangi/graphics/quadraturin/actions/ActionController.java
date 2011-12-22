@@ -73,7 +73,7 @@ public abstract class ActionController
 			return picked;
 		
 		if(worldLocation != null)
-			picked = worldLayer.processPick(worldLocation);
+			picked = worldLayer.processPick(worldLocation, getPickingFilter());
 		
 		// TODO: terrain picks
 		// TODO: flexible pick priorities

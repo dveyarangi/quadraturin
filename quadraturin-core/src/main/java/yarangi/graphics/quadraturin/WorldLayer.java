@@ -12,6 +12,7 @@ import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
@@ -173,9 +174,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	}
 
 
-	public ILayerObject processPick(Vector2D worldLocation)
+	public ILayerObject processPick(Vector2D worldLocation, ISpatialFilter <IEntity> filter)
 	{
-		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> ();
+		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (filter);
 		getEntityIndex().query(sensor, AABB.createSquare(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
 		
 		IEntity entity = sensor.getObject();
