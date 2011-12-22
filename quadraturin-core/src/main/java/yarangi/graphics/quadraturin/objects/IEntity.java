@@ -47,5 +47,8 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	public abstract ISensor getSensor();
 
 	public abstract boolean behave(double time, boolean b);
+	
+	// TODO: this could help reduce instanceof checks in filters and such
+	public abstract int getGroupId();
 
 }

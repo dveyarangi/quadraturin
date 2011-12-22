@@ -10,7 +10,8 @@ package yarangi.graphics.quadraturin.simulations;
 public interface ICollisionHandler <K>
 {
 	/**
-	 * Implements collision logic. 
+	 * Implements collision logic
+		TODO: add time. and make rendering and behavior/physics parallel
 	 * @param e
 	 * @return true, if no further processing of source collision is required.
 	 */
