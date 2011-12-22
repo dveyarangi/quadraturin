@@ -69,7 +69,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		
 		/////
 		// specifies how the pixels are overriden by overlapping objects:
-//		gl.glEnable(GL.GL_DEPTH_TEST);
+		gl.glDisable(GL.GL_DEPTH_TEST);
 		// TODO: fix entity prioritizing:
 	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
 	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
