@@ -102,8 +102,8 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
-//		gl.glBlendEquation( GL.GL_MAX );
-//		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
+		gl.glBlendEquation( GL.GL_MAX );
+		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
 
 		if(entity.getSensor() != null)
 		{
@@ -191,9 +191,9 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT);
 				
 		// setting blending mode for lights:
-//		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
+		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 //		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-//		gl.glBlendEquation(GL.GL_FUNC_ADD);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
 //		System.out.println(textureSize);
 		// drawing shadow map:
 		
@@ -212,8 +212,8 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 		gl.glPopAttrib(); // recover blending modes:
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
-//		gl.glEnable( GL.GL_BLEND );
-//		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable( GL.GL_BLEND );
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
 
 	}
