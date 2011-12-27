@@ -31,7 +31,7 @@ import yarangi.spatial.ISpatialIndex;
  * <li> {@link WorldLayer} responsible to draw and animate game world.
  * Veils provide a way to add and remove {@link Entity} objects.
  * 
- * Any scene has to define {@link Scene#Scene(SceneConfig, QuadVoices)} constructor.
+ * Any scene has to define {@link Scene#Scene(SceneConfig, QVoices)} constructor.
  * @author dveyarangi
  */
 public abstract class Scene
@@ -62,7 +62,7 @@ public abstract class Scene
 	 */
 	private double frameLength;
 
-	private QuadVoices voices;
+	private QVoices voices;
 	
 	private Logger log;
 	
@@ -74,7 +74,7 @@ public abstract class Scene
 	private ActionController actionController;
 	
 	
-	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QuadVoices voices)
+	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		// just for fun:
 		this.name = sceneConfig.getName();

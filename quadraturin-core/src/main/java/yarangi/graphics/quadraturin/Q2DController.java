@@ -21,7 +21,7 @@ import yarangi.graphics.quadraturin.threads.ThreadChain;
  * WGL_ARG_pbuffer
  * WGL_ARB_pixel_format
  */
-public class Quad2DController extends ChainedThreadSkeleton implements GLEventListener, StageListener
+public class Q2DController extends ChainedThreadSkeleton implements GLEventListener, StageListener
 {
 
 	/**
@@ -49,7 +49,7 @@ public class Quad2DController extends ChainedThreadSkeleton implements GLEventLi
 	 */
 	private DefaultRenderingContext context;
 	
-	public Quad2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
+	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
 		super(moduleName, chain);
 		

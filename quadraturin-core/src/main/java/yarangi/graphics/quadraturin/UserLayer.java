@@ -7,10 +7,12 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.debug.Debug;
+import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.graphics.quadraturin.ui.Panel;
 import yarangi.spatial.AABB;
+import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
@@ -24,6 +26,8 @@ public class UserLayer extends SceneLayer <Overlay>
 	public static final double CURSOR_PICK_SPAN = 5;
 	
 	private double halfWidth, halfHeight;
+	
+	// TODO: overlay spatial filter
 
 	protected Logger log = Logger.getLogger("q-userlayer");
 	public UserLayer(int width, int height)

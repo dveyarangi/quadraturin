@@ -19,7 +19,7 @@ import yarangi.graphics.quadraturin.ui.Overlay;
  * {@link Scene}-s life-cycle operations 
  * Also provides scene entity injections.
  * 
- * It also fires scene-change events for {@link StageAnimator}, {@link QuadVoices} and graphics thread (currently {@link Quad2DController})
+ * It also fires scene-change events for {@link StageAnimator}, {@link QVoices} and graphics thread (currently {@link Q2DController})
  * 
  * TODO: Stage - scene interactions should be refactored
  * TODO: scene UI controls are not created.
@@ -31,7 +31,7 @@ public final class Stage
 	
 	private static Stage singleton;
 	
-	static Stage init(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
+	static Stage init(StageConfig stageConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		if(singleton != null)
 			throw new IllegalStateException("Stage is already initialized.");
@@ -67,7 +67,7 @@ public final class Stage
 	 * Create a stage.
 	 * @param frameLength
 	 */
-	private Stage(StageConfig stageConfig, EkranConfig ekranConfig, QuadVoices voices)
+	private Stage(StageConfig stageConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		
 		for(SceneConfig scene : stageConfig.getScenes())

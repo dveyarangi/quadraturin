@@ -43,7 +43,7 @@ public interface Look <An>
 
 	/**
 	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)
-	 * Ranges from {@link Quad2DController#MIN_DEPTH_PRIORITY} to {@link Quad2DController#MAX_DEPTH_PRIORITY}
+	 * Ranges from {@link Q2DController#MIN_DEPTH_PRIORITY} to {@link Q2DController#MAX_DEPTH_PRIORITY}
 	 * TODO: move to Area?
 	 * @return
 	 */

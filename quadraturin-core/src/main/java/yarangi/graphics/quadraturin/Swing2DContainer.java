@@ -58,12 +58,12 @@ public class Swing2DContainer extends JFrame
 	/**
 	 * Event dispatcher.
 	 */
-	private QuadVoices voices;
+	private QVoices voices;
 	
 	/**
 	 * Events and rendering controller.
 	 */
-	private Quad2DController controller;
+	private Q2DController controller;
 	
 	/**
 	 * Animation thread.
@@ -145,11 +145,11 @@ public class Swing2DContainer extends JFrame
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
 		log.debug("Creating event manager...");
-		voices = new QuadVoices(config.getInputConfig());
+		voices = new QVoices(config.getInputConfig());
 		log.trace("Event manager created.");
 		
 		log.debug("Creating GL listener...");
-		controller = new Quad2DController("q-renderer", config.getEkranConfig(), voices, chain);
+		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
@@ -167,7 +167,7 @@ public class Swing2DContainer extends JFrame
 		stage.addListener(animator);
 		
 		
-		chain.addThread(new LoopyChainedThread(QuadVoices.NAME, chain, voices));
+		chain.addThread(new LoopyChainedThread(QVoices.NAME, chain, voices));
 		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
 		chain.addThread(controller);
 

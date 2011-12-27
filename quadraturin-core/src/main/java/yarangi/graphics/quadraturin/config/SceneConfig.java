@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import org.apache.log4j.Logger;
 
-import yarangi.graphics.quadraturin.QuadVoices;
+import yarangi.graphics.quadraturin.QVoices;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.java.ReflectionUtil;
@@ -45,7 +45,7 @@ public class SceneConfig
 
 	public int getHeight() { return height; }
 
-	public Scene createScene(EkranConfig ekranConfig, QuadVoices voices) 
+	public Scene createScene(EkranConfig ekranConfig, QVoices voices) 
 	{
 		return ReflectionUtil.createInstance(sceneClass, this, ekranConfig, voices);
 	}

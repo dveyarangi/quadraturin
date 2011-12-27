@@ -17,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 import yarangi.graphics.quadraturin.actions.ActionController;
 import yarangi.graphics.quadraturin.actions.IAction;
 import yarangi.graphics.quadraturin.config.InputBinding;
@@ -38,7 +38,7 @@ import yarangi.graphics.quadraturin.threads.Loopy;
  * 
  * @author Dve Yarangi
  */
-public class QuadVoices implements IEventManager, Loopy
+public class QVoices implements IEventManager, Loopy
 {
 	
 	/**
@@ -77,9 +77,9 @@ public class QuadVoices implements IEventManager, Loopy
 	private Logger log = Logger.getLogger(NAME);
 	
 	
-	public QuadVoices(InputConfig config) 
+	public QVoices(InputConfig config) 
 	{
-		ZenUtils.summonLogic();
+		Zen.summonLogic();
 		
 		// mapping input hooks to action ids:
 		for(InputBinding bind : config.getBindings())
