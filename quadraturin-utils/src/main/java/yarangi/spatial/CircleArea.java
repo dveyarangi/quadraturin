@@ -2,7 +2,7 @@ package yarangi.spatial;
 
 import java.util.List;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 import yarangi.math.FastMath;
 import yarangi.math.Vector2D;
 
@@ -87,6 +87,6 @@ public class CircleArea implements Area
 	@Override
 	public boolean overlaps(AABB area)
 	{
-		return ZenUtils.methodNotSupported( CircleArea.class );
+		return Zen.notSupported( CircleArea.class );
 	}
 }

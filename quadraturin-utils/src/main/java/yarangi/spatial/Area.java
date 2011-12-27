@@ -1,9 +1,8 @@
 package yarangi.spatial;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 import yarangi.math.Vector2D;
 
 /**
@@ -109,15 +108,15 @@ public interface Area
 		
 		@Override public Area getArea() { return EMPTY; }
 
-		@Override public double getX() { throw new IllegalStateException("This method is not defined."); }
-		@Override public double getY() { throw new IllegalStateException("This method is not defined."); }
+		@Override public double getX() { return Zen.notSupported(); }
+		@Override public double getY() { return Zen.notSupported(); }
 
 		@Override public boolean overlaps(double xmin, double ymin, double xmax, double ymax) { return false;	}
 
-		@Override public double getMinX() { throw new IllegalStateException("This method is not defined."); }
-		@Override public double getMinY() { throw new IllegalStateException("This method is not defined."); }
-		@Override public double getMaxX() { throw new IllegalStateException("This method is not defined."); }
-		@Override public double getMaxY() { throw new IllegalStateException("This method is not defined.");}
+		@Override public double getMinX() { return Zen.notSupported(); }
+		@Override public double getMinY() { return Zen.notSupported(); }
+		@Override public double getMaxX() { return Zen.notSupported(); }
+		@Override public double getMaxY() { return Zen.notSupported(); }
 		
 	}
 	
@@ -131,28 +130,27 @@ public interface Area
 		public void iterate(int cellsize, IChunkConsumer consumer) { }
 		
 		@Override
-		public double getOrientation() { return ZenUtils.methodNotSupported(this.getClass()); }
+		public double getOrientation() { return Zen.notSupported(); }
 
 		@Override
-		public void setOrientation(double a) { ZenUtils.methodNotSupported(this.getClass()); }
+		public void setOrientation(double a) { Zen.notSupported(); }
 
 		@Override
-		public Vector2D getRefPoint() { return ZenUtils.methodNotSupported(this.getClass()); }
+		public Vector2D getRefPoint() { return Zen.notSupported(); }
 
-		public double getMaxRadius() { return ZenUtils.methodNotSupported(this.getClass());  }
+		public double getMaxRadius() { return Zen.notSupported();  }
 
 		@Override
-		public void translate(double dx, double dy) { ZenUtils.methodNotSupported(this.getClass()); }
+		public void translate(double dx, double dy) { Zen.notSupported(); }
 		@Override
-		public void fitTo(double radius) { ZenUtils.methodNotSupported(this.getClass()); }
+		public void fitTo(double radius) { Zen.notSupported(); }
 
 		public Area clone() { return this; }
 
 		@Override
 		public List <Vector2D> getDarkEdge(Vector2D from)
 		{
-			ZenUtils.methodNotSupported(this.getClass());
-			return new ArrayList <Vector2D> (0);
+			return Zen.notSupported();
 		}
 
 		@Override

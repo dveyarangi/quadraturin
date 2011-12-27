@@ -4,13 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 
 public class ReflectionUtil 
 {
 	private ReflectionUtil()
 	{
-		ZenUtils.staticOnly();
+		Zen.staticOnly();
 	}
 	
 	/**

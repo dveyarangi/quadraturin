@@ -84,4 +84,5 @@ public class Tile <O> implements ITile <O>
 	public double getMinY() { return miny; }
 	public double getMaxX() { return maxx; }
 	public double getMaxY() { return maxy; }
+
 }

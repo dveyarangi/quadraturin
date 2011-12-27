@@ -1,6 +1,8 @@
 package yarangi.spatial;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import yarangi.math.FastMath;
@@ -60,7 +62,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 */
 	private int passId;
 	
-	protected Set <T> modifiedTiles = new HashSet <T> ();
+	protected List <T> modifiedTiles = new LinkedList <T> ();
 	
 	protected IGridListener <T> listener;
 	
@@ -361,6 +363,16 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 		removeObject(old, object);
 		addObject(area, object);
 	}
+	
+
+	@Override
+	public boolean isEmptyAt(float x, float y)
+	{
+		T tile = getTile( x, y );
+		if(tile == null || tile.get() == null)
+			return true;
+		return false;
+	}
 
 	/**
 	 * Adds a cell to modified cells queue.
@@ -380,7 +392,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * Retrieves a list of modified cells.
 	 * @return
 	 */
-	protected Set <T> getModifiedTiles()
+	protected List <T> getModifiedTiles()
 	{
 		return modifiedTiles;
 	}
@@ -394,9 +406,8 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	{
 		if(listener != null)
 			listener.cellsModified( modifiedTiles );
-		
 		// resetting modified cells queue:
-		modifiedTiles = new HashSet <T> ();
+		modifiedTiles = new LinkedList <T> ();
 	}
 	
 		

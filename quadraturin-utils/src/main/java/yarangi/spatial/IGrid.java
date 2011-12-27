@@ -8,6 +8,7 @@ public interface IGrid <C>
 	public float getMinY();
 	public float getMaxY();
 	public int getCellSize();
+	public boolean isEmptyAt(float x, float y);
 
 	public void setModificationListener(IGridListener<C> listener);
 }

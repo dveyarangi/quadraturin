@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 import yarangi.math.FastArrays;
 import yarangi.math.FastMath;
 import yarangi.math.Vector2D;
@@ -418,6 +418,6 @@ public class PolygonArea implements Area
 	@Override
 	public boolean overlaps(AABB area)
 	{
-		return ZenUtils.methodNotSupported( PolygonArea.class );
+		return Zen.notSupported( PolygonArea.class );
 	}
 }

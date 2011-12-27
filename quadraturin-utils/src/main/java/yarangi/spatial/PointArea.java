@@ -2,7 +2,7 @@ package yarangi.spatial;
 
 import java.util.LinkedList;
 
-import yarangi.ZenUtils;
+import yarangi.Zen;
 import yarangi.math.Vector2D;
 
 /**
@@ -47,7 +47,7 @@ public class PointArea implements Area
 	@Override
 	public void setOrientation(double a) 
 	{
-		ZenUtils.methodNotSupported(this.getClass());
+		Zen.notSupported(this.getClass());
 	}
 
 
@@ -64,7 +64,7 @@ public class PointArea implements Area
 	@Override
 	public void fitTo(double radius)
 	{
-		ZenUtils.methodNotSupported(this.getClass());
+		Zen.notSupported(this.getClass());
 	}
 	
 	public Area clone()
