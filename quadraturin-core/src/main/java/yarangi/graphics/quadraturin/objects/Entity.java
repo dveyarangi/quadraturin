@@ -152,4 +152,11 @@ public class Entity implements IEntity
 		return spatialAspect != null;
 	}
 
+	@Override
+	public int getGroupId()
+	{
+		// TODO in constructor
+		return 0;
+	}
+
 }
