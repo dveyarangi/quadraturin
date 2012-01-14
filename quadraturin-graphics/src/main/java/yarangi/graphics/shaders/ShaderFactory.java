@@ -35,7 +35,7 @@ public class ShaderFactory extends ResourceFactory <GLSLShader> implements IGrap
 		isInited = true;
 	}
 	
-	public void reinit(GL gl, IRenderingContext context)
+	public void resize(GL gl, IRenderingContext context)
 	{
 		// lazy
 	}

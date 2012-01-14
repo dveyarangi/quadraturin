@@ -42,7 +42,7 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 			throw new IllegalStateException("Failed to create veil frame buffer object.");
 	}
 	
-	public void reinit(GL gl, IRenderingContext context) {
+	public void resize(GL gl, IRenderingContext context) {
 		if(veil == null)
 			throw new IllegalStateException("Cannot reinit not initiated veil,");
 		destroy(gl);
@@ -65,6 +65,8 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	public void weave(GL gl, ILayerObject entity, IRenderingContext context)
 	{
 		veil.bind(gl);
+//		gl.glPushAttrib( COLOR )
+		gl.glDisable(GL.GL_DEPTH_TEST);
 		
 		// adjusting frame buffer to entity coordinates:
 		super.weave( gl, entity, context );
@@ -77,6 +79,9 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 	public void tear(GL gl)
 	{
 		super.tear( gl );
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		
 		veil.unbind(gl);
 	}
@@ -110,20 +115,25 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 	
+		
+		gl.glDisable(GL.GL_DEPTH_TEST);
 		// 
 		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
 		glu.gluUnProject(viewport[2], viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
 		
+		gl.glEnable( GL.GL_BLEND );
 		getFBO().bindTexture( gl );
+//		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+		gl.glColor4f( 0,0,0,1 );
 		gl.glBegin(GL.GL_QUADS);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)lower[0],  (float)lower[1]);
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)higher[0], (float)lower[1]);
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)higher[0], (float)higher[1]);
 		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)lower[0],  (float)higher[1]);
 		gl.glEnd();
-		gl.glColor4f( 1,1,1,1 );
 
 		getFBO().unbindTexture( gl );
+		gl.glEnable( GL.GL_BLEND );
 	}
 	
 

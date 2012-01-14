@@ -14,7 +14,9 @@ public class OrientingVeil implements IVeil
 		Area area = entity.getArea();
 		
 		// storing transformation matrix:
+		gl.glMatrixMode( GL.GL_MODELVIEW );
 		gl.glPushMatrix();
+//		gl.glLoadIdentity(); 	
 		
 		float priority = -entity.getLook().getPriority();
 		// transforming into entity coordinates:
@@ -30,6 +32,7 @@ public class OrientingVeil implements IVeil
 	@Override
 	public void tear(GL gl)
 	{
+		gl.glMatrixMode( GL.GL_MODELVIEW );
 		gl.glPopMatrix();
 	}
 
