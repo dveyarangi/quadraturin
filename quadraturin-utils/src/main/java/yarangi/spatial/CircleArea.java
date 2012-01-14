@@ -87,6 +87,6 @@ public class CircleArea implements Area
 	@Override
 	public boolean overlaps(AABB area)
 	{
-		return Zen.notSupported( CircleArea.class );
+		return Zen.notSupported( );
 	}
 }

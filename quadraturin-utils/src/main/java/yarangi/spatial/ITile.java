@@ -1,6 +1,6 @@
 package yarangi.spatial;
 
-public interface ITile <O>
+public interface ITile <O> extends IAreaChunk
 {
 	/**
 	 * Adds an object to tile

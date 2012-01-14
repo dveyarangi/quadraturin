@@ -47,7 +47,7 @@ public class PointArea implements Area
 	@Override
 	public void setOrientation(double a) 
 	{
-		Zen.notSupported(this.getClass());
+		Zen.notSupported();
 	}
 
 
@@ -64,7 +64,7 @@ public class PointArea implements Area
 	@Override
 	public void fitTo(double radius)
 	{
-		Zen.notSupported(this.getClass());
+		Zen.notSupported();
 	}
 	
 	public Area clone()

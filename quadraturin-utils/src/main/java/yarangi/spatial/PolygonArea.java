@@ -418,6 +418,6 @@ public class PolygonArea implements Area
 	@Override
 	public boolean overlaps(AABB area)
 	{
-		return Zen.notSupported( PolygonArea.class );
+		return Zen.notSupported();
 	}
 }

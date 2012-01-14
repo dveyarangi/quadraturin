@@ -85,4 +85,10 @@ public class Tile <O> implements ITile <O>
 	public double getMaxX() { return maxx; }
 	public double getMaxY() { return maxy; }
 
+	@Override
+	public Area getArea()
+	{
+		return null;
+	}
+
 }

@@ -34,6 +34,10 @@ public class AABB implements Area
 	{
 		return new AABB(x, y, r, r, a);
 	}
+	public static AABB createSquare(Vector2D center, double r, double a)
+	{
+		return new AABB(center.x(), center.y(), r, r, a);
+	}
 	
 	public static AABB createFromEdges(double x1, double y1, double x2, double y2, double a)
 	{
