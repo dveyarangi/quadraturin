@@ -32,6 +32,9 @@ import yarangi.spatial.ISpatialIndex;
  * Veils provide a way to add and remove {@link Entity} objects.
  * 
  * Any scene has to define {@link Scene#Scene(SceneConfig, QVoices)} constructor.
+ * 
+ * Log stuff into {@link #log}
+ * 
  * @author dveyarangi
  */
 public abstract class Scene
@@ -41,6 +44,11 @@ public abstract class Scene
 	 * Just for fun, scene name
 	 */
 	private String name;
+	
+	/**
+	 * Stuff is logged here
+	 */
+	protected Logger log;
 	
 	/**
 	 * Game world layer.
@@ -62,11 +70,9 @@ public abstract class Scene
 	 */
 	private double frameLength;
 
-	private QVoices voices;
-	
-	private Logger log;
-	
-	
+	/**
+	 * For background faceless behaviors
+	 */
 	private List <Behavior<Scene>> workers = new ArrayList <Behavior<Scene>> ();
 
 	private ICameraMan cameraMan;
@@ -110,7 +116,7 @@ public abstract class Scene
 		this.frameLength = sceneConfig.getFrameLength();
 		
 		// storing event manager:
-		this.voices = voices;
+//		this.voices = voices;
 		
 		if(Debug.ON) // TODO: maybe actual instrumentation
 			Debug.instrumentate(this);
@@ -121,7 +127,7 @@ public abstract class Scene
 	 */
 	public String getName() { return name; }
 	
-	
+	protected Logger log()  { return log; }
 	/**
 	 * TODO: fix name
 	 * @return game time unit / sec ratio
