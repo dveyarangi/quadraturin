@@ -1,7 +1,12 @@
 package yarangi.graphics.quadraturin.objects;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
@@ -14,7 +19,7 @@ import yarangi.spatial.ISpatialFilter;
  */
 public class Sensor implements ISensor <IEntity>
 {
-	private Set <IEntity> entities;
+	private List <IEntity> entities;
 	
 	private double radius;
 	
@@ -26,16 +31,18 @@ public class Sensor implements ISensor <IEntity>
 
 	private double interval;
 
+
 	public Sensor(double radius, double interval, ISpatialFilter <IEntity>filter, boolean senseTerrain )
 	{
 		this.radius = radius;
 		this.filter = filter;
 		this.interval = interval;
+		this.senseTerrain = senseTerrain;
 		clear();
 	}
 	
 	@Override
-	public Set <IEntity> getEntities()
+	public List <IEntity> getEntities()
 	{
 		return entities;
 	}
@@ -46,7 +53,7 @@ public class Sensor implements ISensor <IEntity>
 	public ISpatialFilter <IEntity> getFilter() { return filter; }
  
 	@Override
-	public void clear() { this.entities = new HashSet <IEntity> (); }
+	public void clear() { this.entities = new LinkedList <IEntity> (); }
 	
 	@Override
 	public boolean objectFound(IAreaChunk chunk, IEntity object) 

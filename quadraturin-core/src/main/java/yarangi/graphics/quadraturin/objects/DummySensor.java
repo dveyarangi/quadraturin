@@ -1,7 +1,11 @@
 package yarangi.graphics.quadraturin.objects;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import yarangi.spatial.IAreaChunk;
 
@@ -13,11 +17,11 @@ import yarangi.spatial.IAreaChunk;
  */
 public class DummySensor implements ISensor <IEntity>
 {
-	private Set <IEntity> entities = new HashSet <IEntity> ();
+	private List <IEntity> entities = new LinkedList <IEntity> ();
 	
 	public DummySensor() { }
 	
-	public Set <IEntity> getEntities() { return entities; }
+	public List <IEntity> getEntities() { return entities; }
 
 	public double getSensorRadiusSquare() { return 0; }
 	
