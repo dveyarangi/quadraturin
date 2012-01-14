@@ -67,7 +67,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	@Override
 	public Set<Bitmap> keySet()
 	{
-		return Zen.notSupported( GridyTerrainMap.class );
+		return Zen.notSupported();
 	}
 	
 	public Tile<Bitmap> createTileAt(int i, int j) 
