@@ -1,12 +1,19 @@
 package yarangi.graphics.quadraturin.terrain;
 
+import javax.media.opengl.GL;
+
 import yarangi.graphics.colors.Color;
+import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IEntity;
+import yarangi.graphics.quadraturin.objects.ISensor;
+import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
 import yarangi.spatial.Area;
 import yarangi.spatial.PointArea;
 
-public class Bitmap implements IPhysicalObject
+public class Bitmap implements IPhysicalObject, IEntity
 {
 	
 	private byte [] pixels;
@@ -114,7 +121,38 @@ public class Bitmap implements IPhysicalObject
 			}
 		return changed;
 	}
-	
+	public boolean subMask(int ioffset, int joffset, int maskWidth, byte [] mask)
+	{
+		int minI = Math.max( -ioffset, 0);
+		int maxI = Math.min( maskWidth - ioffset, size);
+		int minJ = Math.max( -joffset, 0);
+		int maxJ = Math.min( maskWidth - joffset, size);
+		int offset;
+		boolean changed = false;
+		boolean hadColor;
+		for(int i = minI; i < maxI; i ++)
+			for(int j = minJ; j < maxJ; j ++)
+			{
+				offset = offset(i, j);
+//				if(offset < 0 || offset >= pixels.length)
+//					continue;
+				hadColor = hasColor(offset);
+				int maskOffset = 4*((i+ioffset) + maskWidth*(j+joffset));
+				if(maskOffset < 0 || maskOffset >= mask.length)
+					continue;			
+
+	//			pixels[offset] += mask[maskOffset];
+	//			if(pixels[offset] > 255)
+	//				pixels[offset] = (byte)255;				
+				addPixel(offset, maskOffset, mask);
+				
+				if(hadColor && !hasColor(offset))
+					pixelCount --;
+				
+				changed = true;
+			}
+		return changed;
+	}	
 	public boolean addMask(int ioffset, int joffset, int maskWidth, byte [] mask)
 	{
 		int minI = Math.max( -ioffset, 0);
@@ -164,7 +202,22 @@ public class Bitmap implements IPhysicalObject
 			pixels[bitmapOffset+3] = (byte)254;
 
 	}
+	final private void subPixel(int bitmapOffset, int maskOffset, byte [] mask) 
+	{
+		pixels[bitmapOffset] -= mask[maskOffset];
+		if(pixels[bitmapOffset] < 0)
+			pixels[bitmapOffset] = (byte)0;
+		pixels[bitmapOffset+1] -= mask[maskOffset+1];
+		if(pixels[bitmapOffset+1] < 0)
+			pixels[bitmapOffset+1] = (byte)0;
+		pixels[bitmapOffset+2] -= mask[maskOffset+2];
+		if(pixels[bitmapOffset+2] < 0)
+			pixels[bitmapOffset+2] = (byte)0;
+		pixels[bitmapOffset+3] -= mask[maskOffset+3];
+		if(pixels[bitmapOffset+3] < 0)
+			pixels[bitmapOffset+3] = (byte)0;
 
+	}
 	public byte [] getPixels()
 	{
 		return pixels;
@@ -210,6 +263,112 @@ public class Bitmap implements IPhysicalObject
 	public int getSize()
 	{
 		return size;
+	}
+
+	///////////////////////////////////////////////
+	// TODO: fix this mess. Create a separate interface for 
+
+	@Override
+	public Look getLook()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void markDead()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public boolean isIndexed()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void init(GL gl, IRenderingContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void render(GL gl, double time, IRenderingContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void destroy(GL gl, IRenderingContext context)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setBehavior(Behavior<?> behavior)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setBody(Body body)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void setSensor(ISensor<?> sensor)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public Behavior<?> getBehavior()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ISensor getSensor()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean behave(double time, boolean b)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public int getGroupId()
+	{
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
