@@ -50,11 +50,14 @@ public class BlurVeil extends VeilPluginSkeleton
 		fadeShader = factory.getShader( "fade");
 	}
 	
+
+	
 	public void postRender(GL gl, IRenderingContext defaultContext) 
 	{
 		getFBO().bind( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
 		gl.glDisable(GL.GL_BLEND);
+		gl.glDisable(GL.GL_DEPTH_TEST);
 /*		vblurShader.begin( gl );
 		renderTexture(gl);
 		vblurShader.end(gl);

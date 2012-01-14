@@ -2,7 +2,6 @@ package yarangi.graphics.lights;
 
 import java.nio.IntBuffer;
 import java.util.List;
-import java.util.Set;
 
 import javax.media.opengl.GL;
 
@@ -107,7 +106,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 
 		if(entity.getSensor() != null)
 		{
-			Set <IEntity> entities = entity.getSensor().getEntities();
+			List <IEntity> entities = entity.getSensor().getEntities();
 			List <Vector2D> shadowEdge;
 			Vector2D sourceLoc = entity.getArea().getRefPoint();
 		// drawing red polygones for full shadows and penumbra:
@@ -178,6 +177,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 			}
 		}
 		
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		// exiting framebuffer:
 		fbo.unbind(gl);
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +188,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		gl.glPopAttrib();
 
 		// storing blending modes:
+		
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT);
 				
 		// setting blending mode for lights:
@@ -214,7 +215,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
 		gl.glEnable( GL.GL_BLEND );
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-
+/**/
 
 	}
 
