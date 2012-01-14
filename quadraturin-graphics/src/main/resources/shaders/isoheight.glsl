@@ -17,7 +17,7 @@ void main()
 		else 
 		if(tc[i] > max[i]) { res[i] = overflow[i]; } 
 		else {
-			res[i] = tc[i]; }
+			res[i] = target[i]; }
 	}
 		
 //	if(tc.r < min[0]) tc0 *= offset-(min[0]-tc0)*(min[0]-tc0);
