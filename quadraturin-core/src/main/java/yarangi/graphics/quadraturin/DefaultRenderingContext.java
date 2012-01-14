@@ -137,12 +137,14 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	protected void reinit(int width, int height, GL gl) {
 		
+		if(viewPort.getWidth() == width && viewPort.getHeight() == height)
+			return;
 		setViewPort( 0, 0, width, height );
 		for(String pluginName : getPluginsNames())
 		{
-			Q.rendering.debug("Resetting plugin [" + pluginName + "]");
+			Q.rendering.debug("Resizing plugin [" + pluginName + "]");
 			IGraphicsPlugin factory = getPlugin(pluginName);
-			factory.reinit(gl, this);
+			factory.resize(gl, this);
 		}
 	}
 }
