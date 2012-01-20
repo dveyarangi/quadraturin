@@ -18,14 +18,19 @@ import yarangi.spatial.IAreaChunk;
 public class DummySensor implements ISensor <IEntity>
 {
 	private List <IEntity> entities = new LinkedList <IEntity> ();
-	
+	private double radius;
 	public DummySensor() { }
 	
+	public DummySensor(int size)
+	{
+		radius = size;
+	}
+
 	public List <IEntity> getEntities() { return entities; }
 
 	public double getSensorRadiusSquare() { return 0; }
 	
-	public double getRadius() { return 0; }
+	public double getRadius() { return radius; }
  	
 	@Override
 	public boolean objectFound(IAreaChunk chunk, IEntity object) 

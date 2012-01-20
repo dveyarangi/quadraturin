@@ -1,26 +1,34 @@
 package yarangi.graphics.quadraturin.objects;
 
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
 
 /**
- * Sensor aspect of {@link Entity}
+ * Sensor aspect of {@link Entity}.
+ * Accumulates sensed entities into list; Override {@link #objectFound} if streamlining possible.
+ * 
+ * Filter may be used to reduce sensed entities list size.
+ * 
+ * Use non-positive sensing interval to sense on each animation turn ({@link WorldLayer#animate(double)}).
+ * 
+ * Scene invokes {@link #clear} each sensing iteration.
  * 
  * @author dveyarangi
  *
  */
 public class Sensor implements ISensor <IEntity>
 {
+	/** 
+	 * List of sensed entities 
+	 */
 	private List <IEntity> entities;
 	
+	/**
+	 * Sensing radius
+	 */
 	private double radius;
 	
 	private ISpatialFilter <IEntity> filter;
@@ -31,6 +39,10 @@ public class Sensor implements ISensor <IEntity>
 
 	private double interval;
 
+	public Sensor(double radius, double interval, boolean senseTerrain )
+	{
+		this(radius, interval, null, senseTerrain);
+	}
 
 	public Sensor(double radius, double interval, ISpatialFilter <IEntity>filter, boolean senseTerrain )
 	{
