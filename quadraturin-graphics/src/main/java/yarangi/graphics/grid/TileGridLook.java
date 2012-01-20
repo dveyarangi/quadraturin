@@ -7,10 +7,12 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
+import yarangi.graphics.veils.BlurVeil;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 import yarangi.spatial.Tile;
@@ -35,11 +37,15 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	
 	private double gridWidth, gridHeight;
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	private Point dimensions;
 	
 	private GLList debugMesh;
+	
+	private IVeil veil;
+	
+
 	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
@@ -69,6 +75,8 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		
 		updateFrameBuffer( gl, grid );
 		
+		veil = IVeil.ORIENTING; //*/context.getPlugin( BlurVeil.NAME );
+		
 		assert initDebug(gl, grid);
 	}
 	
@@ -94,6 +102,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		// rendering frame buffer texture:
 //		fbo.unbind( gl );
 		gl.glDisable( GL.GL_DEPTH_TEST );
+		veil.weave( gl, null, context );
 		fbo.bindTexture(gl);
 			gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f( 0, 1, 0, 1 );
@@ -103,6 +112,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 				gl.glTexCoord2f(1,0); gl.glVertex2f( maxx, miny );
 			gl.glEnd();
 		fbo.unbindTexture(gl);
+		veil.tear( gl );
 		
 //		gl.glEnable(GL.GL_BLEND);
 		
@@ -230,8 +240,8 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		
 	 	// tiles
 		gl.glColor4f(0,0.5f,0, 0.2f);
-		for(float x = minx; x < maxx; x += grid.getCellSize())
-			for(float y = miny; y < maxy; y += grid.getCellSize())
+		for(float x = minx; x <= maxx; x += grid.getCellSize())
+			for(float y = miny; y <= maxy; y += grid.getCellSize())
 			{
 				if(!grid.isEmptyAt(x, y))
 				{
