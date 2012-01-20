@@ -44,7 +44,7 @@ public class Bitmap implements IPhysicalObject, IEntity
 		
 		pixelCount = 0;
 		for(int i = 0; i < pixels.length; i += 4)
-			pixels[i] = 1;
+			pixels[i] = 0;
 			/*if(pixels[i] != 0 || pixels[i+1] != 0 || pixels[i+2] != 0 || pixels[i+3] != 0)
 				pixelCount ++;*/
 			
@@ -94,33 +94,7 @@ public class Bitmap implements IPhysicalObject, IEntity
 		pixels[offset] = pixels[offset+1] = pixels[offset+2] = pixels[offset+3] = 0;
 	}
 	
-	public boolean subMask(int ioffset, int joffset, byte [] mask)
-	{
-		int minI = Math.max( 0, ioffset );
-		int maxI = Math.min( size, size + ioffset );
-		int minJ = Math.max( 0, joffset );
-		int maxJ = Math.min( size, size + joffset );
-		int offset;
-		boolean hadColor;
-		boolean changed = false;
 
-		for(int i = minI; i <= maxI; i ++)
-			for(int j = minJ; j <= maxJ; j ++)
-			{
-				offset = offset(i, j);
-				
-				hadColor = hasColor(offset);
-				pixels[offset] -= mask[4 * (i - ioffset + size * (j - joffset))];
-				if(pixels[offset] < 0)
-					pixels[offset] = 0;
-				
-				if(hadColor && !hasColor(offset))
-					pixelCount --;
-				
-				changed = true;
-			}
-		return changed;
-	}
 	public boolean subMask(int ioffset, int joffset, int maskWidth, byte [] mask)
 	{
 		int minI = Math.max( -ioffset, 0);
@@ -129,25 +103,27 @@ public class Bitmap implements IPhysicalObject, IEntity
 		int maxJ = Math.min( maskWidth - joffset, size);
 		int offset;
 		boolean changed = false;
-		boolean hadColor;
 		for(int i = minI; i < maxI; i ++)
 			for(int j = minJ; j < maxJ; j ++)
 			{
 				offset = offset(i, j);
 //				if(offset < 0 || offset >= pixels.length)
 //					continue;
-				hadColor = hasColor(offset);
 				int maskOffset = 4*((i+ioffset) + maskWidth*(j+joffset));
 				if(maskOffset < 0 || maskOffset >= mask.length)
 					continue;			
+				if(mask[maskOffset] != 0 || mask[maskOffset+1] != 0 && mask[maskOffset+2] != 0 || mask[maskOffset+3] != 0 )
+					continue;
 
 	//			pixels[offset] += mask[maskOffset];
 	//			if(pixels[offset] > 255)
 	//				pixels[offset] = (byte)255;				
-				addPixel(offset, maskOffset, mask);
-				
-				if(hadColor && !hasColor(offset))
+				if(hasColor(offset))
 					pixelCount --;
+				setPixel(offset, maskOffset, mask);
+				
+				if(hasColor(offset))
+					pixelCount ++;
 				
 				changed = true;
 			}
@@ -161,25 +137,28 @@ public class Bitmap implements IPhysicalObject, IEntity
 		int maxJ = Math.min( maskWidth - joffset, size);
 		int offset;
 		boolean changed = false;
-		boolean hadColor;
+//		boolean hadColor;
 		for(int i = minI; i < maxI; i ++)
 			for(int j = minJ; j < maxJ; j ++)
 			{
 				offset = offset(i, j);
 //				if(offset < 0 || offset >= pixels.length)
 //					continue;
-				hadColor = hasColor(offset);
 				int maskOffset = 4*((i+ioffset) + maskWidth*(j+joffset));
 				if(maskOffset < 0 || maskOffset >= mask.length)
 					continue;			
+				if(mask[maskOffset] == 0 &&  mask[maskOffset+1] == 0 && mask[maskOffset+2] == 0 && mask[maskOffset+3] == 0 )
+					continue;
 
 	//			pixels[offset] += mask[maskOffset];
 	//			if(pixels[offset] > 255)
 	//				pixels[offset] = (byte)255;				
-				addPixel(offset, maskOffset, mask);
-				
-				if(!hadColor && hasColor(offset))
+				if(hasColor(offset))
+					pixelCount --;
+				setPixel(offset, maskOffset, mask);
+				if(hasColor(offset))
 					pixelCount ++;
+				
 				
 				changed = true;
 			}
@@ -188,35 +167,58 @@ public class Bitmap implements IPhysicalObject, IEntity
 	
 	final private void addPixel(int bitmapOffset, int maskOffset, byte [] mask) 
 	{
-		pixels[bitmapOffset] += mask[maskOffset];
-		if(pixels[bitmapOffset] >= 255)
-			pixels[bitmapOffset] = (byte)254;
-		pixels[bitmapOffset+1] += mask[maskOffset+1];
-		if(pixels[bitmapOffset+1] >= 255)
-			pixels[bitmapOffset+1] = (byte)254;
-		pixels[bitmapOffset+2] += mask[maskOffset+2];
-		if(pixels[bitmapOffset+2] >= 255)
-			pixels[bitmapOffset+2] = (byte)254;
-		pixels[bitmapOffset+3] += mask[maskOffset+3];
-		if(pixels[bitmapOffset+3] >= 255)
-			pixels[bitmapOffset+3] = (byte)254;
+/*		if(pixels[bitmapOffset]+mask[maskOffset] > 255)
+			pixels[bitmapOffset] = (byte)255;
+		else
+			pixels[bitmapOffset] += mask[maskOffset];
+		
+		if(pixels[bitmapOffset+1] + mask[maskOffset+1] > 255)
+			pixels[bitmapOffset+1] = (byte)255;
+		else
+			pixels[bitmapOffset+1] += mask[maskOffset+1];
+		
+		if(pixels[bitmapOffset+2] + mask[maskOffset+2] > 255)
+			pixels[bitmapOffset+2] = (byte)255;
+		else
+			pixels[bitmapOffset+2] += mask[maskOffset+2];
+		
+		if(pixels[bitmapOffset+3] + mask[maskOffset+3] > 255)
+			pixels[bitmapOffset+3] = (byte)255;
+		else
+			pixels[bitmapOffset+3] += mask[maskOffset+3];*/
 
 	}
+	
 	final private void subPixel(int bitmapOffset, int maskOffset, byte [] mask) 
 	{
-		pixels[bitmapOffset] -= mask[maskOffset];
-		if(pixels[bitmapOffset] < 0)
+		byte temp = (byte)(pixels[bitmapOffset] - mask[maskOffset]);
+		if(pixels[bitmapOffset] <= mask[maskOffset])
 			pixels[bitmapOffset] = (byte)0;
-		pixels[bitmapOffset+1] -= mask[maskOffset+1];
-		if(pixels[bitmapOffset+1] < 0)
+		else
+			pixels[bitmapOffset] -= mask[maskOffset];
+		
+		if(pixels[bitmapOffset+1] <= mask[maskOffset+1])
 			pixels[bitmapOffset+1] = (byte)0;
-		pixels[bitmapOffset+2] -= mask[maskOffset+2];
-		if(pixels[bitmapOffset+2] < 0)
+		else
+			pixels[bitmapOffset+1] -= mask[maskOffset+1];
+		
+		if(pixels[bitmapOffset+2] <= mask[maskOffset+2])
 			pixels[bitmapOffset+2] = (byte)0;
-		pixels[bitmapOffset+3] -= mask[maskOffset+3];
-		if(pixels[bitmapOffset+3] < 0)
+		else
+			pixels[bitmapOffset+2] -= mask[maskOffset+2];
+		
+		if(pixels[bitmapOffset+3] <= mask[maskOffset+3])
 			pixels[bitmapOffset+3] = (byte)0;
-
+		else
+			pixels[bitmapOffset+3] -= mask[maskOffset+3];
+	}
+	
+	final private void setPixel(int bitmapOffset, int maskOffset, byte [] mask) 
+	{
+		pixels[bitmapOffset] = mask[maskOffset];
+		pixels[bitmapOffset+1] = mask[maskOffset+1];
+		pixels[bitmapOffset+2] = mask[maskOffset+2];
+		pixels[bitmapOffset+3] = mask[maskOffset+3];
 	}
 	public byte [] getPixels()
 	{

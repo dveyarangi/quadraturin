@@ -112,7 +112,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	public void apply(double ox, double oy, boolean substract, int maskWidth, byte [] mask)
 	{
 		MaskingSensor sensor = new MaskingSensor (substract, ox, oy, maskWidth, mask);
-		float maskRealWidth = 10*maskWidth*pixelSize;
+		float maskRealWidth = maskWidth*pixelSize;
 		
 		query(sensor, AABB.createFromEdges( ox, oy, ox+maskRealWidth, oy+maskRealWidth, 0 ));
 	}
@@ -145,12 +145,12 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 			if(pixelsBefore == 0 && substract)
 				return false;
 			
-			int ioffset = (int)(FastMath.floor(chunk.getX()-ox)/pixelSize);
-			int joffset = (int)(FastMath.floor(chunk.getY()-oy)/pixelSize);
+			int ioffset = (int)((chunk.getX()-ox)*bitmap.getSize()/getCellSize());
+			int joffset = (int)((chunk.getY()-oy)*bitmap.getSize()/getCellSize());
 			
 			boolean changed = false;
 			if(substract)
-				changed = bitmap.subMask( ioffset, joffset, mask );
+				changed = bitmap.subMask( ioffset, joffset, maskWidth, mask );
 			else
 				changed = bitmap.addMask( ioffset, joffset, maskWidth, mask );
 			
