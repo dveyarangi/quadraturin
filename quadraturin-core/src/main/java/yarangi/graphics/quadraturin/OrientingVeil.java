@@ -11,19 +11,22 @@ public class OrientingVeil implements IVeil
 	@Override
 	public void weave(GL gl, ILayerObject entity, IRenderingContext context)
 	{
-		Area area = entity.getArea();
-		
+		Area area = null;
+		if(entity != null)
+		{
+			area = entity.getArea();
+		}
 		// storing transformation matrix:
 		gl.glMatrixMode( GL.GL_MODELVIEW );
 		gl.glPushMatrix();
 //		gl.glLoadIdentity(); 	
 		
-		float priority = -entity.getLook().getPriority();
 		// transforming into entity coordinates:
 		if(area == null)
-			gl.glTranslatef(0, 0, priority); // just adjusting priority
+			gl.glTranslatef(0, 0, 0); // just adjusting priority
 		else
 		{
+			float priority = -entity.getLook().getPriority();
 			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), priority);
 			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		}
