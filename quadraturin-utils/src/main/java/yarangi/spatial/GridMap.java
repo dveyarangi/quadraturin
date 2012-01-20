@@ -1,9 +1,7 @@
 package yarangi.spatial;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import yarangi.math.FastMath;
 
@@ -249,6 +247,7 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 	 * @return size (height and width) of a single cell
 	 */
 	public final int getCellSize() { return cellSize; }
+	protected final float getHalfCellSize() { return halfCellSize; }
 	public final int getGridWidth() { return gridWidth; }
 	public final int getGridHeight() { return gridHeight; }
 	
@@ -436,8 +435,8 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 		double radius = Math.sqrt(radiusSquare);
 		int minx = Math.max(toLowerGridXIndex(x-radius-cellSize), 0);
 		int miny = Math.max(toLowerGridYIndex(y-radius-cellSize), 0);
-		int maxx = Math.min(toHigherGridXIndex(x+radius), gridWidth);
-		int maxy = Math.min(toHigherGridYIndex(y+radius), gridHeight);
+		int maxx = Math.min(toLowerGridXIndex(x+radius), gridWidth);
+		int maxy = Math.min(toLowerGridYIndex(y+radius), gridHeight);
 		int passId = createNextQueryId();
 		T tile;
 		for(int tx = minx; tx <= maxx; tx ++)
@@ -445,8 +444,11 @@ public abstract class GridMap <T extends ITile<O>, O> implements IGrid <T>
 			{
 				tile = getTileByIndex(tx, ty);
 				
-				double distanceSquare = FastMath.powOf2(x - toXCoord( tx )) + FastMath.powOf2(y - toYCoord( ty ));
-				if(radiusSquare < distanceSquare)
+				double distanceSquare0 = FastMath.powOf2(x - toXCoord( tx )) + FastMath.powOf2(y - toYCoord( ty ));
+				double distanceSquare1 = FastMath.powOf2(x - toXCoord( tx+1 )) + FastMath.powOf2(y - toYCoord( ty ));
+				double distanceSquare2 = FastMath.powOf2(x - toXCoord( tx+1 )) + FastMath.powOf2(y - toYCoord( ty+1 ));
+				double distanceSquare3 = FastMath.powOf2(x - toXCoord( tx )) + FastMath.powOf2(y - toYCoord( ty+1 ));
+				if(radiusSquare < distanceSquare0 && radiusSquare < distanceSquare1 && radiusSquare < distanceSquare2 && radiusSquare < distanceSquare3)
 					continue;
 				
 				if(tile != null)
