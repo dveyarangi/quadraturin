@@ -93,6 +93,9 @@ public class EkranConfig {
 	public Map<String, IGraphicsPlugin> createPlugins()
 	{
 		Map <String, IGraphicsPlugin> factories = new HashMap <String, IGraphicsPlugin> ();
+		if(plugins == null)
+			return factories;
+		
 		for(GraphicsPluginConfig config : plugins)
 		{
 			try {

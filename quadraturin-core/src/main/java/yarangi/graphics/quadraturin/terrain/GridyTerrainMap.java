@@ -1,8 +1,5 @@
 package yarangi.graphics.quadraturin.terrain;
 
-import java.util.Set;
-
-import yarangi.Zen;
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.math.FastMath;
@@ -64,12 +61,6 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 		return  x + getGridWidth() * y;
 	}
 
-	@Override
-	public Set<Bitmap> keySet()
-	{
-		return Zen.notSupported();
-	}
-	
 	public Tile<Bitmap> createTileAt(int i, int j) 
 	{
 		double x = toXCoord( i );

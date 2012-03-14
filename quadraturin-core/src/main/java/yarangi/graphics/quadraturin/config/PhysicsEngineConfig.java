@@ -6,6 +6,7 @@ import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.java.ReflectionUtil;
 import yarangi.spatial.ISpatialIndex;
+import yarangi.spatial.ISpatialSetIndex;
 
 public class PhysicsEngineConfig
 {
@@ -13,7 +14,7 @@ public class PhysicsEngineConfig
     protected String colliderClass;
 
     
-	public IPhysicsEngine createEngine(ISpatialIndex index, ITileMap terrain) 
+	public IPhysicsEngine createEngine(ISpatialSetIndex index, ITileMap terrain) 
 	{
 		if(engineClass == null)
 			return null;
@@ -22,7 +23,7 @@ public class PhysicsEngineConfig
 		if(colliderClass != null)
 			manager = ReflectionUtil.createInstance(colliderClass, 
 					new Object[] {index, terrain},
-					new Class <?> [] {ISpatialIndex.class, ITileMap.class}
+					new Class <?> [] {ISpatialSetIndex.class, ITileMap.class}
 		);
 
 		IPhysicsEngine engine = ReflectionUtil.createInstance(engineClass, 
