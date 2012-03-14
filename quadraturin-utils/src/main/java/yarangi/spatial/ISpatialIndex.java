@@ -1,11 +1,8 @@
 package yarangi.spatial;
 
-import java.util.Set;
 
 public interface ISpatialIndex <T, O>
 {
-	
-	public Set <O> keySet();
 	/**
 	 * Iterates over specified area, reporting fully or partially fitting objects in index. 
 	 * {@link ISpatialSensor} must implement object observing logic. They can also modify 

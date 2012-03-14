@@ -21,7 +21,7 @@ import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialIndex;
+import yarangi.spatial.ISpatialSetIndex;
 
 /**
  * Represents current engine task. 
@@ -266,8 +266,8 @@ public abstract class Scene
 	{
 	}
 
-	final public ISpatialIndex <IAreaChunk, IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
-	final public ISpatialIndex <IAreaChunk, Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
+	final public ISpatialSetIndex<IAreaChunk, IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
+	final public ISpatialSetIndex<IAreaChunk, Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
 	
 	/**
 	 * Set user action controller. May be set any time after scene initialization.

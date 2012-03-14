@@ -11,10 +11,11 @@ import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.Tile;
+import yarangi.spatial.ISpatialSetIndex;
 
 public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 {
-	private ISpatialIndex <IAreaChunk, O> indexer;
+	private ISpatialSetIndex <IAreaChunk, O> indexer;
 	
 	private ITileMap <O> terrain;
 	
@@ -27,7 +28,7 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	private IProximitySensor <IAreaChunk, O> worldSensor;
 	private IProximitySensor <Tile<O>, O> terrainSensor;
 	
-	public RoughCollider(ISpatialIndex <IAreaChunk, O> indexer, ITileMap <O> terrain)
+	public RoughCollider(ISpatialSetIndex <IAreaChunk, O> indexer, ITileMap <O> terrain)
 	{
 		this.indexer = indexer;
 		this.terrain = terrain;
