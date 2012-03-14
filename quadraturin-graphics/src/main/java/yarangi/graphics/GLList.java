@@ -7,10 +7,7 @@ public class GLList
 	
 	public static GLList create(GL gl)
 	{
-		GLList list = new GLList(gl.glGenLists( 1 ));
-		
-		
-		return list;
+		return new GLList(gl.glGenLists( 1 ));
 	}
 	
 	private int id;
@@ -21,7 +18,7 @@ public class GLList
 	}
 	
 	
-	public int getId()
+	public final int getId()
 	{
 		return id;
 	}

@@ -65,7 +65,7 @@ public class BlurVeil extends VeilPluginSkeleton
 		renderTexture(gl);
 		hblurShader.end(gl);*/
 		fadeShader.begin( gl );
-		fadeShader.setFloat1Uniform( gl, "decay", 0.03f );
+		fadeShader.setFloat1Uniform( gl, "decay", 0.05f );
 		renderTexture(gl);
 		fadeShader.end(gl);
 		gl.glPopAttrib();

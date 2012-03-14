@@ -59,7 +59,6 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		int size = (int)(entity.getSensor().getRadius()*2.);
 		textureSize = BitUtils.po2Ceiling(size);
 
-		
 		fbo = FBO.createFBO(gl, textureSize, textureSize, true);
 		
 		// preparing shaders:
