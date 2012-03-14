@@ -16,17 +16,22 @@ public class RandomUtil
 		return d*random.nextDouble();
 	}
 	
-	public static float getRandomGaussian(float center, float scale)
+	public static float N(float mean, float sigma)
 	{
-		return center + scale * (float)random.nextGaussian();
+		return mean + sigma * (float)random.nextGaussian();
 	} 
-	public static double getRandomGaussian(double center, double scale)
+	public static double N(double mean, double sigma)
 	{
-		return center + scale * random.nextGaussian();
+		return mean + sigma * random.nextGaussian();
 	} 
 	
 	public static boolean oneOf(int num)
 	{
 		return getRandomInt(num) == 0;
+	}
+	
+	public static boolean P(float p) {
+		assert p >= 0 && p <= 1;
+		return random.nextFloat() <= p;
 	}
 }
