@@ -10,17 +10,17 @@ import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.quadraturin.simulations.Body;
 import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
-import yarangi.spatial.PointArea;
 
-public class Bitmap implements IPhysicalObject, IEntity
+public class Bitmap extends AABB implements IPhysicalObject, IEntity
 {
 	
 	private byte [] pixels;
 	
 	private int pixelCount;
 	
-	private PointArea area;
+//	private PointArea area;
 	
 	private int size;
 	
@@ -33,10 +33,10 @@ public class Bitmap implements IPhysicalObject, IEntity
 	 * @param y
 	 * @param pixels array of pixel color components (r,g,b,a); 
 	 */
-	public Bitmap(double cx, double cy, int size)
+	public Bitmap(double cx, double cy, double width, int size)
 	{
-		
-		area = new PointArea(cx, cy);
+		super(cx, cy, width, width, 0);
+//		area = new PointArea(cx, cy);
 		
 		this.pixels = new byte[size*size*4];
 		
@@ -247,7 +247,7 @@ public class Bitmap implements IPhysicalObject, IEntity
 	@Override
 	public Area getArea()
 	{
-		return area;
+		return this;
 	}
 
 	@Override

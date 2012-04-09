@@ -32,7 +32,7 @@ public class Entity implements IEntity
 	/**
 	 * Entity behavior
 	 */
-	private Behavior <?> behavior;
+	private Behavior <?> behavior = Dummy.BEHAVIOR;
 	
 	/**
 	 * Area span

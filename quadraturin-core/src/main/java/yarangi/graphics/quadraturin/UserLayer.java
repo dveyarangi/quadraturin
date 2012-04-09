@@ -46,9 +46,9 @@ public class UserLayer extends SceneLayer <Overlay>
 	}
 
 	@Override
-	protected boolean testEntity(Logger log, Overlay entity)
+	protected boolean testEntity(Overlay entity)
 	{
-		boolean test = super.testEntity(log, entity);
+		boolean test = super.testEntity(entity);
 		
 		if(entity.getArea() == null) {
 			log.warn( "Entity [" + entity + "] must define area aspect." );

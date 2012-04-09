@@ -20,7 +20,7 @@ public class Debug
 	/**
 	 * System property to turn on GL debug mode.
 	 */
-	public static final String DEBUG_MODE = "yarangi.graphics.quadraturin.debug";
+	public static final String DEBUG_MODE = "q.debug";
 
 	public static boolean ON = Boolean.valueOf(System.getProperty(DEBUG_MODE));
 	static Look userLayerSpatialOverlay = null;

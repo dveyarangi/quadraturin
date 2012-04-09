@@ -60,7 +60,7 @@ public class AABB implements Area
 	 * @param a box orientation (degrees)
 	 */
 	
-	private AABB(double x, double y, double rx, double ry, double a)
+	protected AABB(double x, double y, double rx, double ry, double a)
 	{
 		this.ref = Vector2D.R(x, y);
 		rmax = Math.max(rx, ry);

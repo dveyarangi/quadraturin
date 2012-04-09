@@ -65,7 +65,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	{
 		double x = toXCoord( i );
 		double y = toYCoord( j );
-		Bitmap bitmap = new Bitmap(toXCoord( i ), toYCoord( j ), bitmapWidth);
+		Bitmap bitmap = new Bitmap(toXCoord( i ), toYCoord( j ), getCellSize(), bitmapWidth);
 		Tile <Bitmap> tile = getTileByIndex( i, j );
 		if(tile == null)
 		{

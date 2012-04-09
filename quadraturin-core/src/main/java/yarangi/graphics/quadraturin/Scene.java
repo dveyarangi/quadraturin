@@ -8,6 +8,7 @@ import javax.media.opengl.GL;
 import org.apache.log4j.Logger;
 
 import yarangi.graphics.quadraturin.actions.ActionController;
+import yarangi.graphics.quadraturin.actions.DefaultActionFactory;
 import yarangi.graphics.quadraturin.actions.ICameraMan;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;

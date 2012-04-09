@@ -155,9 +155,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 
 
 	@Override
-	protected boolean testEntity(Logger log, IEntity entity)
+	protected boolean testEntity(IEntity entity)
 	{
-		boolean test = super.testEntity(log, entity);
+		boolean test = super.testEntity(entity);
 		
 		if(entity.getBehavior() == null) {
 			log.warn( "Entity [" + entity + "] must define behavior aspect." );

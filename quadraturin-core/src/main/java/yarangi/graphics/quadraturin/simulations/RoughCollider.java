@@ -8,15 +8,21 @@ import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialSensor;
-import yarangi.spatial.Tile;
 import yarangi.spatial.ISpatialSetIndex;
+import yarangi.spatial.Tile;
 
 public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 {
+	
+	/**
+	 * Index of entities.
+	 */
 	private ISpatialSetIndex <IAreaChunk, O> indexer;
 	
+	/**
+	 * Optional: terrain
+	 */
 	private ITileMap <O> terrain;
 	
 	private Map <Class<? extends IPhysicalObject>, ICollisionHandler<O>> handlers = 
@@ -44,11 +50,15 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 		ICollisionHandler<O> handler = handlers.get( source.getClass() );
 		if(handler == null)
 			return false;
-		if(!(target.getArea() instanceof AABB))
-			return false; //throw new IllegalArgumentException("Collision with non-AABB areas is not yet supported (target: " + target + ")");
-		if(source.getArea().overlaps( (AABB)target.getArea() ))
-			return handler.setImpactWith( source, target );
+		if(target.getArea() instanceof AABB)
+		{
+			if(source.getArea().overlaps( (AABB)target.getArea() ))
+				return handler.setImpactWith( source, target );
+			else
+				return false;
+		}
 		
+		//throw new IllegalArgumentException("Collision with areas of type [" + target.getClass() + "] is yet supported.");
 		return false;
 	}
 
@@ -76,6 +86,8 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	{
 		return indexer.keySet();
 	}
+	
+	
 	/**
 	 * Spatial query processor
 	 */
@@ -119,6 +131,7 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 			if(!source.isAlive())
 				return true;
 			
+			// TODO: too rough:
 			if(chunk.overlaps( source.getArea().getRefPoint().x()-source.getArea().getMaxRadius(),
 					source.getArea().getRefPoint().y()-source.getArea().getMaxRadius(),
 					source.getArea().getRefPoint().x()+source.getArea().getMaxRadius(),

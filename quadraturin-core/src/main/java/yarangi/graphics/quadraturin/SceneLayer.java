@@ -164,7 +164,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 //		if(entity.getAABB() == null)
 //			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
 		
-		if(testEntity(log, entity))
+		if(testEntity(entity))
 			bornEntities.add(entity);
 	}
 	
@@ -208,7 +208,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 	}
 	
 
-	protected boolean testEntity(Logger logger, K entity) 
+	protected boolean testEntity(K entity) 
 	{
 		boolean test = true;
 		if(entity.getLook() == null) {
