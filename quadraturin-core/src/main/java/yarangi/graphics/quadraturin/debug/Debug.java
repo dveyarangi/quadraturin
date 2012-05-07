@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.debug;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;

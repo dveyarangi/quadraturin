@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GLCanvas;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
@@ -119,8 +119,7 @@ public class StageAnimator implements Loopy, StageListener
 		
 		if(frameTimeLeft > 0)
 			try { // spending remaining frame time to match the maxFPS setting:
-				if( log.isTraceEnabled() )
-					log.trace("Going to sleep for " + frameTimeLeft + " ns.");
+				log.trace("Going to sleep for %d ns.", frameTimeLeft);
 				Thread.sleep((long)(frameTimeLeft * FROM_NANO * 1000));
 			} 
 			catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }

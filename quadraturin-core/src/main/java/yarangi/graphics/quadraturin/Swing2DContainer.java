@@ -1,19 +1,15 @@
 package yarangi.graphics.quadraturin;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.swing.JFrame;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.config.IQuadConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
@@ -46,11 +42,6 @@ public class Swing2DContainer extends JFrame
 	private GLCanvas canvas = null;
 	
 	/**
-	 * Contains all threads that 
-	 */
-	private ThreadChain chain;
-	
-	/**
 	 * Entities and animation controller.
 	 */
 	private Stage stage;
@@ -71,6 +62,12 @@ public class Swing2DContainer extends JFrame
 	private StageAnimator animator;
 	
 	/**
+	 * Contains {@link #voices}, {@link #controller} and {@link #animator} threads
+	 */
+	private ThreadChain chain;
+	
+	
+	/**
 	 * Logger
 	 */
 	private Logger log = Logger.getLogger("quadraturin");
@@ -85,18 +82,17 @@ public class Swing2DContainer extends JFrame
 		super();
 		
 		String applicationName = "Quadraturin " + V; 
-		setName(applicationName);
-		this.setLocationRelativeTo(null);
-//		this.setUndecorated( true ); // remove window border and title for fullscreen
 		
 		log.info("/////////////////////////////////////////////////////////////");
 		log.info(applicationName + " container is being expanded...");
 
-		if(Debug.ON) {/* Debug statics called */}			
+		if(Debug.ON) {/* Debug statics called */}
+		
+		
+		IQuadConfig config = QuadConfigFactory.getConfig();	
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
-		IQuadConfig config = QuadConfigFactory.getConfig();	
 		
 		log.debug("Configuring GL capabilities.");
 	    GLCapabilities capabilities = new GLCapabilities();
@@ -110,11 +106,12 @@ public class Swing2DContainer extends JFrame
 		int xres = config.getEkranConfig().getXres();
 		int yres = config.getEkranConfig().getYres();
 		// TODO: full-screen
-		log.debug("Canvas dimensions set to [" + xres + "," + yres + "].");
+		log.debug("OpenGL canvas dimensions are [" + xres + "," + yres + "].");
 		canvas.setMinimumSize(new Dimension(xres, yres));
 		canvas.setPreferredSize(new Dimension(xres, yres));
 	    
-		
+
+		// remove mouse cursor:
 /*		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
 									cursorImg, new Point(0, 0), "blank cursor");
@@ -135,10 +132,9 @@ public class Swing2DContainer extends JFrame
 		});
 		
 		log.debug("Creating thread chain...");
+		
 		if(Debug.ON)
-		{
 			chain = new DebugThreadChain(100);
-		}
 		else
 			chain = new ThreadChain("q-chain");
 		
@@ -184,11 +180,15 @@ public class Swing2DContainer extends JFrame
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// organizing JFrame contents:
-	    log.trace("Packing swing frame...");
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(canvas, BorderLayout.CENTER);
-		getContentPane().validate();
-		pack();
+		
+	    log.trace("Organizing swing frame...");
+		this.setName(applicationName);
+		this.setLocationRelativeTo(null);
+//		this.setUndecorated( true ); // remove window border and title for fullscreen
+		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().add(canvas, BorderLayout.CENTER);
+		this.getContentPane().validate();
+		this.pack();
 		
 		
 		

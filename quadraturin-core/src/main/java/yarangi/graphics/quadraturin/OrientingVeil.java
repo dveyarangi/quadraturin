@@ -27,7 +27,7 @@ public class OrientingVeil implements IVeil
 		else
 		{
 			float priority = -entity.getLook().getPriority();
-			gl.glTranslatef((float)area.getRefPoint().x(), (float)area.getRefPoint().y(), priority);
+			gl.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
 			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		}
 	}

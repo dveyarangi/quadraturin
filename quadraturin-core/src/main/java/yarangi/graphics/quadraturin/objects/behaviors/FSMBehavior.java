@@ -68,4 +68,8 @@ public class FSMBehavior <K> implements Behavior <K>
 	}
 
 
+	public IBehaviorState <K> getCurrentState() 
+	{
+		return currState;
+	}
 }

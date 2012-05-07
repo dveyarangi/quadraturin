@@ -8,11 +8,17 @@ import java.util.Set;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
+/**
+ * Wraps rendering properties
+ * Should also wrap GL object, so it could be more separated from entity definition.
+ * @author dveyarangi
+ *
+ */
 public class DefaultRenderingContext implements IRenderingContext 
 {
 	private ViewPort viewPort;
@@ -112,16 +118,21 @@ public class DefaultRenderingContext implements IRenderingContext
 		for(String pluginName : getPluginsNames())
 		{
 			IGraphicsPlugin factory = getPlugin(pluginName);
+			
+			log.debug("Validating plugin [" + pluginName + "]...");
 			boolean isPluginAvailable = true;
-			for(String extensionName : factory.getRequiredExtensions())
-				if(! gl.isExtensionAvailable(extensionName)) 
-				{
-					log.error("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
-					isPluginAvailable = false;
-				}
+			if(factory.getRequiredExtensions() != null) 
+			{
+				for(String extensionName : factory.getRequiredExtensions())
+					if(! gl.isExtensionAvailable(extensionName)) 
+					{
+						log.error("GL extension [" + extensionName + "] required by plugin [" + pluginName + "] is not available.");
+						isPluginAvailable = false;
+					}
+			}
 			
 			if(!isPluginAvailable) {
-				Q.rendering.debug("Plugin [" + pluginName + "] is not supported by hardware.");
+				log.debug("Plugin [" + pluginName + "] is not supported by hardware.");
 				unavailablePlugins.add(pluginName);
 				continue;
 			}

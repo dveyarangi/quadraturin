@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
@@ -15,14 +15,9 @@ import yarangi.graphics.quadraturin.ui.Overlay;
 
 /**
  * Scene series configurator and container.
- * The entity stage coordinates the animator and rendering threads, and provides
- * {@link Scene}-s life-cycle operations 
- * Also provides scene entity injections.
- * 
- * It also fires scene-change events for {@link StageAnimator}, {@link QVoices} and graphics thread (currently {@link Q2DController})
+ * Provides {@link Scene}-s life-cycle operations and scene entity injections.
  * 
  * TODO: Stage - scene interactions should be refactored
- * TODO: scene UI controls are not created.
  *  
  * @author Dve Yarangi
  */
@@ -73,7 +68,7 @@ public final class Stage
 		for(SceneConfig scene : stageConfig.getScenes())
 		{
 			addScene(scene.createScene(ekranConfig, voices));
-			log.info("Registered scene " + scene.getName() + " (class: " + scene.getSceneClass());
+			log.info("Registered scene %s (class: %s)", scene.getName(), scene.getSceneClass());
 		}
 		
 		scene = scenes.get(stageConfig.getInitialScene());
@@ -110,6 +105,8 @@ public final class Stage
 	public synchronized void setScene(String name)
 	{
 		this.scene = scenes.get(name);
+		if(scene == null)
+			throw new IllegalArgumentException("Scene [" + name + "] is not defined.");
 		
 		fireStageChanged(scene);
 	}

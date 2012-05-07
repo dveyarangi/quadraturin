@@ -7,7 +7,7 @@ import java.util.Queue;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;

@@ -48,8 +48,7 @@ public class Entity implements IEntity
 	private boolean isAlive = true;
 
 	/**
-	 * Create a new scene entity, wrapped in specified AABB.
-	 * @param aabb
+	 * Create a new scene entity.
 	 */
 	protected Entity() 
 	{
@@ -124,22 +123,26 @@ public class Entity implements IEntity
 	public final ISensor getSensor() { return sensorAspect; }
 
 
+	@SuppressWarnings("unchecked")
 	public void init(GL gl, IRenderingContext context)
 	{
 		getLook().init( gl, this, context );
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void render(GL gl, double time, IRenderingContext context)
 	{
 		// rendering this entity:
 		getLook().render(gl, time, this, context);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void destroy(GL gl, IRenderingContext context)
 	{
 		getLook().destroy( gl, this, context );
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean behave(double time, boolean b)
 	{

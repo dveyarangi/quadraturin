@@ -1,6 +1,6 @@
 package yarangi.graphics.quadraturin.config;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 public interface IQuadConfig 
 {

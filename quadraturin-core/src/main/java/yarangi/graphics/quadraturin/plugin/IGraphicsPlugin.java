@@ -87,6 +87,4 @@ public interface IGraphicsPlugin {
 	 * @see GL.glGetString(GL.GL_EXTENSIONS)
 	 */
 	public String [] getRequiredExtensions();
-	
-	public boolean isAvailable();
 }

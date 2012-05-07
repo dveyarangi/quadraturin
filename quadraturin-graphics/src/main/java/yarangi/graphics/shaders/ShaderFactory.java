@@ -6,9 +6,9 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
-import yarangi.graphics.quadraturin.resources.ResourceFactory;
+import yarangi.resources.ResourceFactory;
 
-public class ShaderFactory extends ResourceFactory <GLSLShader> implements IGraphicsPlugin
+public final class ShaderFactory extends ResourceFactory <GLSLShader> implements IGraphicsPlugin
 {
 	public static final String NAME = "shaders";
 	
@@ -69,7 +69,4 @@ public class ShaderFactory extends ResourceFactory <GLSLShader> implements IGrap
 		
 		isInited = false;
 	}
-
-	@Override
-	public boolean isAvailable() { return isInited; }
 }

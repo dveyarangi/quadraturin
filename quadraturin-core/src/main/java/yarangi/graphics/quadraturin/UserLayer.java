@@ -4,17 +4,14 @@ import java.awt.Point;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
-
-import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.graphics.quadraturin.ui.Panel;
 import yarangi.spatial.AABB;
-import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
+
+import com.spinn3r.log5j.Logger;
 
 public class UserLayer extends SceneLayer <Overlay>
 {

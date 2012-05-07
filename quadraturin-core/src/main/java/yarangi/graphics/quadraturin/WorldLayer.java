@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
@@ -128,7 +128,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 
 				if(entity.getSensor().isSensingNeeded( layerTime ))
 				{
-					refPoint = entity.getArea().getRefPoint();
+					refPoint = entity.getArea().getAnchor();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getSensor().clear();
 					double radiusSquare = entity.getSensor().getRadius() * entity.getSensor().getRadius();

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.resources.TextFileResource;
+import yarangi.resources.TextFileResource;
 
 /**
  * File-based GLSL shader loader 

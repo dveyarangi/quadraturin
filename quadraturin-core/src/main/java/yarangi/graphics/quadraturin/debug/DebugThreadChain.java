@@ -1,6 +1,6 @@
 package yarangi.graphics.quadraturin.debug;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.threads.IChainedThread;
 import yarangi.graphics.quadraturin.threads.Loopy;

@@ -1,6 +1,6 @@
 package yarangi.graphics.quadraturin;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 public class Q
 {
@@ -13,6 +13,10 @@ public class Q
 	public static final Logger rendering = Logger.getLogger( "q-renderer" );
 	public static final Logger config    = Logger.getLogger( "q-configurer" );
 	
+	/**
+	 * Starts the engine and provide Stage to control the presentation flow. 
+	 * @return
+	 */
 	public static Stage go()
 	{
 		Swing2DContainer container = new Swing2DContainer();

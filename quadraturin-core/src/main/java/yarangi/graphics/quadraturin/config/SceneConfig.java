@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.config;
 
 import java.awt.Dimension;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.QVoices;
 import yarangi.graphics.quadraturin.Scene;
@@ -27,7 +27,7 @@ public class SceneConfig
 	protected PhysicsEngineConfig engine;
 	protected TerrainConfig terrain;
 	
-	protected Logger log = Logger.getLogger("q-config");
+	protected Logger log = IQuadConfig.LOG;
 
 	public String getName() {
 		return name;

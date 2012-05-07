@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 import yarangi.spatial.Area;
 

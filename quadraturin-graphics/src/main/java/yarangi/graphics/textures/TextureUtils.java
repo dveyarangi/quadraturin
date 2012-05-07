@@ -5,7 +5,7 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 /**
  * Texture and frame buffer utilities

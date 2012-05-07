@@ -134,7 +134,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	public void display(GLAutoDrawable glDrawable) 
 	{
 	
-		try {
+		try { // waiting for our turn:
 			waitForRelease();
 		} catch (InterruptedException e1) {
 			// TODO: should this interrupt the AWT event thread?
@@ -225,6 +225,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// proceeding to next thread:
 		releaseNext();
 
+		// this part is not synchronized:
 		// TODO: ensure that rendering cycle does not start again before this finishes:
 		gl.glFlush();
 		glDrawable.swapBuffers();

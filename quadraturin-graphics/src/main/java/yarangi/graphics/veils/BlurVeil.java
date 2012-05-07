@@ -45,6 +45,8 @@ public class BlurVeil extends VeilPluginSkeleton
 		super.init(gl, context);
 		
 		ShaderFactory factory = context.getPlugin( ShaderFactory.NAME );
+		if(factory == null)
+			throw new IllegalStateException("Shader factory plugin is not available.");
 		vblurShader = factory.getShader( "vblur" );
 		hblurShader = factory.getShader( "hblur");
 		fadeShader = factory.getShader( "fade");

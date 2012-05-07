@@ -1,12 +1,12 @@
 package yarangi.graphics.quadraturin.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
@@ -21,7 +21,7 @@ public class QuadJsonConfig implements IQuadConfig
 		else 
 			CONFIG_FILENAME = "quadraturin-config.json";
 		
-		LOG.debug( "Using [" + CONFIG_FILENAME + "] configuration file." );
+		LOG.debug( "Using [" + new File(CONFIG_FILENAME).getAbsolutePath() + "] configuration file." );
 	}
 	
 	
@@ -32,7 +32,7 @@ public class QuadJsonConfig implements IQuadConfig
 		
 		String fileContents = null;
 		try {
-			InputStream stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			InputStream stream = null;//QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			if(stream == null) {
 				stream = new FileInputStream( CONFIG_FILENAME);
 			}

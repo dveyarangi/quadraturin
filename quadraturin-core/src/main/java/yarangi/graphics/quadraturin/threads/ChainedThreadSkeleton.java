@@ -1,8 +1,6 @@
 package yarangi.graphics.quadraturin.threads;
 
-import javax.crypto.spec.OAEPParameterSpec;
-
-import org.apache.log4j.Logger;
+import com.spinn3r.log5j.Logger;
 
 /**
  * Provides implementation for major part of {@link IChainedThread}

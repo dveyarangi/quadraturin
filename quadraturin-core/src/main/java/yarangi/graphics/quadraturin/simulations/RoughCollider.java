@@ -132,10 +132,10 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 				return true;
 			
 			// TODO: too rough:
-			if(chunk.overlaps( source.getArea().getRefPoint().x()-source.getArea().getMaxRadius(),
-					source.getArea().getRefPoint().y()-source.getArea().getMaxRadius(),
-					source.getArea().getRefPoint().x()+source.getArea().getMaxRadius(),
-					source.getArea().getRefPoint().y()+source.getArea().getMaxRadius()))
+			if(chunk.overlaps( source.getArea().getAnchor().x()-source.getArea().getMaxRadius(),
+					source.getArea().getAnchor().y()-source.getArea().getMaxRadius(),
+					source.getArea().getAnchor().x()+source.getArea().getMaxRadius(),
+					source.getArea().getAnchor().y()+source.getArea().getMaxRadius()))
 				return collide(source, target);
 			
 			return false;

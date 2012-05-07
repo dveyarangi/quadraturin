@@ -13,7 +13,7 @@ public interface IBehaviorState <K> extends IState <K>
 	 * State is changed if behavior did not use all frame time;
 	 * otherwise the same behavior will be executed the next frame.
 	 * 
-	 * Note: If the state alwsys return negative value it will never be left.
+	 * Note: If the state always return negative value it will never be left.
 	 * 
 	 * @param time
 	 * @param entity

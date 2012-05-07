@@ -146,8 +146,5 @@ public abstract class VeilPluginSkeleton extends OrientingVeil implements IGraph
 		veil.destroy( gl );
 		veil = null;
 	}
-	
-	@Override
-	public boolean isAvailable() { return isInited; }
 
 }

@@ -107,7 +107,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		{
 			List <IEntity> entities = entity.getSensor().getEntities();
 			List <Vector2D> shadowEdge;
-			Vector2D sourceLoc = entity.getArea().getRefPoint();
+			Vector2D sourceLoc = entity.getArea().getAnchor();
 		// drawing red polygones for full shadows and penumbra:
 			for(IEntity caster : entities)
 			{
