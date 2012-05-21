@@ -9,10 +9,10 @@ import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
-import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.math.Vector2D;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
+import yarangi.spatial.ITileMap;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 

@@ -5,6 +5,8 @@ import java.util.Set;
 import com.spinn3r.log5j.Logger;
 
 import yarangi.spatial.Area;
+import yarangi.physics.Body;
+import yarangi.physics.IPhysicalObject;
 
 public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsEngine <K>
 {

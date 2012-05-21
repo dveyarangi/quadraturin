@@ -12,7 +12,6 @@ import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
-import yarangi.graphics.veils.BlurVeil;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 import yarangi.spatial.Tile;

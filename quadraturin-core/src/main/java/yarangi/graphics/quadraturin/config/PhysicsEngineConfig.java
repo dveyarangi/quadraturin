@@ -3,10 +3,9 @@ package yarangi.graphics.quadraturin.config;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
-import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.java.ReflectionUtil;
-import yarangi.spatial.ISpatialIndex;
 import yarangi.spatial.ISpatialSetIndex;
+import yarangi.spatial.ITileMap;
 
 public class PhysicsEngineConfig
 {

@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import yarangi.graphics.quadraturin.terrain.ITileMap;
+import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ISpatialSetIndex;
+import yarangi.spatial.ITileMap;
 import yarangi.spatial.Tile;
 
 public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>

@@ -18,10 +18,10 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
-import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSetIndex;
+import yarangi.spatial.ITileMap;
 
 /**
  * Represents current engine task. 

@@ -1,6 +1,6 @@
 package yarangi.graphics.quadraturin.objects;
 
-import yarangi.graphics.quadraturin.simulations.Body;
+import yarangi.physics.Body;
 import yarangi.spatial.Area;
 
 public class EntityFactory 

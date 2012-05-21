@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.config;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.terrain.ITerrainFactory;
-import yarangi.graphics.quadraturin.terrain.ITileMap;
+import yarangi.spatial.ITileMap;
 import yarangi.java.ReflectionUtil;
 
 public class TerrainConfig

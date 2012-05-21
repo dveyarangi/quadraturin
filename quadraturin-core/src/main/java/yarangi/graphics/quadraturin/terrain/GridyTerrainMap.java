@@ -6,6 +6,7 @@ import yarangi.math.FastMath;
 import yarangi.spatial.AABB;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.ISpatialSensor;
+import yarangi.spatial.ITileMap;
 import yarangi.spatial.Tile;
 
 /**
@@ -50,9 +51,9 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	}
 	
 	@Override
-	protected Tile<Bitmap> createEmptyCell(int idx, double x, double y)
+	protected Tile<Bitmap> createEmptyCell(int i, int j, double x, double y)
 	{
-		return new Tile <Bitmap> (x, y, getCellSize(), getCellSize());
+		return new Tile <Bitmap> (i, j, x, y, getCellSize(), getCellSize());
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 		Tile <Bitmap> tile = getTileByIndex( i, j );
 		if(tile == null)
 		{
-			tile = new Tile <Bitmap> (x, y, getCellSize(), getCellSize());
+			tile = new Tile <Bitmap> (i, j, x, y, getCellSize(), getCellSize());
 			putAtIndex( i, j, tile );
 		}
 		tile.put( bitmap );

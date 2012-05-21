@@ -8,8 +8,8 @@ import yarangi.graphics.quadraturin.objects.Behavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.simulations.Body;
-import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
+import yarangi.physics.Body;
+import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
@@ -324,23 +324,6 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 		// TODO Auto-generated method stub
 		
 	}
-
-
-	@Override
-	public void setBody(Body body)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void setSensor(ISensor<?> sensor)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public Behavior<?> getBehavior()

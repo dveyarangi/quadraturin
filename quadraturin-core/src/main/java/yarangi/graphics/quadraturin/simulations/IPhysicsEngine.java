@@ -1,5 +1,7 @@
 package yarangi.graphics.quadraturin.simulations;
 
+import yarangi.physics.IPhysicalObject;
+
 
 
 /**

@@ -1,7 +1,8 @@
 package yarangi.graphics.quadraturin.objects;
 
-import yarangi.graphics.quadraturin.simulations.Body;
-import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
+import yarangi.physics.Body;
+import yarangi.physics.IPhysicalObject;
+
 
 /**
  * Interface for game world entities.
@@ -21,13 +22,13 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	 * Physical properties
 	 * @param body
 	 */
-	public abstract void setBody(Body body);
+//	public abstract void setBody(Body body);
 
 	/**
 	 * World sensor properties (can be null)
 	 * @param sensor
 	 */
-	public abstract void setSensor(ISensor <?> sensor);
+//	public abstract void setSensor(ISensor <?> sensor);
 
 	/**
 	 * How the object behaves

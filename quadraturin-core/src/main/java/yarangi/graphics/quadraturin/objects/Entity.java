@@ -5,7 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneLayer;
-import yarangi.graphics.quadraturin.simulations.Body;
+import yarangi.physics.Body;
 import yarangi.spatial.Area;
 
 /**
@@ -66,15 +66,15 @@ public class Entity implements IEntity
 	public void setArea(Area area) { this.spatialAspect = area; }
 
 	/**
-	 * {@inheritDoc}
+	 * Physical properties
+	 * @param body
 	 */
-	@Override
 	public void setBody(Body body) { this.physicalAspect = body; }
 	
 	/**
-	 * {@inheritDoc}
+	 * World sensor properties (can be null)
+	 * @param sensor
 	 */
-	@Override
 	public void setSensor(ISensor <?> sensor) { this.sensorAspect = sensor; }
 	
 	/**
