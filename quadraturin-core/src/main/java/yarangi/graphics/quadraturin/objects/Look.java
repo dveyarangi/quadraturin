@@ -14,7 +14,6 @@ import yarangi.graphics.quadraturin.IVeil;
  */
 public interface Look <An>
 {
-	public static final int DEFAULT_BUFFER = 0;
 	
 	/**
 	 * Initiate graphics (textures, meshes, etc.)

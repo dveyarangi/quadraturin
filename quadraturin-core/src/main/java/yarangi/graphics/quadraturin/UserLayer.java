@@ -24,6 +24,8 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	private double halfWidth, halfHeight;
 	
+	private PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
+	
 	// TODO: overlay spatial filter
 
 	protected Logger log = Logger.getLogger("q-userlayer");
@@ -97,12 +99,12 @@ public class UserLayer extends SceneLayer <Overlay>
 	public ILayerObject processPick(Point canvasLocation)
 	{
 		// collecting picked entities:
-		PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
 		
 //		log.debug("picking at: " + (canvasLocation.x+halfWidth) + "," + (halfHeight-canvasLocation.y));
 		getEntityIndex().query(sensor, AABB.createSquare(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
 		
 		Overlay pickedObject = sensor.getObject();
+		sensor.clear();
 		if(pickedObject == null)
 			return null; // we are not in UI domain
 

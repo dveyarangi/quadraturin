@@ -2,8 +2,10 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
@@ -94,6 +96,8 @@ public class Swing2DContainer extends JFrame
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
 		
+
+//		loadNativeLibs();
 		log.debug("Configuring GL capabilities.");
 	    GLCapabilities capabilities = new GLCapabilities();
 	    capabilities.setRedBits(8);
@@ -103,12 +107,6 @@ public class Swing2DContainer extends JFrame
 
 	    canvas = new GLCanvas(capabilities);
 	    
-		int xres = config.getEkranConfig().getXres();
-		int yres = config.getEkranConfig().getYres();
-		// TODO: full-screen
-		log.debug("OpenGL canvas dimensions are [" + xres + "," + yres + "].");
-		canvas.setMinimumSize(new Dimension(xres, yres));
-		canvas.setPreferredSize(new Dimension(xres, yres));
 	    
 
 		// remove mouse cursor:
@@ -155,7 +153,14 @@ public class Swing2DContainer extends JFrame
 		log.trace("Entity stage animator created.");
 		
 		log.debug("Creating entity stage...");
-		stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
+		try {
+			stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
+		}
+		catch(Exception e)
+		{
+			log.fatal( "Failed to initialize engine", e );
+			System.exit( 1 );
+		}
 		
 		 // TODO: ugly
 		stage.addListener(voices);
@@ -184,7 +189,26 @@ public class Swing2DContainer extends JFrame
 	    log.trace("Organizing swing frame...");
 		this.setName(applicationName);
 		this.setLocationRelativeTo(null);
-//		this.setUndecorated( true ); // remove window border and title for fullscreen
+		Dimension resolution;
+		if(config.getEkranConfig().isFullscreen()) {
+			
+			this.setUndecorated( true ); // remove window border
+			Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+			// Get the current screen size
+			resolution = toolkit.getScreenSize();
+			this.setLocation( 0, 0 );
+		}
+		else 
+		{
+			
+			resolution = new Dimension(config.getEkranConfig().getXres(), config.getEkranConfig().getYres());
+		}
+		
+		log.debug("OpenGL canvas dimensions are [" + resolution.width + "," + resolution.height + "].");
+		canvas.setMinimumSize(resolution);
+		canvas.setPreferredSize(resolution);
+
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(canvas, BorderLayout.CENTER);
 		this.getContentPane().validate();
@@ -254,4 +278,14 @@ public class Swing2DContainer extends JFrame
 		return stage;
 	}
 
+	
+	private void loadNativeLibs() 
+	{
+		String os = System.getProperty("os.version");
+		String archDataModel = System.getProperty("sun.arch.data.model");
+		log.debug("OS: %s, arch: %s", os, archDataModel);
+		System.loadLibrary(archDataModel + File.separator + "jogl");
+		System.loadLibrary(archDataModel + File.separator + "jogl_awt");
+		System.loadLibrary(archDataModel + File.separator + "jogl_cg");
+	}
 }

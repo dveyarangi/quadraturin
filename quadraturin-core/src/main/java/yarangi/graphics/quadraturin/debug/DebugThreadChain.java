@@ -95,5 +95,12 @@ public class DebugThreadChain extends ThreadChain
 			
 		}
 
-		public void runPostLock() { }}
+		public void runPostLock() { }
+
+		@Override
+		public void start()
+		{
+			// TODO Auto-generated method stub
+			
+		}}
 }

@@ -25,4 +25,5 @@ public interface ISensor <K> extends ISpatialSensor <IAreaChunk, K>
 	public boolean isSensingNeeded(double time);
 	
 	public boolean isSenseTerrain();
+ 
 }

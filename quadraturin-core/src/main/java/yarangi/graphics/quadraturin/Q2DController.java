@@ -256,8 +256,5 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		if(isScenePending.getAndSet(true)) // sanity
 			throw new IllegalStateException("Previous scene was not yet processed.");
 	}
-	
-	
-
 
 }
