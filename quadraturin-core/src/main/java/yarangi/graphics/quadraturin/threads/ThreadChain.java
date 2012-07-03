@@ -141,4 +141,9 @@ public class ThreadChain
 	}
 	
 	public String toString() { return name; }
+	
+	public void reportGeneralError(IChainedThread thread, Throwable e)
+	{
+		stop();
+	}
 }

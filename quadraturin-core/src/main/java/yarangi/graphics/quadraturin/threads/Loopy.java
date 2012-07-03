@@ -6,6 +6,8 @@ package yarangi.graphics.quadraturin.threads;
  */
 public interface Loopy 
 {
+	public void start();
+	
 	/**
 	 * Runs before the synchronized block, unsynchronized (doesn't wait for previous thread to finish).
 	 */
@@ -20,6 +22,5 @@ public interface Loopy
 	 * Runs after the synchronized block, unsynchronized (next thread may run simultaneously).
 	 */
 	public void runPostLock();
-
 
 }

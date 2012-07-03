@@ -36,6 +36,8 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 	public void start()
 	{
 		thread.start();
+		
+		loopy.start();
 	}
 	
 	/**
@@ -45,26 +47,34 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 	public void run()
 	{
 		log.debug("Started thread.");
-		while(isAlive)
-		{
-			// preparing
-			loopy.runPreUnLock();
-			
-			try {
-				waitForRelease();
-			} 
-			catch (InterruptedException e) {
-				log.debug("Thread interrupted.");
+		try {
+			while(isAlive)
+			{
+				// preparing
+				loopy.runPreUnLock();
+				
+				try {
+					waitForRelease();
+				} 
+				catch (InterruptedException e) {
+					log.debug("Thread interrupted.");
+				}
+				
+				// executing body:
+				loopy.runBody();
+				
+				// releasing next thread:
+				getParentChain().releaseNext(this);
+				
+				// postprocessing
+				loopy.runPostLock();
+				
 			}
-			// executing body:
-			loopy.runBody();
-			
-			// releasing next thread:
-			getParentChain().releaseNext(this);
-			
-			// postprocessing
-			loopy.runPostLock();
-			
+		}
+		catch(Throwable e) {
+			// uncaught errors for debug:
+			log.error( "General error.", e );
+			super.getParentChain().reportGeneralError(this, e);
 		}
 		
 		log.debug("Thread is stopped.");
