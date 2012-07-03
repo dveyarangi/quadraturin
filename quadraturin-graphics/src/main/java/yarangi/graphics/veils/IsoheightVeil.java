@@ -19,7 +19,7 @@ import yarangi.graphics.shaders.ShaderFactory;
  * @author dveyarangi
  *
  */
-public class IsoheightVeil extends VeilPluginSkeleton 
+public class IsoheightVeil extends FBOVeilSkeleton 
 {
 	public static final String NAME = "isoheight-veil";
 	

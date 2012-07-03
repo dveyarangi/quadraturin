@@ -21,7 +21,7 @@ import yarangi.graphics.shaders.ShaderFactory;
  * TODO: scale and transpose according to viewpoint
  *
  */
-public class BlurVeil extends VeilPluginSkeleton 
+public class BlurVeil extends FBOVeilSkeleton 
 {
 	public static final String NAME = "blur-veil";
 	

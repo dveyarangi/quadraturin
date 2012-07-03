@@ -1,5 +1,6 @@
 package yarangi.graphics.textures;
 
+import java.nio.IntBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,7 +15,9 @@ import com.sun.opengl.util.texture.Texture;
 public final class TextureManager extends ResourceFactory <TextureHandle> implements IGraphicsPlugin
 {
 
-	LinkedHashMap<String, TextureHandle> loadedTextures = new LALOCacheMap<String, TextureHandle>();
+	private LinkedHashMap<String, TextureHandle> loadedTextures = new LALOCacheMap<String, TextureHandle>();
+	
+	private int bufferId; 
 	
 	public TextureManager(String factoryName, Map <String, String> textureFiles)
 	{
@@ -54,6 +57,9 @@ public final class TextureManager extends ResourceFactory <TextureHandle> implem
 	{
 		// TODO: validate textures?
 		// TODO: go over registered Looks and test files?
+		IntBuffer bufferIdRef = IntBuffer.allocate( 1 );
+		gl.glGenBuffersARB( 1, bufferIdRef );
+		bufferId = bufferIdRef.get();
 	}
 
 	@Override
