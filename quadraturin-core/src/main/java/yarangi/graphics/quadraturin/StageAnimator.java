@@ -79,13 +79,15 @@ public class StageAnimator implements Loopy, StageListener
 		approxFrameLength = 1./maxFPS; // rough guess
 		
 		
-		frameStart = System.nanoTime();
-
 	}
 
 
 	public void runPreUnLock() 
 	{
+	}
+	
+	public void start() {
+		frameStart = System.nanoTime();
 	}
 
 	public void runBody() 
