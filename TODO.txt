@@ -11,7 +11,7 @@ TODOS:
 		- some default container for scene dynamics aggregation (scripted events, world AI)
 			V scene intialization from config.
 			
-		V adapt frame length to average FPS.
+		- adapt frame length to average FPS.
 	> Graphics
 		- LOD 
 		- scene entity tree clipping 
@@ -22,6 +22,10 @@ TODOS:
 	> Integration
 	    - configurable minimized window behavior
 	    - 
+	> Optimization
+		- faster sprites rendering
+		- faster light sources
+		- 
 		
 * Resource loading
 	> JAXB

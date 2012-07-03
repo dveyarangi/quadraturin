@@ -1,0 +1,94 @@
+{
+	"ekran" : {
+		"xres" : 640,
+		"yres" : 480,
+		"aa"   : false,
+		"maxFPS" : 1000,
+		"plugins" : [
+			{ "factoryClass" : "yarangi.graphics.shaders.ShaderFactory",
+			  "properties" : {
+			  		"light" : "shaders/light1.glsl",
+			  		"penumbra" : "shaders/penumbra.glsl",
+					"vblur" : "shaders/gaussian-vblur.glsl",
+ 			 		"hblur" : "shaders/gaussian-hblur.glsl",
+ 					"fade" : "shaders/fade.glsl",
+ 					"isoheight" : "shaders/isoheight.glsl"
+			  	}
+			},
+			{ "comment" : 
+			[{ "factoryClass" : "yarangi.graphics.veils.IsoheightVeil",
+			  "properties" : {
+			  	}
+			},
+			{ "factoryClass" : "yarangi.graphics.veils.BlurVeil",
+			  "properties" : {
+			  	}
+			}
+			]}
+		 ]
+			  		
+	},
+	
+	"input" : {
+		"scrollStep" : 40,
+		"scaleStep" : 0.9,
+		"bindings" : [
+					{ "actionId" : "scroll-left",   "buttonId" : 37,   "modeId" : 1 },
+					{ "actionId" : "scroll-right",  "buttonId" : 39,   "modeId" : 1 },
+					{ "actionId" : "scroll-up",     "buttonId" : 38,   "modeId" : 1 },
+					{ "actionId" : "scroll-down",   "buttonId" : 40,   "modeId" : 1 },
+					{ "actionId" : "zoom-in",       "buttonId" : 33,   "modeId" : 1 },
+					{ "actionId" : "zoom-out",      "buttonId" : 34,   "modeId" : 1 },
+					{ "actionId" : "zoom-in",       "buttonId" : -3,   "modeId" : 5 },
+					{ "actionId" : "zoom-out",      "buttonId" : -3,   "modeId" : 6 },
+					{ "actionId" : "cursor-moved",  "buttonId" : 0,    "modeId" : 0 },
+					{ "actionId" : "fire-on",       "buttonId" : 32,   "modeId" : 1 },
+					{ "actionId" : "fire-off",      "buttonId" : 32,   "modeId" : 3 },
+					{ "actionId" : "fire-on",       "buttonId" : -1,   "modeId" : 1 },
+					{ "actionId" : "mouse-right-drag",    "buttonId" : -2,   "modeId" : 4 },
+					{ "actionId" : "mouse-left-drag",    "buttonId" : -1,   "modeId" : 4 },
+					{ "actionId" : "mouse-release", "buttonId" : 0,    "modeId" : 3 },
+					{ "actionId" : "fire-on",       "buttonId" : -1,   "modeId" : 2 },
+					{ "actionId" : "hold-child",    "buttonId" : -2,   "modeId" : 1 },
+					{ "actionId" : "swarm-debug",   "buttonId" : 84,   "modeId" : 3 }
+				],
+		"binding action ids" : " 
+					PRESSED = 1;
+					TAPPED = 2;
+					RELEASED = 3;
+					DRAGGED = 4;	
+				
+					MOUSE_LEFT_BUTTON = -1;
+					MOUSE_RIGHT_BUTTON = -2;
+					
+					* keyboard key values are identical to KeyEvent.getKeyCode() values
+					(http://download.oracle.com/javase/6/docs/api/constant-values.html#java.awt.event.KeyEvent)
+				 "
+	},
+	
+	"stage" : {
+		"initialScene" : "playground",
+		"scenes" : [
+			{
+				"name" : "playground",
+				"width" : 1000,
+				"height" : 1000,
+				"frameLength" : 30,
+			    "viewpoint" : { 
+			    	"centerx"  : 0.0,
+			    	"centery"  : 0.0,
+			    	"maxZoom"  : 2,
+			    	"initZoom" : 1,
+			    	"minZoom"  : 0.1
+			    },
+			    
+				"sceneClass" : "test.terrain.Scene1",
+
+		    	"terrain" : {
+		    	    "factoryClass"  : "test.terrain.StoneFactory",
+		    	    "cellsize" : 8
+	    	    }
+			}
+		]
+	}
+}  
