@@ -1,7 +1,7 @@
 package yarangi.game.vibrations.grid;
 
-import yarangi.graphics.quadraturin.terrain.ITileMap;
 import yarangi.spatial.GridMap;
+import yarangi.spatial.ITileMap;
 import yarangi.spatial.Tile;
 
 public class SpringGrid extends GridMap <Tile <Joint>, Joint> implements ITileMap <Joint>
@@ -13,9 +13,9 @@ public class SpringGrid extends GridMap <Tile <Joint>, Joint> implements ITileMa
 	}
 
 	@Override
-	protected Tile<Joint> createEmptyCell(int idx, double x, double y)
+	protected Tile<Joint> createEmptyCell(int i, int j, double x, double y)
 	{
-		return new Tile<Joint>(0, 0, x, y);
+		return new Tile<Joint>(i, j, x, y, getCellSize(), getCellSize());
 	}
 	
 	@Override
@@ -27,7 +27,7 @@ public class SpringGrid extends GridMap <Tile <Joint>, Joint> implements ITileMa
 		{
 			int x = i % width;
 			int y = i / width;
-			tiles[i] = createEmptyCell(i, toXCoord( x ), toYCoord( y ));
+			tiles[i] = createEmptyCell(x, y, toXCoord( x ), toYCoord( y ));
 			tiles[i].put( new Joint(0,0) );
 		}
 		return tiles;

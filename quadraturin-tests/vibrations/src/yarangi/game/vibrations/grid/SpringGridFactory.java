@@ -2,7 +2,7 @@ package yarangi.game.vibrations.grid;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.terrain.ITerrainFactory;
-import yarangi.graphics.quadraturin.terrain.ITileMap;
+import yarangi.spatial.ITileMap;
 
 public class SpringGridFactory implements ITerrainFactory
 {

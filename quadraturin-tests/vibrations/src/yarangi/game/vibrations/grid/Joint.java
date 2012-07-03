@@ -1,9 +1,9 @@
 package yarangi.game.vibrations.grid;
 
 import yarangi.math.Vector2D;
+import yarangi.physics.Body;
+import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.Area;
-import yarangi.graphics.quadraturin.simulations.Body;
-import yarangi.graphics.quadraturin.simulations.IPhysicalObject;
 
 public class Joint extends Vector2D implements IPhysicalObject
 {

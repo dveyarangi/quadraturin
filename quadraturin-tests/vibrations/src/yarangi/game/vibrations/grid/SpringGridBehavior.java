@@ -94,9 +94,9 @@ public class SpringGridBehavior implements Behavior <SpringGrid>
 				rx = new double [entity.getGridWidth()];
 				ry = new double [entity.getGridHeight()];
 				for(int y = 0; y < entity.getGridHeight(); y ++)
-					ry[y] = /*10;//*/RandomUtil.N( 10, 10 );
+					ry[y] = /*10;//*/RandomUtil.STD( 10, 10 );
 				for(int x = 0; x < entity.getGridWidth(); x ++)
-					rx[x] = /*10;//*/RandomUtil.N( 10, 10 );
+					rx[x] = /*10;//*/RandomUtil.STD( 10, 10 );
 			}
 			for(int y = 0; y < entity.getGridHeight(); y ++)
 			{
@@ -104,7 +104,7 @@ public class SpringGridBehavior implements Behavior <SpringGrid>
 					continue;
 				
 //				r = ry[y];
-				r = RandomUtil.N( 0, 10 );
+				r = RandomUtil.STD( 0, 10 );
 				
 				entity.getTile( 0, y ).get().setxy( r, r);
 				entity.getTile( entity.getGridHeight()-1, y ).get().setxy( r, r);
@@ -115,7 +115,7 @@ public class SpringGridBehavior implements Behavior <SpringGrid>
 					continue;
 				//r = rx[x];
 //				r = RandomUtil.getRandomGaussian( 10, 10 );
-				r = RandomUtil.N( 0, 10 );
+				r = RandomUtil.STD( 0, 10 );
 				entity.getTile( x, 0 ).get().setxy( r, r);
 				entity.getTile( x, entity.getGridHeight()-1 ).get().setxy( r, r);
 			}
