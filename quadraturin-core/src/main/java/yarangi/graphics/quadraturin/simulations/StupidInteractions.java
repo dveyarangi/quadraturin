@@ -73,14 +73,15 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			
 			// TODO: add volume and rotation :)
 			
-			
-			// TODO: probably should use some Runga-Kutta (research it). 
-			body.addVelocity(body.getForce().x() / body.getMass() * time, body.getForce().y() / body.getMass() * time);
-			
-			// TODO: add limits for forces and velocities
-			// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)
-			
-			body.moveMassCenter(area, body.getVelocity().x() * time, body.getVelocity().y() * time);
+			if(body.isInert()) {
+				// TODO: probably should use some Runga-Kutta (research it). 
+				body.addVelocity(body.getForce().x() / body.getMass() * time, body.getForce().y() / body.getMass() * time);
+				
+				// TODO: add limits for forces and velocities
+				// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)
+				
+				body.moveMassCenter(area, body.getVelocity().x() * time, body.getVelocity().y() * time);
+			}
 			
 		}
 	}
