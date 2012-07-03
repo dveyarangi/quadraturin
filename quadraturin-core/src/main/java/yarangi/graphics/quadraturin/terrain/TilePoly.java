@@ -24,9 +24,13 @@ public class TilePoly implements IEntity, IPhysicalObject
 	/**
 	 * Specifies real structure of this tile:
 	 */
-	private Poly structurePoly;
+	private Poly [] structurePolys;
 	
-	public TilePoly(double minx, double miny, double maxx, double maxy)
+	
+	
+	private boolean isFull = false;
+	
+	public TilePoly(double minx, double miny, double maxx, double maxy, int layersNum)
 	{
 		// used to clip larger than tile polygons
 		borderPoly = new PolyDefault();
@@ -35,6 +39,8 @@ public class TilePoly implements IEntity, IPhysicalObject
 		borderPoly.add( maxx, maxy );
 		borderPoly.add( maxx, miny );
 		
+		structurePolys = new Poly [layersNum];
+		
 /*		structurePoly = new PolyDefault();
 		structurePoly.add( minx, miny );
 		structurePoly.add( minx, maxy );
@@ -42,9 +48,9 @@ public class TilePoly implements IEntity, IPhysicalObject
 		structurePoly.add( maxx, miny );*/
 	}
 	
-	public Poly getPoly() 
+	public Poly [] getPoly() 
 	{
-		return structurePoly;
+		return structurePolys;
 	}
 	
 	public void add(Poly poly) {
@@ -52,8 +58,19 @@ public class TilePoly implements IEntity, IPhysicalObject
 		Poly temp = poly.intersection( borderPoly );
 		if(temp.isEmpty())
 			return;
-		structurePoly = structurePoly == null ? temp : structurePoly.union( temp );
-		
+		Poly carry = temp;
+		for(int idx = 0; idx < structurePolys.length; idx ++) {
+			if(structurePolys[idx] == null) {
+				structurePolys[idx] = temp;
+				break;
+			}
+				
+			temp = structurePolys[idx].intersection( temp );
+			structurePolys[idx] = structurePolys[idx].union( carry );
+			carry = temp;
+		}
+		if(!isFull)
+			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
 		//     ^ clip to tile             ^ add current structure
 	}
 	
@@ -69,16 +86,24 @@ public class TilePoly implements IEntity, IPhysicalObject
 //			return;
 //		}
 		
-		structurePoly = structurePoly == null ? null : structurePoly.intersection( temp );
-		if(structurePoly == null)
-			return;
-		if(structurePoly.isEmpty() || structurePoly.getNumPoints() < 2)
-			structurePoly = null;
+		for(int idx = 0; idx < structurePolys.length; idx ++) {
+			if(structurePolys[idx] == null) {
+				break;
+			}
+			
+			structurePolys[idx] = structurePolys[idx].intersection( temp );
+			if(structurePolys[idx].isEmpty() || structurePolys[idx].getNumPoints() < 2)
+				structurePolys[idx] = null;
+		}
+		
+		if(isFull)
+			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
+	
 	}
 
 	public boolean isEmpty()
 	{
-		return structurePoly == null;
+		return structurePolys[0] == null;
 	}
 
 	@Override
@@ -178,6 +203,11 @@ public class TilePoly implements IEntity, IPhysicalObject
 	{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public boolean isFull()
+	{
+		return isFull;
 	}
 	
 }
