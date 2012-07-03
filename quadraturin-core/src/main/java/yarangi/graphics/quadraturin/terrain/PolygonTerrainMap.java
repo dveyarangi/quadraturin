@@ -66,11 +66,24 @@ public class PolygonTerrainMap extends GridMap <Tile <TilePoly>, TilePoly> imple
 		public boolean objectFound(Tile<TilePoly> chunk, TilePoly tilePoly)
 		{
 //			System.out.println("erroding behavior: erroding tile " + chunk.get() );
-			if(substract)
-				tilePoly.substract( poly );
-			else
-				tilePoly.add( poly );
 			
+			boolean wasEmpty = tilePoly.isEmpty();
+			boolean wasFull = tilePoly.isFull();
+			if(substract) 
+			{
+				if(!tilePoly.isEmpty())
+					tilePoly.substract( poly );
+			}
+			else 
+			{
+				if(!tilePoly.isFull())
+					tilePoly.add( poly );
+			}
+			
+			if(wasEmpty && tilePoly.isEmpty())
+				return false;
+			if(wasFull && tilePoly.isFull())
+				return false;
 			PolygonTerrainMap.this.setModified( chunk );
 			return false;
 		}
