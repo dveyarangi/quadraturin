@@ -1,7 +1,6 @@
 package yarangi.graphics.grid;
 
 import java.awt.Point;
-import java.util.Collection;
 
 import javax.media.opengl.GL;
 
@@ -9,11 +8,9 @@ import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q;
-import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.graphics.textures.FBO;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.spatial.IGrid;
-import yarangi.spatial.IGridListener;
 import yarangi.spatial.Tile;
 
 /**
@@ -28,11 +25,9 @@ import yarangi.spatial.Tile;
  * @param <O>
  * @param <G>
  */
-public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Look <G>, IGridListener<Tile<O>>
+public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLook <O, G>
 {
 	private FBO fbo;
-	
-	private Collection <Tile<O>> pendingTiles;
 	
 	private double gridWidth, gridHeight;
 	
@@ -43,12 +38,16 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	private GLList debugMesh;
 	
 	private IVeil veil;
-	
 
+	public TileGridLook(boolean depthtest, boolean blend)
+	{
+		super(depthtest, blend);
+	}
 	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
 	{
+		super.init( gl, grid, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
  		this.dimensions = getFBODimensions( grid );
@@ -72,6 +71,11 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		
 		grid.setModificationListener( this );
 		
+		beginFrameBufferSpace( gl, grid );
+		if(blend) gl.glEnable(GL.GL_BLEND); else gl.glDisable(GL.GL_BLEND);
+		if(depthtest) gl.glEnable(GL.GL_DEPTH_TEST); else gl.glDisable(GL.GL_DEPTH_TEST);
+		endFrameBufferSpace( gl );
+		
 		updateFrameBuffer( gl, grid );
 		
 		veil = IVeil.ORIENTING; //*/context.getPlugin( BlurVeil.NAME );
@@ -88,7 +92,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	protected abstract Point getFBODimensions(G grid);
 
 	@Override
-	public void render(GL gl, double time, G grid, IRenderingContext context)
+	public void renderGrid(GL gl, double time, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		updateFrameBuffer( gl, grid );
@@ -113,8 +117,6 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 		fbo.unbindTexture(gl);
 		veil.tear( gl );
 		
-//		gl.glEnable(GL.GL_BLEND);
-		
 		assert renderDebug(gl);
 		
 	}
@@ -123,26 +125,17 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	@Override
 	public void destroy(GL gl, G grid, IRenderingContext context)
 	{
+		super.destroy( gl, grid, context );
 		grid.setModificationListener( null );
 		
 		fbo.destroy( gl );
 	}
-
-	@Override
-	public boolean isCastsShadow()
-	{
-		return false;
-	}
 	
+	/**
+	 * Override this to set rendering priority (higher is better)
+	 */
 	@Override
 	public float getPriority() { return -0f; }
-
-	
-	@Override
-	public void cellsModified(Collection<Tile<O>> tiles)
-	{
-		pendingTiles = tiles;
-	}
 
 	protected void beginFrameBufferSpace(GL gl, G grid)
 	{

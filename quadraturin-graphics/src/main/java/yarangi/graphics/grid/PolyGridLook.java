@@ -1,16 +1,12 @@
 package yarangi.graphics.grid;
 
-import java.util.Collection;
-
 import javax.media.opengl.GL;
 
 import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q;
-import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.spatial.IGrid;
-import yarangi.spatial.IGridListener;
 import yarangi.spatial.Tile;
 
 /**
@@ -25,10 +21,9 @@ import yarangi.spatial.Tile;
  * @param <O>
  * @param <G>
  */
-public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> implements Look <G>, IGridListener<Tile<O>>
+public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLook <O, G>
 {
-	
-	private Collection <Tile<O>> pendingTiles;
+
 	
 	private boolean debug = false;
 	
@@ -40,9 +35,16 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	
 	private static final int NO_LIST_ID = -1;
 	
+	
+	public PolyGridLook(boolean depthtest, boolean blend)
+	{
+		super( depthtest, blend );
+	}
+	
 	@Override
 	public void init(GL gl, G grid, IRenderingContext context)
 	{
+		super.init( gl, grid, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
 		
@@ -61,7 +63,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 	}
 
 	@Override
-	public void render(GL gl, double time, G grid, IRenderingContext context)
+	public void renderGrid(GL gl, double time, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		updateLists( gl, grid );
@@ -83,9 +85,9 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 //		fbo.unbind( gl );
 		gl.glDisable( GL.GL_DEPTH_TEST );
 		veil.weave( gl, null, context );
-		gl.glColor4f(0.5f, 1f, 0.5f, 0.5f);
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)
+				// TODO: to many of those, needs better approach:
 				gl.glCallList( listIds[idx][jdx] );
 		veil.tear( gl );
 		
@@ -107,22 +109,9 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> implements Loo
 				if(listIds[idx][jdx] != NO_LIST_ID)
 					gl.glDeleteLists( listIds[idx][jdx], 1 );
 	}
-
-	@Override
-	public boolean isCastsShadow()
-	{
-		return false;
-	}
 	
 	@Override
 	public float getPriority() { return -0f; }
-
-	
-	@Override
-	public void cellsModified(Collection<Tile<O>> tiles)
-	{
-		pendingTiles = tiles;
-	}
 
 	/**
 	 * 
