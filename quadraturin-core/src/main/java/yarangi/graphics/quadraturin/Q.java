@@ -1,9 +1,18 @@
 package yarangi.graphics.quadraturin;
 
+import java.lang.Thread.UncaughtExceptionHandler;
+
 import com.spinn3r.log5j.Logger;
 
+/**
+ * Quadraturin initializer 
+ * 
+ */
 public class Q
 {
+	/**
+	 * TODO: not used
+	 */
 	public enum QMode 
 	{
 		PRESENT_2D, PRESENT_3D;
@@ -13,8 +22,21 @@ public class Q
 	public static final Logger rendering = Logger.getLogger( "q-renderer" );
 	public static final Logger config    = Logger.getLogger( "q-configurer" );
 	
+	static {
+		// TODO: global exception handler:
+		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler () {
+			@Override
+			public void uncaughtException(Thread thread, Throwable tro)
+			{
+				Q.structure.fatal( "Uncaught exception in thread [" + thread + "]", tro );
+				System.exit( 1 );
+			}
+		});
+	}
+	
 	/**
-	 * Starts the engine and provide Stage to control the presentation flow. 
+	 * Starts the engine and provide Stage to control the presentation flow.
+	 *  
 	 * @return
 	 */
 	public static Stage go()
@@ -25,4 +47,5 @@ public class Q
 		
 		return container.getStage();
 	}
+
 }
