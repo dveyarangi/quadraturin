@@ -5,6 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneLayer;
+import yarangi.math.Vector2D;
 import yarangi.physics.Body;
 import yarangi.spatial.Area;
 
@@ -161,5 +162,8 @@ public class Entity implements IEntity
 		// TODO in constructor
 		return 0;
 	}
+	
+	public final double x() {	return getArea().getAnchor().x(); }
+	public final double y() {	return getArea().getAnchor().y(); }
 
 }
