@@ -22,6 +22,7 @@ public class EkranConfig {
     protected int yres;
     protected boolean antialiasing;
     protected int maxFPS;
+    protected boolean fullscreen;
     
     protected List <GraphicsPluginConfig> plugins; 
     
@@ -89,6 +90,8 @@ public class EkranConfig {
     public void setMaxFps(int value) {
         this.maxFPS = value;
     }
+    
+    public boolean isFullscreen() { return fullscreen; }
 
 	public Map<String, IGraphicsPlugin> createPlugins()
 	{
