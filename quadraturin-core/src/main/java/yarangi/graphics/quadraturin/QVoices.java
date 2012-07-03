@@ -90,6 +90,8 @@ public class QVoices implements IEventManager, Loopy
 		}
 	}
 	
+	public void start() { }
+	
 	public void runPreUnLock() { /* Abyssus abyssum invocat */ }
 
 	public void runBody() 
