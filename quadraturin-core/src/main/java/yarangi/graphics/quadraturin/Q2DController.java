@@ -134,6 +134,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	public void display(GLAutoDrawable glDrawable) 
 	{
 	
+		///////////////////////////////////////////////////////////
+		// WAITING FOR OTHER THREADS TO FINISH:
+		///////////////////////////////////////////////////////////
 		try { // waiting for our turn:
 			waitForRelease();
 		} catch (InterruptedException e1) {
@@ -155,6 +158,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			return;
 		}
 		
+		///////////////////////////////////////////////////////////
+		// LOADING SCENE IF CHANGED:
+		///////////////////////////////////////////////////////////
 		if(isScenePending.getAndSet(false))
 		{	// swapping scene:
 			if(prevScene != null)
@@ -173,7 +179,8 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		}
 
 		////////////////////////////////////////////////////////////////////
-		// rendering current frame:
+		// RENDERING CURRENT FRAME:
+		////////////////////////////////////////////////////////////////////
 		
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
 		int viewport[] = new int[4]; gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);

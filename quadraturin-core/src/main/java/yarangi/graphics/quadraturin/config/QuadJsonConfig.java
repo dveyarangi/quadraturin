@@ -8,6 +8,8 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 
+import yarangi.graphics.quadraturin.Q;
+
 import com.google.gson.Gson;
 
 public class QuadJsonConfig implements IQuadConfig
@@ -15,7 +17,7 @@ public class QuadJsonConfig implements IQuadConfig
 	
 	public static final String CONFIG_FILENAME;
 	static {
-		String configFileProp = System.getProperty( "q.config.file" );
+		String configFileProp = System.getProperty( Q.CONFIG_FILE );
 		if(configFileProp != null)
 			CONFIG_FILENAME = configFileProp;
 		else 

@@ -2,32 +2,27 @@ package yarangi.graphics.quadraturin.debug;
 
 import javax.media.opengl.GL;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.UserLayer;
-import yarangi.graphics.quadraturin.objects.Dummy;
-import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Look;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
+import com.spinn3r.log5j.Logger;
+
 public class Debug 
 {
 	public static Logger LOG = Logger.getLogger("q-debug");
-	/**
-	 * System property to turn on GL debug mode.
-	 */
-	public static final String DEBUG_MODE = "q.debug";
 
-	public static boolean ON = Boolean.valueOf(System.getProperty(DEBUG_MODE));
+	public static boolean ON = Boolean.valueOf(System.getProperty(Q.DEBUG_MODE));
 	static Look userLayerSpatialOverlay = null;
 	
 	static {
 		if(!ON) 
-			LOG.info("To start Quadraturin profiling features, set true '" + DEBUG_MODE + "' JVM variable.");
+			LOG.info("To start Quadraturin profiling features, set true '" + Q.DEBUG_MODE + "' JVM variable.");
 		else
 			LOG.info("Quadraturin is started in profiling mode.");
 	}

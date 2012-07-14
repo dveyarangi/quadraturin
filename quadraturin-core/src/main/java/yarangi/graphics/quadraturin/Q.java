@@ -5,7 +5,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import com.spinn3r.log5j.Logger;
 
 /**
- * Quadraturin initializer 
+ * Quadraturin initializer. Use {@link #go()} method to start the engine.
  * 
  */
 public class Q
@@ -18,10 +18,30 @@ public class Q
 		PRESENT_2D, PRESENT_3D;
 	}
 	
+	
+	////////////////////////////////////
+	// Q-wide loggers:
+	
 	public static final Logger structure = Logger.getLogger( "q-structure" );
 	public static final Logger rendering = Logger.getLogger( "q-renderer" );
 	public static final Logger config    = Logger.getLogger( "q-configurer" );
 	
+	////////////////////////////////////
+	// VM properties
+	
+	/**
+	 * System property to turn on GL debug mode.
+	 */
+	public static final String DEBUG_MODE = "q.debug";
+	
+	/**
+	 * System property - path to configuration file.
+	 */
+	public static final String CONFIG_FILE = "q.config.file";
+
+	
+	////////////////////////////////////
+	// Exception handling:
 	static {
 		// TODO: global exception handler:
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler () {
