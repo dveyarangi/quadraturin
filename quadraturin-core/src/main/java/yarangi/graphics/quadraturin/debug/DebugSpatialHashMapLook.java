@@ -7,12 +7,12 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.FastMath;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.SpatialHashMap;
 
-public class DebugSpatialHashMapLook implements Look <SpatialHashMap<IEntity>>
+public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 {
 	
 	private int gridMeshId;

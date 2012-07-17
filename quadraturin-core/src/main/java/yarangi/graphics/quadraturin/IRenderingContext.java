@@ -1,10 +1,11 @@
 package yarangi.graphics.quadraturin;
 
-import yarangi.graphics.quadraturin.objects.Look;
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
+import javax.media.opengl.GL;
+
+import yarangi.graphics.quadraturin.objects.ILook;
 
 /**
- * Holds some rendering properties, provided to {@link Look} methods
+ * Holds some rendering properties, provided to {@link ILook} methods
  * TODO: maybe it should have a brighter future, encapsulating the GL object and 
  * becoming a real renderer.
  * 
@@ -25,4 +26,8 @@ public interface IRenderingContext
 	 * @return
 	 */
 	public <T> T getPlugin(String name);
+	
+	public GL gl();
+	
+	public void setDefaultBlendMode(GL gl);
 }

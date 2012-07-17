@@ -5,13 +5,13 @@ import javax.media.opengl.GL;
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.AABB;
 
-public class PanelLook implements Look <Overlay>
+public class PanelLook implements ILook <Overlay>
 {
 	
-	private Color color;
+	private final Color color;
 	
 	public PanelLook(Color color) 
 	{
@@ -41,6 +41,7 @@ public class PanelLook implements Look <Overlay>
 			gl.glVertex2d( -area.getRX(), area.getRY() );
 		gl.glEnd();
 		gl.glPopAttrib();
+		context.setDefaultBlendMode( gl );
 	}
 
 	@Override

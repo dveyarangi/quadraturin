@@ -1,10 +1,10 @@
 package test.nn;
 
 import yarangi.ai.nn.numeric.NeuralNetworkRunner;
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.numbers.RandomUtil;
 
-public class NNBehavior  extends NeuralNetworkRunner <Double, Double> implements Behavior <NNEntity>
+public class NNBehavior  extends NeuralNetworkRunner <Double, Double> implements IBehavior <NNEntity>
 {
 
 	public NNBehavior()

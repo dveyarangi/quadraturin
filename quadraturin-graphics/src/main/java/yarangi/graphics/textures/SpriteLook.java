@@ -7,7 +7,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 
 /**
  * Creates and binds the texture of the entity's look. The content
@@ -19,19 +19,19 @@ import yarangi.graphics.quadraturin.objects.Look;
  * @param height
  * @return texture object handler
  */
-public class SpriteLook <T extends IEntity> implements Look <T> 
+public class SpriteLook <T extends IEntity> implements ILook <T> 
 {
 	
-	private Look <T> spriteLook;
+	private final ILook <T> spriteLook;
 	
-	private int width, height;
+	private final int width, height;
 	private int textureHandle;
 	
-	private boolean overlay;
+	private final boolean overlay;
 	
 	private boolean isInited = false;
 	
-	public SpriteLook(Look <T> spriteLook, int width, int height, boolean overlay)
+	public SpriteLook(ILook <T> spriteLook, int width, int height, boolean overlay)
 	{
 		this.spriteLook = spriteLook;
 		
@@ -51,6 +51,7 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 	 * @param height
 	 * @return texture object handler
 	 */
+	@Override
 	public void init(GL gl, T entity, IRenderingContext defaultContext) 
 	{
 		if(isInited)
@@ -109,10 +110,12 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 
 	
 	
+	@Override
 	public void render(GL gl, double time, T entity, IRenderingContext defaultContext) 
 	{
 //		gl.glEnable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 
+		gl.glPushAttrib( GL.GL_ENABLE_BIT );
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		gl.glDisable(GL.GL_TEXTURE_GEN_S);
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
@@ -126,10 +129,10 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 		// texture background color
 		gl.glColor4f(0.f, 0.f, 0.f, 0.f);
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)(-width/2), (float)(-height/2));	// Bottom Left Of The Texture and Quad
-			gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)( width/2), (float)(-height/2));	// Bottom Right Of The Texture and Quad
-			gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)( width/2), (float)( height/2));	// Top Right Of The Texture and Quad
-			gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)(-width/2), (float)( height/2));
+			gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-width/2, -height/2);	// Bottom Left Of The Texture and Quad
+			gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(width/2, -height/2);	// Bottom Right Of The Texture and Quad
+			gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(width/2, height/2);	// Top Right Of The Texture and Quad
+			gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f(-width/2, height/2);
 		gl.glEnd();
 //		blurShader.end(gl);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
@@ -150,12 +153,14 @@ public class SpriteLook <T extends IEntity> implements Look <T>
 //		gl.glEnable(GL.GL_DEPTH_TEST);
 ///		gl.glDisable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 		
+		gl.glPopAttrib();
 		// unbinding texture
 		if(overlay)
 			spriteLook.render(gl, time, entity, defaultContext);
 		
 	}
 
+	@Override
 	public void destroy(GL gl, T entity, IRenderingContext defaultContext) 
 	{
 		// TODO: something is fishy around here

@@ -12,7 +12,7 @@ import yarangi.graphics.quadraturin.actions.ICameraMan;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
@@ -73,7 +73,7 @@ public abstract class Scene
 	/**
 	 * For background faceless behaviors
 	 */
-	private List <Behavior<Scene>> workers = new ArrayList <Behavior<Scene>> ();
+	private List <IBehavior<Scene>> workers = new ArrayList <IBehavior<Scene>> ();
 
 	private ICameraMan cameraMan;
 	
@@ -248,16 +248,16 @@ public abstract class Scene
 		
 		getWorldLayer().animate(time);
 
-		for(Behavior <Scene> worker : workers)
+		for(IBehavior <Scene> worker : workers)
 			worker.behave( time, this, true );
 //	return changePending;
 	}
 
-	public void addWorker(Behavior <Scene> worker)
+	public void addWorker(IBehavior <Scene> worker)
 	{
 		this.workers.add( worker );
 	}
-	public void removeWorker(Behavior <Scene> worker)
+	public void removeWorker(IBehavior <Scene> worker)
 	{
 		this.workers.remove( worker );
 	}

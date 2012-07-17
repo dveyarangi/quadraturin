@@ -6,13 +6,13 @@ import javax.media.opengl.glu.GLU;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.OrientingVeil;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
 
 /**
  * Allows rendering into separate frame buffer, for post-processing effects.
- * A {@link Look} have to explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
+ * A {@link ILook} have to explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
  * methods to render into the veil.
  * 
  * @author dveyarangi
@@ -26,9 +26,9 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 	
 	private int width, height;
 
-	private GLU glu = new GLU();
+	private final GLU glu = new GLU();
 	
-	private boolean isInited = false;
+	private final boolean isInited = false;
 	
 	@Override
 	public void init(GL gl, IRenderingContext context) {
@@ -42,6 +42,7 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 			throw new IllegalStateException("Failed to create veil frame buffer object.");
 	}
 	
+	@Override
 	public void resize(GL gl, IRenderingContext context) {
 		if(veil == null)
 			throw new IllegalStateException("Cannot reinit not initiated veil,");
@@ -62,6 +63,7 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 	 * Binds veil's buffer; after invocation all GL rendering will go to this buffer 
 	 * @param gl
 	 */
+	@Override
 	public void weave(GL gl, ILayerObject entity, IRenderingContext context)
 	{
 		veil.bind(gl);
@@ -76,10 +78,10 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 	 * Unbinds veil's buffer and restores normal rendering.
 	 * @param gl
 	 */
+	@Override
 	public void tear(GL gl)
 	{
 		super.tear( gl );
-		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		
@@ -115,7 +117,7 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 	
-		
+		gl.glPushAttrib( GL.GL_ENABLE_BIT );
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		// 
 		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
@@ -133,7 +135,8 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 		gl.glEnd();
 
 		getFBO().unbindTexture( gl );
-		gl.glEnable( GL.GL_BLEND );
+		
+		gl.glPopAttrib();
 	}
 	
 

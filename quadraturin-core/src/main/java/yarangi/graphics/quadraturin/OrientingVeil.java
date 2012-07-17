@@ -5,6 +5,11 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.spatial.Area;
 
+/**
+ * Moves to entity coordinates.
+ *  
+ * @author dveyarangi
+ */
 public class OrientingVeil implements IVeil
 {
 

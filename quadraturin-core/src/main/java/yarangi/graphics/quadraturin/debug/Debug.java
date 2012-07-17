@@ -7,7 +7,7 @@ import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.UserLayer;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
@@ -18,7 +18,7 @@ public class Debug
 	public static Logger LOG = Logger.getLogger("q-debug");
 
 	public static boolean ON = Boolean.valueOf(System.getProperty(Q.DEBUG_MODE));
-	static Look userLayerSpatialOverlay = null;
+	static ILook userLayerSpatialOverlay = null;
 	
 	static {
 		if(!ON) 

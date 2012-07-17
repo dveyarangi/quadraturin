@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 
-public class StagingBehavior implements Behavior <IEntity>
+public class StagingBehavior implements IBehavior <IEntity>
 {
 	
 	private List <IBehaviorState<IEntity>> stages = new LinkedList <IBehaviorState<IEntity>> ();

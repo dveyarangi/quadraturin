@@ -50,7 +50,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		super.init( gl, grid, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
- 		this.dimensions = getFBODimensions( grid );
+ 		this.dimensions = getFBODimensions( context, grid );
 //		this.dimensions = new Point(BitUtils.po2Ceiling(  (int)(grid.getMaxX()-grid.getMinX()) ), BitUtils.po2Ceiling( (int)(grid.getMaxY()-grid.getMinY()) ));
 //		this.dimensions = new Point( 512, 512);
 		// TODO: divide to 1024x1024 textures
@@ -71,12 +71,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 		grid.setModificationListener( this );
 		
-		beginFrameBufferSpace( gl, grid );
-		if(blend) gl.glEnable(GL.GL_BLEND); else gl.glDisable(GL.GL_BLEND);
-		if(depthtest) gl.glEnable(GL.GL_DEPTH_TEST); else gl.glDisable(GL.GL_DEPTH_TEST);
-		endFrameBufferSpace( gl );
-		
-		updateFrameBuffer( gl, grid );
+		updateFrameBuffer( gl, context, grid );
 		
 		veil = IVeil.ORIENTING; //*/context.getPlugin( BlurVeil.NAME );
 		
@@ -89,13 +84,13 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param grid
 	 * @return
 	 */
-	protected abstract Point getFBODimensions(G grid);
+	protected abstract Point getFBODimensions(IRenderingContext context, G grid);
 
 	@Override
 	public void renderGrid(GL gl, double time, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
-		updateFrameBuffer( gl, grid );
+		updateFrameBuffer( gl, context, grid );
 // 
 		float minx = grid.getMinX();
 		float maxx = grid.getMaxX();
@@ -104,7 +99,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 		// rendering frame buffer texture:
 //		fbo.unbind( gl );
-		gl.glDisable( GL.GL_DEPTH_TEST );
+//		gl.glDisable( GL.GL_DEPTH_TEST );
 		veil.weave( gl, null, context );
 		fbo.bindTexture(gl);
 			gl.glBegin(GL.GL_QUADS);
@@ -140,15 +135,13 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	protected void beginFrameBufferSpace(GL gl, G grid)
 	{
 		// transforming the rendering plane to fit the terrain grid:
-		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
-//		gl.glDisable(GL.GL_BLEND);
+		gl.glPushAttrib(GL.GL_VIEWPORT_BIT);	
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
 		gl.glViewport(0,0,dimensions.x, dimensions.y);
 		gl.glOrtho(grid.getMinX(), grid.getMaxX(), grid.getMinY(), grid.getMaxY(), -1, 1);
 
 		fbo.bind(gl);
-		gl.glEnable( GL.GL_BLEND );
 	}
 	
 	protected void endFrameBufferSpace(GL gl)
@@ -165,7 +158,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param gl
 	 * @param grid
 	 */
-	private void updateFrameBuffer(GL gl, G grid)
+	private void updateFrameBuffer(GL gl, IRenderingContext context, G grid)
 	{
 		if(pendingTiles != null && pendingTiles.size() > 0)
 		{
@@ -175,7 +168,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 			// This will allow to make sense of scale parameter 
 			int scale = 1;
 			for(Tile<O> tile : pendingTiles)
-				renderTile(gl, tile, grid, scale);
+				renderTile(gl, context, tile, grid, scale);
 			endFrameBufferSpace( gl );
 			
 			pendingTiles = null;
@@ -190,7 +183,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param grid
 	 * @param scale
 	 */
-	protected abstract void renderTile(GL gl, Tile<O> tile, G grid, int scale);
+	protected abstract void renderTile(GL gl, IRenderingContext context, Tile<O> tile, G grid, int scale);
 	
 	public void setDebugOverlay(boolean debug)
 	{

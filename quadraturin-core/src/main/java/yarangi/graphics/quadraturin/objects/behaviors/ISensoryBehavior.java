@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.objects.behaviors;
 
 import java.util.List;
 
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.graphics.quadraturin.objects.Sensor;
@@ -10,7 +10,7 @@ import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ISpatialSensor;
 
-public class ISensoryBehavior <K extends IEntity> extends Sensor implements Behavior <K>
+public class ISensoryBehavior <K extends IEntity> extends Sensor implements IBehavior <K>
 {
 
 

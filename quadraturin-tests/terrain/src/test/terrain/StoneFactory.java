@@ -2,7 +2,7 @@ package test.terrain;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.objects.EntityShell;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.terrain.Bitmap;
 import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
 import yarangi.graphics.quadraturin.terrain.ITerrainFactory;
@@ -40,7 +40,7 @@ public class StoneFactory implements ITerrainFactory <GridyTerrainMap>
 		    }
 		}
 
-		GridyTerrainLook look = new GridyTerrainLook();
+		GridyTerrainLook look = new GridyTerrainLook(true, true);
 		look.setDebugOverlay( true );
 		return new EntityShell<GridyTerrainMap>( terrain, new GridyTerrainBehavior(), look );
 	}

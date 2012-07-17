@@ -8,7 +8,7 @@ import yarangi.graphics.quadraturin.UserLayer;
 import yarangi.graphics.quadraturin.WorldLayer;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.Vector2D;
 import yarangi.spatial.ISpatialFilter;
 
@@ -51,7 +51,7 @@ public abstract class ActionController
 	/**
 	 * @return Graphical overlay of this controller 
 	 */
-	public abstract Look <ActionController> getLook();
+	public abstract ILook <ActionController> getLook();
 	
 	/** 
 	 * Selects an entity at {@link CURSOR_PICK_SPAN} radius around cursor location

@@ -10,33 +10,33 @@ import yarangi.graphics.quadraturin.IVeil;
 
 /**
  * Defines a chain of rendering overlays over a single entity.
- * {@link Look}s that are added to chain may return null in {@link #getVeil()}.
+ * {@link ILook}s that are added to chain may return null in {@link #getVeil()}.
  * @author FimaR
  *
  * @param <E>
  */
-public abstract class CompositeLook <E extends ILayerObject> implements Look <E> 
+public abstract class CompositeLook <E extends ILayerObject> implements ILook <E> 
 {
-	private List <Look<E>> chain = new LinkedList <Look<E>> ();
+	private List <ILook<E>> chain = new LinkedList <ILook<E>> ();
 	
 	public CompositeLook()
 	{
 		
 	}
 	
-	public void addLook(Look <E> look)
+	public void addLook(ILook <E> look)
 	{
 		chain.add(look);
 	}
 	
-	public void removeLook(Look <E> look)
+	public void removeLook(ILook <E> look)
 	{
 		chain.remove(look);
 	}
 
 	@Override
 	public void init(GL gl, E entity, IRenderingContext context) {
-		for(Look <E> look : chain)
+		for(ILook <E> look : chain)
 			look.init(gl, entity, context);
 	}
 
@@ -44,7 +44,7 @@ public abstract class CompositeLook <E extends ILayerObject> implements Look <E>
 	public void render(GL gl, double time, E entity, IRenderingContext context) {
 		
 		IVeil veil;
-		for(Look <E> look : chain)
+		for(ILook <E> look : chain)
 		{
 			veil = look.getVeil();
 			if(veil != null)
@@ -57,7 +57,7 @@ public abstract class CompositeLook <E extends ILayerObject> implements Look <E>
 
 	@Override
 	public void destroy(GL gl, E entity, IRenderingContext context) {
-		for(Look <E> look : chain)
+		for(ILook <E> look : chain)
 			look.destroy(gl, entity, context);
 	}
 

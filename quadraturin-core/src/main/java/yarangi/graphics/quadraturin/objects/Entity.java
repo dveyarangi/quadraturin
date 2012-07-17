@@ -5,7 +5,6 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneLayer;
-import yarangi.math.Vector2D;
 import yarangi.physics.Body;
 import yarangi.spatial.Area;
 
@@ -28,12 +27,12 @@ public class Entity implements IEntity
 	 * Entity graphics 
 	 * @see SceneLayer#display(GL, double, IRenderingContext)
 	 */
-	private Look <?> look;
+	private ILook <?> look;
 	
 	/**
 	 * Entity behavior
 	 */
-	private Behavior <?> behavior = Dummy.BEHAVIOR;
+	private IBehavior <?> behavior = Dummy.BEHAVIOR;
 	
 	/**
 	 * Area span
@@ -47,22 +46,24 @@ public class Entity implements IEntity
 	 * Dead entities are automatically removed from the stage.
 	 */
 	private boolean isAlive = true;
+	
+	private final int groupId;
 
 	/**
 	 * Create a new scene entity.
 	 */
 	protected Entity() 
 	{
-		super();
+		groupId = this.getClass().hashCode();
 	}
 
-	public void setLook(Look <?> look) { this.look = look; }
+	public void setLook(ILook <?> look) { this.look = look; }
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setBehavior(Behavior <?> behavior) { this.behavior = behavior; }
+	public void setBehavior(IBehavior <?> behavior) { this.behavior = behavior; }
 
 	public void setArea(Area area) { this.spatialAspect = area; }
 
@@ -95,14 +96,14 @@ public class Entity implements IEntity
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public final Look getLook() { return look; }
+	public final ILook getLook() { return look; }
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	public final Behavior getBehavior() { return behavior; }
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public final IBehavior getBehavior() { return behavior; }
 	
 	/**
 	 * {@inheritDoc}
@@ -124,12 +125,14 @@ public class Entity implements IEntity
 	public final ISensor getSensor() { return sensorAspect; }
 
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public void init(GL gl, IRenderingContext context)
 	{
 		getLook().init( gl, this, context );
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void render(GL gl, double time, IRenderingContext context)
 	{
@@ -137,6 +140,7 @@ public class Entity implements IEntity
 		getLook().render(gl, time, this, context);
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public void destroy(GL gl, IRenderingContext context)
 	{
@@ -156,11 +160,15 @@ public class Entity implements IEntity
 		return spatialAspect != null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * By default, groups by entity class.
+	 */
 	@Override
 	public int getGroupId()
 	{
-		// TODO in constructor
-		return 0;
+		return groupId;
 	}
 	
 	public final double x() {	return getArea().getAnchor().x(); }

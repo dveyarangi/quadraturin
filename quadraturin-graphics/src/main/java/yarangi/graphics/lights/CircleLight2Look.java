@@ -9,7 +9,7 @@ import javax.media.opengl.glu.GLU;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.textures.TextureUtils;
 import yarangi.math.BitUtils;
@@ -20,7 +20,7 @@ import yarangi.math.BitUtils;
  *
  * @param <K>
  */
-public class CircleLight2Look <K extends IEntity> implements Look <K>
+public class CircleLight2Look <K extends IEntity> implements ILook <K>
 {
 
 	private int lightTexture;

@@ -4,7 +4,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.Area;
 
 /**
@@ -16,7 +16,7 @@ public class Overlay implements ILayerObject
 	/**
 	 * Overlay look
 	 */
-	private Look <?> look;
+	private ILook <?> look;
 	
 	private Panel parent;
 	
@@ -37,14 +37,14 @@ public class Overlay implements ILayerObject
 	 * Sets overlay's look.
 	 * @param look
 	 */
-	public void setLook(Look <?> look) { this.look = look; }
+	public void setLook(ILook <?> look) { this.look = look; }
 	
 	/**
 	 * How the object looks.
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public final Look getLook() { return look; }
+	public final ILook getLook() { return look; }
 
 	@Override
 	public Area getArea() {

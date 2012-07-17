@@ -9,7 +9,7 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
@@ -29,14 +29,14 @@ import yarangi.math.Vector2D;
  *
  * @param <K>
  */
-public class CircleLightLook <K extends IEntity> implements Look <K>
+public class CircleLightLook <K extends IEntity> implements ILook <K>
 {
 	
 	private GLSLShader penumbraShader;
 	private GLSLShader lightShader;
 	
 	private int textureSize;
-	private IntBuffer viewport = IntBuffer.allocate(4);
+	private final IntBuffer viewport = IntBuffer.allocate(4);
 	
 	private FBO fbo;
 	
@@ -53,6 +53,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		this.color = color;
 	}
 	
+	@Override
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
 		// rounding texture size to power of 2:
@@ -67,9 +68,10 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		lightShader = factory.getShader("light");
 		penumbraShader = factory.getShader("penumbra");
 		
-		veil = context.getPlugin( BlurVeil.NAME );
+		//veil = context.getPlugin( BlurVeil.NAME );
 	}
 
+	@Override
 	public void render(GL gl, double time, K entity, IRenderingContext context) 
 	{
 		// TODO: store and restore blending mode
@@ -210,10 +212,10 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 			lightShader.end(gl);
 		fbo.unbindTexture(gl);
 		
-		gl.glPopAttrib(); // recover blending modes:
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
-		gl.glEnable( GL.GL_BLEND );
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glPopAttrib(); // recover blending modes:
+		context.setDefaultBlendMode( gl );
 /**/
 
 	}
@@ -233,6 +235,7 @@ public class CircleLightLook <K extends IEntity> implements Look <K>
 		
 	}
 
+	@Override
 	public void destroy(GL gl, K entity, IRenderingContext context) 
 	{
 		fbo.destroy(gl);

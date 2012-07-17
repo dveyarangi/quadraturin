@@ -12,13 +12,13 @@ import yarangi.graphics.quadraturin.objects.behaviors.DummyBehavior;
 public class Dummy extends Entity
 {
 	
-	public static Look <Entity> LOOK = LOOK();
+	public static ILook <Entity> LOOK = LOOK();
 	
-	public static Behavior <Entity> BEHAVIOR = new DummyBehavior <Entity> ();
+	public static IBehavior <Entity> BEHAVIOR = new DummyBehavior <Entity> ();
 
-	public static <E> Look <E> LOOK()
+	public static <E> ILook <E> LOOK()
 	{
-		return new Look <E> () { 
+		return new ILook <E> () { 
 			public void render(GL gl, double time, E entity, IRenderingContext context) {}
 			public void init(GL gl, E entity, IRenderingContext context) { } 
 			public void destroy(GL gl, E entity, IRenderingContext context) { }

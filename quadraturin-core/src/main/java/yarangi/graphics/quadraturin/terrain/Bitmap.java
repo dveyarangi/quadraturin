@@ -4,10 +4,10 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ISensor;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.physics.Body;
 import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
@@ -271,7 +271,7 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 	// TODO: fix this mess. Create a separate interface for 
 
 	@Override
-	public Look getLook()
+	public ILook getLook()
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -319,14 +319,14 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 
 
 	@Override
-	public void setBehavior(Behavior<?> behavior)
+	public void setBehavior(IBehavior<?> behavior)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public Behavior<?> getBehavior()
+	public IBehavior<?> getBehavior()
 	{
 		// TODO Auto-generated method stub
 		return null;

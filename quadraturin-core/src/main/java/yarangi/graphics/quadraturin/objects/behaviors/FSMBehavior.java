@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.objects.behaviors;
 
 import yarangi.automata.FSM;
 import yarangi.automata.ICondition;
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 
 /**
  * Behavior that aggregates state machine. The states are to implement {@link #IBehaviorState} amd are linked 
@@ -11,7 +11,7 @@ import yarangi.graphics.quadraturin.objects.Behavior;
  *
  * @param <K>
  */
-public class FSMBehavior <K> implements Behavior <K> 
+public class FSMBehavior <K> implements IBehavior <K> 
 {
 	/**
 	 * Finite state machine.

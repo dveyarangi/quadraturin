@@ -3,7 +3,7 @@ package yarangi.graphics.quadraturin.objects;
 import yarangi.graphics.quadraturin.objects.behaviors.IBehaviorState;
 import yarangi.numbers.RandomUtil;
 
-public abstract class EntityBehavior <E extends IEntity>implements Behavior <E>, IBehaviorState <E>
+public abstract class EntityBehavior <E extends IEntity>implements IBehavior <E>, IBehaviorState <E>
 {
 	
 	private int hashcode = RandomUtil.N( Integer.MAX_VALUE ); 

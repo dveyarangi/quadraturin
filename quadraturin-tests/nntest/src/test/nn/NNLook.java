@@ -4,9 +4,9 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 
-public class NNLook implements Look<NNEntity>
+public class NNLook implements ILook<NNEntity>
 {
 
 	@Override

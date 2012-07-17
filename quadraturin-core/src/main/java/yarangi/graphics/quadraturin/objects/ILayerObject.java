@@ -20,7 +20,7 @@ public interface ILayerObject extends ISpatialObject
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public abstract Look getLook();	
+	public abstract ILook getLook();	
 
 	/**
 	 * {@inheritDoc}

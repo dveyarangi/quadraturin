@@ -6,7 +6,6 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.grid.TileGridLook;
 import yarangi.graphics.quadraturin.IVeil;
-import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.terrain.Bitmap;
 import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
 import yarangi.graphics.textures.TextureUtils;
@@ -15,6 +14,11 @@ import yarangi.spatial.Tile;
 public class GridyTerrainLook extends TileGridLook<Bitmap, GridyTerrainMap>
 {
 
+	public GridyTerrainLook(boolean depthtest, boolean blend)
+	{
+		super( depthtest, blend );
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	protected void renderTile(GL gl, Tile<Bitmap> tile, GridyTerrainMap grid, int scale)
 	{

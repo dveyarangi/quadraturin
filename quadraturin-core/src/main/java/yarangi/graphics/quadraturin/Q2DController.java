@@ -9,7 +9,7 @@ import javax.media.opengl.GLEventListener;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.threads.ChainedThreadSkeleton;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
@@ -42,12 +42,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	/**
 	 * mouse location goes here
 	 */
-	private IEventManager voices;
+	private final IEventManager voices;
 	
 	/**
-	 * Set of rendering environment properties for {@link Look} to consider. 
+	 * Set of rendering environment properties for {@link ILook} to consider. 
 	 */
-	private DefaultRenderingContext context;
+	private final DefaultRenderingContext context;
 	
 	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
@@ -58,6 +58,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		this.context = new DefaultRenderingContext(ekranConfig);
 	}
 
+	@Override
 	public void start() { /* nothing here */ }
 
 	/**
@@ -68,6 +69,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 * @param gLDrawable
 	 *            The GLDrawable object.
 	 */
+	@Override
 	public void init(GLAutoDrawable drawable) 
 	{
 		log.debug("// JOGL INIT ////////////////////////////////////////////////");
@@ -108,6 +110,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 * @param height
 	 *            The new height of the window.
 	 */
+	@Override
 	public void reshape(GLAutoDrawable glDrawable, int x, int y, int width, int height) 
 	{
 		Q.rendering.debug( "Resizing GL canvas to [" + width + "x" + height + "]");
@@ -131,6 +134,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 * @param gLDrawable
 	 *            The GLDrawable object.
 	 */
+	@Override
 	public void display(GLAutoDrawable glDrawable) 
 	{
 	
@@ -207,8 +211,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// scene preprocessing, in untranslated coordinates:
 		gl.glPushMatrix(); gl.glLoadIdentity(); 
 		
-		for(IGraphicsPlugin plugin : context.getPlugins())
+		for(IGraphicsPlugin plugin : context.getPlugins()) {
+			gl.glPushAttrib( GL.GL_ENABLE_BIT );
 				plugin.preRender(gl, context);
+			gl.glPopAttrib();
+		}
 	
 		currScene.preDisplay(gl, currScene.getFrameLength(), false);
 		gl.glPopMatrix();
@@ -224,9 +231,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		gl.glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
 
 		
-		for(IGraphicsPlugin plugin : context.getPlugins())
+		for(IGraphicsPlugin plugin : context.getPlugins()) {
+			gl.glPushAttrib( GL.GL_ENABLE_BIT );
 			plugin.postRender(gl, context);
-		
+			gl.glPopAttrib();
+		}
+			
 		currScene.postDisplay(gl, currScene.getFrameLength(), context);
 	
 		// proceeding to next thread:
@@ -249,12 +259,14 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 * @param deviceChanged
 	 *            Indicates if the video device has changed.
 	 */
+	@Override
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) { }
 
 
 
 
 	
+	@Override
 	public void sceneChanged(Scene currScene) 
 	{
 		this.prevScene = this.currScene;

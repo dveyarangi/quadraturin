@@ -7,7 +7,7 @@ import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.ISpatialFilter;
 
 public class DefaultActionFactory 
@@ -51,7 +51,7 @@ public class DefaultActionFactory
 		}
 
 		@Override
-		public Look <ActionController> getLook() {
+		public ILook <ActionController> getLook() {
 			return null;
 		}
 	}

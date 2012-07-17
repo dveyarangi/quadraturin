@@ -4,11 +4,11 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
-import yarangi.graphics.quadraturin.objects.Look;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.Vector2D;
 import yarangi.spatial.Tile;
 
-public class SpringGridLook implements Look <SpringGrid>
+public class SpringGridLook implements ILook <SpringGrid>
 {
 	public static final int SIZE = 3;
 	@Override

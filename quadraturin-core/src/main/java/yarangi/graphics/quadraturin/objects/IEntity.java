@@ -16,7 +16,7 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	 * Sets entity's behavior.
 	 * @param behavior
 	 */
-	public abstract void setBehavior(Behavior<?> behavior);
+	public abstract void setBehavior(IBehavior<?> behavior);
 
 	/**
 	 * Physical properties
@@ -34,7 +34,7 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	 * How the object behaves
 	 * @return
 	 */
-	public abstract Behavior <?> getBehavior();
+	public abstract IBehavior <?> getBehavior();
 
 	/**
 	 * How the entity fits the world

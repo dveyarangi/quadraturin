@@ -40,6 +40,7 @@ public class BlurVeil extends FBOVeilSkeleton
 	}
 	
 	
+	@Override
 	public void init(GL gl, IRenderingContext context) 
 	{
 		super.init(gl, context);
@@ -54,12 +55,13 @@ public class BlurVeil extends FBOVeilSkeleton
 	
 
 	
+	@Override
 	public void postRender(GL gl, IRenderingContext defaultContext) 
 	{
 		getFBO().bind( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
-		gl.glDisable(GL.GL_BLEND);
-		gl.glDisable(GL.GL_DEPTH_TEST);
+//		gl.glDisable(GL.GL_BLEND);
+//		gl.glDisable(GL.GL_DEPTH_TEST);
 /*		vblurShader.begin( gl );
 		renderTexture(gl);
 		vblurShader.end(gl);

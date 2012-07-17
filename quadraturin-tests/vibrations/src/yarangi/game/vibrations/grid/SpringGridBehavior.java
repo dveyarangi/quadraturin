@@ -1,11 +1,11 @@
 package yarangi.game.vibrations.grid;
 
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.math.Vector2D;
 import yarangi.numbers.RandomUtil;
 import yarangi.spatial.Tile;
 
-public class SpringGridBehavior implements Behavior <SpringGrid>
+public class SpringGridBehavior implements IBehavior <SpringGrid>
 {
 
 	public final static double SPRING_K = 50;

@@ -83,7 +83,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 		// rendering frame buffer texture:
 //		fbo.unbind( gl );
-		gl.glDisable( GL.GL_DEPTH_TEST );
+//		gl.glDisable( GL.GL_DEPTH_TEST );
 		veil.weave( gl, null, context );
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)

@@ -1,9 +1,9 @@
 package test.terrain;
 
-import yarangi.graphics.quadraturin.objects.Behavior;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
 
-public class GridyTerrainBehavior implements Behavior<GridyTerrainMap>
+public class GridyTerrainBehavior implements IBehavior<GridyTerrainMap>
 {
 
 	@Override

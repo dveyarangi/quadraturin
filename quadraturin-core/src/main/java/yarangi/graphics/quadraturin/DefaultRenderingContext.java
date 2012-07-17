@@ -8,13 +8,13 @@ import java.util.Set;
 
 import javax.media.opengl.GL;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
+import com.spinn3r.log5j.Logger;
+
 /**
- * Wraps rendering properties
+ * Wraps rendering properties, tests GL capabilities and aggregates graphical plug-ins.
  * Should also wrap GL object, so it could be more separated from entity definition.
  * @author dveyarangi
  *
@@ -23,14 +23,16 @@ public class DefaultRenderingContext implements IRenderingContext
 {
 	private ViewPort viewPort;
 	
-	private Map <String, IGraphicsPlugin> plugins;
+	private final Map <String, IGraphicsPlugin> plugins;
 	
-	private EkranConfig config;
+	private final EkranConfig config;
 	
-	private Logger log = Q.rendering;
+	private final Logger log = Q.rendering;
 	
 	public static final float MIN_DEPTH_PRIORITY = 0;
 	public static final float MAX_DEPTH_PRIORITY = 1;
+	
+	private GL gl;
 	
 	public DefaultRenderingContext(EkranConfig config)
 	{
@@ -46,6 +48,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getPlugin(String name) {
 		return (T) plugins.get(name);
@@ -66,8 +69,15 @@ public class DefaultRenderingContext implements IRenderingContext
 	{
 		return viewPort;
 	}
+	
+	@Override
+	public final GL gl() {
+		return gl;
+	}
 
 	protected void init(GL gl) {
+		
+		this.gl = gl;
 		
 		setViewPort( 0, 0, config.getXres(), config.getYres() );
 		
@@ -75,7 +85,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		
 		/////
 		// specifies how the pixels are overriden by overlapping objects:
-		gl.glDisable(GL.GL_DEPTH_TEST);
+		gl.glEnable(GL.GL_DEPTH_TEST);
 		// TODO: fix entity prioritizing:
 	    gl.glDepthFunc(GL.GL_LEQUAL); // new pixels must be same or shallower than drawn
 	    gl.glClearDepth(MAX_DEPTH_PRIORITY);
@@ -84,7 +94,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	    /////
 	    // color blending function:
 		gl.glEnable(GL.GL_BLEND);
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		setDefaultBlendMode( gl );
 		
 		gl.glShadeModel(GL.GL_SMOOTH);
 		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
@@ -157,5 +167,12 @@ public class DefaultRenderingContext implements IRenderingContext
 			IGraphicsPlugin factory = getPlugin(pluginName);
 			factory.resize(gl, this);
 		}
+	}
+	
+	@Override
+	public void setDefaultBlendMode(GL gl) 
+	{
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
 	}
 }

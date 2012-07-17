@@ -4,7 +4,7 @@ package yarangi.graphics.quadraturin.objects;
  * Interface for {@link CompositeSceneEntity} behavior - change of internal state.
  * Invoked in {@link StageAnimator} loop.  
  */
-public interface Behavior <An>
+public interface IBehavior <An>
 {
 	
 	/**
