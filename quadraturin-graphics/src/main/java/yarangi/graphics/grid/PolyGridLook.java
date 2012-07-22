@@ -63,7 +63,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 
 	@Override
-	public void renderGrid(GL gl, double time, G grid, IRenderingContext context)
+	public void renderGrid(GL gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		updateLists( gl, grid );
@@ -84,12 +84,12 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		// rendering frame buffer texture:
 //		fbo.unbind( gl );
 //		gl.glDisable( GL.GL_DEPTH_TEST );
-		veil.weave( gl, null, context );
+//		veil.weave( gl, grid, context );
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)
 				// TODO: to many of those, needs better approach:
 				gl.glCallList( listIds[idx][jdx] );
-		veil.tear( gl );
+//		veil.tear( gl );
 		
 //		gl.glEnable(GL.GL_BLEND);
 		

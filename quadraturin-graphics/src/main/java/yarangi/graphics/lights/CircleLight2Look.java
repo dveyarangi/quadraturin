@@ -28,12 +28,13 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	private GLSLShader lightShader;
 	
 	private int textureSize;
-	private GLU glu = new GLU();
+	private final GLU glu = new GLU();
 	IntBuffer viewport = IntBuffer.allocate(4);
 	DoubleBuffer model = DoubleBuffer.allocate(16);
 	DoubleBuffer proj = DoubleBuffer.allocate(16);
 	DoubleBuffer res= DoubleBuffer.allocate(3);
 	
+	@Override
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
 		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2));
@@ -51,7 +52,8 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 //		}
 	}
 
-	public void render(GL gl, double time, K entity, IRenderingContext context) 
+	@Override
+	public void render(GL gl, K entity, IRenderingContext context) 
 	{
 /*		if(context.isForEffect())
 			return;
@@ -174,10 +176,10 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 //		gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 		gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)(-textureSize/2), (float)(-textureSize/2));
-		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)(+textureSize/2), (float)(-textureSize/2));
-		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)(+textureSize/2), (float)(+textureSize/2));
-		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)(-textureSize/2), (float)(+textureSize/2));
+		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-textureSize/2, -textureSize/2);
+		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(+textureSize/2, -textureSize/2);
+		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(+textureSize/2, +textureSize/2);
+		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f(-textureSize/2, +textureSize/2);
 /*		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)(0), (float)(0));
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)(100), (float)(0));
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)(100), (float)(100));
@@ -187,6 +189,7 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 		
 	}
 
+	@Override
 	public void destroy(GL gl, K entity, IRenderingContext context) 
 	{
 		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);

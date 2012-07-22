@@ -85,7 +85,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 //		gl.glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 //	   	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 	
-		spriteLook.render(gl, 0, entity, null);
+		spriteLook.render(gl, entity, null);
 		
 		gl.glBindTexture(GL.GL_TEXTURE_2D, textureHandle);
 		// copying data from color buffer:
@@ -111,7 +111,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	
 	
 	@Override
-	public void render(GL gl, double time, T entity, IRenderingContext defaultContext) 
+	public void render(GL gl, T entity, IRenderingContext defaultContext) 
 	{
 //		gl.glEnable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 
@@ -156,7 +156,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		gl.glPopAttrib();
 		// unbinding texture
 		if(overlay)
-			spriteLook.render(gl, time, entity, defaultContext);
+			spriteLook.render(gl, entity, defaultContext);
 		
 	}
 

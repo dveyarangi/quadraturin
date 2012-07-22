@@ -19,8 +19,11 @@ public class Dummy extends Entity
 	public static <E> ILook <E> LOOK()
 	{
 		return new ILook <E> () { 
-			public void render(GL gl, double time, E entity, IRenderingContext context) {}
+			@Override
+			public void render(GL gl, E entity, IRenderingContext context) {}
+			@Override
 			public void init(GL gl, E entity, IRenderingContext context) { } 
+			@Override
 			public void destroy(GL gl, E entity, IRenderingContext context) { }
 			@Override
 			public boolean isCastsShadow() { return false; }

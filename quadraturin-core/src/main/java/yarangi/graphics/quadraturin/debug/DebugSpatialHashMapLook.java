@@ -17,11 +17,13 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 	
 	private int gridMeshId;
 
+	@Override
 	public void init(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 	}
 
-	public void render(GL gl, double time, SpatialHashMap<IEntity> map, IRenderingContext context) 
+	@Override
+	public void render(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 		gl.glEnable( GL.GL_BLEND );
 		int cellX, cellY;
@@ -105,6 +107,7 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 		}
 	}
 
+	@Override
 	public void destroy(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
 	{
 	}

@@ -87,7 +87,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	protected abstract Point getFBODimensions(IRenderingContext context, G grid);
 
 	@Override
-	public void renderGrid(GL gl, double time, G grid, IRenderingContext context)
+	public void renderGrid(GL gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		updateFrameBuffer( gl, context, grid );

@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.plugin;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.Scene;
 
 /**
  * Common interface for Quadraturin graphic tools;

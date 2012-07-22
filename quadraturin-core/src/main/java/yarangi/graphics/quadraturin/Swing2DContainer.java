@@ -11,14 +11,14 @@ import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.swing.JFrame;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.config.IQuadConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
+
+import com.spinn3r.log5j.Logger;
 
 /**
  * The Quadraturin application frame. Reads engine configuration, starts up the threads and creates AWT
@@ -51,17 +51,17 @@ public class Swing2DContainer extends JFrame
 	/**
 	 * Event dispatcher.
 	 */
-	private QVoices voices;
+	private final QVoices voices;
 	
 	/**
 	 * Events and rendering controller.
 	 */
-	private Q2DController controller;
+	private final Q2DController controller;
 	
 	/**
 	 * Animation thread.
 	 */
-	private StageAnimator animator;
+	private final StageAnimator animator;
 	
 	/**
 	 * Contains {@link #voices}, {@link #controller} and {@link #animator} threads
@@ -72,7 +72,7 @@ public class Swing2DContainer extends JFrame
 	/**
 	 * Logger
 	 */
-	private Logger log = Logger.getLogger("quadraturin");
+	private final Logger log = Logger.getLogger("quadraturin");
 	
 	/**
 	 * Creates a Swing frame containing the representation of the specified world model.
@@ -118,6 +118,7 @@ public class Swing2DContainer extends JFrame
 		log.trace("Linking shutdown hook...");
 		// TODO: add real JVM shutdown hook
 		this.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e)
 			{
 				log.trace("Window closing event detected.");
@@ -142,8 +143,6 @@ public class Swing2DContainer extends JFrame
 		voices = new QVoices(config.getInputConfig());
 		log.trace("Event manager created.");
 		
-		log.debug("Creating GL listener...");
-		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    // creating stage animation thread:
@@ -151,6 +150,9 @@ public class Swing2DContainer extends JFrame
 
 	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
 		log.trace("Entity stage animator created.");
+		
+		log.debug("Creating GL listener...");
+		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, animator, chain);
 		
 		log.debug("Creating entity stage...");
 		try {
@@ -235,6 +237,7 @@ public class Swing2DContainer extends JFrame
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void setVisible(boolean visible)
 	{
 		super.setVisible(visible);

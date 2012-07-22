@@ -5,7 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.objects.ILook;
 
 /**
- * Holds some rendering properties, provided to {@link ILook} methods
+ * Holds some rendering properties for use in {@link ILook} methods
  * TODO: maybe it should have a brighter future, encapsulating the GL object and 
  * becoming a real renderer.
  * 
@@ -27,7 +27,19 @@ public interface IRenderingContext
 	 */
 	public <T> T getPlugin(String name);
 	
+	/**
+	 * TODO: use it in {@link ILook}-s or delete it.
+	 * 
+	 * @return OpenGL renderer object
+	 */
 	public GL gl();
 	
+	/**
+	 * Restores default blending methods
+	 * TODO: this is because I am too lazy to find appropriate gl.glPushAttrib() argument
+	 * @param gl
+	 */
 	public void setDefaultBlendMode(GL gl);
+	
+	public float getFrameLength();
 }

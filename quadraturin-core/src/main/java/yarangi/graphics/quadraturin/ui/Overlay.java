@@ -18,12 +18,12 @@ public class Overlay implements ILayerObject
 	 */
 	private ILook <?> look;
 	
-	private Panel parent;
+	private final Panel parent;
 	
 	/**
 	 * Defines either the element is pickable by controller
 	 */
-	private boolean isPickable;
+	private final boolean isPickable;
 	
 	
 	public Overlay(Panel parent, boolean isPickable) 
@@ -43,6 +43,7 @@ public class Overlay implements ILayerObject
 	 * How the object looks.
 	 * @return
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public final ILook getLook() { return look; }
 
@@ -62,9 +63,9 @@ public class Overlay implements ILayerObject
 	public boolean isIndexed() { return isPickable; }
 
 	@Override
-	public void render(GL gl, double time, IRenderingContext context)
+	public void render(GL gl, IRenderingContext context)
 	{
-		this.getLook().render( gl, time, this, context );
+		this.getLook().render( gl, this, context );
 	}
 
 	@Override

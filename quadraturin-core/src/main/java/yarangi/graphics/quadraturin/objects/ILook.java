@@ -31,7 +31,7 @@ public interface ILook <An>
 	 * @param time scene time for animation
 	 * @param context some global rendering properties
 	 */
-	public void render(GL gl, double time, An entity, IRenderingContext context);
+	public void render(GL gl, An entity, IRenderingContext context);
 
 	/**
 	 * Invoked on entity deconstruction, should implement cleanup logic.

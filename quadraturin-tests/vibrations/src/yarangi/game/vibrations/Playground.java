@@ -2,9 +2,6 @@ package yarangi.game.vibrations;
 
 import javax.media.opengl.GL;
 
-import yarangi.game.vibrations.grid.SpringGrid;
-import yarangi.game.vibrations.grid.SpringGridBehavior;
-import yarangi.game.vibrations.grid.SpringGridLook;
 import yarangi.graphics.quadraturin.QVoices;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.actions.DefaultActionFactory;
@@ -22,9 +19,10 @@ public class Playground extends Scene
 		
 //		grid.getTile( 25, 25 ).getContent().add(-10, -10);
 	}
-	public void preDisplay(GL gl, double time, boolean useNames)
+	@Override
+	public void preDisplay(GL gl, boolean useNames)
 	{
-		super.preDisplay(gl, time, false);
+		super.preDisplay(gl, false);
 	      gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 	}
 

@@ -18,13 +18,13 @@ public class UserLayer extends SceneLayer <Overlay>
 
 //	private List <ActionOverlay> actionIOverlays = new LinkedList <ActionOverlay> ();
 
-	private Panel basePanel;
+	private final Panel basePanel;
 	
 	public static final double CURSOR_PICK_SPAN = 5;
 	
 	private double halfWidth, halfHeight;
 	
-	private PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
+	private final PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
 	
 	// TODO: overlay spatial filter
 
@@ -62,16 +62,19 @@ public class UserLayer extends SceneLayer <Overlay>
 		return basePanel;
 	}
 	
+	@Override
 	public void init(GL gl, IRenderingContext context)
 	{
 	}
 	
+	@Override
 	public void destroy(GL gl, IRenderingContext context)
 	{
 		
 	}
 	
-	public void display(GL gl, double time, IRenderingContext context) 
+	@Override
+	public void display(GL gl, IRenderingContext context) 
 	{
 		if(basePanel.getViewPort() != context.getViewPort())
 		{
@@ -93,7 +96,7 @@ public class UserLayer extends SceneLayer <Overlay>
 //		if(Debug.ON)
 //			Debug.drawUserLayerOverlay(gl, this, context);
 		
-		super.display( gl, time, context );
+		super.display( gl, context );
 	}
 
 	public ILayerObject processPick(Point canvasLocation)

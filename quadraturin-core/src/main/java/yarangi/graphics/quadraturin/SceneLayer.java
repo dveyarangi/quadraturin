@@ -7,27 +7,27 @@ import java.util.Queue;
 
 import javax.media.opengl.GL;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.SpatialIndexer;
 
+import com.spinn3r.log5j.Logger;
+
 /**
- * Provides means to manage lifecycles of {@link Entity} objects. 
+ * Aggregates and manages life-cycle of {@link Entity} objects. 
  * Also provides {@link SpatialIndexer} to allow object picking and other
- * location-based interactions. 
+ * location-based interactions (used automatically if entity has {@link Area}) 
  * 
  * @author Dve Yarangi
  */
 public abstract class SceneLayer <K extends ILayerObject>
 {
 
-	private int width, height;
+	private final int width, height;
 	
-	private List <K> entities = new ArrayList <K> (100); 
+	private final List <K> entities = new ArrayList <K> (100); 
 		
 /*		new TreeSet <K> (
 			new Comparator <K> () {
@@ -45,14 +45,14 @@ public abstract class SceneLayer <K extends ILayerObject>
 	/**
 	 * Queue of entities waiting to be added to the veil.
 	 */
-	private Queue <K> bornEntities = new LinkedList<K> ();
+	private final Queue <K> bornEntities = new LinkedList<K> ();
 
 	/**
 	 * Queue of dead entities to be cleaned up.
 	 */
-	private Queue <K> deadEntities = new LinkedList <K> ();
+	private final Queue <K> deadEntities = new LinkedList <K> ();
 	
-	private Logger log = Q.structure;
+	private final Logger log = Q.structure;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
@@ -95,7 +95,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 * @param time scene frame time
 	 * @param context
 	 */
-	public void display(GL gl, double time, IRenderingContext context) 
+	public void display(GL gl, IRenderingContext context) 
 	{	
 		// injecting new entities
 		while(!bornEntities.isEmpty())
@@ -125,7 +125,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 //			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
 //			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
 //			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
-			// TODO: do the clipping already, you lazy me!
+			// TODO: do the viewport clipping already, you lazy me!
 //			System.out.println("BEGIN ======================================================");
 			for(K entity : entities)
 			{
@@ -134,7 +134,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 				
 				if(veil != null)
 					veil.weave( gl, entity, context );
-				entity.render( gl, time, context );
+				entity.render( gl,  context );
 				if(veil != null)
 					veil.tear( gl );
 			}
@@ -183,21 +183,21 @@ public abstract class SceneLayer <K extends ILayerObject>
 
 	public class ClippingSensor implements ISpatialSensor <IAreaChunk, K> 
 	{
-		private GL gl;
-		private double time;
-		private IRenderingContext context;
+		private final GL gl;
+
+		private final IRenderingContext context;
 		
-		public ClippingSensor(GL gl, double time, IRenderingContext context)
+		public ClippingSensor(GL gl, IRenderingContext context)
 		{
 			super();
 			this.gl = gl;
-			this.time = time;
+
 			this.context = context;
 		}
 		@Override
 		public boolean objectFound(IAreaChunk chunk, K entity)
 		{
-			entity.render(gl, time, context);
+			entity.render(gl,context);
 			
 			return false;
 		}

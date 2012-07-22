@@ -44,18 +44,18 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 	}
 
 	@Override
-	public final void render(GL gl, double time, G entity, IRenderingContext context)
+	public final void render(GL gl, G entity, IRenderingContext context)
 	{
 		gl.glPushAttrib( GL.GL_ENABLE_BIT );
 		if(blend) gl.glEnable(GL.GL_BLEND); else gl.glDisable(GL.GL_BLEND);
 		if(depthtest) gl.glEnable(GL.GL_DEPTH_TEST); else gl.glDisable(GL.GL_DEPTH_TEST);
 		
 		if(isVisible)
-			renderGrid( gl, time, entity, context );
+			renderGrid( gl, entity, context );
 		gl.glPopAttrib();
 	}
 	
-	public abstract void renderGrid(GL gl, double time, G entity, IRenderingContext context);
+	public abstract void renderGrid(GL gl, G entity, IRenderingContext context);
 
 	@Override
 	public boolean isCastsShadow() { return false; }

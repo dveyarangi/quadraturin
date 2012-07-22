@@ -6,8 +6,8 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.graphics.quadraturin.objects.ILook;
+import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.physics.Body;
 import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
@@ -16,13 +16,13 @@ import yarangi.spatial.Area;
 public class Bitmap extends AABB implements IPhysicalObject, IEntity
 {
 	
-	private byte [] pixels;
+	private final byte [] pixels;
 	
 	private int pixelCount;
 	
 //	private PointArea area;
 	
-	private int size;
+	private final int size;
 	
 	private int textureId = -1;
 
@@ -303,7 +303,7 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 
 
 	@Override
-	public void render(GL gl, double time, IRenderingContext context)
+	public void render(GL gl, IRenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		

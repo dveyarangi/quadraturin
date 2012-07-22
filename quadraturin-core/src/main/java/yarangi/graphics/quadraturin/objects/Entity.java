@@ -134,10 +134,10 @@ public class Entity implements IEntity
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public void render(GL gl, double time, IRenderingContext context)
+	public void render(GL gl,IRenderingContext context)
 	{
 		// rendering this entity:
-		getLook().render(gl, time, this, context);
+		getLook().render(gl, this, context);
 	}
 	
 	@Override

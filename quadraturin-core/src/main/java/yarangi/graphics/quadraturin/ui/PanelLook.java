@@ -27,7 +27,7 @@ public class PanelLook implements ILook <Overlay>
 	}
 
 	@Override
-	public void render(GL gl, double time, Overlay entity, IRenderingContext context)
+	public void render(GL gl, Overlay entity, IRenderingContext context)
 	{
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);

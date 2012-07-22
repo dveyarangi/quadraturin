@@ -18,9 +18,9 @@ import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
 /**
- * Generates a rough approximation of 2D shadows texture. 
+ * Generates a rough approximation of 2D lighting and shadows texture. 
  * 
- * TODO: generalize penumbrae shader to generate correct light distribution (should suply it a single large shadow polygon
+ * TODO: generalize penumbrae shader to generate correct light distribution (should supply it a single large shadow polygon
  * and light source coords and size. 
  * 
  * TODO: convert to {@link IVeil} plugin?
@@ -32,15 +32,36 @@ import yarangi.math.Vector2D;
 public class CircleLightLook <K extends IEntity> implements ILook <K>
 {
 	
+	/**
+	 * shader to fill shadow penumbra gradient
+	 */
 	private GLSLShader penumbraShader;
+	
+	/**
+	 * shader for circular light source "floating" above rendered surface 
+	 */
 	private GLSLShader lightShader;
 	
+	/**
+	 * resulting texture resolution
+	 */
 	private int textureSize;
+	
+	/**
+	 * Viewport buffer
+	 */
 	private final IntBuffer viewport = IntBuffer.allocate(4);
 	
+	/**
+	 * Rendered frame texture
+	 */
 	private FBO fbo;
 	
+	/**
+	 * Light source color
+	 */
 	private Color color;
+	
 	
 	private BlurVeil veil;
 	
@@ -48,6 +69,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	{
 		this.color = new Color(1,1,1,1);
 	}
+	
 	public CircleLightLook(Color color)
 	{
 		this.color = color;
@@ -57,9 +79,11 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
 		// rounding texture size to power of 2:
+		// TODO: enable non-square textures
 		int size = (int)(entity.getSensor().getRadius()*2.);
 		textureSize = BitUtils.po2Ceiling(size);
 
+		// create rendering buffer
 		fbo = FBO.createFBO(gl, textureSize, textureSize, true);
 		
 		// preparing shaders:
@@ -72,11 +96,10 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void render(GL gl, double time, K entity, IRenderingContext context) 
+	public void render(GL gl, K entity, IRenderingContext context) 
 	{
-		// TODO: store and restore blending mode
 
-		// saving modes:
+		// saving OpenGL rendering modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
 		// retrieving viewport:
@@ -84,7 +107,6 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		
 		// transforming the FBO plane to fit the light source location and scale:
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
-		
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
 		
 		gl.glScaled(((double)viewport.get(2)/(double)textureSize),( (double)viewport.get(3)/(double)textureSize), 0);
@@ -94,23 +116,25 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// binding FBO:
 		fbo.bind(gl);
-		
-		gl.glDisable(GL.GL_DEPTH_TEST);
+
+		gl.glDisable(GL.GL_DEPTH_TEST); // always override pixels
 		
 		// clearing frame buffer:
 		gl.glClearColor(0,0,0,0);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
-		gl.glBlendEquation( GL.GL_MAX );
-		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR);
+		gl.glBlendEquation( GL.GL_MAX ); // maximal intensity of two shadows
+		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR); // only red component is of interest 
 
+		///////////////////////////////////////////////////////////////
+		// drawing shadow polygons for shadow casters in range:
 		if(entity.getSensor() != null)
 		{
 			List <IEntity> entities = entity.getSensor().getEntities();
 			List <Vector2D> shadowEdge;
 			Vector2D sourceLoc = entity.getArea().getAnchor();
-		// drawing red polygones for full shadows and penumbra:
+			// drawing red polygons for full shadows and penumbra:
 			for(IEntity caster : entities)
 			{
 				if(!caster.getLook().isCastsShadow())
@@ -178,28 +202,32 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 			}
 		}
 		
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		// exiting framebuffer:
-		fbo.unbind(gl);
+		
+		fbo.unbind(gl); 
+
+		// done with shadows
+		/////////////////////////////////////////////////////////
+		// now filling with lights
+		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		// restoring to original view
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix();
+		
 		gl.glPopAttrib();
 
-		// storing blending modes:
+		// storing OpenGL rendering modes:
 		
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT);
-				
-		// setting blending mode for lights:
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL.GL_ENABLE_BIT);
+		
+		gl.glEnable( GL.GL_BLEND );
+		gl.glDisable( GL.GL_DEPTH_TEST ); // once again, all pixels are rendered
 		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
-//		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glBlendEquation(GL.GL_FUNC_ADD);
-//		System.out.println(textureSize);
-		// drawing shadow map:
+		gl.glBlendEquation(GL.GL_FUNC_ADD); // "saturated" blend mode
 		
-		// drawing light:
+		////////////////////////////////////////////////////////////////////
+		// rendering shadows texture and applying lighting shader to it
 		// TODO: shader too costly, replace with prepared texture:
 		fbo.bindTexture(gl);
 			lightShader.begin(gl);
@@ -213,8 +241,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		fbo.unbindTexture(gl);
 		
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glPopAttrib(); // recover blending modes:
+		gl.glPopAttrib(); // recover OpenGL modes:
 		context.setDefaultBlendMode( gl );
 /**/
 

@@ -17,7 +17,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 	}
 
 	@Override
-	public void render(GL gl, double time, SpringGrid entity, IRenderingContext context)
+	public void render(GL gl, SpringGrid entity, IRenderingContext context)
 	{
 		Tile <Joint> tile;
 		Joint joint;

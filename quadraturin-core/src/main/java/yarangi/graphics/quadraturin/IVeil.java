@@ -3,10 +3,11 @@ package yarangi.graphics.quadraturin;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.ILayerObject;
+import yarangi.graphics.quadraturin.objects.ILook;
 
 /**
  * Represents a rendering space, that may be customized for 
- * different {@link Look} rendering modes.
+ * different {@link ILook} rendering modes.
  * 
  * TODO: consider (merging/replacing/making difference explicit) with {@link IRenderingContext}
  * @author dveyarangi

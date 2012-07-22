@@ -7,15 +7,19 @@ void main()
 {
 	vec4 tc = texture2D(sceneTex, gl_TexCoord[0].xy).rgba;
 
-	// TODO: leaves traces when alpha decays faster that other color 
+	// TODO: leaves traces when alpha decays slower that other color 
 	// guess the shader ignores zero alpha pixels
-	float tc0, tc1, tc2, tc3;
-	if(tc.r >= decay) tc0 = tc.r-decay; else tc0=0;
-	if(tc.g >= decay) tc1 = tc.g-decay; else tc1=0;
-	if(tc.b >= decay) tc2 = tc.b-decay; else tc2=0;
-	if(tc.a >= decay) tc3 = tc.a-decay; else tc3=0;
+	float tcr = tc.r - decay;
+	float tcg = tc.g - decay;
+	float tcb = tc.b - decay; 
+	float tca = tc.a - decay;
+	
+	if(tcr < 0.0) tcr = 0.0;
+	if(tcg < 0.0) tcg = 0.0;
+	if(tcb < 0.0) tcb = 0.0;
+	if(tca < 0.0) tca = 0.0;
 	
 	
-    gl_FragColor =  vec4(tc0, tc1, tc2, tc3);
+    gl_FragColor =  vec4(tcr, tcg, tcb, tca);
 
 }

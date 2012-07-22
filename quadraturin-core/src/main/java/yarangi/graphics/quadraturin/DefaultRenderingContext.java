@@ -34,6 +34,8 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	private GL gl;
 	
+	private float currFrameLength;
+	
 	public DefaultRenderingContext(EkranConfig config)
 	{
 		this.config = config;
@@ -174,5 +176,16 @@ public class DefaultRenderingContext implements IRenderingContext
 	{
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
+	}
+
+	@Override
+	public final float getFrameLength()
+	{
+		return currFrameLength;
+	}
+	
+	protected void setFrameLength(float length) 
+	{
+		this.currFrameLength = length;
 	}
 }

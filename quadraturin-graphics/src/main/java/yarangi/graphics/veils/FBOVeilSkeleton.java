@@ -11,8 +11,8 @@ import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
 
 /**
- * Allows rendering into separate frame buffer, for post-processing effects.
- * A {@link ILook} have to explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
+ * Allows rendering into separate buffer, to use as overlaying texture for post-processing effects.
+ * The {@link ILook} may explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
  * methods to render into the veil.
  * 
  * @author dveyarangi
@@ -97,6 +97,8 @@ public abstract class FBOVeilSkeleton extends OrientingVeil implements IGraphics
 	public String[] getRequiredExtensions()
 	{
 		// TODO: verify that this is enough:
+		
+		// frame buffer extension:
 		return new String [] { "GL_ARB_framebuffer_object" };
 	}
 

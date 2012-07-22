@@ -2,12 +2,12 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GLCanvas;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 import yarangi.graphics.quadraturin.threads.Loopy;
 import yarangi.numbers.AverageCounter;
+
+import com.spinn3r.log5j.Logger;
 
 /**
  * Invokes scene behavior.
@@ -20,7 +20,7 @@ public class StageAnimator implements Loopy, StageListener
 	 */
 //	private Stage stage;
 	
-	private GLCanvas canvas;
+	private final GLCanvas canvas;
 	
 	/**
 	 * Minimal required length of frame step.
@@ -35,7 +35,7 @@ public class StageAnimator implements Loopy, StageListener
 	/**
 	 * Animator's logger.
 	 */
-	private Logger log = Logger.getLogger(NAME);
+	private final Logger log = Logger.getLogger(NAME);
 
 	public static final String NAME = "q-animus";
 	
@@ -45,7 +45,7 @@ public class StageAnimator implements Loopy, StageListener
 	/**
 	 * Counter for frame length average.
 	 */
-	private AverageCounter counter;
+	private final AverageCounter counter;
 	
 	private static final int COUNTER_ITERATIONS = 10;
 	
@@ -82,14 +82,17 @@ public class StageAnimator implements Loopy, StageListener
 	}
 
 
+	@Override
 	public void runPreUnLock() 
 	{
 	}
 	
+	@Override
 	public void start() {
 		frameStart = System.nanoTime();
 	}
 
+	@Override
 	public void runBody() 
 	{
 		if(currScene == null)
@@ -133,6 +136,7 @@ public class StageAnimator implements Loopy, StageListener
 	}
 
 	
+	@Override
 	public void runPostLock() 
 	{
 		// 
@@ -142,6 +146,7 @@ public class StageAnimator implements Loopy, StageListener
 	}
 
 
+	@Override
 	public void sceneChanged(Scene currScene) 
 	{
 		this.currScene = currScene;
@@ -153,5 +158,11 @@ public class StageAnimator implements Loopy, StageListener
 		}
 		else
 			constantTime = false;
+	}
+
+
+	public double getLastFrameLength()
+	{
+		return frameTime;
 	}
 }

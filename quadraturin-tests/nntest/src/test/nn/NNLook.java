@@ -17,7 +17,7 @@ public class NNLook implements ILook<NNEntity>
 	}
 
 	@Override
-	public void render(GL gl, double time, NNEntity entity, IRenderingContext context)
+	public void render(GL gl, NNEntity entity, IRenderingContext context)
 	{
 		gl.glBegin(GL.GL_LINE_STRIP);
 		gl.glColor3f(0,1,0);

@@ -2,8 +2,6 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
@@ -16,6 +14,8 @@ import yarangi.spatial.ITileMap;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
+import com.spinn3r.log5j.Logger;
+
 public class WorldLayer extends SceneLayer <IEntity> 
 {
 
@@ -25,7 +25,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	private EntityShell <? extends ITileMap > terrain;
 	
-	private Logger log = Logger.getLogger("q-world");
+	private final Logger log = Logger.getLogger("q-world");
 	
 	public static final double CURSOR_PICK_SPAN = 5;
 
@@ -64,6 +64,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	 * {@inheritDoc}
 	 * Initializes physics engine.
 	 */
+	@Override
 	public void init(GL gl, IRenderingContext context)
 	{
 		super.init( gl, context );
@@ -78,21 +79,26 @@ public class WorldLayer extends SceneLayer <IEntity>
 	 * @param gl
 	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
+	@Deprecated
 	public void preDisplay(GL gl) {}
 	
 	/**
 	 * @param gl
 	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
+	@Deprecated
 	public void postDisplay(GL gl) {}
 	
-	public void display( GL gl, double time, IRenderingContext context)
+	@Override
+	public void display( GL gl, IRenderingContext context)
 	{
-		super.display( gl, time, context );
 		if(terrain != null)
-			terrain.render( gl, time, context );
+			terrain.render( gl, context );
+		
+		super.display( gl, context );
 	}
 	
+	@Override
 	public void animate(double time)
 	{
 //		boolean changePending = false;
@@ -144,6 +150,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	 * {@inheritDoc}
 	 * Stops physics engine.
 	 */
+	@Override
 	public void destroy(GL gl, IRenderingContext context)
 	{
 		super.destroy( gl, context );

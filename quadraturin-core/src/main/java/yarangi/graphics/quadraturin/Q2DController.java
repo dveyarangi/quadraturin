@@ -44,16 +44,20 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 */
 	private final IEventManager voices;
 	
+	private final StageAnimator animator;
+	
 	/**
 	 * Set of rendering environment properties for {@link ILook} to consider. 
 	 */
 	private final DefaultRenderingContext context;
 	
-	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
+	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, StageAnimator animator, ThreadChain chain) {
 
 		super(moduleName, chain);
 		
 		this.voices = voices;
+		
+		this.animator = animator;
 		
 		this.context = new DefaultRenderingContext(ekranConfig);
 	}
@@ -201,6 +205,8 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		double mvmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		double projmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 		
+		context.setFrameLength( (float)animator.getLastFrameLength() );
+		
 		// updating view point transformation parameters:
 		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
 		
@@ -217,12 +223,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			gl.glPopAttrib();
 		}
 	
-		currScene.preDisplay(gl, currScene.getFrameLength(), false);
+		currScene.preDisplay(gl, false);
 		gl.glPopMatrix();
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		currScene.display(gl, currScene.getFrameLength(), context);
+		currScene.display(gl, context);
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
@@ -237,7 +243,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			gl.glPopAttrib();
 		}
 			
-		currScene.postDisplay(gl, currScene.getFrameLength(), context);
+		currScene.postDisplay(gl, context);
 	
 		// proceeding to next thread:
 		releaseNext();

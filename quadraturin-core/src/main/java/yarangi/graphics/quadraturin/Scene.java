@@ -5,16 +5,14 @@ import java.util.List;
 
 import javax.media.opengl.GL;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.actions.ActionController;
 import yarangi.graphics.quadraturin.actions.ICameraMan;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
-import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
+import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
@@ -22,6 +20,8 @@ import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
+
+import com.spinn3r.log5j.Logger;
 
 /**
  * Represents current engine task. 
@@ -43,7 +43,7 @@ public abstract class Scene
 	/**
 	 * Just for fun, scene name
 	 */
-	private String name;
+	private final String name;
 	
 	/**
 	 * Stuff is logged here
@@ -53,17 +53,17 @@ public abstract class Scene
 	/**
 	 * Game world layer.
 	 */
-	private WorldLayer worldSection;
+	private final WorldLayer worldSection;
 	
 	/**
 	 * User interface layer.
 	 */
-	private UserLayer uiLayer;
+	private final UserLayer uiLayer;
 	
 	/**
 	 * TODO: split for world and UI?
 	 */
-	private ViewPoint2D viewPoint;
+	private final ViewPoint2D viewPoint;
 	
 	/**
 	 * TODO: move
@@ -73,7 +73,7 @@ public abstract class Scene
 	/**
 	 * For background faceless behaviors
 	 */
-	private List <IBehavior<Scene>> workers = new ArrayList <IBehavior<Scene>> ();
+	private final List <IBehavior<Scene>> workers = new ArrayList <IBehavior<Scene>> ();
 
 	private ICameraMan cameraMan;
 	
@@ -189,6 +189,8 @@ public abstract class Scene
 		getWorldLayer().init(gl, context);
 		getUILayer().init(gl, context);
 		
+		actionController.getLook().init( gl, actionController, context );
+		
 		Debug.init(gl, this, context);
 	}
 	
@@ -197,6 +199,7 @@ public abstract class Scene
 		Debug.destroy(gl, this, context);
 		getWorldLayer().destroy(gl, context);
 		getUILayer().destroy(gl, context);
+		actionController.getLook().destroy( gl, actionController, context );
 	}
 
 	
@@ -204,8 +207,10 @@ public abstract class Scene
 	 * Invoked before the drawing occurs.
 	 * @param gl
 	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
+	 * TODO: Move screen cleaning to more appropriate place before removal
 	 */
-	public void preDisplay(GL gl, double time, boolean pushNames) 
+	@Deprecated
+	public void preDisplay(GL gl, boolean pushNames) 
 	{	
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		getWorldLayer().preDisplay(gl); 
@@ -217,12 +222,12 @@ public abstract class Scene
 	 * @param time rendering time
 	 * @param pushNames if true, entities' names will be set when rendering 
 	 */
-	public void display(GL gl, double time, IRenderingContext context)
+	public void display(GL gl, IRenderingContext context)
 	{
-		getWorldLayer().display(gl, time, context);
+		getWorldLayer().display(gl, context);
 		
 		if(actionController != null && actionController.getLook() != null)
-			actionController.getLook().render(gl, time, actionController, context);
+			actionController.getLook().render(gl, actionController, context);
 	}
 
 	
@@ -231,11 +236,12 @@ public abstract class Scene
 	 * @param gl
 	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
 	 */
-	public void postDisplay(GL gl, double time, IRenderingContext context) 
+	@Deprecated
+	public void postDisplay(GL gl, IRenderingContext context) 
 	{ 
 		getWorldLayer().postDisplay(gl);
 		
-		getUILayer().display(gl, time, context);
+		getUILayer().display(gl, context);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////

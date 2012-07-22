@@ -15,7 +15,7 @@ import com.sun.opengl.util.texture.Texture;
 public final class TextureManager extends ResourceFactory <TextureHandle> implements IGraphicsPlugin
 {
 
-	private LinkedHashMap<String, TextureHandle> loadedTextures = new LALOCacheMap<String, TextureHandle>();
+	private final LinkedHashMap<String, TextureHandle> loadedTextures = new LALOCacheMap<String, TextureHandle>();
 	
 	private int bufferId; 
 	
@@ -95,6 +95,7 @@ public final class TextureManager extends ResourceFactory <TextureHandle> implem
 	
 	public class LALOCacheMap <K, V> extends LinkedHashMap <K, V>
 	{
+		@Override
 		public V get(Object key) 
 		{
 			V val = super.get(key);

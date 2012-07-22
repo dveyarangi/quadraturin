@@ -17,7 +17,7 @@ import yarangi.graphics.quadraturin.IVeil;
  */
 public abstract class CompositeLook <E extends ILayerObject> implements ILook <E> 
 {
-	private List <ILook<E>> chain = new LinkedList <ILook<E>> ();
+	private final List <ILook<E>> chain = new LinkedList <ILook<E>> ();
 	
 	public CompositeLook()
 	{
@@ -41,7 +41,7 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 	}
 
 	@Override
-	public void render(GL gl, double time, E entity, IRenderingContext context) {
+	public void render(GL gl, E entity, IRenderingContext context) {
 		
 		IVeil veil;
 		for(ILook <E> look : chain)
@@ -49,7 +49,7 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 			veil = look.getVeil();
 			if(veil != null)
 				veil.weave( gl, entity, context );
-			look.render( gl, time, entity, context );
+			look.render( gl, entity, context );
 			if(veil != null)
 				veil.tear( gl );
 		}
