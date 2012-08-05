@@ -1,14 +1,18 @@
 package yarangi.graphics.quadraturin;
 
+import gnu.trove.map.hash.TObjectIntHashMap;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
+import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
 import com.spinn3r.log5j.Logger;
@@ -35,6 +39,18 @@ public class DefaultRenderingContext implements IRenderingContext
 	private GL gl;
 	
 	private float currFrameLength;
+	
+	private final TObjectIntHashMap <IVisible> looks = new TObjectIntHashMap <IVisible> ();
+	
+	/**
+	 * Queue of entities waiting to be initialized.
+	 */
+	private final Queue <IVisible> bornEntities = new LinkedList<IVisible> ();
+
+	/**
+	 * Queue of dead entities to be cleaned up.
+	 */
+	private final Queue <IVisible> deadEntities = new LinkedList <IVisible> ();
 	
 	public DefaultRenderingContext(EkranConfig config)
 	{
@@ -158,6 +174,56 @@ public class DefaultRenderingContext implements IRenderingContext
 			plugins.remove(pluginName);
 	}
 	
+	
+	/**
+	 * Displays the entirety of entities in this scene for one scene animation frame.
+	 * Also handles the decomposition of newly created and oldly dead entities.
+	 * @param gl
+	 * @param time scene frame time
+	 */
+	protected void render(GL gl)
+	{
+		// injecting new entities
+		while(!bornEntities.isEmpty())
+		{
+			IVisible born = bornEntities.poll();
+			born.init( gl, this );
+		}
+		
+		while(!deadEntities.isEmpty())
+		{
+			IVisible dead = deadEntities.poll();
+			dead.destroy( gl, this );
+		}
+		
+	    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+	
+		IVeil veil;
+//		System.out.println(entities.size() + " : " + indexer.size());
+//			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
+//			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
+//			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
+			// TODO: do the viewport clipping already, you lazy me!
+//			System.out.println("BEGIN ======================================================");
+			for(IVisible entity : looks.keySet())
+			{
+				veil = entity.getLook().getVeil();
+//				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
+				
+				if(veil != null)
+					veil.weave( gl, entity, this );
+				entity.render( gl,  this );
+				if(veil != null)
+					veil.tear( gl );
+			}
+//			System.out.println("Total " + entities.size() + " entities rendered.");
+//			root.display(gl, time, context);
+/*		else
+		{
+			veilEffect.render(gl, time, entities, context);
+		}*/
+	}
+	
 	protected void reinit(int width, int height, GL gl) {
 		
 		if(viewPort.getWidth() == width && viewPort.getHeight() == height)
@@ -187,5 +253,27 @@ public class DefaultRenderingContext implements IRenderingContext
 	protected void setFrameLength(float length) 
 	{
 		this.currFrameLength = length;
+	}
+
+	@Override
+	public void addVisible(IVisible entity)
+	{
+		int count = looks.get( entity );
+		if(count == 0) 
+			bornEntities.add(entity);
+		looks.put( entity, count+1 );
+	}
+	
+	@Override
+	public void removeVisible(IVisible entity)
+	{
+		int count = looks.get( entity );
+		if(count == 1) {
+			looks.remove( entity );
+			deadEntities.add( entity );
+		}
+		else {
+			looks.put( entity, count-1 );
+		}
 	}
 }

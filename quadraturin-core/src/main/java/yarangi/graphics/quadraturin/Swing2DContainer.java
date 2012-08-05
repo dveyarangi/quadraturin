@@ -291,4 +291,9 @@ public class Swing2DContainer extends JFrame
 		System.loadLibrary(archDataModel + File.separator + "jogl_awt");
 		System.loadLibrary(archDataModel + File.separator + "jogl_cg");
 	}
+
+	public IRenderingContext getRenderingContext()
+	{
+		return controller.getRenderingContext();
+	}
 }

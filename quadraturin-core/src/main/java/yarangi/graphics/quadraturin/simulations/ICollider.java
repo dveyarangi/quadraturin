@@ -3,8 +3,6 @@ package yarangi.graphics.quadraturin.simulations;
 import java.util.Set;
 
 import yarangi.physics.IPhysicalObject;
-import yarangi.spatial.Area;
-import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialObject;
 import yarangi.spatial.ISpatialSensor;
 
@@ -38,14 +36,14 @@ public interface ICollider <K extends IPhysicalObject>
 	 * reduce uncertainty where the result is expressed as a quantity. One could also say that a 
 	 * measurement is the collapse of the wavefunction.
 	 * 
-	 * Nevertheless, query terminates if {@link ISpatialSensor#objectFound(IAreaChunk, ISpatialObject)} returns true.
+	 * Nevertheless, query terminates if {@link ISpatialSensor#objectFound(ISpatialObject)} returns true.
 	 * 
 	 * @param minx
 	 * @param miny
 	 * @param maxx
 	 * @param maxy
 	 */
-	public void query(K entity, Area area);
+	public void query(K entity);
 
 	public Set<K> getPhysicalEntities();
 

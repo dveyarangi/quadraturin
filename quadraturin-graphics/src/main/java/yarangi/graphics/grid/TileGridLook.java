@@ -73,8 +73,6 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 		updateFrameBuffer( gl, context, grid );
 		
-		veil = IVeil.ORIENTING; //*/context.getPlugin( BlurVeil.NAME );
-		
 		assert initDebug(gl, grid);
 	}
 	
@@ -100,7 +98,8 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		// rendering frame buffer texture:
 //		fbo.unbind( gl );
 //		gl.glDisable( GL.GL_DEPTH_TEST );
-		veil.weave( gl, null, context );
+		if(veil != null)
+			veil.weave( gl, null, context );
 		fbo.bindTexture(gl);
 			gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f( 0, 1, 0, 1 );
@@ -110,7 +109,8 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 				gl.glTexCoord2f(1,0); gl.glVertex2f( maxx, miny );
 			gl.glEnd();
 		fbo.unbindTexture(gl);
-		veil.tear( gl );
+		if(veil != null)
+			veil.tear( gl );
 		
 		assert renderDebug(gl);
 		

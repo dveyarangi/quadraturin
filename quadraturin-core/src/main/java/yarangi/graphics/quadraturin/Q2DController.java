@@ -49,7 +49,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	/**
 	 * Set of rendering environment properties for {@link ILook} to consider. 
 	 */
-	private final DefaultRenderingContext context;
+	static DefaultRenderingContext context;
 	
 	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, StageAnimator animator, ThreadChain chain) {
 
@@ -223,12 +223,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			gl.glPopAttrib();
 		}
 	
-		currScene.preDisplay(gl, false);
+
 		gl.glPopMatrix();
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		currScene.display(gl, context);
+		context.render(gl);
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
@@ -242,9 +242,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			plugin.postRender(gl, context);
 			gl.glPopAttrib();
 		}
-			
-		currScene.postDisplay(gl, context);
-	
+
 		// proceeding to next thread:
 		releaseNext();
 
@@ -280,6 +278,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		if(isScenePending.getAndSet(true)) // sanity
 			throw new IllegalStateException("Previous scene was not yet processed.");
+	}
+
+	public IRenderingContext getRenderingContext()
+	{
+		return context;
 	}
 
 }

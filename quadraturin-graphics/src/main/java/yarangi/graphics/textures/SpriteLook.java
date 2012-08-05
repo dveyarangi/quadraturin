@@ -200,5 +200,11 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	}
 
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return null; }
+
+	@Override
+	public boolean isOriented()
+	{
+		return true;
+	}
 }

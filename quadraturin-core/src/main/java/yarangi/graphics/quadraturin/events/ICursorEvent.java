@@ -18,7 +18,7 @@ public interface ICursorEvent {
 	public Point getCanvasLocation();
 	
 	/**
-	 * @return Entity at the cursor location; null if none
+	 * @return Entity at the cursor location; null if none.
 	 */
 	public ILayerObject getEntity();
 

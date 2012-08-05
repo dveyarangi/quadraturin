@@ -2,8 +2,8 @@ package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
 
-import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.ILook;
+import yarangi.graphics.quadraturin.objects.IVisible;
 
 /**
  * Represents a rendering space, that may be customized for 
@@ -18,7 +18,7 @@ public interface IVeil
 	/**
 	 * Default veil, sets GL matrices to rendered entity area coordinates
 	 */
-	public static final IVeil ORIENTING = new OrientingVeil();
+//	public static final IVeil ORIENTING = new OrientingVeil();
 	
 	/**
 	 * Marks start of the veil rendering.
@@ -26,7 +26,7 @@ public interface IVeil
 	 * @param entity
 	 * @param context
 	 */
-	public void weave(GL gl, ILayerObject entity, IRenderingContext context);
+	public void weave(GL gl, IVisible entity, IRenderingContext context);
 	
 	/**
 	 * Marks end of the veil rendering.

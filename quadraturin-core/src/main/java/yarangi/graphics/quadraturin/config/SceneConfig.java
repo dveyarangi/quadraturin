@@ -2,14 +2,14 @@ package yarangi.graphics.quadraturin.config;
 
 import java.awt.Dimension;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.QVoices;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.java.ReflectionUtil;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
+
+import com.spinn3r.log5j.Logger;
 
 public class SceneConfig 
 {

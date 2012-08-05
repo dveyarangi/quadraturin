@@ -1,13 +1,7 @@
 package yarangi.graphics.quadraturin.objects;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import yarangi.spatial.IAreaChunk;
 
 /**
  * Sensor aspect of {@link Entity}
@@ -17,7 +11,7 @@ import yarangi.spatial.IAreaChunk;
  */
 public class DummySensor implements ISensor <IEntity>
 {
-	private List <IEntity> entities = new LinkedList <IEntity> ();
+	private final List <IEntity> entities = new LinkedList <IEntity> ();
 	private double radius;
 	public DummySensor() { }
 	
@@ -26,14 +20,16 @@ public class DummySensor implements ISensor <IEntity>
 		radius = size;
 	}
 
+	@Override
 	public List <IEntity> getEntities() { return entities; }
 
 	public double getSensorRadiusSquare() { return 0; }
 	
+	@Override
 	public double getRadius() { return radius; }
  	
 	@Override
-	public boolean objectFound(IAreaChunk chunk, IEntity object) 
+	public boolean objectFound(IEntity object) 
 	{
 		return true;
 	}

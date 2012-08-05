@@ -1,7 +1,6 @@
 package yarangi.graphics.quadraturin.objects;
 
 import yarangi.physics.Body;
-import yarangi.physics.IPhysicalObject;
 
 
 /**
@@ -9,7 +8,7 @@ import yarangi.physics.IPhysicalObject;
  * @author dveyarangi
  *
  */
-public interface IEntity extends ILayerObject, IPhysicalObject
+public interface IEntity extends IBeing, IVisible
 {
 
 	/**
@@ -29,7 +28,7 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	 * @param sensor
 	 */
 //	public abstract void setSensor(ISensor <?> sensor);
-
+	
 	/**
 	 * How the object behaves
 	 * @return
@@ -39,6 +38,7 @@ public interface IEntity extends ILayerObject, IPhysicalObject
 	/**
 	 * How the entity fits the world
 	 */
+	@Override
 	public abstract Body getBody();
 
 	/**

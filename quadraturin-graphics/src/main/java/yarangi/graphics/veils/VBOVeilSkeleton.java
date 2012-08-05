@@ -11,13 +11,14 @@ import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
 
 /**
- * Allows rendering into separate buffer, to use as overlaying texture for post-processing effects.
- * The {@link ILook} may explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
+ * Allows rendering into separate frame buffer, for post-processing effects.
+ * A {@link ILook} have to explicitly invoke {@link #weave(GL)} and {@link #tear(GL)}
  * methods to render into the veil.
+ * TODO: render grids here?
  * 
  * @author dveyarangi
  */
-public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin 
+public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin 
 {
 	/**
 	 * Veil buffer for rendering
@@ -68,10 +69,7 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	{
 		veil.bind(gl);
 //		gl.glPushAttrib( COLOR )
-		gl.glDisable(GL.GL_DEPTH_TEST);
-		
-		// adjusting frame buffer to entity coordinates:
-//		super.weave( gl, entity, context );
+//		gl.glDisable(GL.GL_DEPTH_TEST);
 	}
 	
 	/**
@@ -96,8 +94,6 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	public String[] getRequiredExtensions()
 	{
 		// TODO: verify that this is enough:
-		
-		// frame buffer extension:
 		return new String [] { "GL_ARB_framebuffer_object" };
 	}
 
@@ -117,14 +113,10 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-	
-		gl.glPushAttrib( GL.GL_ENABLE_BIT );
-		gl.glDisable(GL.GL_DEPTH_TEST);
 		// 
 		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
 		glu.gluUnProject(viewport[2], viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
 		
-		gl.glEnable( GL.GL_BLEND );
 		getFBO().bindTexture( gl );
 //		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glColor4f( 0,0,0,1 );
@@ -136,8 +128,7 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		gl.glEnd();
 
 		getFBO().unbindTexture( gl );
-		
-		gl.glPopAttrib();
+		gl.glEnable( GL.GL_BLEND );
 	}
 	
 

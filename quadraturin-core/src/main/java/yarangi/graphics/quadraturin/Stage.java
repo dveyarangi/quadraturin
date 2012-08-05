@@ -5,13 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.ui.Overlay;
+
+import com.spinn3r.log5j.Logger;
 
 /**
  * Scene series configurator and container.
@@ -39,7 +39,7 @@ public final class Stage
 	/**
 	 * List of scenes.
 	 */
-	private Map <String, Scene> scenes = new HashMap <String, Scene> ();
+	private final Map <String, Scene> scenes = new HashMap <String, Scene> ();
 
 	/**
 	 * Current scene
@@ -51,12 +51,12 @@ public final class Stage
 	/**
 	 * Listeners to be informed on world global state changes.
 	 */
-	private List <StageListener> listeners = new LinkedList <StageListener> ();
+	private final List <StageListener> listeners = new LinkedList <StageListener> ();
 	
 	/**
 	 * 
 	 */
-	private Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
 	
 	/**
 	 * Create a stage.

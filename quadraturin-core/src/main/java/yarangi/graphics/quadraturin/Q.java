@@ -54,6 +54,8 @@ public class Q
 		});
 	}
 	
+	
+	private static Swing2DContainer container;
 	/**
 	 * Starts the engine and provide Stage to control the presentation flow.
 	 *  
@@ -61,11 +63,16 @@ public class Q
 	 */
 	public static Stage go()
 	{
-		Swing2DContainer container = new Swing2DContainer();
+		container = new Swing2DContainer();
 
 		container.start();
 		
 		return container.getStage();
+	}
+
+	public static IRenderingContext getRenderingContext()
+	{
+		return Q2DController.context;
 	}
 
 }

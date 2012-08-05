@@ -43,15 +43,9 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 	@Override
 	public void render(GL gl, E entity, IRenderingContext context) {
 		
-		IVeil veil;
 		for(ILook <E> look : chain)
 		{
-			veil = look.getVeil();
-			if(veil != null)
-				veil.weave( gl, entity, context );
 			look.render( gl, entity, context );
-			if(veil != null)
-				veil.tear( gl );
 		}
 	}
 
@@ -68,7 +62,7 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 	public abstract boolean isCastsShadow();
 
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return null; }
 	
 	
 }

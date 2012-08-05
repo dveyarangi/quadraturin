@@ -13,7 +13,6 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
-import yarangi.graphics.veils.BlurVeil;
 import yarangi.math.BitUtils;
 import yarangi.math.Vector2D;
 
@@ -62,9 +61,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	 */
 	private Color color;
 	
-	
-	private BlurVeil veil;
-	
+
 	public CircleLightLook()
 	{
 		this.color = new Color(1,1,1,1);
@@ -137,8 +134,13 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 			// drawing red polygons for full shadows and penumbra:
 			for(IEntity caster : entities)
 			{
-				if(!caster.getLook().isCastsShadow())
-					continue;
+				// TODO: rewrite as light veil
+				// weave is ^^^^^^^^^^^^^^^^^^^^^^^^^
+				// use shared screen-size frame buffer for all lights.
+				// no entity sensing required
+				// iterate over lightsources instead? 
+//				if(!caster.getLook().isCastsShadow())
+//					continue;
 				
 				shadowEdge = caster.getArea().getDarkEdge( sourceLoc );
 				if(shadowEdge.size() < 2)
@@ -198,7 +200,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 				gl.glTexCoord2f(0, 0);gl.glVertex2f((float)(casterRight.x()),    (float)casterRight.y());
 				gl.glEnd();
 				penumbraShader.end(gl);
-				
+				// tear veil
 			}
 		}
 		
@@ -283,5 +285,11 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		return 1f;
 	}
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return null; }
+
+	@Override
+	public boolean isOriented()
+	{
+		return true;
+	}
 }

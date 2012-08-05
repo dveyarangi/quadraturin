@@ -210,7 +210,14 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	@Override
 	public IVeil getVeil() {
 		
-		return IVeil.ORIENTING;
+		return null;
+	}
+
+	@Override
+	public boolean isOriented()
+	{
+		// TODO Auto-generated method stub
+		return true;
 	}
 	
 }

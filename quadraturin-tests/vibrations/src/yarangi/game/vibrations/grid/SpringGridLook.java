@@ -60,9 +60,9 @@ public class SpringGridLook implements ILook <SpringGrid>
 	}
 
 	@Override
-	public IVeil getVeil()
-	{
-		return IVeil.ORIENTING;
-	}
+	public IVeil getVeil() { return null; }
+
+	@Override
+	public boolean isOriented() { return false; }
 
 }

@@ -119,6 +119,12 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 	public float getPriority() { return 0; }
 
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return null; }
+
+	@Override
+	public boolean isOriented()
+	{
+		return false;
+	}
 
 }

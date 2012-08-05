@@ -59,6 +59,12 @@ public class PanelLook implements ILook <Overlay>
 	public boolean isCastsShadow(){	return false;}
 
 	@Override
-	public IVeil getVeil() { return IVeil.ORIENTING; }
+	public IVeil getVeil() { return null; }
+
+	@Override
+	public boolean isOriented()
+	{
+		return false;
+	}
 	
 }

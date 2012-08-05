@@ -64,4 +64,11 @@ public class NNLook implements ILook<NNEntity>
 		return null;
 	}
 
+	@Override
+	public boolean isOriented()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

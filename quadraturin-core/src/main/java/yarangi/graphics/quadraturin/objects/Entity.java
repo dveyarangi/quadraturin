@@ -27,12 +27,14 @@ public class Entity implements IEntity
 	 * Entity graphics 
 	 * @see SceneLayer#display(GL, double, IRenderingContext)
 	 */
-	private ILook <?> look;
+	@SuppressWarnings("rawtypes")
+	private ILook look;
 	
 	/**
 	 * Entity behavior
 	 */
-	private IBehavior <?> behavior = Dummy.BEHAVIOR;
+	@SuppressWarnings("rawtypes")
+	private IBehavior behavior = Dummy.BEHAVIOR;
 	
 	/**
 	 * Area span
@@ -57,6 +59,10 @@ public class Entity implements IEntity
 		groupId = this.getClass().hashCode();
 	}
 
+	/**
+	 * How the object looks.
+	 * @return
+	 */
 	public void setLook(ILook <?> look) { this.look = look; }
 	
 	/**
@@ -65,6 +71,10 @@ public class Entity implements IEntity
 	@Override
 	public void setBehavior(IBehavior <?> behavior) { this.behavior = behavior; }
 
+	/**
+	 * Space entity takes in its layer
+	 * @param area
+	 */
 	public void setArea(Area area) { this.spatialAspect = area; }
 
 	/**
@@ -94,6 +104,7 @@ public class Entity implements IEntity
 	/**
 	 * {@inheritDoc}
 	 */
+
 	@Override
 	@SuppressWarnings("rawtypes")
 	public final ILook getLook() { return look; }
@@ -129,29 +140,52 @@ public class Entity implements IEntity
 	@SuppressWarnings("unchecked")
 	public void init(GL gl, IRenderingContext context)
 	{
-		getLook().init( gl, this, context );
+		look.init( gl, this, context );
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void render(GL gl,IRenderingContext context)
 	{
-		// rendering this entity:
-		getLook().render(gl, this, context);
+		if(look.isOriented()) {
+			Area area = getArea();
+	
+			// storing transformation matrix:
+			gl.glMatrixMode( GL.GL_MODELVIEW );
+			gl.glPushMatrix();
+	//		gl.glLoadIdentity(); 	
+			
+			// transforming into entity coordinates:
+			if(area == null)
+				gl.glTranslatef(0, 0, 0); // just adjusting priority
+			else
+			{
+				float priority = -look.getPriority();
+				gl.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
+				gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+			}
+		}
+		
+		look.render(gl, this, context);
+		
+		if(look.isOriented()) {
+			gl.glMatrixMode( GL.GL_MODELVIEW );
+			gl.glPopMatrix();
+		}
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		getLook().destroy( gl, this, context );
+		look.destroy( gl, this, context );
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean behave(double time, boolean b)
 	{
-		return getBehavior().behave( time, this, b );
+		return behavior.behave( time, this, b );
 	}
 	
 	@Override

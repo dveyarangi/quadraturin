@@ -1,37 +1,38 @@
 package yarangi.graphics.quadraturin.terrain;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.objects.IBehavior;
-import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.graphics.quadraturin.objects.ISensor;
+import yarangi.graphics.quadraturin.objects.IBeing;
 import yarangi.physics.Body;
-import yarangi.physics.IPhysicalObject;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
 import com.seisw.util.geom.Poly;
 import com.seisw.util.geom.PolyDefault;
 
-public class MultilayerTilePoly implements IEntity, IPhysicalObject, ITilePoly
+public class MultilayerTilePoly implements IBeing, ITilePoly
 {
 	/**
 	 * Specified the borders of this tile
 	 */
 	private final Poly borderPoly;
 	
+	private final double minx, miny, maxx, maxy;
+	
 	/**
 	 * Specifies real structure of this tile:
 	 */
 	private final Poly [] structurePolys;
 	
-	
+	private final AABB area;
 	
 	private boolean isFull = false;
 	
 	public MultilayerTilePoly(double minx, double miny, double maxx, double maxy, int layersNum)
 	{
+		this.minx = minx;
+		this.maxx = maxx;
+		this.miny = miny;
+		this.maxy = maxy;
+		
 		// used to clip larger than tile polygons
 		borderPoly = new PolyDefault();
 		borderPoly.add( minx, miny );
@@ -46,6 +47,8 @@ public class MultilayerTilePoly implements IEntity, IPhysicalObject, ITilePoly
 		structurePoly.add( minx, maxy );
 		structurePoly.add( maxx, maxy );
 		structurePoly.add( maxx, miny );*/
+		
+		area = AABB.createFromEdges( minx, miny, maxx, maxy, 0 );
 	}
 	
 	public Poly [] getPoly() 
@@ -112,8 +115,7 @@ public class MultilayerTilePoly implements IEntity, IPhysicalObject, ITilePoly
 	@Override
 	public Area getArea()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return area;
 	}
 
 	@Override
@@ -126,15 +128,8 @@ public class MultilayerTilePoly implements IEntity, IPhysicalObject, ITilePoly
 	@Override
 	public boolean isAlive()
 	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ILook getLook()
-	{
-		// TODO Auto-generated method stub
-		return null;
+		
+		return !isEmpty();
 	}
 
 	@Override
@@ -151,67 +146,20 @@ public class MultilayerTilePoly implements IEntity, IPhysicalObject, ITilePoly
 		return false;
 	}
 
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void render(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBehavior(IBehavior<?> behavior)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public IBehavior<?> getBehavior()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ISensor getSensor()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean behave(double time, boolean b)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getGroupId()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public boolean isFull()
 	{
 		return isFull;
 	}
+
+	@Override
+	public final double getMaxX() { return maxx; }
+	@Override
+	public final double getMaxY() { return maxy; }
+	@Override
+	public final double getMinX() { return minx; }
+	@Override
+	public final double getMinY() { return miny; }
 	
 }

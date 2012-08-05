@@ -6,15 +6,15 @@ import java.util.Map;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
+import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.ISpatialFilter;
 
 public class DefaultActionFactory 
 {
-	public static ActionController createDefaultController(Scene scene)
+	public static EntityShell <ActionController> createDefaultController(Scene scene)
 	{
-		return new DefaultActionController(scene);
+		return new EntityShell(new DefaultActionController(scene), null, null);
 	}
 	
 	static class DefaultActionController extends ActionController 
@@ -50,30 +50,32 @@ public class DefaultActionFactory
 			return cameraMover;
 		}
 
-		@Override
-		public ILook <ActionController> getLook() {
-			return null;
-		}
 	}
 	
 	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, final ICameraMan mover, Scene scene)
 	{
 		actions.put("scroll-right", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.moveRight(); }}
 			);
 		actions.put("scroll-left", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.moveLeft(); }}
 		);
 		actions.put("scroll-up", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.moveUp(); }}
 		);
 		actions.put("scroll-down", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.moveDown(); }}
 		);
 		actions.put("zoom-in", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.zoomIn(); }}
 		);
 		actions.put("zoom-out", new IAction() {
+			@Override
 			public void act(UserActionEvent event) { mover.zoomOut(); }}
 		);
 

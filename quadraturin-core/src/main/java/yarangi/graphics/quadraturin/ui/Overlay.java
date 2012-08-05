@@ -1,8 +1,5 @@
 package yarangi.graphics.quadraturin.ui;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.spatial.Area;
@@ -16,7 +13,8 @@ public class Overlay implements ILayerObject
 	/**
 	 * Overlay look
 	 */
-	private ILook <?> look;
+	@SuppressWarnings("rawtypes")
+	private ILook look;
 	
 	private final Panel parent;
 	
@@ -43,7 +41,6 @@ public class Overlay implements ILayerObject
 	 * How the object looks.
 	 * @return
 	 */
-	@Override
 	@SuppressWarnings("rawtypes")
 	public final ILook getLook() { return look; }
 
@@ -61,23 +58,5 @@ public class Overlay implements ILayerObject
 	
 	@Override
 	public boolean isIndexed() { return isPickable; }
-
-	@Override
-	public void render(GL gl, IRenderingContext context)
-	{
-		this.getLook().render( gl, this, context );
-	}
-
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		this.getLook().init( gl, this, context );
-	}
-
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		this.getLook().destroy( gl, this, context );
-	}
 
 }

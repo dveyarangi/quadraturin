@@ -59,7 +59,10 @@ public class EntityShell <E> extends Entity
 	@Override
 	public boolean behave(double time, boolean b)
 	{
+		if(getBehavior() != null)
 		return getBehavior().behave( time, essence, b );
+		
+		return false;
 	}
 
 	@Override

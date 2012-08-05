@@ -62,4 +62,10 @@ public interface ILook <An>
 	 */
 	public IVeil getVeil();
 
+	/**
+	 * Determines either the look should be rendered in entity coordinates.
+	 * @return
+	 */
+	public boolean isOriented();
+
 }

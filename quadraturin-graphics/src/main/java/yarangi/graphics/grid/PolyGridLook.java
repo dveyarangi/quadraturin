@@ -57,8 +57,6 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)
 				listIds[idx][jdx] = NO_LIST_ID;
 		
-		veil = IVeil.ORIENTING; //*/context.getPlugin( BlurVeil.NAME );
-		
 		assert initDebug(gl, grid);
 	}
 

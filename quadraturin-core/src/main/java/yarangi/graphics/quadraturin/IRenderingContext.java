@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.ILook;
+import yarangi.graphics.quadraturin.objects.IVisible;
 
 /**
  * Holds some rendering properties for use in {@link ILook} methods
@@ -42,4 +43,9 @@ public interface IRenderingContext
 	public void setDefaultBlendMode(GL gl);
 	
 	public float getFrameLength();
+
+	public void addVisible(IVisible entity);
+	
+	public void removeVisible(IVisible entity);
+
 }

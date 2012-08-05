@@ -14,10 +14,8 @@ import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.ICollider;
 import yarangi.graphics.quadraturin.ui.Overlay;
-import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
 
@@ -77,8 +75,7 @@ public abstract class Scene
 
 	private ICameraMan cameraMan;
 	
-	private ActionController actionController;
-	
+	private EntityShell<ActionController> actionController;	
 	
 	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
@@ -189,7 +186,7 @@ public abstract class Scene
 		getWorldLayer().init(gl, context);
 		getUILayer().init(gl, context);
 		
-		actionController.getLook().init( gl, actionController, context );
+//		actionController.getLook().init( gl, actionController, context );
 		
 		Debug.init(gl, this, context);
 	}
@@ -199,50 +196,8 @@ public abstract class Scene
 		Debug.destroy(gl, this, context);
 		getWorldLayer().destroy(gl, context);
 		getUILayer().destroy(gl, context);
-		actionController.getLook().destroy( gl, actionController, context );
 	}
 
-	
-	/**
-	 * Invoked before the drawing occurs.
-	 * @param gl
-	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
-	 * TODO: Move screen cleaning to more appropriate place before removal
-	 */
-	@Deprecated
-	public void preDisplay(GL gl, boolean pushNames) 
-	{	
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		getWorldLayer().preDisplay(gl); 
-	}
-	
-	/**
-	 * Renders this scene.
-	 * @param gl graphics object
-	 * @param time rendering time
-	 * @param pushNames if true, entities' names will be set when rendering 
-	 */
-	public void display(GL gl, IRenderingContext context)
-	{
-		getWorldLayer().display(gl, context);
-		
-		if(actionController != null && actionController.getLook() != null)
-			actionController.getLook().render(gl, actionController, context);
-	}
-
-	
-	/**
-	 * Invoked after the drawing is finished.
-	 * @param gl
-	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
-	 */
-	@Deprecated
-	public void postDisplay(GL gl, IRenderingContext context) 
-	{ 
-		getWorldLayer().postDisplay(gl);
-		
-		getUILayer().display(gl, context);
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,19 +227,22 @@ public abstract class Scene
 	{
 	}
 
-	final public ISpatialSetIndex<IAreaChunk, IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
-	final public ISpatialSetIndex<IAreaChunk, Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
+	final public ISpatialSetIndex<IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
+	final public ISpatialSetIndex<Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
 	
 	/**
 	 * Set user action controller. May be set any time after scene initialization.
 	 * @param actionController
 	 */
-	public void setActionController(ActionController actionController)
+	public void setActionController(EntityShell<ActionController> actionController)
 	{
+		if(this.actionController != null)
+			removeEntity( this.actionController );
+		addEntity( actionController );		
 		if(cameraMan != null)
 			removeWorker( cameraMan );
 		
-		cameraMan = actionController.getCameraManager(); 
+		cameraMan = actionController.getEssence().getCameraManager(); 
 		if(cameraMan != null)
 			addWorker( cameraMan );
 
@@ -292,7 +250,7 @@ public abstract class Scene
 		
 	}
 	
-	public  ActionController getActionController() { return actionController; }
+	public  ActionController getActionController() { return actionController.getEssence(); }
 	
 	/**
 	 * Exposes collision manager to register collision handlers

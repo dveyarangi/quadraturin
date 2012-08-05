@@ -8,7 +8,6 @@ import yarangi.graphics.quadraturin.UserLayer;
 import yarangi.graphics.quadraturin.WorldLayer;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.Vector2D;
 import yarangi.spatial.ISpatialFilter;
 
@@ -17,7 +16,7 @@ import yarangi.spatial.ISpatialFilter;
  * 
  * @author dveyarangi
  */
-public abstract class ActionController
+public abstract class ActionController 
 {
 	
 	/**
@@ -25,9 +24,9 @@ public abstract class ActionController
 	 */
 	public static final double CURSOR_PICK_SPAN = 5;
 	
-	private WorldLayer worldLayer;
+	private final WorldLayer worldLayer;
 	
-	private UserLayer uiLayer;
+	private final UserLayer uiLayer;
 	
 	public ActionController(Scene scene)
 	{
@@ -47,11 +46,6 @@ public abstract class ActionController
 	 * @return
 	 */
 	public abstract ISpatialFilter <IEntity> getPickingFilter();
-	
-	/**
-	 * @return Graphical overlay of this controller 
-	 */
-	public abstract ILook <ActionController> getLook();
 	
 	/** 
 	 * Selects an entity at {@link CURSOR_PICK_SPAN} radius around cursor location

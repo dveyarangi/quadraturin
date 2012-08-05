@@ -1,8 +1,5 @@
 package yarangi.graphics.quadraturin.objects;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.SceneLayer;
 import yarangi.spatial.Area;
 import yarangi.spatial.ISpatialObject;
@@ -15,13 +12,6 @@ import yarangi.spatial.ISpatialObject;
  */
 public interface ILayerObject extends ISpatialObject
 {
-
-	/**
-	 * How the object looks.
-	 * @return
-	 */
-	@SuppressWarnings("rawtypes")
-	public abstract ILook getLook();	
 
 	/**
 	 * {@inheritDoc}
@@ -46,9 +36,5 @@ public interface ILayerObject extends ISpatialObject
 	 */
 	public boolean isIndexed();
 
-
-	public void init(GL gl, IRenderingContext context);
-	public void render(GL gl, IRenderingContext context);
-	public void destroy(GL gl, IRenderingContext context);
 
 }

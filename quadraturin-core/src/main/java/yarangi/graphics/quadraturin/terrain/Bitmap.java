@@ -1,19 +1,13 @@
 package yarangi.graphics.quadraturin.terrain;
 
-import javax.media.opengl.GL;
-
 import yarangi.graphics.colors.Color;
-import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.objects.IBehavior;
-import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.graphics.quadraturin.objects.ISensor;
+import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.physics.Body;
 import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
-public class Bitmap extends AABB implements IPhysicalObject, IEntity
+public class Bitmap extends AABB implements IPhysicalObject, ILayerObject
 {
 	
 	private final byte [] pixels;
@@ -243,6 +237,9 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 	public int getTextureId() { return textureId; }
 	public boolean hasTexture() { return textureId != -1; }
 
+	///////////////////////////////////////////////
+	// TODO: fix the following mess:
+
 //	public double getPixelSize() { return pixelsize; }
 	@Override
 	public Area getArea()
@@ -267,17 +264,6 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 		return size;
 	}
 
-	///////////////////////////////////////////////
-	// TODO: fix this mess. Create a separate interface for 
-
-	@Override
-	public ILook getLook()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 	@Override
 	public void markDead()
 	{
@@ -293,67 +279,5 @@ public class Bitmap extends AABB implements IPhysicalObject, IEntity
 		return false;
 	}
 
-
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void render(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void setBehavior(IBehavior<?> behavior)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public IBehavior<?> getBehavior()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public ISensor getSensor()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public boolean behave(double time, boolean b)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public int getGroupId()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 }

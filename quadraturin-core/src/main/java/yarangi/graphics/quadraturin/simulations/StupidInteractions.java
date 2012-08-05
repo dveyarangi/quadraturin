@@ -2,23 +2,23 @@ package yarangi.graphics.quadraturin.simulations;
 
 import java.util.Set;
 
-import com.spinn3r.log5j.Logger;
-
-import yarangi.spatial.Area;
 import yarangi.physics.Body;
 import yarangi.physics.IPhysicalObject;
+import yarangi.spatial.Area;
+
+import com.spinn3r.log5j.Logger;
 
 public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsEngine <K>
 {
 	/**
 	 * Stupid's logger.
 	 */	
-	private Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
 	
 	/**
 	 * Calculates narrow phase of collision handling.
 	 */
-	private ICollider <K> manager;
+	private final ICollider <K> manager;
 	
 	
 	public StupidInteractions(ICollider <K> man)
@@ -26,12 +26,16 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 		manager = man;
 	}
 	
+	@Override
 	public ICollider <K> getCollisionManager() { return manager; }
 	
+	@Override
 	public void init() { }
+	@Override
 	public void destroy() { }
 	
 	// TODO: make it double sided:
+	@Override
 	public void calculate(double time) 
 	{
 		if(time <= 0)
@@ -66,7 +70,7 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			
 			// TODO: querying by area is inefficient (polygon iterator is slow)
 			// TODO: collision prediction (expand area?)
-			manager.query(entity, area);  
+			manager.query(entity);  
 			
 			////////////////////////////////
 			// inert mass point adjustment:

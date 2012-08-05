@@ -1,16 +1,10 @@
 package yarangi.graphics.quadraturin;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.objects.Entity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.spatial.IAreaChunk;
-import yarangi.spatial.ISpatialSensor;
+import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.spatial.SpatialIndexer;
 
 import com.spinn3r.log5j.Logger;
@@ -26,8 +20,6 @@ public abstract class SceneLayer <K extends ILayerObject>
 {
 
 	private final int width, height;
-	
-	private final List <K> entities = new ArrayList <K> (100); 
 		
 /*		new TreeSet <K> (
 			new Comparator <K> () {
@@ -42,17 +34,10 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 */
 	private SpatialIndexer <K> indexer;
 
-	/**
-	 * Queue of entities waiting to be added to the veil.
-	 */
-	private final Queue <K> bornEntities = new LinkedList<K> ();
-
-	/**
-	 * Queue of dead entities to be cleaned up.
-	 */
-	private final Queue <K> deadEntities = new LinkedList <K> ();
 	
 	private final Logger log = Q.structure;
+	
+	private IRenderingContext context;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
@@ -62,6 +47,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 	{
 		this.width = width;
 		this.height = height;
+		this.context = Q.getRenderingContext();
 	}
 
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }
@@ -71,10 +57,6 @@ public abstract class SceneLayer <K extends ILayerObject>
 		this.indexer = indexer;
 	}
 
-	protected List <K> getEntities()
-	{
-		return entities;
-	}
 	/**
 	 * Initializes the scene. 
 	 * @param gl
@@ -82,68 +64,11 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 */
 	public void init(GL gl, IRenderingContext context)
 	{
+		this.context = context;
 	}
 	
 	public void destroy(GL gl, IRenderingContext context)
 	{
-	}
-	
-	/**
-	 * Displays the entirety of entities in this scene for one scene animation frame.
-	 * Also handles the decomposition of newly created and oldly dead entities.
-	 * @param gl
-	 * @param time scene frame time
-	 * @param context
-	 */
-	public void display(GL gl, IRenderingContext context) 
-	{	
-		// injecting new entities
-		while(!bornEntities.isEmpty())
-		{
-			K born = bornEntities.poll();
-			born.init( gl, context );
-			entities.add(born);
-			
-			
-			if(born.isIndexed())
-				indexer.add(born.getArea(), born);
-		}
-		
-		while(!deadEntities.isEmpty())
-		{
-			K dead = deadEntities.poll();
-			dead.destroy( gl, context );
-			if(dead.isIndexed())
-			{
-				indexer.remove(dead);
-				entities.remove(dead);
-			}
-		}
-		
-		IVeil veil;
-//		System.out.println(entities.size() + " : " + indexer.size());
-//			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
-//			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
-//			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
-			// TODO: do the viewport clipping already, you lazy me!
-//			System.out.println("BEGIN ======================================================");
-			for(K entity : entities)
-			{
-				veil = entity.getLook().getVeil();
-//				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
-				
-				if(veil != null)
-					veil.weave( gl, entity, context );
-				entity.render( gl,  context );
-				if(veil != null)
-					veil.tear( gl );
-			}
-//			System.out.println("Total " + entities.size() + " entities rendered.");
-//			root.display(gl, time, context);
-/*		else
-		{
-			veilEffect.render(gl, time, entities, context);
-		}*/
 	}
 
 	public abstract void animate(double time);
@@ -156,7 +81,8 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 */
 	public void addEntity(K entity) 
 	{	
-
+		if(entity == null)
+			throw new IllegalArgumentException("Entity cannot be null.");
 //		if(entity.getLook() == null)
 //			throw new IllegalArgumentException("Entity look cannot be null.");
 //		if(entity.getBehavior() == null)
@@ -164,8 +90,14 @@ public abstract class SceneLayer <K extends ILayerObject>
 //		if(entity.getAABB() == null)
 //			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
 		
-		if(testEntity(entity))
-			bornEntities.add(entity);
+		if(entity instanceof IVisible)
+			context.addVisible((IVisible) entity);
+		
+		if(entity.isIndexed())
+			indexer.add(entity.getArea(), entity);
+		
+//		if(testEntity(entity))
+//			bornEntities.add(entity);
 	}
 	
 	/**
@@ -174,14 +106,17 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 */
 	public void removeEntity(K entity)
 	{
-		deadEntities.add(entity);
+		if(entity.isIndexed())
+			indexer.remove(entity);
+		if(entity instanceof IVisible)
+			context.removeVisible((IVisible) entity);
 	}
 
 
 	public int getWidth() {return width; }
 	public int getHeight() {return height; }
 
-	public class ClippingSensor implements ISpatialSensor <IAreaChunk, K> 
+/*	public class ClippingSensor implements ISpatialSensor <K> 
 	{
 		private final GL gl;
 
@@ -195,7 +130,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 			this.context = context;
 		}
 		@Override
-		public boolean objectFound(IAreaChunk chunk, K entity)
+		public boolean objectFound(K entity)
 		{
 			entity.render(gl,context);
 			
@@ -205,16 +140,16 @@ public abstract class SceneLayer <K extends ILayerObject>
 		@Override
 		public void clear() {}
 		
-	}
+	}*/
 	
 
 	protected boolean testEntity(K entity) 
 	{
 		boolean test = true;
-		if(entity.getLook() == null) {
+/*		if(entity.getLook() == null) {
 			log.warn( "Entity [" + entity + "] must define look object." );
 			test = false;
-		}
+		}*/
 		
 		return test;
 

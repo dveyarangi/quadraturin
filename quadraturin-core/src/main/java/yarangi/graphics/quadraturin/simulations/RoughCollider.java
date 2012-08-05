@@ -6,12 +6,9 @@ import java.util.Set;
 
 import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
-import yarangi.spatial.Area;
-import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
-import yarangi.spatial.Tile;
 
 public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 {
@@ -19,23 +16,23 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	/**
 	 * Index of entities.
 	 */
-	private ISpatialSetIndex <IAreaChunk, O> indexer;
+	private final ISpatialSetIndex <O> indexer;
 	
 	/**
 	 * Optional: terrain
 	 */
-	private ITileMap <O> terrain;
+	private final ITileMap <O> terrain;
 	
-	private Map <Class<? extends IPhysicalObject>, ICollisionHandler<O>> handlers = 
+	private final Map <Class<? extends IPhysicalObject>, ICollisionHandler<O>> handlers = 
 				new HashMap <Class<? extends IPhysicalObject>, ICollisionHandler<O>> ();
 	
 	/**
 	 * Spatial query processor for broad phase of collision/interaction test
 	 */
-	private IProximitySensor <IAreaChunk, O> worldSensor;
-	private IProximitySensor <Tile<O>, O> terrainSensor;
+	private final IProximitySensor <O> worldSensor;
+	private final IProximitySensor <O> terrainSensor;
 	
-	public RoughCollider(ISpatialSetIndex <IAreaChunk, O> indexer, ITileMap <O> terrain)
+	public RoughCollider(ISpatialSetIndex < O> indexer, ITileMap <O> terrain)
 	{
 		this.indexer = indexer;
 		this.terrain = terrain;
@@ -70,15 +67,17 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	}
 
 	@Override
-	public void query(O entity, Area area)
+	public void query(O entity)
 	{
 		worldSensor.clear();
 		terrainSensor.clear();
 		worldSensor.setSource( entity );
 		terrainSensor.setSource( entity );
-		indexer.query( worldSensor, area );
+		AABB aabb = (AABB)entity.getArea();
+//		System.out.println("RoughCollider: " + entity + " : " + entity.getArea());
+		indexer.queryAABB( worldSensor, aabb.getCenterX(), aabb.getCenterY(), aabb.getRX(), aabb.getRY());
 		if(terrain != null)
-			terrain.query(terrainSensor, area);
+			terrain.queryAABB(terrainSensor, aabb.getCenterX(), aabb.getCenterY(), aabb.getRX(), aabb.getRY());
 		
 	}
 
@@ -92,7 +91,7 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	/**
 	 * Spatial query processor
 	 */
-	public interface IProximitySensor <T, O extends IPhysicalObject> extends ISpatialSensor <T, O>
+	public interface IProximitySensor <O extends IPhysicalObject> extends ISpatialSensor <O>
 	{
 		/**
 		 * Defines the reference entity for proximity tests.
@@ -101,11 +100,12 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 		public void setSource(O source);
 	}
 	
-	public class WorldProximitySensor implements IProximitySensor <IAreaChunk, O>
+	public class WorldProximitySensor implements IProximitySensor <O>
 	{
 		protected O source;
 		
-		public final boolean objectFound(IAreaChunk chunk, O target) 
+		@Override
+		public final boolean objectFound(O target) 
 		{
 //			if(!target.isAlive())
 //				return false; 
@@ -116,32 +116,28 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 			
 		}
 
+		@Override
 		public final void setSource(O source) { this.source = source; }
 
 		@Override
 		public void clear() { }
 	}
-	public class TerrainProximitySensor implements IProximitySensor <Tile<O>, O>
+	public class TerrainProximitySensor implements IProximitySensor <O>
 	{
 		protected O source;
 		
-		public final boolean objectFound(Tile<O> chunk, O target) 
+		@Override
+		public final boolean objectFound(O target) 
 		{
 			if(!target.isAlive())
 				return false; 
 			if(!source.isAlive())
 				return true;
 			
-			// TODO: too rough:
-			if(chunk.overlaps( source.getArea().getAnchor().x()-source.getArea().getMaxRadius(),
-					source.getArea().getAnchor().y()-source.getArea().getMaxRadius(),
-					source.getArea().getAnchor().x()+source.getArea().getMaxRadius(),
-					source.getArea().getAnchor().y()+source.getArea().getMaxRadius()))
-				return collide(source, target);
-			
-			return false;
+			return collide(source, target);
 		}
 
+		@Override
 		public final void setSource(O source) { this.source = source; }
 
 		@Override

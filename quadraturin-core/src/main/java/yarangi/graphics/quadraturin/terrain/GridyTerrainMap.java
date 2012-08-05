@@ -3,7 +3,6 @@ package yarangi.graphics.quadraturin.terrain;
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.Q;
 import yarangi.math.FastMath;
-import yarangi.spatial.AABB;
 import yarangi.spatial.GridMap;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ITileMap;
@@ -19,11 +18,11 @@ import yarangi.spatial.Tile;
 public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements ITileMap <Bitmap>
 {
 	
-	private int bitmapWidth;
+	private final int bitmapWidth;
 	
-	private float toPixelCoef;
+	private final float toPixelCoef;
 	
-	private float pixelSize;
+	private final float pixelSize;
 	
 	public GridyTerrainMap(float width, float height, int cellsize, float pixelsize)
 	{
@@ -47,7 +46,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	@Override
 	public Tile <Bitmap>[] createMap(int cellSize, int width, int height)
 	{
-		return (Tile <Bitmap> []) new Tile [width*height]; // ugly, as always	
+		return new Tile [width*height]; // ugly, as always	
 	}
 	
 	@Override
@@ -106,11 +105,11 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 		MaskingSensor sensor = new MaskingSensor (substract, ox, oy, maskWidth, mask);
 		float maskRealWidth = maskWidth*pixelSize;
 		
-		query(sensor, AABB.createFromEdges( ox, oy, ox+maskRealWidth, oy+maskRealWidth, 0 ));
+		queryAABB(sensor, ox, oy, ox+maskRealWidth, oy+maskRealWidth);
 	}
 	
 	
-	public class MaskingSensor implements ISpatialSensor <Tile<Bitmap>, Bitmap>
+	public class MaskingSensor implements ISpatialSensor <Bitmap>
 	{
 		double ox, oy;
 		byte [] mask;
@@ -130,15 +129,15 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 		}
 
 		@Override
-		public boolean objectFound(Tile<Bitmap> chunk, Bitmap bitmap)
+		public boolean objectFound(Bitmap bitmap)
 		{
 //			System.out.println(chunk + " : " + tile);
 			int pixelsBefore = bitmap.getPixelCount();
 			if(pixelsBefore == 0 && substract)
 				return false;
 			
-			int ioffset = (int)((chunk.getX()-ox)*bitmap.getSize()/getCellSize());
-			int joffset = (int)((chunk.getY()-oy)*bitmap.getSize()/getCellSize());
+			int ioffset = (int)((bitmap.getMinX()-ox)*bitmap.getSize()/getCellSize());
+			int joffset = (int)((bitmap.getMinX()-oy)*bitmap.getSize()/getCellSize());
 			
 			boolean changed = false;
 			if(substract)
@@ -147,7 +146,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 				changed = bitmap.addMask( ioffset, joffset, maskWidth, mask );
 			
 			if(changed)
-				setModified(chunk );
+				setModified(bitmap.getMinX(), bitmap.getMinY() );
 			
 			return false;
 		}

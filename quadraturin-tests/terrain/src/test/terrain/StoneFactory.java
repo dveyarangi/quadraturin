@@ -2,7 +2,6 @@ package test.terrain;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.objects.EntityShell;
-import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.terrain.Bitmap;
 import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
 import yarangi.graphics.quadraturin.terrain.ITerrainFactory;
@@ -36,7 +35,7 @@ public class StoneFactory implements ITerrainFactory <GridyTerrainMap>
 			    		   (tileY+y*terrain.getPixelSize())*(tileY+y*terrain.getPixelSize()) > 100000) // TODO: variety :)
 			    			bitmap.put( new Color(0.1f, 0.1f, 0.1f, 1), x, y );
 			    	}
-		    	terrain.setModified( tile );
+		    	terrain.setModified( i, j );
 		    }
 		}
 

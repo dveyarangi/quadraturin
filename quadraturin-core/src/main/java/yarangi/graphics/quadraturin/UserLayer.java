@@ -2,12 +2,9 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
 
-import javax.media.opengl.GL;
-
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.graphics.quadraturin.ui.Panel;
-import yarangi.spatial.AABB;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
@@ -22,7 +19,7 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	public static final double CURSOR_PICK_SPAN = 5;
 	
-	private double halfWidth, halfHeight;
+	private final double halfWidth, halfHeight;
 	
 	private final PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
 	
@@ -62,18 +59,7 @@ public class UserLayer extends SceneLayer <Overlay>
 		return basePanel;
 	}
 	
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-	}
-	
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		
-	}
-	
-	@Override
+/*	@Override
 	public void display(GL gl, IRenderingContext context) 
 	{
 		if(basePanel.getViewPort() != context.getViewPort())
@@ -97,14 +83,14 @@ public class UserLayer extends SceneLayer <Overlay>
 //			Debug.drawUserLayerOverlay(gl, this, context);
 		
 		super.display( gl, context );
-	}
+	}*/
 
 	public ILayerObject processPick(Point canvasLocation)
 	{
 		// collecting picked entities:
 		
 //		log.debug("picking at: " + (canvasLocation.x+halfWidth) + "," + (halfHeight-canvasLocation.y));
-		getEntityIndex().query(sensor, AABB.createSquare(canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, 0));
+		getEntityIndex().queryAABB(sensor, canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
 		
 		Overlay pickedObject = sensor.getObject();
 		sensor.clear();

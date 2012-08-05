@@ -12,17 +12,17 @@ public class UserActionEvent
 	/**
 	 * An action id.
 	 */
-	private String actionId;
+	private final String actionId;
 	
 	/**
 	 * Input configuration that caused this event.
 	 */
-	private InputHook hook;
+	private final InputHook hook;
 	
 	/**
 	 * Defines cursor position
 	 */
-	private ICursorEvent cursor;
+	private final ICursorEvent cursor;
 
 	
 	public UserActionEvent(String actionId, InputHook hook, ICursorEvent cursor)
@@ -33,8 +33,13 @@ public class UserActionEvent
 	}
 	public String getActionId() { return actionId; }
 	
+	/**
+	 * Retrieves cursor picking event, which contains layer coordinates of the cursor and entity that can be picked.  
+	 * @return
+	 */
 	public ICursorEvent getCursor() { return cursor; }
 	
+	@Override
 	public String toString()
 	{
 		return new StringBuilder()

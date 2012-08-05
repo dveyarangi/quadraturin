@@ -1,14 +1,15 @@
 package yarangi.graphics.quadraturin;
 
-import javax.media.opengl.GL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.math.Vector2D;
-import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ITileMap;
 import yarangi.spatial.PickingSensor;
@@ -19,6 +20,9 @@ import com.spinn3r.log5j.Logger;
 public class WorldLayer extends SceneLayer <IEntity> 
 {
 
+	
+	private final List <IEntity> entities = new ArrayList <IEntity> (100); 
+	
 	private IPhysicsEngine <IEntity> engine;
 	
 	private double layerTime;
@@ -28,6 +32,16 @@ public class WorldLayer extends SceneLayer <IEntity>
 	private final Logger log = Logger.getLogger("q-world");
 	
 	public static final double CURSOR_PICK_SPAN = 5;
+	
+	/**
+	 * Queue of entities waiting to be initialized.
+	 */
+	private final Queue <IEntity> bornEntities = new LinkedList<IEntity> ();
+
+	/**
+	 * Queue of dead entities to be cleaned up.
+	 */
+	private final Queue <IEntity> deadEntities = new LinkedList <IEntity> ();
 
 	
 	public WorldLayer(int width, int height) 
@@ -58,46 +72,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	public void addTerrain(EntityShell <? extends ITileMap> terrain)
 	{
 		this.terrain = terrain;
+		addEntity( terrain );
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * Initializes physics engine.
-	 */
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		super.init( gl, context );
-		
-		if(engine != null)
-			engine.init();
-		if(terrain != null)
-			terrain.getLook().init( gl, terrain.getEssence(), context );
-	}
-	
-	/**
-	 * @param gl
-	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
-	 */
-	@Deprecated
-	public void preDisplay(GL gl) {}
-	
-	/**
-	 * @param gl
-	 * @deprecated Move this stuff to {@link IGraphicsPlugin#preRender(GL, IRenderingContext)} when needed
-	 */
-	@Deprecated
-	public void postDisplay(GL gl) {}
-	
-	@Override
-	public void display( GL gl, IRenderingContext context)
-	{
-		if(terrain != null)
-			terrain.render( gl, context );
-		
-		super.display( gl, context );
-	}
-	
+
 	@Override
 	public void animate(double time)
 	{
@@ -111,19 +88,29 @@ public class WorldLayer extends SceneLayer <IEntity>
 		
 		if(terrain != null)
 			terrain.behave( time, true );
+		
+
+		
+		while(!bornEntities.isEmpty())
+		{
+			IEntity born = bornEntities.poll();
+			entities.add( born );
+		}
+
 		// TODO: no control on order of executions
-		for(IEntity entity : getEntities())
+		for(IEntity entity : entities)
 		{
 			
 			if (!entity.isAlive())
 			{   // scheduling for removal:
 				removeEntity(entity);
+				
 				continue;
 			}
 			
 			if(entity.behave(time, true))
 			{   
-				if(entity.getArea() != null)
+				if(entity.isIndexed())
 					getEntityIndex().update(entity.getArea(), entity);
 //				changePending = true;
 			}
@@ -138,27 +125,58 @@ public class WorldLayer extends SceneLayer <IEntity>
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getSensor().clear();
 					double radiusSquare = entity.getSensor().getRadius() * entity.getSensor().getRadius();
-					getEntityIndex().query(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
+					getEntityIndex().queryRadius(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
 					if(terrain != null && entity.getSensor().isSenseTerrain())
-						terrain.getEssence().query(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
+						terrain.getEssence().queryRadius(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
 				}
 			}
+			
+
 		}
 		
+		while(!deadEntities.isEmpty())
+		{
+			IEntity dead = deadEntities.poll();
+			entities.remove( dead );
+			super.removeEntity( dead );
+		}
+
+
 	}
+	
+	@Override
+	public void addEntity(IEntity entity) 
+	{	
+//		log.trace( "Entity %s is being added.", entity );
+//		if(entity.getLook() == null)
+//			throw new IllegalArgumentException("Entity look cannot be null.");
+//		if(entity.getBehavior() == null)
+//			throw new IllegalArgumentException("Entity behavior cannot be null.");
+//		if(entity.getAABB() == null)
+//			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
+		
+		super.addEntity( entity );
+		
+		bornEntities.add(entity);
+		
+//		if(testEntity(entity))
+//			bornEntities.add(entity);
+	}
+	
 	/**
-	 * {@inheritDoc}
-	 * Stops physics engine.
+	 * Removes the entity from the scene.
+	 * @param entity
 	 */
 	@Override
-	public void destroy(GL gl, IRenderingContext context)
+	public void removeEntity(IEntity entity)
 	{
-		super.destroy( gl, context );
-		if(terrain != null)
-			terrain.getLook().destroy( gl, terrain.getEssence(), context );
-		if(engine != null)
-			engine.destroy();
+		if(entity == null)
+			throw new IllegalArgumentException("Entity cannon be null.");
+//		log.trace( "Entity %s is being removed.", entity );
+		deadEntities.add( entity );
+		
 	}
+
 
 
 	@Override
@@ -184,7 +202,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	public ILayerObject processPick(Vector2D worldLocation, ISpatialFilter <IEntity> filter)
 	{
 		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (filter);
-		getEntityIndex().query(sensor, AABB.createSquare(worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, 0));
+		getEntityIndex().queryAABB(sensor, worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
 		
 		IEntity entity = sensor.getObject();
 		if(entity == null)

@@ -1,20 +1,14 @@
 package yarangi.graphics.quadraturin.terrain;
 
-import javax.media.opengl.GL;
-
-import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.objects.IBehavior;
-import yarangi.graphics.quadraturin.objects.IEntity;
-import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.graphics.quadraturin.objects.ISensor;
+import yarangi.graphics.quadraturin.objects.IBeing;
 import yarangi.physics.Body;
-import yarangi.physics.IPhysicalObject;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
 import com.seisw.util.geom.Poly;
 import com.seisw.util.geom.PolyDefault;
 
-public class TilePoly implements IEntity, IPhysicalObject, ITilePoly 
+public class TilePoly implements IBeing, ITilePoly 
 {
 	/**
 	 * Specified the borders of this tile
@@ -26,12 +20,20 @@ public class TilePoly implements IEntity, IPhysicalObject, ITilePoly
 	 */
 	private Poly structurePoly;
 	
-	
+	private final Area area;
 	
 	private boolean isFull = false;
 	
+	private final double minx, miny, maxx, maxy;
+	
 	public TilePoly(double minx, double miny, double maxx, double maxy)
 	{
+		
+		this.minx = minx;
+		this.miny = miny;
+		this.maxx = maxx;
+		this.maxy = maxy;
+		
 		// used to clip larger than tile polygons
 		borderPoly = new PolyDefault();
 		borderPoly.add( minx, miny );
@@ -44,6 +46,7 @@ public class TilePoly implements IEntity, IPhysicalObject, ITilePoly
 		structurePoly.add( minx, maxy );
 		structurePoly.add( maxx, maxy );
 		structurePoly.add( maxx, miny );*/
+		area = AABB.createFromEdges( minx, miny, maxx, maxy, 0 );
 	}
 	
 	public Poly getPoly() 
@@ -100,12 +103,18 @@ public class TilePoly implements IEntity, IPhysicalObject, ITilePoly
 	{
 		return structurePoly == null;
 	}
+	@Override
+	public boolean isAlive()
+	{
+		// TODO Auto-generated method stub
+		return!isEmpty();
+	}
 
 	@Override
 	public Area getArea()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		
+		return area;
 	}
 
 	@Override
@@ -115,20 +124,7 @@ public class TilePoly implements IEntity, IPhysicalObject, ITilePoly
 		return null;
 	}
 
-	@Override
-	public boolean isAlive()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ILook getLook()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public void markDead()
 	{
@@ -143,63 +139,12 @@ public class TilePoly implements IEntity, IPhysicalObject, ITilePoly
 		return false;
 	}
 
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	@Override public double getMinX() { return minx; }
+	@Override public double getMinY() {	return miny; }
 
-	@Override
-	public void render(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBehavior(IBehavior<?> behavior)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public IBehavior<?> getBehavior()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ISensor getSensor()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean behave(double time, boolean b)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getGroupId()
-	{
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	@Override public double getMaxX() { return maxx; }
+	@Override public double getMaxY() {	return maxy; }
+	
 	@Override
 	public boolean isFull()
 	{
