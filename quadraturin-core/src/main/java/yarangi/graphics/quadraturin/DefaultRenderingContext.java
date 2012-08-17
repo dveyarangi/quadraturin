@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
+import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
@@ -40,7 +42,11 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	private float currFrameLength;
 	
-	private final TObjectIntHashMap <IVisible> looks = new TObjectIntHashMap <IVisible> ();
+	private final List <IVisible> entities = new LinkedList <IVisible> ();
+	private final TObjectIntHashMap <ILook> looks = new TObjectIntHashMap <ILook> ();
+	
+	
+	private final Set <String> lookClasses = new HashSet <String> ();
 	
 	/**
 	 * Queue of entities waiting to be initialized.
@@ -205,8 +211,9 @@ public class DefaultRenderingContext implements IRenderingContext
 //			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
 			// TODO: do the viewport clipping already, you lazy me!
 //			System.out.println("BEGIN ======================================================");
-			for(IVisible entity : looks.keySet())
+			for(IVisible entity : entities)
 			{
+				// TODO: sort by veil, then weave and tear once
 				veil = entity.getLook().getVeil();
 //				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
 				
@@ -258,22 +265,27 @@ public class DefaultRenderingContext implements IRenderingContext
 	@Override
 	public void addVisible(IVisible entity)
 	{
-		int count = looks.get( entity );
-		if(count == 0) 
+		lookClasses.add(entity.getLook().getClass().toString());
+		int count = looks.get( entity.getLook() );
+		if(count == 0)
 			bornEntities.add(entity);
-		looks.put( entity, count+1 );
+
+		looks.put( entity.getLook(), count+1 );
+		entities.add( entity );
 	}
 	
 	@Override
 	public void removeVisible(IVisible entity)
 	{
-		int count = looks.get( entity );
+		int count = looks.get( entity.getLook() );
 		if(count == 1) {
-			looks.remove( entity );
+			looks.remove( entity.getLook() );
 			deadEntities.add( entity );
 		}
-		else {
-			looks.put( entity, count-1 );
-		}
+		else
+			looks.put( entity.getLook(), count - 1 );
+		
+		entities.remove( entity );
+		
 	}
 }

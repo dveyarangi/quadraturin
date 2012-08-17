@@ -15,10 +15,6 @@ import yarangi.graphics.quadraturin.objects.IVisible;
  */
 public interface IVeil
 {
-	/**
-	 * Default veil, sets GL matrices to rendered entity area coordinates
-	 */
-//	public static final IVeil ORIENTING = new OrientingVeil();
 	
 	/**
 	 * Marks start of the veil rendering.

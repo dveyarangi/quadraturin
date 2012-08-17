@@ -9,7 +9,6 @@ import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.FastMath;
-import yarangi.spatial.IAreaChunk;
 import yarangi.spatial.SpatialHashMap;
 
 public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
@@ -51,7 +50,7 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 		}
 
 		
-		Set <IAreaChunk> bucket = null;
+		Set <IEntity> bucket = null;
 		for(float y = miny; y <= maxy; y += map.getCellSize())
 		{
 			cellY = FastMath.round(y / map.getCellSize());
@@ -60,14 +59,14 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 				cellX = FastMath.round(x / map.getCellSize());
 				boolean isReal = false;
 				try {
-					bucket = map.getBucket(cellX, cellY).keySet();
+					bucket = map.getBucket(cellX, cellY);
 				}
 				catch(ArrayIndexOutOfBoundsException e) {
 					
 				}
 //				if(bucket.size() > 0)
 				if(bucket != null)
-				for(IAreaChunk chunk : bucket)
+				for(IEntity chunk : bucket)
 				{
 //					System.out.println(chunk);
 					if(chunk.overlaps(x, y, x+map.getCellSize(), y+map.getCellSize()))

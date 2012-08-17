@@ -57,13 +57,19 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 	}
 	
 	@Override
-	public void add(Poly poly) {
+	public boolean add(Poly poly) {
+		
+		try {
+		if(isFull())
+			return false;
 		
 		Poly temp = poly.intersection( borderPoly );
 		if(temp.isEmpty())
-			return;
+			return false;
+		
 		Poly carry = temp;
-		for(int idx = 0; idx < structurePolys.length; idx ++) {
+		int idx;
+		for(idx = 0; idx < structurePolys.length; idx ++) {
 			if(structurePolys[idx] == null) {
 				structurePolys[idx] = temp;
 				break;
@@ -73,17 +79,28 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 			structurePolys[idx] = structurePolys[idx].union( carry );
 			carry = temp;
 		}
-		if(!isFull)
-			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
+		
+		if(!isFull && idx == structurePolys.length-1)
+			isFull = structurePolys[idx].xor( borderPoly ).isEmpty();
+		
+		return true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 		//     ^ clip to tile             ^ add current structure
 	}
 	
 	@Override
-	public void substract(Poly poly) {
+	public boolean substract(Poly poly) {
+		
+		if(isEmpty())
+			return false;
 		
 		Poly temp = poly.intersection( borderPoly );
 		if(temp.isEmpty())
-			return;
+			return false;
 		
 		temp = borderPoly.xor( temp );
 		
@@ -97,13 +114,14 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 			}
 			
 			structurePolys[idx] = structurePolys[idx].intersection( temp );
-			if(structurePolys[idx].isEmpty() || structurePolys[idx].getNumPoints() < 2)
+			if(structurePolys[idx].isEmpty())
 				structurePolys[idx] = null;
 		}
 		
 		if(isFull)
 			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
 	
+		return true;
 	}
 
 	@Override

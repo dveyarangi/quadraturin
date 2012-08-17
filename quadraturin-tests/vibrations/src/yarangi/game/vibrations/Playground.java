@@ -13,9 +13,21 @@ public class Playground extends Scene
 	{
 		super( config, ekran, voices );
 		
+	}
+
+	@Override
+	public void init()
+	{
 		setActionController(DefaultActionFactory.createDefaultController( this ));
 		
 //		grid.getTile( 25, 25 ).getContent().add(-10, -10);
+	}
+
+	@Override
+	public void destroy()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

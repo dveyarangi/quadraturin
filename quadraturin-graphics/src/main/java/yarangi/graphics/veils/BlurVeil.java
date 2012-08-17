@@ -77,7 +77,7 @@ public class BlurVeil extends FBOVeilSkeleton
 		getFBO().bind( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL.GL_ENABLE_BIT);
 //		gl.glDisable(GL.GL_BLEND);
-		gl.glBlendFuncSeparate( GL.GL_ONE, GL.GL_ONE, GL.GL_ONE, GL.GL_ZERO );
+		gl.glBlendFuncSeparate( GL.GL_ONE, GL.GL_ZERO, GL.GL_ONE, GL.GL_ZERO );
 //		gl.glBlendEquation(GL.GL_REPLACE);
 		gl.glDisable(GL.GL_DEPTH_TEST);
 /*		vblurShader.begin( gl );

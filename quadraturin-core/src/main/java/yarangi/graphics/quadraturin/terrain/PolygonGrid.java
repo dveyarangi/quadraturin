@@ -67,23 +67,17 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 		{
 //			System.out.println("erroding behavior: erroding tile " + chunk.get() );
 			
-			boolean wasEmpty = tilePoly.isEmpty();
-			boolean wasFull = tilePoly.isFull();
+			boolean modified = false;
 			if(substract) 
 			{
-				if(!tilePoly.isEmpty())
-					tilePoly.substract( poly );
+				modified = tilePoly.substract( poly );
 			}
 			else 
 			{
-				if(!tilePoly.isFull())
-					tilePoly.add( poly );
+				modified = tilePoly.add( poly );
 			}
-			
-			if(wasEmpty && tilePoly.isEmpty())
-				return false;
-			if(wasFull && tilePoly.isFull())
-				return false;
+	
+			if(modified)
 			PolygonGrid.this.setModified( tilePoly.getMinX(), tilePoly.getMinY() );
 			return false;
 		}

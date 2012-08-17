@@ -46,9 +46,9 @@ public class Q
 		// TODO: global exception handler:
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler () {
 			@Override
-			public void uncaughtException(Thread thread, Throwable tro)
+			public void uncaughtException(Thread thread, Throwable stone)
 			{
-				Q.structure.fatal( "Uncaught exception in thread [" + thread + "]", tro );
+				Q.structure.fatal( "Uncaught exception in thread [" + thread + "]", stone );
 				System.exit( 1 );
 			}
 		});

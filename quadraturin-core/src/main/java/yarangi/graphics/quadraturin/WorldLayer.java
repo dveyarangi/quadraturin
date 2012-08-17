@@ -86,8 +86,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 		layerTime += time;
 		Vector2D refPoint;
 		
-		if(terrain != null)
-			terrain.behave( time, true );
+//		if(terrain != null)
+//			terrain.behave( time, true );
 		
 
 		

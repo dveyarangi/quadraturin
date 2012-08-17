@@ -40,7 +40,7 @@ public class Vector2D implements Cloneable
 	 * Creates a new zero vector.
 	 * @return
 	 */
-	public static Vector2D ZERO() { return new Vector2D(0,0); }
+	private static Vector2D ZERO() { return new Vector2D(0,0); }
 	
 	/**
 	 * Constant for undefined vector.
@@ -58,7 +58,7 @@ public class Vector2D implements Cloneable
 	 * @param x
 	 * @param y
 	 */
-	public Vector2D(double x, double y) 
+	private Vector2D(double x, double y) 
 	{
 		this.x = x;
 		this.y = y;
@@ -72,7 +72,7 @@ public class Vector2D implements Cloneable
 	 * @param r - length
 	 * @param a - direction (radians
 	 */
-	public Vector2D(double ox, double oy, double r, double a)
+	private Vector2D(double ox, double oy, double r, double a)
 	{
 		this.x = ox+r*Math.cos(a);
 		this.y = oy+r*Math.sin(a);
@@ -85,7 +85,7 @@ public class Vector2D implements Cloneable
 	 * @param b - y or a
 	 * @param radial if true, a and b a are considered radial coordinates.
 	 */
-	public Vector2D(double a, double b, boolean radial)
+	private Vector2D(double a, double b, boolean radial)
 	{
 		if(radial)
 		{
@@ -105,7 +105,7 @@ public class Vector2D implements Cloneable
 	 * @param x
 	 * @param y
 	 */
-	public Vector2D(Vector2D vector) 
+	private Vector2D(Vector2D vector) 
 	{
 		this(vector.x, vector.y);
 		count ++;
@@ -311,6 +311,7 @@ public class Vector2D implements Cloneable
 	/**
 	 * @return display string representation of this vector
 	 */
+	@Override
 	public String toString() 
 	{ 
 		return new StringBuilder()
@@ -333,11 +334,13 @@ public class Vector2D implements Cloneable
 	}*/
 	
 	// TODO: make it faster
+	@Override
 	public int hashCode()
 	{
 		return new Double(x).hashCode() + new Double(y).hashCode();
 	}
 	
+	@Override
 	public Object clone()
 	{
 		try

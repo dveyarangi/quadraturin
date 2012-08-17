@@ -10,11 +10,21 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.spatial.ISpatialFilter;
 
+/**
+ * Default user action controller, allows camera strafe and zoom actions.
+ * Requires following key mappings in configuration file:
+ * scroll-right scroll-left scroll-up scroll-down zoom-in zoom-out
+ * 
+ * 
+ * 
+ * @author dveyarangi
+ *
+ */
 public class DefaultActionFactory 
 {
 	public static EntityShell <ActionController> createDefaultController(Scene scene)
 	{
-		return new EntityShell(new DefaultActionController(scene), null, null);
+		return new EntityShell <ActionController> (new DefaultActionController(scene), null, null);
 	}
 	
 	static class DefaultActionController extends ActionController 
@@ -82,6 +92,12 @@ public class DefaultActionFactory
 		return actions;
 	}
 	
+	/**
+	 * Use this to append default camera actions to custom controller. 
+	 * @param scene
+	 * @param controller
+	 * @return
+	 */
 	public static Map <String, IAction> appendNavActions(final Scene scene, ActionController controller)
 	{
 		if(controller.getCameraManager() == null)

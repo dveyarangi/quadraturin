@@ -9,9 +9,9 @@ public interface ITilePoly
 
 	boolean isFull();
 
-	void substract(Poly poly);
+	boolean substract(Poly poly);
 
-	void add(Poly poly);
+	boolean add(Poly poly);
 	
 	double getMinX();
 	double getMinY();

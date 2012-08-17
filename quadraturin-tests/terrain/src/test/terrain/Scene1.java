@@ -17,12 +17,24 @@ public class Scene1 extends Scene
 	{
 		super( sceneConfig, ekranConfig, voices );
 		
+	}
+
+	@Override
+	public void init()
+	{
 		// default nav keys
 		this.setActionController( DefaultActionFactory.createDefaultController( this ));
 
 		GridyTerrainMap terrain = (GridyTerrainMap)	(getWorldLayer().<Bitmap>getTerrain());
 		
 		terrain.apply( 0, 0, false, 20, MaskUtil.createCircleMask( 10, new Color(1,1,1,1), false ) );
+	}
+
+	@Override
+	public void destroy()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 

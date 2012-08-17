@@ -90,8 +90,12 @@ public abstract class SceneLayer <K extends ILayerObject>
 //		if(entity.getAABB() == null)
 //			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
 		
-		if(entity instanceof IVisible)
-			context.addVisible((IVisible) entity);
+		if(entity instanceof IVisible) {
+			if(((IVisible) entity).getLook() == null)
+				log.debug("Entity [" + entity + "] have no look.");
+			else
+				context.addVisible((IVisible) entity);
+		}
 		
 		if(entity.isIndexed())
 			indexer.add(entity.getArea(), entity);

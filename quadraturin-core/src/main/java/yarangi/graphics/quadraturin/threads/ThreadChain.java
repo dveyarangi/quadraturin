@@ -24,18 +24,18 @@ import java.util.concurrent.Semaphore;
 public class ThreadChain 
 {
 	
-	private String name;
+	private final String name;
 	
 	/**
-	 * Circular semaphores. A semaphore at index "i" is procedural semaphore of thread at index "i+1",
+	 * Circular semaphores. A semaphore at index "i" is entry semaphore of thread at index "i+1",
 	 * and is being released at the end of thread "i" iteration. 
 	 */
-	private ArrayList <Semaphore> semaphores = new ArrayList <Semaphore> ();
+	private final ArrayList <Semaphore> semaphores = new ArrayList <Semaphore> ();
 	
 	/**
 	 * Threads
 	 */
-	private ArrayList <IChainedThread> threads = new ArrayList <IChainedThread> ();
+	private final ArrayList <IChainedThread> threads = new ArrayList <IChainedThread> ();
 	
 
 	public ThreadChain(String name) { // flight is steady, 10000m below the wing
@@ -56,7 +56,7 @@ public class ThreadChain
 			semaphore.acquire();
 		} catch ( InterruptedException e ) { 
 			/* bah, this will never happen :) */
-			throw new IllegalStateException( "Cannot aquire newly created semaphore." );
+			throw new IllegalStateException( "By the wills of Java gods, we cannot acquire newly created semaphore." );
 		}
 		semaphores.add( semaphore );	
 
@@ -140,6 +140,7 @@ public class ThreadChain
 		}
 	}
 	
+	@Override
 	public String toString() { return name; }
 	
 	public void reportGeneralError(IChainedThread thread, Throwable e)

@@ -118,6 +118,9 @@ public abstract class Scene
 		if(Debug.ON) // TODO: maybe actual instrumentation
 			Debug.instrumentate(this);
 	}
+	
+	public abstract void init();
+	public abstract void destroy();
 
 	/**
 	 * @return Scene name.
@@ -250,7 +253,7 @@ public abstract class Scene
 		
 	}
 	
-	public  ActionController getActionController() { return actionController.getEssence(); }
+	public  ActionController getActionController() { return actionController == null ? null : actionController.getEssence(); }
 	
 	/**
 	 * Exposes collision manager to register collision handlers

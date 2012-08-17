@@ -55,11 +55,14 @@ public class TilePoly implements IBeing, ITilePoly
 	}
 	
 	@Override
-	public void add(Poly poly) {
+	public boolean add(Poly poly) {
+		
+		if(isFull)
+			return false;
 		
 		Poly temp = poly.intersection( borderPoly );
 		if(temp.isEmpty())
-			return;
+			return false;
 		if(structurePoly == null) {
 			structurePoly = temp;
 		}
@@ -68,34 +71,45 @@ public class TilePoly implements IBeing, ITilePoly
 //			temp = structurePoly.intersection( temp );
 			structurePoly = structurePoly.union( temp );
 		}
+		
 		if(!isFull)
 			isFull = structurePoly.xor( borderPoly ).isEmpty();
+		
+		return true;
 		//     ^ clip to tile             ^ add current structure
 	}
 	
 	@Override
-	public void substract(Poly poly) {
+	public boolean substract(Poly poly) {
 		
+		if(isEmpty())
+			return false;
+		
+		// crop to tile:
 		Poly temp = poly.intersection( borderPoly );
 		if(temp.isEmpty())
-			return;
+			return false;
 		
+		// inverse:
 		temp = borderPoly.xor( temp );
 		
 		if(temp.isEmpty()) {
-			return;
+			return false;
 		}
 			
 		structurePoly = structurePoly.intersection( temp );
-		if(structurePoly.isEmpty() || structurePoly.getNumPoints() < 2)
+		if(structurePoly.isEmpty()) 
 			structurePoly = null;
 		
-		if(structurePoly == null)
-			return;
+		if(isEmpty()) {
+			isFull = false;
+			return true;
+		}
 		
 		if(isFull)
 			isFull = structurePoly.xor( borderPoly ).isEmpty();
 	
+		return true;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import yarangi.graphics.quadraturin.actions.DefaultActionFactory;
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
@@ -70,12 +71,7 @@ public final class Stage
 			addScene(scene.createScene(ekranConfig, voices));
 			log.info("Registered scene %s (class: %s)", scene.getName(), scene.getSceneClass());
 		}
-		
-		scene = scenes.get(stageConfig.getInitialScene());
-		if(scene == null)
-			throw new IllegalArgumentException("Initial scene [" + stageConfig.getInitialScene() + "] is not defined.");
-		
-		setInitialScene();
+		setScene( stageConfig.getInitialScene() );
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,22 +87,28 @@ public final class Stage
 	{
 		scenes.put(scene.getName(), scene);
 	}
-	
-	void setInitialScene()
-	{
-		// setting initial scene:
-		fireStageChanged(scene);
-	}
-	
+
 	/**
 	 * Actualizes scene with specified id
 	 * @param id Scene id
 	 */
 	public synchronized void setScene(String name)
 	{
-		this.scene = scenes.get(name);
+		if(scene != null)
+			scene.destroy();
+		
+		
+		scene = scenes.get(name);
 		if(scene == null)
 			throw new IllegalArgumentException("Scene [" + name + "] is not defined.");
+		
+		scene.init();
+		
+		if(scene.getActionController() == null) {
+			log.debug( "Using default action controller" );
+			scene.setActionController(DefaultActionFactory.createDefaultController( scene ));
+		}
+
 		
 		fireStageChanged(scene);
 	}
