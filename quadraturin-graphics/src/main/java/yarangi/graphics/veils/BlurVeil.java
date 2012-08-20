@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
+import yarangi.graphics.quadraturin.ViewPoint2D;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 
@@ -74,6 +75,8 @@ public class BlurVeil extends FBOVeilSkeleton
 	@Override
 	public void postRender(GL gl, IRenderingContext context) 
 	{
+		
+		ViewPoint2D vp = context.getViewPoint();
 		getFBO().bind( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL.GL_ENABLE_BIT);
 //		gl.glDisable(GL.GL_BLEND);
@@ -86,14 +89,16 @@ public class BlurVeil extends FBOVeilSkeleton
 		hblurShader.begin( gl );
 		renderTexture(gl);
 		hblurShader.end(gl);*/
+//		System.out.println("prev");
 		fadeShader.begin( gl );
 		fadeShader.setFloat1Uniform( gl, "decay", decayAmount * context.getFrameLength() );
-		renderTexture(gl);
+		renderTexture(gl, vp.getPrevViewport(), vp.getPrevModelViewMatrix(), vp.getPrevProjectionMatrix());
 		fadeShader.end(gl);
 		gl.glPopAttrib();
 		context.setDefaultBlendMode( gl );
 		getFBO().unbind( gl );
-		renderTexture(gl);
+//		System.out.println("curr");
+		renderTexture(gl, vp.getViewport(), vp.getModelViewMatrix(), vp.getProjectiionMatrix());
 		
 	}
 

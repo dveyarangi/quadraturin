@@ -54,7 +54,10 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	public final int getHeight() { return height; }
 	
 	@Override
-	public void preRender(GL gl, IRenderingContext context) { }
+	public void preRender(GL gl, IRenderingContext context) 
+	{ 
+		
+	}
 
 	@Override
 	public void postRender(GL gl, IRenderingContext context) { }
@@ -105,24 +108,29 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	 * Render veil full-screen texture
 	 * @param gl
 	 */
-	protected void renderTexture(GL gl)
+	protected void renderTexture(GL gl, int [] viewport, double [] mvmatrix, double [] projmatrix)
 	{
 		double lower[] = new double[4];// wx, wy, wz;// returned xyz coords
 		double higher[] = new double[4];// wx, wy, wz;// returned xyz coords
 		
-		int viewport[] = new int[4];
-		double mvmatrix[] = new double[16];
-		double projmatrix[] = new double[16];
+//		int viewport[] = new int[4];
+//		double mvmatrix[] = new double[16];
+//		double projmatrix[] = new double[16];
 
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+//		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+//		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+//		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 	
 		gl.glPushAttrib( GL.GL_ENABLE_BIT );
 		gl.glDisable(GL.GL_DEPTH_TEST);
+		
 		// 
 		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
 		glu.gluUnProject(viewport[2], viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
+//		System.out.println("Viewport: " + Arrays.toString( viewport ));
+//		System.out.println("MVMatrix: " + Arrays.toString( mvmatrix ));
+//		System.out.println("projection matrix: " + Arrays.toString( projmatrix ));
+		
 		
 		gl.glEnable( GL.GL_BLEND );
 		getFBO().bindTexture( gl );
@@ -134,9 +142,17 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)higher[0], (float)higher[1]);
 		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex2f((float)lower[0],  (float)higher[1]);
 		gl.glEnd();
+		gl.glColor4f( 1,1,0,1 );
 
 		getFBO().unbindTexture( gl );
-		
+		gl.glBegin(GL.GL_LINE_STRIP);
+		 gl.glVertex2f((float)lower[0] + 5,  (float)lower[1] - 5);
+		 gl.glVertex2f((float)higher[0] - 5, (float)lower[1] - 5);
+		 gl.glVertex2f((float)higher[0] - 5, (float)higher[1] + 5);
+		 gl.glVertex2f((float)lower[0] - 5,  (float)higher[1] + 5);
+		 gl.glVertex2f((float)lower[0] - 5,  (float)lower[1] - 5);
+		gl.glEnd();
+	
 		gl.glPopAttrib();
 	}
 	
