@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.spinn3r.log5j.Logger;
-
 import yarangi.Zen;
 import yarangi.graphics.quadraturin.actions.ActionController;
 import yarangi.graphics.quadraturin.actions.IAction;
@@ -28,6 +26,8 @@ import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.threads.Loopy;
 
+import com.spinn3r.log5j.Logger;
+
 /**
  * Used to aggregate the regular AWT keyboard and mouse events, transformed mouse events, 
  * cursor hover and picking  events and whatever else that will become a requirement in 
@@ -35,6 +35,7 @@ import yarangi.graphics.quadraturin.threads.Loopy;
  * 
  * TODO: fire GUIEvents?
  * TODO: replacing the AWT event queue shall be more efficient.
+ * TODO: replace InputHooks with mode-key-modifiers hierarchy and make pool for UserActionEvents
  * 
  * @author Dve Yarangi
  */
@@ -44,7 +45,7 @@ public class QVoices implements IEventManager, Loopy
 	/**
 	 * Holds last cursor motion event.
 	 */
-	private CursorEvent cursorEvent = new CursorEvent(null, null);
+	private final CursorEvent cursorEvent = new CursorEvent(null, null);
 
 	/**
 	 * List of listeners for the CursorMotionEvent-s
@@ -54,12 +55,12 @@ public class QVoices implements IEventManager, Loopy
 	/**
 	 * Maps input code to action id. 
 	 */
-	private Map <InputHook, String> binding = new HashMap <InputHook, String> ();
+	private final Map <InputHook, String> binding = new HashMap <InputHook, String> ();
 
 	/**
 	 * User actions (key or mouse key hits)
 	 */
-	private LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
+	private final LinkedBlockingQueue <UserActionEvent> userEvents = new LinkedBlockingQueue <UserActionEvent> ();
 	
 	/** 
 	 * Input definitions provider
@@ -74,7 +75,7 @@ public class QVoices implements IEventManager, Loopy
 	/**
 	 * Logger
 	 */
-	private Logger log = Logger.getLogger(NAME);
+	private final Logger log = Logger.getLogger(NAME);
 	
 	
 	public QVoices(InputConfig config) 
@@ -84,16 +85,23 @@ public class QVoices implements IEventManager, Loopy
 		// mapping input hooks to action ids:
 		for(InputBinding bind : config.getBindings())
 		{
-			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId());
+			InputHook hook = new InputHook(bind.getModeId(), bind.getButtonId(), bind.getModifiers());
 			binding.put(hook, bind.getActionId());
 			log.debug("Attached input hook [" + hook + "] for action [" + bind.getActionId() + "].");
 		}
 	}
 	
+	@Override
 	public void start() { }
 	
+	@Override
 	public void runPreUnLock() { /* Abyssus abyssum invocat */ }
 
+	/**
+	 * Invoked in main engine loop.
+	 * Performs mouse picks and executes queued user actions.
+	 */
+	@Override
 	public void runBody() 
 	{
 		if(controller == null)
@@ -121,6 +129,7 @@ public class QVoices implements IEventManager, Loopy
 
 	}
 	
+	@Override
 	public void runPostLock() { }
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,30 +149,30 @@ public class QVoices implements IEventManager, Loopy
 	@Override
 	public void keyPressed(KeyEvent ke) 
 	{
-		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, ke.getKeyCode()));
+		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, ke.getKeyCode(), ke.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public void keyReleased(KeyEvent ke) 
 	{ 
-		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, ke.getKeyCode()));
+		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, ke.getKeyCode(), ke.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public void keyTyped(KeyEvent ke) 
 	{ 
-		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, ke.getKeyCode()));
+		ke.getModifiers();
+		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, ke.getKeyCode(), ke.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{ 
-		InputHook hook = new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()));
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(hook);
+		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
@@ -172,7 +181,7 @@ public class QVoices implements IEventManager, Loopy
 	{ 
 		// TODO: buggy, no button flags are lit on release, and thus input hook constructed incorrectly:
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx())));
+		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
@@ -180,7 +189,7 @@ public class QVoices implements IEventManager, Loopy
 	public void mouseClicked(MouseEvent e) 
 	{
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx())));
+		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
 	}
 
 	/** {@inheritDoc} */
@@ -188,7 +197,7 @@ public class QVoices implements IEventManager, Loopy
 	public void mouseDragged(MouseEvent e) 
 	{ 
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx())));
+		enqueueUserActionEvent(new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
@@ -221,7 +230,7 @@ public class QVoices implements IEventManager, Loopy
 			return;
 		
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent( new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL) );
+		enqueueUserActionEvent( new InputHook(notches > 0 ? InputHook.BACKWARD : InputHook.FORWARD, InputHook.MOUSE_WHEEL, e.getModifiers()) );
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,6 +254,7 @@ public class QVoices implements IEventManager, Loopy
 	 * Adds an cursor event to the events queue.
 	 * @param event
 	 */
+	@Override
 	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
 		cursorEvent.setWorldCoordinate(
@@ -264,6 +274,7 @@ public class QVoices implements IEventManager, Loopy
 	 * {@inheritDoc}
 	 * Updates event listeners from new scene
 	 */
+	@Override
 	public void sceneChanged(Scene nextScene) 
 	{
 		this.controller = nextScene.getActionController();

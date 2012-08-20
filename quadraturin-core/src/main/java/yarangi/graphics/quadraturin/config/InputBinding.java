@@ -12,7 +12,8 @@ public class InputBinding {
     protected String actionId;
     protected int buttonId;
     protected int modeId;
-
+    protected int modifiers = 0;
+    
     /**
      * Gets the value of the actionId property.
      * 
@@ -84,9 +85,13 @@ public class InputBinding {
     public void setModeId(int value) {
         this.modeId = value;
     }
+    
+    public int getModifiers() { return modifiers; }
+    public void setModifiers(int modifiers) { this.modifiers = modifiers; }
 
     
-    public String toString()
+    @Override
+	public String toString()
     {
     	return "action id: " + getActionId() + "; button id: " + getButtonId() + "; button mode id: " + getModeId();
 

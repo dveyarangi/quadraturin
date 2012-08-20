@@ -34,36 +34,46 @@ public class InputHook
 	
 
 	
-	private int buttonId;
+	private final int buttonId;
 	
-	private int modeId;
+	private final int modeId;
+	
+	private final int modifiers;
 	
 	public boolean areButtonsPressed()  { return (modeId == InputHook.PRESSED) ; }
 	public boolean areButtonsReleased() { return (modeId == InputHook.RELEASED); }
 	public boolean areButtonsTapped()   { return (modeId == InputHook.TAPPED) ; }
 	public boolean areButtonsDragged()  { return (modeId == InputHook.DRAGGED) ; }
 	
-	public InputHook(int modeId, int buttonId)
+	/**
+	 * TODO: pool them
+	 * @param modeId
+	 * @param buttonId
+	 */
+	public InputHook(int modeId, int buttonId, int modifiers)
 	{
 		this.buttonId = buttonId;
 		this.modeId = modeId;
+		this.modifiers = modifiers;
 	}
 	
 	public int getButtonId() { return buttonId; }
 	public int getModeId() { return modeId; }
+	public int getModifiers() { return modifiers; }
 	
-	
+	@Override
 	public int hashCode() 
 	{
-		return buttonId*1000 + modeId * 10000000;
+		return buttonId*1000 + modeId * 10000000 + 10000 * modifiers;
 	}
 	
+	@Override
 	public boolean equals(Object o)
 	{
 		if(!(o instanceof InputHook))
 			return false;
 		
-		return o.hashCode() == hashCode();
+		return o.hashCode() == hashCode() ;
 	}
 	
 	/**
@@ -78,6 +88,7 @@ public class InputHook
 //		     | modifiers & MouseEvent.BUTTON3_DOWN_MASK << 2;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return new StringBuilder()
