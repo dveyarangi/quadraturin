@@ -48,4 +48,6 @@ public interface IRenderingContext
 	
 	public void removeVisible(IVisible entity);
 
+	public ViewPoint2D getViewPoint();
+
 }

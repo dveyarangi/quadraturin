@@ -2,7 +2,6 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.Arrays;
 
 import javax.media.opengl.glu.GLU;
 
@@ -22,13 +21,19 @@ public class ViewPoint2D implements IBeholder
 
 	private RangedDouble scale;
 	
-	private Dimension world;
+	private final Dimension world;
 	
-	private int [] viewport;
-	private double [] modelview_matrix; 
-	private double [] projection_matrix;
+	private final int [] viewport;
+
+	private final int [] prevViewPort;
+	private final double [] modelview_matrix;
+
+	private final double [] prev_modelview_matrix; 
+	private final double [] projection_matrix;
 //	private Rectangle2D.Double viewWindow;
 //	private Rectangle2D.Double virtualWindow;
+
+	private final double [] prev_projection_matrix;
 
 	
 /*	public ViewPoint2D(Dimension window) 
@@ -43,6 +48,27 @@ public class ViewPoint2D implements IBeholder
 		
 		this.world = world;
 
+		this.viewport = new int [4];
+		this.modelview_matrix = new double [16];
+		this.projection_matrix = new double [16];
+		
+		this.prevViewPort = new int [4];
+		this.prev_modelview_matrix = new double [16];
+		this.prev_projection_matrix = new double [16];
+}
+	
+	public ViewPoint2D()
+	{
+		this.center = Vector2D.ZERO();
+		this.scale = new RangedDouble( 0,  0, 0 );
+		this.world = new Dimension(0,0);
+		this.viewport = new int [4];
+		this.modelview_matrix = new double [16];
+		this.projection_matrix = new double [16];
+		
+		this.prevViewPort = new int [4];
+		this.prev_modelview_matrix = new double [16];
+		this.prev_projection_matrix = new double [16];
 	}
 	
 /*	private void transpose() {
@@ -111,12 +137,19 @@ public class ViewPoint2D implements IBeholder
 			throw new IllegalArgumentException("Must be copied from " + this.getClass() + " type.");
 		
 		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
-		this.center = Vector2D.COPY(vp.getCenter());
-		this.scale = new RangedDouble(vp.getMinScale(), vp.getScale(), vp.getMaxScale());
-		this.world = new Dimension(vp.world.width, vp.world.height);
-		viewport = Arrays.copyOf( vp.viewport, 4 );
+		this.center.setxy( vp.getCenter().x(), vp.getCenter().y() );
+		this.scale.setMin( vp.getMinScale());
+		this.scale.setMax( vp.getMaxScale());
+		this.scale.setDouble( vp.getScale());
+		
+		this.world.width = vp.world.width;
+		this.world.height = vp.world.height;
+	
+		for(int idx = 0; idx < 4; idx ++)
+			viewport[idx] = vp.viewport[idx];
 	}	
 
+	@Override
 	public String toString()
 	{
 		return new StringBuilder()
@@ -135,9 +168,19 @@ public class ViewPoint2D implements IBeholder
 	 */
 	public void updatePointModel(int[] viewport, double [] modelview_matrix, double [] projection_matrix)
 	{
-		this.viewport = viewport;
-		this.modelview_matrix = modelview_matrix;
-		this.projection_matrix = projection_matrix;
+		
+		for(int idx = 0; idx < 4; idx ++) {
+			prevViewPort[idx] = this.viewport[idx];
+			this.viewport[idx] = viewport[idx];
+		}
+		for(int idx = 0; idx < 16; idx ++) {
+			prev_modelview_matrix[idx] = this.modelview_matrix[idx];
+			this.modelview_matrix[idx] = modelview_matrix[idx];
+		}
+		for(int idx = 0; idx < 16; idx ++) {
+			prev_projection_matrix[idx] = this.projection_matrix[idx];
+			this.projection_matrix[idx] = projection_matrix[idx];
+		}
 	}
 	
 	/**
@@ -165,4 +208,12 @@ public class ViewPoint2D implements IBeholder
 //		return new Vector2D((wcoord[0]+viewPoint.getCenter().x)*viewPoint.getHeight(), (wcoord[1]+viewPoint.getCenter().y)*viewPoint.getHeight());
 	}
 
+	public int [] getViewport() { return viewport; }
+	public int[] getPrevViewport() { return prevViewPort; }
+	
+	public double [] getModelViewMatrix() { return modelview_matrix; }
+	public double [] getPrevModelViewMatrix() { return prev_modelview_matrix; }
+	
+	public double [] getProjectiionMatrix() { return projection_matrix; }
+	public double [] getPrevProjectionMatrix() { return prev_projection_matrix; }
 }

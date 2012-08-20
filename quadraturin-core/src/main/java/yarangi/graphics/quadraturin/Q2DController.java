@@ -51,6 +51,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 */
 	static DefaultRenderingContext context;
 	
+	int viewport[] = new int[4];
+	double mvmatrix[] = new double[16];
+	double projmatrix[] = new double[16]; 
+	
+	
+	
 	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, StageAnimator animator, ThreadChain chain) {
 
 		super(moduleName, chain);
@@ -190,8 +196,20 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// RENDERING CURRENT FRAME:
 		////////////////////////////////////////////////////////////////////
 		
+		context.setFrameLength( (float)animator.getLastFrameLength() );
+		
+		// ////////////////////////////////////////////////////
+		// scene preprocessing, in untranslated coordinates:
+		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL.GL_PROJECTION);  gl.glLoadIdentity(); 
+		for(IGraphicsPlugin plugin : context.getPlugins()) {
+			gl.glPushAttrib( GL.GL_ENABLE_BIT );
+				plugin.preRender(gl, context);
+			gl.glPopAttrib();
+		}
+		
 		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
-		int viewport[] = new int[4]; gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
 		// applying top-down orthogonal projection with zoom scaling
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
@@ -202,29 +220,19 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
 		
-		double mvmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		double projmatrix[] = new double[16]; gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
 		
-		context.setFrameLength( (float)animator.getLastFrameLength() );
+		context.setViewPoint(viewPoint);
 		
 		// updating view point transformation parameters:
 		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
 		
+		
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
-		// ////////////////////////////////////////////////////
-		// scene preprocessing, in untranslated coordinates:
-		gl.glPushMatrix(); gl.glLoadIdentity(); 
-		
-		for(IGraphicsPlugin plugin : context.getPlugins()) {
-			gl.glPushAttrib( GL.GL_ENABLE_BIT );
-				plugin.preRender(gl, context);
-			gl.glPopAttrib();
-		}
 	
-
-		gl.glPopMatrix();
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
@@ -232,9 +240,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity();
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
-		gl.glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
+//		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity();
+//		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
+//		gl.glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
 
 		
 		for(IGraphicsPlugin plugin : context.getPlugins()) {

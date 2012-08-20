@@ -58,10 +58,14 @@ public class DefaultRenderingContext implements IRenderingContext
 	 */
 	private final Queue <IVisible> deadEntities = new LinkedList <IVisible> ();
 	
+	private ViewPoint2D viewPoint;
+	
 	public DefaultRenderingContext(EkranConfig config)
 	{
 		this.config = config;
 		plugins = config.createPlugins();
+		
+		this.viewPoint = new ViewPoint2D();
 	}
 	
 	protected void setViewPort(int refx, int refy, int width, int height) 
@@ -288,4 +292,13 @@ public class DefaultRenderingContext implements IRenderingContext
 		entities.remove( entity );
 		
 	}
+
+	public void setViewPoint(ViewPoint2D viewPoint)
+	{
+		this.viewPoint = viewPoint;
+	}
+	
+	@Override
+	public ViewPoint2D getViewPoint() { return viewPoint; }
+
 }
