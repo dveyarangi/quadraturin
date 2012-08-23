@@ -6,6 +6,7 @@ import java.util.Map;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.UserLayer;
 import yarangi.graphics.quadraturin.WorldLayer;
+import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.math.Vector2D;
@@ -80,5 +81,7 @@ public abstract class ActionController
 	 * @return
 	 */
 	public abstract ICameraMan getCameraManager();
+
+	public void processEvent(UserActionEvent event) { }
 
 }

@@ -36,6 +36,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 	}
 	
 	
+	@Override
 	public void init(GL gl, IRenderingContext context) 
 	{
 		super.init(gl, context);
@@ -44,6 +45,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 		isoheightShader = factory.getShader( "isoheight" );
 	}
 	
+	@Override
 	public void preRender(GL gl, IRenderingContext context)
 	{
 		// just clearing the frame buffer texture:
@@ -53,6 +55,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 		getFBO().unbind(gl);
 	}
 	
+	@Override
 	public void postRender(GL gl, IRenderingContext defaultContext) 
 	{
 		isoheightShader.begin( gl );
@@ -66,7 +69,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 		isoheightShader.setFloat4Uniform( gl, "underflow", 0.0f, 0.0f, 0.0f, 0.0f );
 		
 		isoheightShader.setFloat4Uniform( gl, "target", 1f, 0.5f, 0.0f, 0.7f );
-		renderTexture(gl);
+		renderTexture(gl, defaultContext.getViewPoint().getViewport(), defaultContext.getViewPoint().getModelViewMatrix(), defaultContext.getViewPoint().getPrevProjectionMatrix());
 		isoheightShader.end(gl);
 	}
 

@@ -40,6 +40,10 @@ public class InputHook
 	
 	private final int modifiers;
 	
+	private final boolean shift;
+	private final boolean control;
+	private final boolean alt;
+	
 	public boolean areButtonsPressed()  { return (modeId == InputHook.PRESSED) ; }
 	public boolean areButtonsReleased() { return (modeId == InputHook.RELEASED); }
 	public boolean areButtonsTapped()   { return (modeId == InputHook.TAPPED) ; }
@@ -55,6 +59,10 @@ public class InputHook
 		this.buttonId = buttonId;
 		this.modeId = modeId;
 		this.modifiers = modifiers;
+		
+		shift = 0 != (KeyEvent.SHIFT_DOWN_MASK & modifiers);
+		control = 0 != (KeyEvent.CTRL_DOWN_MASK & modifiers);
+		alt = 0 != (KeyEvent.ALT_DOWN_MASK & modifiers);
 	}
 	
 	public int getButtonId() { return buttonId; }
@@ -64,7 +72,7 @@ public class InputHook
 	@Override
 	public int hashCode() 
 	{
-		return buttonId*1000 + modeId * 10000000 + 10000 * modifiers;
+		return buttonId*1000 + modeId * 10000000 /*+ 10000 * modifiers*/;
 	}
 	
 	@Override

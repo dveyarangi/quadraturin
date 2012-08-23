@@ -69,7 +69,7 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 				for(IEntity chunk : bucket)
 				{
 //					System.out.println(chunk);
-					if(chunk.overlaps(x, y, x+map.getCellSize(), y+map.getCellSize()))
+//					if(chunk.overlaps(x, y, x+map.getCellSize(), y+map.getCellSize()))
 					{
 						isReal = true;
 						break;

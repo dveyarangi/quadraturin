@@ -7,11 +7,11 @@ import yarangi.math.Vector2D;
 public class CameraMover implements ICameraMan
 {
 	
-	private Vector2D target; 
+	private final Vector2D target; 
 	
 	private double targetScale;
 	
-	private Vector2D speed = Vector2D.ZERO();
+	private final Vector2D speed = Vector2D.ZERO();
 	
 	private static final double FORCE = 0.01;
 	private static final double MAX_SPEED = 1;
@@ -19,7 +19,7 @@ public class CameraMover implements ICameraMan
 	final double scrollStep = 100;
 	final double scaleStep = 0.9;
 	
-	private ViewPoint2D viewPoint;
+	private final ViewPoint2D viewPoint;
 	
 	public CameraMover(ViewPoint2D viewPoint) 
 	{
@@ -58,6 +58,7 @@ public class CameraMover implements ICameraMan
 		}
 		
 		viewPoint.getCenter().add( speed.mul( time ) );
+
 		return false;
 	}
 

@@ -5,6 +5,7 @@ import yarangi.graphics.quadraturin.objects.IBehavior;
 
 public interface ICameraMan extends IBehavior <Scene>
 {
+	@Override
 	public abstract boolean behave(double time, Scene scene, boolean isVisible);
 
 	public abstract void moveRight();

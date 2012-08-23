@@ -1,6 +1,5 @@
 package yarangi.graphics.lights;
 
-import java.nio.IntBuffer;
 import java.util.List;
 
 import javax.media.opengl.GL;
@@ -49,7 +48,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	/**
 	 * Viewport buffer
 	 */
-	private final IntBuffer viewport = IntBuffer.allocate(4);
+//	private final IntBuffer viewport = IntBuffer.allocate(4);
 	
 	/**
 	 * Rendered frame texture
@@ -99,22 +98,23 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		// saving OpenGL rendering modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
-		// retrieving viewport:
-		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
+		int [] viewport = context.getViewPoint().getViewport();
 		
 		// transforming the FBO plane to fit the light source location and scale:
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
 		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
 		
-		gl.glScaled(((double)viewport.get(2)/(double)textureSize),( (double)viewport.get(3)/(double)textureSize), 0);
+		gl.glScalef((viewport[2]/textureSize),( viewport[3]/textureSize), 0);
 		gl.glViewport(0, 0, textureSize, textureSize);
-		gl.glOrtho(-viewport.get(2)/2, viewport.get(2)/2, -viewport.get(3)/2, viewport.get(3)/2, -1, 1);
+		gl.glOrtho(-viewport[2]/2, viewport[2]/2, -viewport[3]/2, viewport[3]/2, -1, 1);
+		
+		gl.glDisable(GL.GL_DEPTH_TEST); // always override pixels
+		
 		
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// binding FBO:
 		fbo.bind(gl);
 
-		gl.glDisable(GL.GL_DEPTH_TEST); // always override pixels
 		
 		// clearing frame buffer:
 		gl.glClearColor(0,0,0,0);
@@ -201,6 +201,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 				gl.glEnd();
 				penumbraShader.end(gl);
 				// tear veil
+				
 			}
 		}
 		
@@ -235,18 +236,25 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 			lightShader.begin(gl);
 				lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 				lightShader.setFloat1Uniform(gl, "height", 2f);
-				lightShader.setFloat1Uniform(gl, "size", 0.01f);
-				lightShader.setFloat1Uniform(gl, "cutoff",5f);
+//				lightShader.setFloat1Uniform(gl, "size", 0.01f);
+				lightShader.setFloat1Uniform(gl, "cutoff",1f);
 				
 				renderTexture(gl, entity);
 			lightShader.end(gl);
 		fbo.unbindTexture(gl);
+
 		
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
 		gl.glPopAttrib(); // recover OpenGL modes:
 		context.setDefaultBlendMode( gl );
 /**/
-
+		gl.glBegin(GL.GL_QUADS);
+	//		System.out.println(textureSize/2);
+			gl.glVertex3f(-textureSize/2, -textureSize/2, 0f);
+			gl.glVertex3f(+textureSize/2, -textureSize/2,  0f);
+			gl.glVertex3f(+textureSize/2, +textureSize/2,  0f);
+			gl.glVertex3f(-textureSize/2, +textureSize/2,  0f);
+		gl.glEnd();
 	}
 
 	private void renderTexture(GL gl, IEntity entity)
@@ -256,12 +264,11 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		gl.glDisable(GL.GL_TEXTURE_GEN_T);
 		gl.glBegin(GL.GL_QUADS);
 //		System.out.println(textureSize/2);
-		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(-textureSize/2, -textureSize/2, -0.1f);
-		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(+textureSize/2, -textureSize/2,  -0.1f);
-		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(+textureSize/2, +textureSize/2,  -0.1f);
-		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(-textureSize/2, +textureSize/2,  -0.1f);
+		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(-textureSize/2, -textureSize/2, 0f);
+		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(+textureSize/2, -textureSize/2,  0f);
+		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex3f(+textureSize/2, +textureSize/2,  0f);
+		gl.glTexCoord2f(0.0f, 1.0f); gl.glVertex3f(-textureSize/2, +textureSize/2,  0f);
 		gl.glEnd();
-		
 	}
 
 	@Override
@@ -282,7 +289,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	@Override
 	public float getPriority()
 	{
-		return 1f;
+		return 0f;
 	}
 	@Override
 	public IVeil getVeil() { return null; }

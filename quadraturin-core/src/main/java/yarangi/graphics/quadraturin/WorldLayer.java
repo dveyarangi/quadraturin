@@ -203,8 +203,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 	{
 		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (filter);
 		getEntityIndex().queryAABB(sensor, worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
-		
 		IEntity entity = sensor.getObject();
+//		System.out.println("picked: " + entity);
 		if(entity == null)
 			return null;
 		

@@ -12,7 +12,7 @@ void main()
     vec4 coord = gl_TexCoord[0];
     vec4 tc = texture2D(sceneTex, gl_TexCoord[0].xy).rgba;
 
-    float distance = sqrt(sqrt(pow(1-2*coord.x, 2) + pow(1-2*coord.y, 2)));
+    float distance = sqrt(pow(1-2*coord.x, 2) + pow(1-2*coord.y, 2));
 
     // 1/distance with some renormalization. won't solve quantum gravity issues at high energies, though.
 	float param = (1.0-tc.r) * (1.0 / (distance*cutoff) - 1.0/cutoff);
