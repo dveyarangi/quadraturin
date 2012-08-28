@@ -76,7 +76,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		
 		// rounding texture size to power of 2:
 		// TODO: enable non-square textures
-		int size = (int)(entity.getSensor().getRadius()*2.);
+		int size = (int)(entity.getEntitySensor().getRadius()*2.);
 		textureSize = BitUtils.po2Ceiling(size);
 
 		// create rendering buffer
@@ -126,9 +126,9 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 
 		///////////////////////////////////////////////////////////////
 		// drawing shadow polygons for shadow casters in range:
-		if(entity.getSensor() != null)
+		if(entity.getEntitySensor() != null)
 		{
-			List <IEntity> entities = entity.getSensor().getEntities();
+			List <IEntity> entities = entity.getEntitySensor().getEntities();
 			List <Vector2D> shadowEdge;
 			Vector2D sourceLoc = entity.getArea().getAnchor();
 			// drawing red polygons for full shadows and penumbra:

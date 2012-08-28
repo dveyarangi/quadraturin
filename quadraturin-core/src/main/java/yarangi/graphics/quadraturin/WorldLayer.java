@@ -115,23 +115,36 @@ public class WorldLayer extends SceneLayer <IEntity>
 //				changePending = true;
 			}
 			
-			if(entity.getSensor() != null)
+			if(entity.getEntitySensor() != null)
 			{   // filling world objects in sensor range:
 				// TODO: scheduling, perhaps?
 
-				if(entity.getSensor().isSensingNeeded( layerTime ))
+				if(entity.getEntitySensor().isSensingNeeded( layerTime ))
 				{
 					refPoint = entity.getArea().getAnchor();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
-					entity.getSensor().clear();
-					double radiusSquare = entity.getSensor().getRadius() * entity.getSensor().getRadius();
-					getEntityIndex().queryRadius(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
-					if(terrain != null && entity.getSensor().isSenseTerrain())
-						terrain.getEssence().queryRadius(entity.getSensor(), refPoint.x(), refPoint.y(), radiusSquare);
+					entity.getEntitySensor().clear();
+					double radiusSquare = entity.getEntitySensor().getRadius() * entity.getEntitySensor().getRadius();
+					getEntityIndex().queryRadius(entity.getEntitySensor(), refPoint.x(), refPoint.y(), radiusSquare);
+
+				}
+			}
+			if(entity.getTerrainSensor() != null && terrain != null)
+			{   // filling world objects in sensor range:
+				// TODO: scheduling, perhaps?
+
+				if(entity.getTerrainSensor().isSensingNeeded( layerTime ))
+				{
+					refPoint = entity.getArea().getAnchor();
+					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
+					entity.getTerrainSensor().clear();
+					double radiusSquare = entity.getTerrainSensor().getRadius() * entity.getTerrainSensor().getRadius();
+					
+					terrain.getEssence().queryRadius(entity.getTerrainSensor(), refPoint.x(), refPoint.y(), radiusSquare);
+
 				}
 			}
 			
-
 		}
 		
 		while(!deadEntities.isEmpty())

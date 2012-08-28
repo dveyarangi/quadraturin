@@ -43,9 +43,4 @@ public class DummySensor implements ISensor <IEntity>
 	@Override
 	public void clear() { }
 
-	@Override
-	public boolean isSenseTerrain()
-	{
-		return false;
-	}
 }

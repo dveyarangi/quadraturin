@@ -22,7 +22,5 @@ public interface ISensor <K> extends ISpatialSensor <K>
 	public abstract double getRadius();
 	
 	public boolean isSensingNeeded(double time);
-	
-	public boolean isSenseTerrain();
  
 }

@@ -19,42 +19,40 @@ import yarangi.spatial.ISpatialFilter;
  * @author dveyarangi
  *
  */
-public class Sensor implements ISensor <IBeing>
+public class Sensor <O> implements ISensor <O>
 {
 	/** 
 	 * List of sensed entities 
 	 */
-	private List <IBeing> entities;
+	private List <O> entities;
 	
 	/**
 	 * Sensing radius
 	 */
 	private final double radius;
 	
-	private final ISpatialFilter <IBeing> filter;
-	
-	private final boolean senseTerrain;
+	private final ISpatialFilter <O> filter;
+
 
 	private double lastSensingTime;
 
 	private final double interval;
 
-	public Sensor(double radius, double interval, boolean senseTerrain )
+	public Sensor(double radius, double interval)
 	{
-		this(radius, interval, null, senseTerrain);
+		this(radius, interval, null);
 	}
 
-	public Sensor(double radius, double interval, ISpatialFilter <IBeing>filter, boolean senseTerrain )
+	public Sensor(double radius, double interval, ISpatialFilter <O> filter )
 	{
 		this.radius = radius;
 		this.filter = filter;
 		this.interval = interval;
-		this.senseTerrain = senseTerrain;
 		clear();
 	}
 	
 	@Override
-	public List <IBeing> getEntities()
+	public List <O> getEntities()
 	{
 		return entities;
 	}
@@ -62,13 +60,13 @@ public class Sensor implements ISensor <IBeing>
 	@Override
 	public double getRadius() { return radius; }
 	
-	public ISpatialFilter <IBeing> getFilter() { return filter; }
+	public ISpatialFilter <O> getFilter() { return filter; }
  
 	@Override
-	public void clear() { this.entities = new LinkedList <IBeing> (); }
+	public void clear() { this.entities = new LinkedList <O> (); }
 	
 	@Override
-	public boolean objectFound(IBeing object) 
+	public boolean objectFound(O object) 
 	{
 		if(filter == null || filter.accept(object))
 			entities.add(object);
@@ -85,9 +83,5 @@ public class Sensor implements ISensor <IBeing>
 			
 		return needed;
 	}
-
-	@Override
-	public boolean isSenseTerrain() { return senseTerrain; }
-	
 	
 }

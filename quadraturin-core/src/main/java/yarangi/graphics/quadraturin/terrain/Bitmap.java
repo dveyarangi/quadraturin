@@ -1,13 +1,11 @@
 package yarangi.graphics.quadraturin.terrain;
 
 import yarangi.graphics.colors.Color;
-import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.physics.Body;
-import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
-public class Bitmap extends AABB implements IPhysicalObject, ILayerObject
+public class Bitmap extends AABB implements ITerrain
 {
 	
 	private final byte [] pixels;
@@ -262,21 +260,6 @@ public class Bitmap extends AABB implements IPhysicalObject, ILayerObject
 	public int getSize()
 	{
 		return size;
-	}
-
-	@Override
-	public void markDead()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public boolean isIndexed()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 

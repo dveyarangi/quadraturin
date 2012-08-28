@@ -10,29 +10,29 @@ import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
 
-public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
+public class RoughCollider <B extends IPhysicalObject, T extends IPhysicalObject> implements ICollider <B>
 {
 	
 	/**
 	 * Index of entities.
 	 */
-	private final ISpatialSetIndex <O> indexer;
+	private final ISpatialSetIndex <B> indexer;
 	
 	/**
 	 * Optional: terrain
 	 */
-	private final ITileMap <O> terrain;
+	private final ITileMap <T> terrain;
 	
-	private final Map <Class<? extends IPhysicalObject>, ICollisionHandler<O>> handlers = 
-				new HashMap <Class<? extends IPhysicalObject>, ICollisionHandler<O>> ();
+	private final Map <Class<? extends IPhysicalObject>, ICollisionHandler<B>> handlers = 
+				new HashMap <Class<? extends IPhysicalObject>, ICollisionHandler<B>> ();
 	
 	/**
 	 * Spatial query processor for broad phase of collision/interaction test
 	 */
-	private final IProximitySensor <O> worldSensor;
-	private final IProximitySensor <O> terrainSensor;
+	private final WorldProximitySensor worldSensor;
+	private final TerrainProximitySensor terrainSensor;
 	
-	public RoughCollider(ISpatialSetIndex < O> indexer, ITileMap <O> terrain)
+	public RoughCollider(ISpatialSetIndex < B> indexer, ITileMap <T> terrain)
 	{
 		this.indexer = indexer;
 		this.terrain = terrain;
@@ -42,10 +42,10 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	}
 	
 	@Override
-	public boolean collide(O source, IPhysicalObject target) 
+	public boolean collide(B source, IPhysicalObject target) 
 	{
 		// todo:
-		ICollisionHandler<O> handler = handlers.get( source.getClass() );
+		ICollisionHandler<B> handler = handlers.get( source.getClass() );
 		if(handler == null)
 			return false;
 		if(target.getArea() instanceof AABB)
@@ -61,13 +61,13 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	}
 
 	@Override
-	public void registerHandler(Class <? extends IPhysicalObject> _class, ICollisionHandler<O> handler)
+	public void registerHandler(Class <? extends IPhysicalObject> _class, ICollisionHandler<B> handler)
 	{
 		handlers.put( _class, handler );
 	}
 
 	@Override
-	public void query(O entity)
+	public void query(B entity)
 	{
 		worldSensor.clear();
 		terrainSensor.clear();
@@ -82,30 +82,19 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 	}
 
 	@Override
-	public Set<O> getPhysicalEntities()
+	public Set<B> getPhysicalEntities()
 	{
 		return indexer.keySet();
 	}
 	
 	
-	/**
-	 * Spatial query processor
-	 */
-	public interface IProximitySensor <O extends IPhysicalObject> extends ISpatialSensor <O>
-	{
-		/**
-		 * Defines the reference entity for proximity tests.
-		 * @param source
-		 */
-		public void setSource(O source);
-	}
 	
-	public class WorldProximitySensor implements IProximitySensor <O>
+	public class WorldProximitySensor implements ISpatialSensor <B>
 	{
-		protected O source;
+		protected B source;
 		
 		@Override
-		public final boolean objectFound(O target) 
+		public final boolean objectFound(B target) 
 		{
 //			if(!target.isAlive())
 //				return false; 
@@ -116,18 +105,17 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 			
 		}
 
-		@Override
-		public final void setSource(O source) { this.source = source; }
+		public final void setSource(B source) { this.source = source; }
 
 		@Override
 		public void clear() { }
 	}
-	public class TerrainProximitySensor implements IProximitySensor <O>
+	public class TerrainProximitySensor implements ISpatialSensor <T>
 	{
-		protected O source;
+		protected B source;
 		
 		@Override
-		public final boolean objectFound(O target) 
+		public final boolean objectFound(T target) 
 		{
 			if(!target.isAlive())
 				return false; 
@@ -137,8 +125,7 @@ public class RoughCollider <O extends IPhysicalObject> implements ICollider <O>
 			return collide(source, target);
 		}
 
-		@Override
-		public final void setSource(O source) { this.source = source; }
+		public final void setSource(B source) { this.source = source; }
 
 		@Override
 		public void clear() { }

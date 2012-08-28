@@ -3,18 +3,17 @@ package yarangi.graphics.quadraturin.objects.behaviors;
 import java.util.List;
 
 import yarangi.graphics.quadraturin.objects.IBehavior;
-import yarangi.graphics.quadraturin.objects.IBeing;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.Sensor;
 import yarangi.spatial.ISpatialFilter;
 
-public class ISensoryBehavior <K extends IEntity> extends Sensor implements IBehavior <K>
+public class ISensoryBehavior <K extends IEntity> extends Sensor <K>  implements IBehavior <K>
 {
 
 
-	public ISensoryBehavior(double radius, double interval, ISpatialFilter<IBeing> filter, boolean senseTerrain)
+	public ISensoryBehavior(double radius, double interval, ISpatialFilter<K> filter, boolean senseTerrain)
 	{
-		super( radius, interval, filter, senseTerrain );
+		super( radius, interval, filter );
 		// TODO Auto-generated constructor stub
 	}
 
@@ -25,14 +24,14 @@ public class ISensoryBehavior <K extends IEntity> extends Sensor implements IBeh
 	public void clear() {}
 
 	@Override
-	public boolean objectFound(IBeing object)
+	public boolean objectFound(K object)
 	{
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public List<IBeing> getEntities()
+	public List<K> getEntities()
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -47,13 +46,6 @@ public class ISensoryBehavior <K extends IEntity> extends Sensor implements IBeh
 
 	@Override
 	public boolean isSensingNeeded(double time)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSenseTerrain()
 	{
 		// TODO Auto-generated method stub
 		return false;

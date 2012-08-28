@@ -13,7 +13,7 @@ public class EntityFactory
 		entity.setBehavior(behavior);
 		entity.setArea(area);
 		entity.setBody(body);
-		entity.setSensor(sensor);
+		entity.setEntitySensor(sensor);
 		return entity;
 	}
 

@@ -37,7 +37,7 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	@Override
 	public void init(GL gl, K entity, IRenderingContext context) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getSensor().getRadius()*2));
+		textureSize = BitUtils.po2Ceiling((int)(entity.getEntitySensor().getRadius()*2));
 //		System.out.println(size + " : " + entity.getLightRadius()*2);
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		

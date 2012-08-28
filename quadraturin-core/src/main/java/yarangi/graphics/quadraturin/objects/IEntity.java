@@ -1,5 +1,6 @@
 package yarangi.graphics.quadraturin.objects;
 
+import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.physics.Body;
 
 
@@ -45,11 +46,13 @@ public interface IEntity extends IBeing, IVisible
 	 * How the entity feels the world.
 	 * @return
 	 */
-	public abstract ISensor getSensor();
+	public abstract ISensor getEntitySensor();
 
+	public abstract ISensor <ITerrain> getTerrainSensor();
 	public abstract boolean behave(double time, boolean b);
 	
 	// TODO: this could help reduce instanceof checks in filters and such
 	public abstract int getGroupId();
+
 
 }

@@ -5,6 +5,7 @@ import javax.media.opengl.GL;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneLayer;
+import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.physics.Body;
 import yarangi.spatial.Area;
 
@@ -44,6 +45,7 @@ public class Entity implements IEntity
 	private Body physicalAspect;
 
 	private ISensor <?> sensorAspect;
+	private ISensor <?> terrainSensorAspect;
 	/**
 	 * Dead entities are automatically removed from the stage.
 	 */
@@ -83,11 +85,22 @@ public class Entity implements IEntity
 	 */
 	public void setBody(Body body) { this.physicalAspect = body; }
 	
+	public void setEntitySensor(ISensor <?> sensor) {
+		this.sensorAspect = sensor;
+	}
+	
+	public void setTerrainSensor(ISensor <? extends ITerrain> sensor) {
+		this.terrainSensorAspect = sensor;
+	}
+	
 	/**
 	 * World sensor properties (can be null)
 	 * @param sensor
 	 */
-	public void setSensor(ISensor <?> sensor) { this.sensorAspect = sensor; }
+	public void setSensors(ISensor <?> sensor, ISensor <? extends ITerrain> terrainSensor) { 
+		setEntitySensor( sensor );
+		setTerrainSensor( terrainSensor );
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -133,8 +146,14 @@ public class Entity implements IEntity
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public final ISensor getSensor() { return sensorAspect; }
+	public final ISensor getEntitySensor() { return sensorAspect; }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@SuppressWarnings("rawtypes")
+	public final ISensor getTerrainSensor() { return terrainSensorAspect; }
 
 	@Override
 	@SuppressWarnings("unchecked")

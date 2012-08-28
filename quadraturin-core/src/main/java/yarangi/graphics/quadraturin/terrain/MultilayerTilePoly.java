@@ -1,6 +1,5 @@
 package yarangi.graphics.quadraturin.terrain;
 
-import yarangi.graphics.quadraturin.objects.IBeing;
 import yarangi.physics.Body;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
@@ -8,7 +7,7 @@ import yarangi.spatial.Area;
 import com.seisw.util.geom.Poly;
 import com.seisw.util.geom.PolyDefault;
 
-public class MultilayerTilePoly implements IBeing, ITilePoly
+public class MultilayerTilePoly implements ITerrain, ITilePoly
 {
 	/**
 	 * Specified the borders of this tile
@@ -95,6 +94,7 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 	@Override
 	public boolean substract(Poly poly) {
 		
+		try {
 		if(isEmpty())
 			return false;
 		
@@ -122,6 +122,11 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
 	
 		return true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
@@ -150,7 +155,7 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 		return !isEmpty();
 	}
 
-	@Override
+/*	@Override
 	public void markDead()
 	{
 		// TODO Auto-generated method stub
@@ -162,7 +167,7 @@ public class MultilayerTilePoly implements IBeing, ITilePoly
 	{
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
 
 	@Override
