@@ -1,7 +1,5 @@
 package yarangi.graphics.lights;
 
-import java.util.List;
-
 import javax.media.opengl.GL;
 
 import yarangi.graphics.colors.Color;
@@ -13,7 +11,6 @@ import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 import yarangi.graphics.textures.FBO;
 import yarangi.math.BitUtils;
-import yarangi.math.Vector2D;
 
 /**
  * Generates a rough approximation of 2D lighting and shadows texture. 
@@ -126,7 +123,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 
 		///////////////////////////////////////////////////////////////
 		// drawing shadow polygons for shadow casters in range:
-		if(entity.getEntitySensor() != null)
+/*		if(entity.getEntitySensor() != null)
 		{
 			List <IEntity> entities = entity.getEntitySensor().getEntities();
 			List <Vector2D> shadowEdge;
@@ -203,7 +200,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 				// tear veil
 				
 			}
-		}
+		}*/
 		
 		
 		fbo.unbind(gl); 
