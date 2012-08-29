@@ -9,6 +9,7 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.math.IVector2D;
 import yarangi.math.Vector2D;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ITileMap;
@@ -84,7 +85,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 		if(engine != null)
 			engine.calculate(time);
 		layerTime += time;
-		Vector2D refPoint;
+		IVector2D refPoint;
 		
 //		if(terrain != null)
 //			terrain.behave( time, true );

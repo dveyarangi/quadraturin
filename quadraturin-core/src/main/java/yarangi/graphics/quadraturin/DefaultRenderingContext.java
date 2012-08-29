@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
+import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -226,6 +227,8 @@ public class DefaultRenderingContext implements IRenderingContext
 				entity.render( gl,  this );
 				if(veil != null)
 					veil.tear( gl );
+				
+				assert Debug.renderEntityOverlay(gl, entity, this);
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.ViewPoint2D;
+import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
@@ -104,7 +105,11 @@ public class DefaultActionFactory
 		{
 			throw new IllegalArgumentException("Action controller must provide camera manager.");
 		}
-		return appendNavActions(controller.getActions(), controller.getCameraManager(), scene);
+		appendNavActions(controller.getActions(), controller.getCameraManager(), scene);
+		
+		assert Debug.appendDebugActions( controller.getActions() );
+		
+		return controller.getActions();
 	}
 	
 

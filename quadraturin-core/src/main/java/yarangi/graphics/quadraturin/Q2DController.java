@@ -232,11 +232,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// send world view point transformation event to event manager:
 		voices.updateViewPoint(viewPoint);
 		
-	
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
 		context.render(gl);
+		assert Debug.drawWorldLayerOverlay( gl, currScene.getWorldLayer(), context );
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
