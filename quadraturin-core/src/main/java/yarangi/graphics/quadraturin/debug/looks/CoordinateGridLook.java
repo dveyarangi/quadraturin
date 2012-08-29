@@ -36,7 +36,7 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 				break;
 		}
 		
-		int steps = 4;
+		int steps = 8;
 		for(int i = 1; i <= steps; i ++) {
 			
 			int magnitude = (int)Math.pow(2, i);
