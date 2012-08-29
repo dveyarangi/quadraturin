@@ -102,6 +102,14 @@ public abstract class GLSLShader {
 		return programId;
 	}
 	
+	public void printDebugInfo(GL gl)
+	{
+		String info = getShaderInfoLog(gl, fragmentShaderId);
+		if(info != null)
+			log.debug("Shader program message: " + info);
+
+	}
+	
 	public void setFloat1Uniform( GL gl, String name, float a)
 	{
 		if(!isInitialized())

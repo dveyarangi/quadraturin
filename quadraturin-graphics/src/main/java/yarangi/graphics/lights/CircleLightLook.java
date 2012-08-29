@@ -73,7 +73,12 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		
 		// rounding texture size to power of 2:
 		// TODO: enable non-square textures
-		int size = (int)(entity.getEntitySensor().getRadius()*2.);
+
+		int size;
+		if(entity.getEntitySensor() != null)
+			size = (int)(entity.getEntitySensor().getRadius()*2.);
+		else
+			size = (int)(entity.getTerrainSensor().getRadius()*2.);
 		textureSize = BitUtils.po2Ceiling(size);
 
 		// create rendering buffer
@@ -112,9 +117,8 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		// binding FBO:
 		fbo.bind(gl);
 
-		
 		// clearing frame buffer:
-		gl.glClearColor(0,0,0,0);
+		gl.glClearColor(0,0,0,1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
@@ -203,7 +207,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		}*/
 		
 		
-		fbo.unbind(gl); 
+		fbo.unbind(gl);
 
 		// done with shadows
 		/////////////////////////////////////////////////////////
@@ -232,12 +236,13 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		fbo.bindTexture(gl);
 			lightShader.begin(gl);
 				lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-				lightShader.setFloat1Uniform(gl, "height", 2f);
+				lightShader.setFloat1Uniform(gl, "height", 0.01f);
 //				lightShader.setFloat1Uniform(gl, "size", 0.01f);
-				lightShader.setFloat1Uniform(gl, "cutoff",1f);
+				lightShader.setFloat1Uniform(gl, "cutoff",5f);
 				
 				renderTexture(gl, entity);
 			lightShader.end(gl);
+//			lightShader.printDebugInfo( gl );
 		fbo.unbindTexture(gl);
 
 		
@@ -245,13 +250,13 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		gl.glPopAttrib(); // recover OpenGL modes:
 		context.setDefaultBlendMode( gl );
 /**/
-		gl.glBegin(GL.GL_QUADS);
+/*		gl.glBegin(GL.GL_QUADS);
 	//		System.out.println(textureSize/2);
 			gl.glVertex3f(-textureSize/2, -textureSize/2, 0f);
 			gl.glVertex3f(+textureSize/2, -textureSize/2,  0f);
 			gl.glVertex3f(+textureSize/2, +textureSize/2,  0f);
 			gl.glVertex3f(-textureSize/2, +textureSize/2,  0f);
-		gl.glEnd();
+		gl.glEnd();*/
 	}
 
 	private void renderTexture(GL gl, IEntity entity)
