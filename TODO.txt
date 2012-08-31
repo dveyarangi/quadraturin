@@ -76,7 +76,7 @@ TODOS:
 	> performance management
 		- hardware capabilities detection, bundle to list of relevant capabilities  
 		- automatic reduction of behavior, physics and rendering quality?
-
+	V fix CoordinateGridLook to clip rendering to viewport
 		
 Polygons:
 	Graham scan
