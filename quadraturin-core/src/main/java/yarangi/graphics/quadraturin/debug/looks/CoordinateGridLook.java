@@ -62,20 +62,24 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 			
 			gl.glColor4f(color.getRed(),color.getGreen(),color.getBlue(), 0.05f);
 			
-			for(float x = FastMath.toGrid( (float)screenMinCoord.x(), step ); // adjusting to closest grid point
-					  x < FastMath.toGrid( (float)screenMaxCoord.x(), step ); 
-					  x += step) 
+			
+			float minx = Math.max( -halfWidth, FastMath.toGrid( (float)screenMinCoord.x(), step ));
+			float maxx = Math.min( halfWidth, FastMath.toGrid( (float)screenMaxCoord.x(), step ));
+			float miny = Math.max( -halfHeight, FastMath.toGrid( (float)screenMinCoord.y(), step ));
+			float maxy = Math.min( halfHeight, FastMath.toGrid( (float)screenMaxCoord.y(), step ));
+			
+			for(float x = minx; x < maxx; x += step) 
 			{
 				gl.glBegin( GL.GL_LINE_STRIP );
-					gl.glVertex2f( x, -halfHeight);
-					gl.glVertex2d(x, halfHeight );
+					gl.glVertex2f( x, miny);
+					gl.glVertex2d(x, maxy );
 				gl.glEnd();
 			}
-			for(float y = FastMath.toGrid( (float)screenMinCoord.y(), step ); y < FastMath.toGrid( (float)screenMaxCoord.y(), step ); y += step)
+			for(float y = miny; y < maxy; y += step)
 			{
 				gl.glBegin( GL.GL_LINE_STRIP );
-					gl.glVertex2f( -halfWidth, y);
-					gl.glVertex2d( halfWidth, y );
+					gl.glVertex2f( minx, y);
+					gl.glVertex2d( maxx, y );
 				gl.glEnd();
 			}
 		}
