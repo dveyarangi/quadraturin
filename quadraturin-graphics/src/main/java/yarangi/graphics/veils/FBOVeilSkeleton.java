@@ -1,7 +1,6 @@
 package yarangi.graphics.veils;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
@@ -26,8 +25,6 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	private FBO veil;
 	
 	private int width, height;
-
-	private final GLU glu = new GLU();
 	
 	private final boolean isInited = false;
 	
@@ -85,9 +82,6 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	@Override
 	public void tear(GL gl)
 	{
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glBlendEquation(GL.GL_FUNC_ADD);
-		
 		veil.unbind(gl);
 	}
 	
