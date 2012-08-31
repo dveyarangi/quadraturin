@@ -9,7 +9,20 @@ import yarangi.graphics.quadraturin.SceneLayer;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.Angles;
+import yarangi.math.FastMath;
+import yarangi.math.IVector2D;
 
+/**
+ * Displays grid debug overlay (with powers of 2 steps).
+ * 
+ * The grid automatically adjusts to the zoom level.
+ * 
+ * TODO: print axis values
+ * 
+ * 
+ * @author dveyarangi
+ *
+ */
 public class CoordinateGridLook implements ILook <SceneLayer>
 {
 	private final Color color;
@@ -36,21 +49,29 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 				break;
 		}
 		
+		// lower left screen corner in world coordinates
+		IVector2D screenMinCoord = context.getViewPoint().getMinCoord();
+		// higher right screen corner in world coordinates
+		IVector2D screenMaxCoord = context.getViewPoint().getMaxCoord();
+		
 		int steps = 8;
 		for(int i = 1; i <= steps; i ++) {
 			
 			int magnitude = (int)Math.pow(2, i);
+			float step = order*magnitude*4;
 			
 			gl.glColor4f(color.getRed(),color.getGreen(),color.getBlue(), 0.05f);
 			
-			for(float x = -halfWidth; x < halfWidth; x += order*magnitude*4) 
+			for(float x = FastMath.toGrid( (float)screenMinCoord.x(), step ); // adjusting to closest grid point
+					  x < FastMath.toGrid( (float)screenMaxCoord.x(), step ); 
+					  x += step) 
 			{
 				gl.glBegin( GL.GL_LINE_STRIP );
 					gl.glVertex2f( x, -halfHeight);
 					gl.glVertex2d(x, halfHeight );
 				gl.glEnd();
 			}
-			for(float y = -halfHeight; y < halfHeight; y += order*magnitude*4)
+			for(float y = FastMath.toGrid( (float)screenMinCoord.y(), step ); y < FastMath.toGrid( (float)screenMaxCoord.y(), step ); y += step)
 			{
 				gl.glBegin( GL.GL_LINE_STRIP );
 					gl.glVertex2f( -halfWidth, y);
