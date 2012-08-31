@@ -8,6 +8,15 @@ import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 import yarangi.math.Vector2D;
 
+/**
+ * Appended to the engine cycle in debug mode.
+ * LOGS modules execution averages and object allocation counts.
+ * 
+ * TODO: instrumentate to count AABB, Body, Vector2D and other mass objects allocations
+ * 
+ * @author dveyarangi
+ *
+ */
 public class DebugThreadChain extends ThreadChain 
 {
 	private long timestamp;
@@ -35,6 +44,7 @@ public class DebugThreadChain extends ThreadChain
 		this.debugInterations = iterations;
 	}
 	
+	@Override
 	public void start()
 	{
 		addThread(new LoopyChainedThread("q-profiler", this, new DelimeterThread()));
@@ -47,6 +57,7 @@ public class DebugThreadChain extends ThreadChain
 	}
 
 
+	@Override
 	public void waitForRelease(IChainedThread thread) throws InterruptedException
 	{
 		super.waitForRelease(thread);
@@ -54,6 +65,7 @@ public class DebugThreadChain extends ThreadChain
 		timestamp = System.nanoTime();
 	}
 
+	@Override
 	public void releaseNext(IChainedThread thread)
 	{
 		accumulatedTimes[thread.getOrdial()] += (System.nanoTime()-timestamp);
@@ -75,26 +87,28 @@ public class DebugThreadChain extends ThreadChain
 	private class DelimeterThread implements Loopy 
 	{
 
+		@Override
 		public void runPreUnLock() { }
 
+		@Override
 		public void runBody() 
 		{
-			iterations ++;
-			
-			if(iterations <= debugInterations)
+			if(++ iterations <= debugInterations)
 				return;
+			
 			log.debug("Average execution time of all threads is " + Math.round(cycleLength/1000000.) + " ms (" + 1000000000/cycleLength  + " cycles per second)");
 			int vectorsCreated = Vector2D.getCount()-vectors;
-			log.debug("Average vectors per frame: " + vectorsCreated/debugInterations);
+			log.debug("Average vectors allocated per frame: " + vectorsCreated/debugInterations);
 			vectors = Vector2D.getCount();
 			cycleLength = 0;
-			iterations = 0;
 			
 			Runtime runtime = Runtime.getRuntime();
 			log.debug("Memory: " + runtime.totalMemory() + "/" + runtime.maxMemory() + " allocated; " + runtime.freeMemory() + " free.");
-			
+
+			iterations = 0;
 		}
 
+		@Override
 		public void runPostLock() { }
 
 		@Override
