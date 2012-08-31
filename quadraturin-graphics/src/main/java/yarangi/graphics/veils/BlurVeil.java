@@ -92,13 +92,13 @@ public class BlurVeil extends FBOVeilSkeleton
 //		System.out.println("prev");
 		fadeShader.begin( gl );
 		fadeShader.setFloat1Uniform( gl, "decay", decayAmount * context.getFrameLength() );
-		renderTexture(gl, vp.getPrevViewport(), vp.getPrevModelViewMatrix(), vp.getPrevProjectionMatrix());
+		renderTexture(gl, vp.getPrevMinCoord(), vp.getPrevMaxCoord());
 		fadeShader.end(gl);
 		gl.glPopAttrib();
 		context.setDefaultBlendMode( gl );
 		getFBO().unbind( gl );
 //		System.out.println("curr");
-		renderTexture(gl, vp.getViewport(), vp.getModelViewMatrix(), vp.getProjectiionMatrix());
+		renderTexture(gl, vp.getMinCoord(), vp.getMaxCoord());
 		
 	}
 
