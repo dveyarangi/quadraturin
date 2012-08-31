@@ -257,7 +257,7 @@ public class QVoices implements IEventManager, Loopy
 	@Override
 	public void updateViewPoint(ViewPoint2D viewPoint)
 	{
-		cursorEvent.setWorldCoordinate(
+		cursorEvent.setWorldCoordinate(cursorEvent.getCanvasLocation() == null ? null :
 				viewPoint.toWorldCoordinates(cursorEvent.getCanvasLocation()));
 	}
 

@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.events;
 import java.awt.Point;
 
 import yarangi.graphics.quadraturin.objects.ILayerObject;
+import yarangi.math.IVector2D;
 import yarangi.math.Vector2D;
 
 /**
@@ -15,7 +16,7 @@ public class CursorEvent implements ICursorEvent
 	/**
 	 * User cursor location in scene coordinates
 	 */
-	private Vector2D worldLocation;
+	private IVector2D worldLocation;
 	
 	/**
 	 * User cursor location in drawing canvas coordinates
@@ -45,7 +46,7 @@ public class CursorEvent implements ICursorEvent
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Vector2D getWorldLocation() {
+	public IVector2D getWorldLocation() {
 		return worldLocation;
 	}
 
@@ -68,7 +69,7 @@ public class CursorEvent implements ICursorEvent
 	@Override
 	public ILayerObject getEntity() { return entity; }
 
-	public void setWorldCoordinate(Vector2D worldCoordinates) {
+	public void setWorldCoordinate(IVector2D worldCoordinates) {
 		this.worldLocation = worldCoordinates;
 	}
 

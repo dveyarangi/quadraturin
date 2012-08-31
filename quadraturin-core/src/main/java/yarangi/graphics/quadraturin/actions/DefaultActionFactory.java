@@ -41,6 +41,7 @@ public class DefaultActionFactory
 			
 			cameraMover = new CameraMover((ViewPoint2D) scene.getViewPoint());
 			actions = appendNavActions(new HashMap <String, IAction> (), cameraMover, scene);
+			assert Debug.appendDebugActions( actions );
 		}
 
 		@Override

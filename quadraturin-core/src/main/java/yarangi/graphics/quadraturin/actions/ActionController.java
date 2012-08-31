@@ -9,7 +9,7 @@ import yarangi.graphics.quadraturin.WorldLayer;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
-import yarangi.math.Vector2D;
+import yarangi.math.IVector2D;
 import yarangi.spatial.ISpatialFilter;
 
 /**
@@ -55,7 +55,7 @@ public abstract class ActionController
 	 * @param canvasLocation
 	 * @return
 	 */
-	public ILayerObject pick(Vector2D worldLocation, Point canvasLocation)
+	public ILayerObject pick(IVector2D worldLocation, Point canvasLocation)
 	{
 		
 		// ui picks
