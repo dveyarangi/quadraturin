@@ -6,6 +6,7 @@ import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
@@ -54,8 +55,6 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	int viewport[] = new int[4];
 	double mvmatrix[] = new double[16];
 	double projmatrix[] = new double[16]; 
-	
-	
 	
 	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, StageAnimator animator, ThreadChain chain) {
 
@@ -184,6 +183,8 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			log.debug("Entering '" + currScene.getName() + "' scene...");
 			// TODO: should not be locked in here, render a placeholder/progress bar instead:
 			currScene.init(gl, context);
+			
+			context.setViewPoint( (ViewPoint2D)currScene.getViewPoint() );
 		}
 		
 		if(currScene == null)
@@ -222,6 +223,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+	
 		
 		context.setViewPoint(viewPoint);
 		
