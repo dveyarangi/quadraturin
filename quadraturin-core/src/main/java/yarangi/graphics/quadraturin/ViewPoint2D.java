@@ -6,11 +6,12 @@ import java.awt.Point;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.math.FastMath;
+import yarangi.math.IVector2D;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
 /**
- * 
+ * TODO: this class is exceptionally grotesque, rip its ugly tentacles 
  */
 public class ViewPoint2D implements IBeholder
 {
@@ -34,6 +35,9 @@ public class ViewPoint2D implements IBeholder
 //	private Rectangle2D.Double virtualWindow;
 
 	private final double [] prev_projection_matrix;
+	
+	private final Vector2D prevMinCoord, prevMaxCoord;
+	private final Vector2D minCoord, maxCoord;
 
 	
 /*	public ViewPoint2D(Dimension window) 
@@ -55,7 +59,11 @@ public class ViewPoint2D implements IBeholder
 		this.prevViewPort = new int [4];
 		this.prev_modelview_matrix = new double [16];
 		this.prev_projection_matrix = new double [16];
-}
+		this.prevMinCoord = Vector2D.R( 0, 0 );
+		this.prevMaxCoord = Vector2D.R( 0, 0 );
+		this.minCoord = Vector2D.R( 0, 0 );
+		this.maxCoord = Vector2D.R( 0, 0 );
+	}
 	
 	public ViewPoint2D()
 	{
@@ -69,6 +77,10 @@ public class ViewPoint2D implements IBeholder
 		this.prevViewPort = new int [4];
 		this.prev_modelview_matrix = new double [16];
 		this.prev_projection_matrix = new double [16];
+		this.prevMinCoord = Vector2D.R( 0, 0 );
+		this.prevMaxCoord = Vector2D.R( 0, 0 );
+		this.minCoord = Vector2D.R( 0, 0 );
+		this.maxCoord = Vector2D.R( 0, 0 );
 	}
 	
 /*	private void transpose() {
@@ -168,7 +180,15 @@ public class ViewPoint2D implements IBeholder
 	 */
 	public void updatePointModel(int[] viewport, double [] modelview_matrix, double [] projection_matrix)
 	{
+		prevMinCoord.setxy( minCoord.x(), minCoord.y());		
+		prevMaxCoord.setxy( maxCoord.x(), maxCoord.y());		
 		
+		double [] w = new double [4];
+		glu.gluUnProject(viewport[0], viewport[1], 0.0, modelview_matrix, 0, projection_matrix, 0, viewport, 0, w, 0);
+		minCoord.setxy( w[0], w[1] );
+		glu.gluUnProject(viewport[2], viewport[3], 0.0, modelview_matrix, 0, projection_matrix, 0, viewport, 0, w, 0);
+		maxCoord.setxy( w[0], w[1] );
+
 		for(int idx = 0; idx < 4; idx ++) {
 			prevViewPort[idx] = this.viewport[idx];
 			this.viewport[idx] = viewport[idx];
@@ -190,16 +210,12 @@ public class ViewPoint2D implements IBeholder
 	 * @param pickPoint
 	 * @return
 	 */
-	public Vector2D toWorldCoordinates(Point pickPoint) 
+	public Vector2D toWorldCoordinates(Point loc) 
 	{
-		if(pickPoint == null)
-			return null;
+		double x = loc.x;
+		double y = loc.y;
 		int realy = 0;// inverting y coordinate
 		double wcoord[] = new double[4];// wx, wy, wz;// returned xyz coords
-
-		double x = pickPoint.getX();
-		double y = pickPoint.getY();
-
 		
 		/* note viewport[3] is height of window in pixels */
 		realy = viewport[3] - (int) y;
@@ -211,9 +227,24 @@ public class ViewPoint2D implements IBeholder
 	public int [] getViewport() { return viewport; }
 	public int[] getPrevViewport() { return prevViewPort; }
 	
-	public double [] getModelViewMatrix() { return modelview_matrix; }
+/*	public double [] getModelViewMatrix() { return modelview_matrix; }
 	public double [] getPrevModelViewMatrix() { return prev_modelview_matrix; }
 	
 	public double [] getProjectiionMatrix() { return projection_matrix; }
-	public double [] getPrevProjectionMatrix() { return prev_projection_matrix; }
+	public double [] getPrevProjectionMatrix() { return prev_projection_matrix; }*/
+	
+	/**
+	 * lower left screen corner in world coordinates
+	 * @return
+	 */
+	public IVector2D getMinCoord() { return minCoord; }
+	
+	/**
+	 * higher right screen corner in world coordinates
+	 * @return
+	 */
+	public IVector2D getMaxCoord() { return maxCoord; }
+	public IVector2D getPrevMinCoord() { return prevMinCoord; }
+	public IVector2D getPrevMaxCoord() { return prevMaxCoord; }
+	
 }
