@@ -78,7 +78,7 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 			}
 	
 			if(modified)
-			PolygonGrid.this.setModified( tilePoly.getMinX(), tilePoly.getMinY() );
+				PolygonGrid.this.setModified( tilePoly.getMinX(), tilePoly.getMinY() );
 			return false;
 		}
 

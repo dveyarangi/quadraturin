@@ -25,7 +25,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	
 	private boolean isFull = false;
 	
-	public MultilayerTilePoly(double minx, double miny, double maxx, double maxy, int layersNum)
+	public MultilayerTilePoly(double minx, double miny, double maxx, double maxy, int layersNum, boolean fill)
 	{
 		this.minx = minx;
 		this.maxx = maxx;
@@ -41,12 +41,15 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		
 		structurePolys = new Poly [layersNum];
 		
-/*		structurePoly = new PolyDefault();
-		structurePoly.add( minx, miny );
-		structurePoly.add( minx, maxy );
-		structurePoly.add( maxx, maxy );
-		structurePoly.add( maxx, miny );*/
-		
+		if(fill) {
+			for(int i = 0; i < layersNum; i ++) {
+				structurePolys[i] = new PolyDefault();
+				structurePolys[i].add( minx, miny );
+				structurePolys[i].add( minx, maxy );
+				structurePolys[i].add( maxx, maxy );
+				structurePolys[i].add( maxx, miny );
+			}
+		}
 		area = AABB.createFromEdges( minx, miny, maxx, maxy, 0 );
 	}
 	
