@@ -51,7 +51,10 @@
 					{ "actionId" : "mouse-release", "buttonId" : 0,    "modeId" : 3 },
 					{ "actionId" : "fire-on",       "buttonId" : -1,   "modeId" : 2 },
 					{ "actionId" : "hold-child",    "buttonId" : -2,   "modeId" : 1 },
-					{ "actionId" : "swarm-debug",   "buttonId" : 84,   "modeId" : 3 }
+					{ "actionId" : "show-sensors",   "buttonId" : 113,   "modeId" : 1 },
+					{ "actionId" : "show-coordinates",   "buttonId" : 112,   "modeId" : 1 },
+					{ "actionId" : "show-areas",   "buttonId" : 114,   "modeId" : 1 },
+					{ "actionId" : "show-bodies",   "buttonId" : 115,   "modeId" : 1 }
 				],
 		"binding action ids" : " 
 					PRESSED = 1;
@@ -79,7 +82,7 @@
 			    	"centerx"  : 0.0,
 			    	"centery"  : 0.0,
 			    	"maxZoom"  : 100,
-			    	"initZoom" : 0.01,
+			    	"initZoom" : 1,
 			    	"minZoom"  : 0.00000000001
 			    },
 			    
