@@ -70,11 +70,13 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 			boolean modified = false;
 			if(substract) 
 			{
-				modified = tilePoly.substract( poly );
+				if(!tilePoly.isEmpty())
+					modified = tilePoly.substract( poly );
 			}
 			else 
 			{
-				modified = tilePoly.add( poly );
+				if(!tilePoly.isFull())
+					modified = tilePoly.add( poly );
 			}
 	
 			if(modified)
