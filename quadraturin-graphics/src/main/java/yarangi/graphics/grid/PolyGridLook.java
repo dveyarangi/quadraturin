@@ -6,6 +6,7 @@ import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q;
+import yarangi.graphics.veils.BlurVeil;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.Tile;
 
@@ -28,9 +29,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	private boolean debug = false;
 	
 	private GLList debugMesh;
-	
-	private IVeil veil;
-	
+		
 	private int [][] listIds;
 	
 	private static final int NO_LIST_ID = -1;

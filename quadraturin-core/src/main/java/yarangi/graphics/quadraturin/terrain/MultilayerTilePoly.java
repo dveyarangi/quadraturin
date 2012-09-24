@@ -31,7 +31,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		this.maxx = maxx;
 		this.miny = miny;
 		this.maxy = maxy;
-		
+		 
 		// used to clip larger than tile polygons
 		borderPoly = new PolyDefault();
 		borderPoly.add( minx, miny );

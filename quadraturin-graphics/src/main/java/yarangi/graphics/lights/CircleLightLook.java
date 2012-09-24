@@ -236,9 +236,9 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		fbo.bindTexture(gl);
 			lightShader.begin(gl);
 				lightShader.setFloat4Uniform(gl, "color", color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-				lightShader.setFloat1Uniform(gl, "height", 0.01f);
+				lightShader.setFloat1Uniform(gl, "height", 0f);
 //				lightShader.setFloat1Uniform(gl, "size", 0.01f);
-				lightShader.setFloat1Uniform(gl, "cutoff",5f);
+				lightShader.setFloat1Uniform(gl, "cutoff",10f);
 				
 				renderTexture(gl, entity);
 			lightShader.end(gl);

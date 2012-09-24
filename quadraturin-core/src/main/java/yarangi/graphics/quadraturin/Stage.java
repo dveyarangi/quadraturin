@@ -59,19 +59,21 @@ public final class Stage
 	 */
 	private final Logger log = Logger.getLogger(this.getClass());
 	
+	private final StageConfig stageConfig;
 	/**
 	 * Create a stage.
 	 * @param frameLength
 	 */
 	private Stage(StageConfig stageConfig, EkranConfig ekranConfig, QVoices voices)
 	{
+		this.stageConfig = stageConfig;
 		
 		for(SceneConfig scene : stageConfig.getScenes())
 		{
 			addScene(scene.createScene(ekranConfig, voices));
 			log.info("Registered scene %s (class: %s)", scene.getName(), scene.getSceneClass());
 		}
-		setScene( stageConfig.getInitialScene() );
+		
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +167,13 @@ public final class Stage
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SERVICE
+
+	public void setInitialScene()
+	{	
+		setScene(stageConfig.getInitialScene());
+		
+	}
+		
 	
 
 }

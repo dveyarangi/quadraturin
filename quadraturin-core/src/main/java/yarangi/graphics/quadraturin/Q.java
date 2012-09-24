@@ -67,7 +67,11 @@ public class Q
 
 		container.start();
 		
-		return container.getStage();
+		Stage stage = container.getStage();
+		
+		stage.setInitialScene(  );
+		
+		return stage;
 	}
 
 	public static IRenderingContext getRenderingContext()

@@ -9,6 +9,7 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
+import yarangi.math.BitUtils;
 
 /**
  * Allows rendering into separate frame buffer, for post-processing effects.
@@ -35,8 +36,8 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	public void init(GL gl, IRenderingContext context) {
 		this.width = context.getViewPort().getWidth();
 		this.height = context.getViewPort().getHeight();
-		int textureWidth = width;//BitUtils.po2Ceiling(width);
-		int textureHeight = height;//BitUtils.po2Ceiling(height);
+		int textureWidth = BitUtils.po2Ceiling(width/16);
+		int textureHeight = BitUtils.po2Ceiling(height/16);
 		veil = FBO.createFBO(gl, textureWidth, textureHeight, true);
 		
 		if(veil == null)
