@@ -1,6 +1,7 @@
 package yarangi.graphics.grid;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import javax.media.opengl.GL;
 
@@ -17,27 +18,36 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 
 	protected boolean depthtest, blend;
 	protected boolean isVisible = true;
+	
+	protected final G grid;
 
-	public GridLook(boolean depthtest, boolean blend)
+	public GridLook(G grid, boolean depthtest, boolean blend)
 	{
 		this.depthtest = depthtest;
 		this.blend = blend;
+		pendingTiles = new LinkedList <Tile<O>> ();
+		
+		this.grid = grid;
+		
+		grid.setModificationListener( this );
 	}
 	
 	public boolean isVisible() { return isVisible; }
 	public void setVisible(boolean isVisible) { this.isVisible = isVisible; }
 	
 	@Override
-	public void tilesModified(Collection<Tile<O>> tiles)
+	public void tilesModified(Tile<O> tile)
 	{
-		pendingTiles = tiles;
+		pendingTiles.add( tile );
 	}
 
 	@Override
 	public void init(GL gl, IRenderingContext context) {}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) {}
+	public void destroy(GL gl, IRenderingContext context) {
+		grid.setModificationListener( null );
+	}
 
 	@Override
 	public final void render(GL gl, G entity, IRenderingContext context)
@@ -49,6 +59,8 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 		if(isVisible)
 			renderGrid( gl, entity, context );
 		gl.glPopAttrib();
+		
+		pendingTiles.clear();
 	}
 	
 	public abstract void renderGrid(GL gl, G entity, IRenderingContext context);

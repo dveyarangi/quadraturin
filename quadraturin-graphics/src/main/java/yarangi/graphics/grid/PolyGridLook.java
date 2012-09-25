@@ -32,13 +32,10 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	
 	private static final int NO_LIST_ID = -1;
 	
-	private final G grid;
-	
 	public PolyGridLook(G grid, boolean depthtest, boolean blend)
 	{
-		super( depthtest, blend );
-		
-		this.grid = grid;
+		super( grid, depthtest, blend );
+
 	}
 	
 	@Override
@@ -47,8 +44,6 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		super.init( gl, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
-		
-		grid.setModificationListener( this );
 		
 		updateLists( gl, grid );
 		
@@ -99,7 +94,6 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	@Override
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		grid.setModificationListener( null );
 		
 		// destroying lists:
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
@@ -138,8 +132,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 					
 				gl.glEndList();
 			}
-			
-			pendingTiles = null;
+
 		}
 	}
 	

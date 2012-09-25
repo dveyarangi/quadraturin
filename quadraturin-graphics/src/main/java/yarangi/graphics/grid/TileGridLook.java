@@ -38,14 +38,10 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	private GLList debugMesh;
 	
 	private IVeil veil;
-	
-	private final G grid;
 
 	public TileGridLook(G grid, boolean depthtest, boolean blend)
 	{
-		super(depthtest, blend);
-		
-		this.grid = grid;
+		super( grid, depthtest, blend);
 	}
 	
 	@Override
@@ -72,8 +68,6 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 		fbo = FBO.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
 		Q.rendering.debug( "Created terrain FBO - id:" + fbo.getFboId());
-		
-		grid.setModificationListener( this );
 		
 		updateFrameBuffer( gl, context, grid );
 		
@@ -125,8 +119,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	public void destroy(GL gl, IRenderingContext context)
 	{
 		super.destroy( gl, context );
-		grid.setModificationListener( null );
-		
+
 		fbo.destroy( gl );
 	}
 	
@@ -174,8 +167,6 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 			for(Tile<O> tile : pendingTiles)
 				renderTile(gl, context, tile, grid, scale);
 			endFrameBufferSpace( gl );
-			
-			pendingTiles = null;
 		}
 	}
 	
