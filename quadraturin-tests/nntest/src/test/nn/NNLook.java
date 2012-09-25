@@ -10,7 +10,7 @@ public class NNLook implements ILook<NNEntity>
 {
 
 	@Override
-	public void init(GL gl, NNEntity entity, IRenderingContext context)
+	public void init(GL gl, IRenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		
@@ -37,7 +37,7 @@ public class NNLook implements ILook<NNEntity>
 	}
 
 	@Override
-	public void destroy(GL gl, NNEntity entity, IRenderingContext context)
+	public void destroy(GL gl, IRenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		

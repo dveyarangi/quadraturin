@@ -33,7 +33,7 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 	}
 
 	@Override
-	public void init(GL gl, SceneLayer entity, IRenderingContext context) { }
+	public void init(GL gl, IRenderingContext context) { }
 
 	@Override
 	public void render(GL gl, SceneLayer entity, IRenderingContext context)
@@ -86,7 +86,7 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 	}
 
 	@Override
-	public void destroy(GL gl, SceneLayer entity, IRenderingContext context) { }
+	public void destroy(GL gl, IRenderingContext context) { }
 
 	@Override
 	public float getPriority() { return 0; }

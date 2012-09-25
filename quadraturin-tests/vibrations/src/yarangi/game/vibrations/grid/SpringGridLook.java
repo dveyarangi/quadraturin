@@ -12,9 +12,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 {
 	public static final int SIZE = 3;
 	@Override
-	public void init(GL gl, SpringGrid entity, IRenderingContext context)
-	{
-	}
+	public void init(GL gl, IRenderingContext context){}
 
 	@Override
 	public void render(GL gl, SpringGrid entity, IRenderingContext context)
@@ -43,9 +41,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 	}
 
 	@Override
-	public void destroy(GL gl, SpringGrid entity, IRenderingContext context)
-	{
-	}
+	public void destroy(GL gl, IRenderingContext context){}
 
 	@Override
 	public float getPriority()

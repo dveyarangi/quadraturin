@@ -115,21 +115,8 @@ public class Swing2DContainer extends JFrame
 									cursorImg, new Point(0, 0), "blank cursor");
 		getContentPane().setCursor(blankCursor);	*/	
 		
-		log.trace("Linking shutdown hook...");
-		// TODO: add real JVM shutdown hook
-		this.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				log.trace("Window closing event detected.");
-				safeStop();
-					
-				Swing2DContainer.this.dispose();
-				log.trace("Terminating JVM...");
-				System.exit(-1);
-			}
-		});
-		
+	    
+	    
 		log.debug("Creating thread chain...");
 		
 		if(Debug.ON)
@@ -151,9 +138,13 @@ public class Swing2DContainer extends JFrame
 	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
 		log.trace("Entity stage animator created.");
 		
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // creating render:
 		log.debug("Creating GL listener...");
 		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, animator, chain);
 		
+	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	    // creating engine stage, that handles scene loading and switching:
 		log.debug("Creating entity stage...");
 		try {
 			stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
@@ -190,22 +181,28 @@ public class Swing2DContainer extends JFrame
 		
 	    log.trace("Organizing swing frame...");
 		this.setName(applicationName);
-		this.setLocationRelativeTo(null);
+		
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenResolution =  toolkit.getScreenSize();
 		Dimension resolution;
 		if(config.getEkranConfig().isFullscreen()) {
 			
 			this.setUndecorated( true ); // remove window border
-			Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 			// Get the current screen size
-			resolution = toolkit.getScreenSize();
+			resolution = screenResolution;
 			this.setLocation( 0, 0 );
 		}
 		else 
 		{
-			
+			// moving game window to screen center:
+			this.setLocation( screenResolution. width/2 - config.getEkranConfig().getXres()/2, 
+							  screenResolution.height/2 - config.getEkranConfig().getYres()/2 );
 			resolution = new Dimension(config.getEkranConfig().getXres(), config.getEkranConfig().getYres());
 		}
+		
+		// adding JVM shutdown callback:
+	    linkShutdownHook();
 		
 		log.debug("OpenGL canvas dimensions are [" + resolution.width + "," + resolution.height + "].");
 		canvas.setMinimumSize(resolution);
@@ -217,31 +214,22 @@ public class Swing2DContainer extends JFrame
 		this.pack();
 		
 		
-		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// All done
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
 	}
-	
+
 	/**
 	 * Starts the animation.
 	 */
 	public void start()
 	{
 		
-		chain.start();
+		chain.start(); // starting game loop
 		
-		this.setVisible(true);
+		this.setVisible(true); // making game window visible
 		canvas.requestFocusInWindow();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setVisible(boolean visible)
-	{
-		super.setVisible(visible);
-		canvas.requestFocus();
 	}
 	
 	/**
@@ -296,4 +284,24 @@ public class Swing2DContainer extends JFrame
 	{
 		return controller.getRenderingContext();
 	}
+	
+	
+	private void linkShutdownHook()
+	{
+		log.trace("Linking shutdown hook...");
+		// TODO: add real JVM shutdown hook
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				log.trace("Window closing event detected.");
+				safeStop();
+					
+				Swing2DContainer.this.dispose();
+				log.trace("Terminating JVM...");
+				System.exit(-1);
+			}
+		});
+	}
+
 }

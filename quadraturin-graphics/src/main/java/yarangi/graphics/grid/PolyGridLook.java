@@ -4,9 +4,7 @@ import javax.media.opengl.GL;
 
 import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q;
-import yarangi.graphics.veils.BlurVeil;
 import yarangi.spatial.IGrid;
 import yarangi.spatial.Tile;
 
@@ -34,16 +32,19 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	
 	private static final int NO_LIST_ID = -1;
 	
+	private final G grid;
 	
-	public PolyGridLook(boolean depthtest, boolean blend)
+	public PolyGridLook(G grid, boolean depthtest, boolean blend)
 	{
 		super( depthtest, blend );
+		
+		this.grid = grid;
 	}
 	
 	@Override
-	public void init(GL gl, G grid, IRenderingContext context)
+	public void init(GL gl, IRenderingContext context)
 	{
-		super.init( gl, grid, context );
+		super.init( gl, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
 		
@@ -96,7 +97,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 
 
 	@Override
-	public void destroy(GL gl, G grid, IRenderingContext context)
+	public void destroy(GL gl, IRenderingContext context)
 	{
 		grid.setModificationListener( null );
 		

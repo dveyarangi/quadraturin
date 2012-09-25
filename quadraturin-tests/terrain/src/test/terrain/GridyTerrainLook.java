@@ -15,9 +15,9 @@ import yarangi.spatial.Tile;
 public class GridyTerrainLook extends TileGridLook<Bitmap, GridyTerrainMap>
 {
 
-	public GridyTerrainLook(boolean depthtest, boolean blend)
+	public GridyTerrainLook(GridyTerrainMap grid, boolean depthtest, boolean blend)
 	{
-		super( depthtest, blend );
+		super( grid, depthtest, blend );
 		// TODO Auto-generated constructor stub
 	}
 	@Override

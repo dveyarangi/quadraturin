@@ -27,17 +27,21 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	
 	private GLSLShader lightShader;
 	
-	private int textureSize;
+	private final int textureSize;
 	private final GLU glu = new GLU();
 	IntBuffer viewport = IntBuffer.allocate(4);
 	DoubleBuffer model = DoubleBuffer.allocate(16);
 	DoubleBuffer proj = DoubleBuffer.allocate(16);
 	DoubleBuffer res= DoubleBuffer.allocate(3);
 	
+	public CircleLight2Look(int size)
+	{
+		textureSize = BitUtils.po2Ceiling(size);
+	}
+	
 	@Override
-	public void init(GL gl, K entity, IRenderingContext context) {
+	public void init(GL gl, IRenderingContext context) {
 		
-		textureSize = BitUtils.po2Ceiling((int)(entity.getEntitySensor().getRadius()*2));
 //		System.out.println(size + " : " + entity.getLightRadius()*2);
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
 		
@@ -190,7 +194,7 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void destroy(GL gl, K entity, IRenderingContext context) 
+	public void destroy(GL gl, IRenderingContext context) 
 	{
 		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);
 	}

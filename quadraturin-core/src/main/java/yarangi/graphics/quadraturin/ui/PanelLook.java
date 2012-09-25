@@ -20,10 +20,10 @@ public class PanelLook implements ILook <Overlay>
 	}
 
 	@Override
-	public void init(GL gl, Overlay entity, IRenderingContext context)
+	public void init(GL gl, IRenderingContext context)
 	{
-		if(!(entity.getArea() instanceof AABB))
-			throw new IllegalArgumentException(this.getClass() + " look supports only " + AABB.class + " area.");
+//		if(!(entity.getArea() instanceof AABB))
+//			throw new IllegalArgumentException(this.getClass() + " look supports only " + AABB.class + " area.");
 	}
 
 	@Override
@@ -45,9 +45,7 @@ public class PanelLook implements ILook <Overlay>
 	}
 
 	@Override
-	public void destroy(GL gl, Overlay entity, IRenderingContext context)
-	{
-	}
+	public void destroy(GL gl, IRenderingContext context){}
 
 	@Override
 	public float getPriority()

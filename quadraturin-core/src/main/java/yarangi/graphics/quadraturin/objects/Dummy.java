@@ -22,9 +22,9 @@ public class Dummy extends Entity
 			@Override
 			public void render(GL gl, E entity, IRenderingContext context) {}
 			@Override
-			public void init(GL gl, E entity, IRenderingContext context) { } 
+			public void init(GL gl, IRenderingContext context) { } 
 			@Override
-			public void destroy(GL gl, E entity, IRenderingContext context) { }
+			public void destroy(GL gl, IRenderingContext context) { }
 			@Override
 			public boolean isCastsShadow() { return false; }
 			@Override

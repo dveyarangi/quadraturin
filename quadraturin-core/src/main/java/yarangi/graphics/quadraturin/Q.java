@@ -69,7 +69,7 @@ public class Q
 		
 		Stage stage = container.getStage();
 		
-		stage.setInitialScene(  );
+		stage.setInitialScene( );
 		
 		return stage;
 	}

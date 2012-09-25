@@ -159,45 +159,51 @@ public class Entity implements IEntity
 	@SuppressWarnings("unchecked")
 	public void init(GL gl, IRenderingContext context)
 	{
-		look.init( gl, this, context );
+		look.init( gl, context );
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void render(GL gl,IRenderingContext context)
 	{
-		if(look.isOriented()) {
-			Area area = getArea();
-	
-			// storing transformation matrix:
-			gl.glMatrixMode( GL.GL_MODELVIEW );
-			gl.glPushMatrix();
-	//		gl.glLoadIdentity(); 	
-			
-			// transforming into entity coordinates:
-			if(area == null)
-				gl.glTranslatef(0, 0, 0); // just adjusting priority
-			else
-			{
-				float priority = -look.getPriority();
-				gl.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
-				gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
-			}
-		}
-		
+
+		if(look.isOriented())
+			useEntityCoordinates(gl);
 		look.render(gl, this, context);
+		if(look.isOriented())
+			useWorldCoordinates(gl);
 		
-		if(look.isOriented()) {
-			gl.glMatrixMode( GL.GL_MODELVIEW );
-			gl.glPopMatrix();
+	}
+	public void useEntityCoordinates(GL gl) {
+		Area area = getArea();
+		
+		// storing transformation matrix:
+		gl.glMatrixMode( GL.GL_MODELVIEW );
+		gl.glPushMatrix();
+//		gl.glLoadIdentity(); 	
+		
+		// transforming into entity coordinates:
+		if(area == null)
+			gl.glTranslatef(0, 0, 0); // just adjusting priority
+		else
+		{
+			float priority = -look.getPriority();
+			gl.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
+			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		}
+
+	}
+	
+	public void useWorldCoordinates(GL gl) {
+		gl.glMatrixMode( GL.GL_MODELVIEW );
+		gl.glPopMatrix();
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		look.destroy( gl, this, context );
+		look.destroy( gl, context );
 	}
 
 	@SuppressWarnings("unchecked")

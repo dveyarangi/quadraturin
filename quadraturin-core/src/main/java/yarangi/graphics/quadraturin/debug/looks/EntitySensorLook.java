@@ -13,7 +13,7 @@ public class EntitySensorLook implements ILook <IEntity>
 	
 
 	@Override
-	public void init(GL gl, IEntity entity, IRenderingContext context) { }
+	public void init(GL gl, IRenderingContext context) { }
 
 	@Override
 	public void render(GL gl, IEntity entity, IRenderingContext context)
@@ -34,7 +34,7 @@ public class EntitySensorLook implements ILook <IEntity>
 	}
 
 	@Override
-	public void destroy(GL gl, IEntity entity, IRenderingContext context) { }
+	public void destroy(GL gl, IRenderingContext context) { }
 
 	@Override
 	public float getPriority() { return 0; }

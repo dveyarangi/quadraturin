@@ -17,9 +17,7 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 	private int gridMeshId;
 
 	@Override
-	public void init(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
-	{
-	}
+	public void init(GL gl, IRenderingContext context) {}
 
 	@Override
 	public void render(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
@@ -107,9 +105,7 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 	}
 
 	@Override
-	public void destroy(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
-	{
-	}
+	public void destroy(GL gl, IRenderingContext context) {}
 
 	@Override
 	public boolean isCastsShadow() { return false; }

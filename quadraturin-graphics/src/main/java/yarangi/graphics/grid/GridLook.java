@@ -34,14 +34,10 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 	}
 
 	@Override
-	public void init(GL gl, G grid, IRenderingContext context)
-	{
-	}
+	public void init(GL gl, IRenderingContext context) {}
 
 	@Override
-	public void destroy(GL gl, G entity, IRenderingContext context)
-	{
-	}
+	public void destroy(GL gl, IRenderingContext context) {}
 
 	@Override
 	public final void render(GL gl, G entity, IRenderingContext context)

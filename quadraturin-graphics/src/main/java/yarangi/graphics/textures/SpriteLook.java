@@ -52,7 +52,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	 * @return texture object handler
 	 */
 	@Override
-	public void init(GL gl, T entity, IRenderingContext defaultContext) 
+	public void init(GL gl, IRenderingContext defaultContext) 
 	{
 		if(isInited)
 			return;
@@ -161,7 +161,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	}
 
 	@Override
-	public void destroy(GL gl, T entity, IRenderingContext defaultContext) 
+	public void destroy(GL gl, IRenderingContext defaultContext) 
 	{
 		// TODO: something is fishy around here
 //		gl.glDeleteTextures(1, textureHandle);

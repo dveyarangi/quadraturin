@@ -1,7 +1,5 @@
 package yarangi.graphics.quadraturin;
 
-import gnu.trove.map.hash.TObjectIntHashMap;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,6 +16,8 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import com.spinn3r.log5j.Logger;
 
 /**
@@ -43,8 +43,8 @@ public class DefaultRenderingContext implements IRenderingContext
 	
 	private float currFrameLength;
 	
-	private final List <IVisible> entities = new LinkedList <IVisible> ();
-	private final TObjectIntHashMap <ILook> looks = new TObjectIntHashMap <ILook> ();
+//	private final List <IVisible> entities = new LinkedList <IVisible> ();
+	private final Multimap <ILook<?>, IVisible> looks = LinkedListMultimap.<ILook<?>, IVisible>create();
 	
 	
 	private final Set <String> lookClasses = new HashSet <String> ();
@@ -52,12 +52,12 @@ public class DefaultRenderingContext implements IRenderingContext
 	/**
 	 * Queue of entities waiting to be initialized.
 	 */
-	private final Queue <IVisible> bornEntities = new LinkedList<IVisible> ();
+	private final Queue <ILook<?>> bornLooks = new LinkedList<ILook<?>> ();
 
 	/**
 	 * Queue of dead entities to be cleaned up.
 	 */
-	private final Queue <IVisible> deadEntities = new LinkedList <IVisible> ();
+	private final Queue <ILook<?>> deadLooks = new LinkedList <ILook<?>> ();
 	
 	private ViewPoint2D viewPoint;
 	
@@ -195,15 +195,15 @@ public class DefaultRenderingContext implements IRenderingContext
 	protected void render(GL gl)
 	{
 		// injecting new entities
-		while(!bornEntities.isEmpty())
+		while(!bornLooks.isEmpty())
 		{
-			IVisible born = bornEntities.poll();
+			ILook<?> born = bornLooks.poll();
 			born.init( gl, this );
 		}
 		
-		while(!deadEntities.isEmpty())
+		while(!deadLooks.isEmpty())
 		{
-			IVisible dead = deadEntities.poll();
+			ILook<?> dead = deadLooks.poll();
 			dead.destroy( gl, this );
 		}
 		
@@ -216,19 +216,26 @@ public class DefaultRenderingContext implements IRenderingContext
 //			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
 			// TODO: do the viewport clipping already, you lazy me!
 //			System.out.println("BEGIN ======================================================");
-			for(IVisible entity : entities)
+			for(ILook<?> look : looks.keySet())
 			{
 				// TODO: sort by veil, then weave and tear once
-				veil = entity.getLook().getVeil();
+				veil = look.getVeil();
 //				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
 				
 				if(veil != null)
-					veil.weave( gl, entity, this );
-				entity.render( gl,  this );
+					veil.weave( gl, this );
+				for(IVisible entity : looks.get( look )) {
+//					System.out.println(entity);
+					entity.render( gl,  this );
+				}
 				if(veil != null)
 					veil.tear( gl );
+
+				if(Debug.ON)
+				for(IVisible entity : looks.get( look ))
+					assert Debug.renderEntityOverlay(gl, entity, this);
 				
-				assert Debug.renderEntityOverlay(gl, entity, this);
+
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
 //			root.display(gl, time, context);
@@ -273,24 +280,25 @@ public class DefaultRenderingContext implements IRenderingContext
 	public void addVisible(IVisible entity)
 	{
 		lookClasses.add(entity.getLook().getClass().toString());
-		int count = looks.get( entity.getLook() );
-		if(count == 0)
-			bornEntities.add(entity);
+		Collection <IVisible> entities = looks.get( entity.getLook() );
+//		System.out.println(entity.getLook());
+		if(entities.size() == 0)
+			bornLooks.add(entity.getLook());
 
-		looks.put( entity.getLook(), count+1 );
+		looks.put( entity.getLook(), entity );
 		entities.add( entity );
 	}
 	
 	@Override
 	public void removeVisible(IVisible entity)
 	{
-		int count = looks.get( entity.getLook() );
-		if(count == 1) {
-			looks.remove( entity.getLook() );
-			deadEntities.add( entity );
+		Collection <IVisible> entities = looks.get( entity.getLook() );
+		if(entities.size() == 1) {
+			looks.removeAll( entity.getLook() );
+			deadLooks.add( entity.getLook() );
 		}
 		else
-			looks.put( entity.getLook(), count - 1 );
+			looks.remove( entity.getLook(), entity );
 		
 		entities.remove( entity );
 		

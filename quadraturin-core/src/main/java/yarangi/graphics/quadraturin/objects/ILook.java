@@ -18,11 +18,14 @@ public interface ILook <An>
 	
 	/**
 	 * Initiate graphics (textures, meshes, etc.)
+	 * If this look instance  is used for multiple entities, this method will be called ony one time,
+	 * with the first entity passed as parameters 
+	 * 
 	 * @param gl
 	 * @param entity
 	 * @param context some global rendering properties
 	 */
-	public void init(GL gl, An entity, IRenderingContext context);
+	public void init(GL gl, IRenderingContext context);
 	
 	/**
 	 * Renders this entity.
@@ -40,7 +43,7 @@ public interface ILook <An>
 	 * @param context some global rendering properties
 	 * 
 	 */
-	public void destroy(GL gl, An entity, IRenderingContext context);
+	public void destroy(GL gl, IRenderingContext context);
 
 	/**
 	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)

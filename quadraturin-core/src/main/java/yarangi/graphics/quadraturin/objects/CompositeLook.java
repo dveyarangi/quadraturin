@@ -35,9 +35,9 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 	}
 
 	@Override
-	public void init(GL gl, E entity, IRenderingContext context) {
+	public void init(GL gl, IRenderingContext context) {
 		for(ILook <E> look : chain)
-			look.init(gl, entity, context);
+			look.init(gl, context);
 	}
 
 	@Override
@@ -50,9 +50,9 @@ public abstract class CompositeLook <E extends ILayerObject> implements ILook <E
 	}
 
 	@Override
-	public void destroy(GL gl, E entity, IRenderingContext context) {
+	public void destroy(GL gl,  IRenderingContext context) {
 		for(ILook <E> look : chain)
-			look.destroy(gl, entity, context);
+			look.destroy(gl, context);
 	}
 
 	@Override

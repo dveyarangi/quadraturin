@@ -2,12 +2,18 @@ package yarangi.graphics.quadraturin;
 
 import java.awt.Point;
 
+import javax.media.opengl.GL;
+
 import yarangi.graphics.quadraturin.objects.ILayerObject;
+import yarangi.graphics.quadraturin.objects.ILook;
+import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.graphics.quadraturin.ui.Panel;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import com.spinn3r.log5j.Logger;
 
 public class UserLayer extends SceneLayer <Overlay>
@@ -22,6 +28,8 @@ public class UserLayer extends SceneLayer <Overlay>
 	private final double halfWidth, halfHeight;
 	
 	private final PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
+	
+	private final Multimap <IVisible, ILook> overlays = LinkedListMultimap.<IVisible, ILook>create(); 
 	
 	// TODO: overlay spatial filter
 
@@ -59,7 +67,6 @@ public class UserLayer extends SceneLayer <Overlay>
 		return basePanel;
 	}
 	
-/*	@Override
 	public void display(GL gl, IRenderingContext context) 
 	{
 		if(basePanel.getViewPort() != context.getViewPort())
@@ -74,16 +81,16 @@ public class UserLayer extends SceneLayer <Overlay>
 			log.debug("Creating new spatial hash map (" + width + "x" +height + ")");
 			setEntityIndex( new SpatialHashMap<Overlay>(width*height/100, 10, width, height) );
 			
-			for(Overlay overlay : getEntities())
-				if(overlay.isIndexed())
-					getEntityIndex().add( overlay.getArea(), overlay );
+//			for(Overlay overlay : getEntities())
+//				if(overlay.isIndexed())
+//					getEntityIndex().add( overlay.getArea(), overlay );
 		}
 		
 //		if(Debug.ON)
 //			Debug.drawUserLayerOverlay(gl, this, context);
 		
-		super.display( gl, context );
-	}*/
+//		super.display( gl, context );
+	}
 
 	public ILayerObject processPick(Point canvasLocation)
 	{

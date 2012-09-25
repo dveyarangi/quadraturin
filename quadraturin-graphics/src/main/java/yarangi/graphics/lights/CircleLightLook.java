@@ -58,28 +58,29 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	private Color color;
 	
 
-	public CircleLightLook()
+	public CircleLightLook(int size)
 	{
-		this.color = new Color(1,1,1,1);
+		this(size, new Color(1,1,1,1));
 	}
 	
-	public CircleLightLook(Color color)
+	public CircleLightLook(int size, Color color)
 	{
 		this.color = color;
+
+//		if(entity.getEntitySensor() != null)
+//			size = (int)(entity.getEntitySensor().getRadius()*2.);
+//		else
+//			size = (int)(entity.getTerrainSensor().getRadius()*2.);
+		textureSize = BitUtils.po2Ceiling(size);
+
 	}
 	
 	@Override
-	public void init(GL gl, K entity, IRenderingContext context) {
+	public void init(GL gl, IRenderingContext context) {
 		
 		// rounding texture size to power of 2:
 		// TODO: enable non-square textures
 
-		int size;
-		if(entity.getEntitySensor() != null)
-			size = (int)(entity.getEntitySensor().getRadius()*2.);
-		else
-			size = (int)(entity.getTerrainSensor().getRadius()*2.);
-		textureSize = BitUtils.po2Ceiling(size);
 
 		// create rendering buffer
 		fbo = FBO.createFBO(gl, textureSize, textureSize, true);
@@ -274,7 +275,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void destroy(GL gl, K entity, IRenderingContext context) 
+	public void destroy(GL gl, IRenderingContext context) 
 	{
 		fbo.destroy(gl);
 	}

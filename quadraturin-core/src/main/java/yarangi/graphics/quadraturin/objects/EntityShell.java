@@ -13,6 +13,7 @@ import yarangi.graphics.quadraturin.IRenderingContext;
  *
  * @param <E> essence type
  */
+@SuppressWarnings("unchecked")
 public class EntityShell <E> extends Entity
 {
 	/**
@@ -40,7 +41,7 @@ public class EntityShell <E> extends Entity
 	@Override
 	public void init(GL gl, IRenderingContext context)
 	{
-		getLook().init( gl, essence, context );
+		getLook().init( gl, context );
 	}
 	
 	@Override
@@ -53,7 +54,7 @@ public class EntityShell <E> extends Entity
 	@Override
 	public void destroy(GL gl, IRenderingContext context)
 	{
-		getLook().destroy( gl, essence, context );
+		getLook().destroy( gl, context );
 	}
 
 	@Override

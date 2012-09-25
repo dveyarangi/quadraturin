@@ -39,7 +39,7 @@ public class StoneFactory implements ITerrainFactory <GridyTerrainMap>
 		    }
 		}
 
-		GridyTerrainLook look = new GridyTerrainLook(true, true);
+		GridyTerrainLook look = new GridyTerrainLook(terrain, true, true);
 		look.setDebugOverlay( true );
 		return new EntityShell<GridyTerrainMap>( terrain, new GridyTerrainBehavior(), look );
 	}

@@ -38,16 +38,20 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	private GLList debugMesh;
 	
 	private IVeil veil;
+	
+	private final G grid;
 
-	public TileGridLook(boolean depthtest, boolean blend)
+	public TileGridLook(G grid, boolean depthtest, boolean blend)
 	{
 		super(depthtest, blend);
+		
+		this.grid = grid;
 	}
 	
 	@Override
-	public void init(GL gl, G grid, IRenderingContext context)
+	public void init(GL gl, IRenderingContext context)
 	{
-		super.init( gl, grid, context );
+		super.init( gl, context );
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
  		this.dimensions = getFBODimensions( context, grid );
@@ -99,7 +103,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 //		fbo.unbind( gl );
 //		gl.glDisable( GL.GL_DEPTH_TEST );
 		if(veil != null)
-			veil.weave( gl, null, context );
+			veil.weave( gl, context );
 		fbo.bindTexture(gl);
 			gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f( 0, 1, 0, 1 );
@@ -118,9 +122,9 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 
 
 	@Override
-	public void destroy(GL gl, G grid, IRenderingContext context)
+	public void destroy(GL gl, IRenderingContext context)
 	{
-		super.destroy( gl, grid, context );
+		super.destroy( gl, context );
 		grid.setModificationListener( null );
 		
 		fbo.destroy( gl );

@@ -44,10 +44,10 @@ public interface IRenderingContext
 	
 	public float getFrameLength();
 
-	public void addVisible(IVisible entity);
-	
-	public void removeVisible(IVisible entity);
-
 	public ViewPoint2D getViewPoint();
+
+	void removeVisible(IVisible entity);
+
+	void addVisible(IVisible entity);
 
 }

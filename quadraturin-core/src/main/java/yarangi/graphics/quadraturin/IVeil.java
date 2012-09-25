@@ -22,7 +22,7 @@ public interface IVeil
 	 * @param entity
 	 * @param context
 	 */
-	public void weave(GL gl, IVisible entity, IRenderingContext context);
+	public void weave(GL gl, IRenderingContext context);
 	
 	/**
 	 * Marks end of the veil rendering.

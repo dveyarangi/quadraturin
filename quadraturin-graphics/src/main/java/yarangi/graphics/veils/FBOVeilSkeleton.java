@@ -65,7 +65,7 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	 * @param gl
 	 */
 	@Override
-	public void weave(GL gl, IVisible entity, IRenderingContext context)
+	public void weave(GL gl, IRenderingContext context)
 	{
 		veil.bind(gl);
 //		gl.glPushAttrib( COLOR )
