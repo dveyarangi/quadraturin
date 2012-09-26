@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.physics.IPhysicalObject;
 import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
 
-public class RoughCollider <B extends IPhysicalObject, T extends IPhysicalObject> implements ICollider <B>
+public class RoughCollider <B extends IPhysicalObject, T extends ITerrain> implements ICollider <B>
 {
 	
 	/**
@@ -122,7 +123,11 @@ public class RoughCollider <B extends IPhysicalObject, T extends IPhysicalObject
 			if(!source.isAlive())
 				return true;
 			
-			return collide(source, target);
+			// 
+//			System.out.println(source + " : " + target);
+			if(	target.overlaps( (AABB)source.getArea() ) )
+					return collide(source, target);
+			return false;
 		}
 
 		public final void setSource(B source) { this.source = source; }

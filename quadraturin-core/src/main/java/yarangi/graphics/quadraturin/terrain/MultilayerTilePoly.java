@@ -187,5 +187,17 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	public final double getMinX() { return minx; }
 	@Override
 	public final double getMinY() { return miny; }
+
+	@Override
+	public boolean overlaps(AABB aabb)
+	{
+		if(isEmpty())
+			return false;
+		if(isFull())
+			return true;
+		
+		// TODO: make and use structurePolys[0].intersects(AABB) boolean 
+		return true;
+	}
 	
 }
