@@ -15,6 +15,7 @@ import yarangi.graphics.quadraturin.config.IQuadConfig;
 import yarangi.graphics.quadraturin.config.QuadConfigFactory;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.debug.DebugThreadChain;
+import yarangi.graphics.quadraturin.threads.ITerminationListener;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
 
@@ -31,7 +32,7 @@ import com.spinn3r.log5j.Logger;
  * <i>Object-oriented programming is an exceptionally bad idea which could only have originated in California.</i> 
  *                                                                                                -- Edsger Dijkstra
  */
-public class Swing2DContainer extends JFrame
+public class Swing2DContainer extends JFrame implements ITerminationListener
 {
 
 	private static final long serialVersionUID = 5840442002396512390L;
@@ -120,9 +121,9 @@ public class Swing2DContainer extends JFrame
 		log.debug("Creating thread chain...");
 		
 		if(Debug.ON)
-			chain = new DebugThreadChain(100);
+			chain = new DebugThreadChain(100, this);
 		else
-			chain = new ThreadChain("q-chain");
+			chain = new ThreadChain("q-chain", this);
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing event manager:
@@ -302,6 +303,12 @@ public class Swing2DContainer extends JFrame
 				System.exit(-1);
 			}
 		});
+	}
+
+	@Override
+	public void onGeneralError()
+	{
+		System.exit( 1 );
 	}
 
 }

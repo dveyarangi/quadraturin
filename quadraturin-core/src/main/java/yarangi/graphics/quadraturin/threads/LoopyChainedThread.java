@@ -20,9 +20,9 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 	/**
 	 * Thread runnable
 	 */
-	private Loopy loopy; 
+	private final Loopy loopy; 
 	
-	private Thread thread;
+	private final Thread thread;
 			
 	public LoopyChainedThread(String name, ThreadChain parentChain, Loopy loopy)
 	{
@@ -33,6 +33,7 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 		this.loopy = loopy;
 	}
 	
+	@Override
 	public void start()
 	{
 		thread.start();
@@ -44,6 +45,7 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 	 * The body of this thread contains an endless (under certain assertions) loop.
 	 * Each iteration is performed once after previous thread's iteration has finished.
 	 */
+	@Override
 	public void run()
 	{
 		log.debug("Started thread.");
@@ -71,7 +73,7 @@ public class LoopyChainedThread extends ChainedThreadSkeleton implements Runnabl
 				
 			}
 		}
-		catch(Throwable e) {
+		catch(Error e) {
 			// uncaught errors for debug:
 			log.error( "General error.", e );
 			super.getParentChain().reportGeneralError(this, e);

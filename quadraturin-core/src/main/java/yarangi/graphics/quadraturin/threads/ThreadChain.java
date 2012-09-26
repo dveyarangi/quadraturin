@@ -37,9 +37,16 @@ public class ThreadChain
 	 */
 	private final ArrayList <IChainedThread> threads = new ArrayList <IChainedThread> ();
 	
+	/**
+	 * General failure listener
+	 */
+	private final ITerminationListener listener;
+	
 
-	public ThreadChain(String name) { // flight is steady, 10000m below the wing
+	public ThreadChain(String name, ITerminationListener listener) { // flight is steady, 10000m below the wing
 		this.name = name;
+		
+		this.listener = listener;
 																																								}
 	/**
 	 * Add a thread into the execution chain.
@@ -145,6 +152,10 @@ public class ThreadChain
 	
 	public void reportGeneralError(IChainedThread thread, Throwable e)
 	{
+		
 		stop();
+		
+		if(listener != null)
+			listener.onGeneralError();
 	}
 }

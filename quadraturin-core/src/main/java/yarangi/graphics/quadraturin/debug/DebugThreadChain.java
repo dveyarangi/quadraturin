@@ -3,6 +3,7 @@ package yarangi.graphics.quadraturin.debug;
 import com.spinn3r.log5j.Logger;
 
 import yarangi.graphics.quadraturin.threads.IChainedThread;
+import yarangi.graphics.quadraturin.threads.ITerminationListener;
 import yarangi.graphics.quadraturin.threads.Loopy;
 import yarangi.graphics.quadraturin.threads.LoopyChainedThread;
 import yarangi.graphics.quadraturin.threads.ThreadChain;
@@ -38,9 +39,9 @@ public class DebugThreadChain extends ThreadChain
 	/**
 	 * @param iterations number of iterations for statistics calculation
 	 */
-	public DebugThreadChain(int iterations)
+	public DebugThreadChain(int iterations, ITerminationListener listener)
 	{
-		super("debug-q-chain");
+		super("debug-q-chain", listener);
 		this.debugInterations = iterations;
 	}
 	
