@@ -25,7 +25,7 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	public static final double CURSOR_PICK_SPAN = 5;
 	
-	private final double halfWidth, halfHeight;
+	private double halfWidth, halfHeight;
 	
 	private final PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
 	
