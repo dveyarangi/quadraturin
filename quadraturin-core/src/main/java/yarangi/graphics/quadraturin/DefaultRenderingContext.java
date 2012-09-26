@@ -46,8 +46,9 @@ public class DefaultRenderingContext implements IRenderingContext
 	private float currFrameLength;
 	
 //	private final List <IVisible> entities = new LinkedList <IVisible> ();
-	private final Multimap <ILook<?>, IVisible> looks = LinkedListMultimap.<ILook<?>, IVisible>create();
+	private final Multimap <ILook<?>, IVisible> entitiesLooks = LinkedListMultimap.<ILook<?>, IVisible>create();
 	
+	private final Multimap <ILook<?>, IVisible> overlayLooks = LinkedListMultimap.<ILook<?>, IVisible>create();
 	
 	private final Set <String> lookClasses = new HashSet <String> ();
 	
@@ -129,7 +130,7 @@ public class DefaultRenderingContext implements IRenderingContext
 
 	/**
 	 * Sets OpenGL base environment. 
-	 * Initializes graphic plugins
+	 * Initializes graphic plugins.
 	 * @param gl
 	 */
 	protected void init(GL gl) {
@@ -220,7 +221,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	 * @param gl
 	 * @param time scene frame time
 	 */
-	protected void render(GL gl)
+	protected void renderEntities(GL gl)
 	{
 		// injecting new entities
 		while(!bornLooks.isEmpty())
@@ -244,7 +245,7 @@ public class DefaultRenderingContext implements IRenderingContext
 //			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
 			// TODO: do the viewport clipping already, you lazy me!
 //			System.out.println("BEGIN ======================================================");
-			for(ILook<?> look : looks.keySet())
+			for(ILook<?> look : entitiesLooks.keySet())
 			{
 				// TODO: sort by veil, then weave and tear once
 				veil = look.getVeil();
@@ -252,7 +253,7 @@ public class DefaultRenderingContext implements IRenderingContext
 				
 				if(veil != null)
 					veil.weave( gl, this );
-				for(IVisible entity : looks.get( look )) {
+				for(IVisible entity : entitiesLooks.get( look )) {
 //					System.out.println(entity);
 					entity.render( gl,  this );
 				}
@@ -260,9 +261,8 @@ public class DefaultRenderingContext implements IRenderingContext
 					veil.tear( gl );
 
 				if(Debug.ON)
-				for(IVisible entity : looks.get( look ))
+				for(IVisible entity : entitiesLooks.get( look ))
 					assert Debug.renderEntityOverlay(gl, entity, this);
-				
 
 			}
 //			System.out.println("Total " + entities.size() + " entities rendered.");
@@ -271,6 +271,16 @@ public class DefaultRenderingContext implements IRenderingContext
 		{
 			veilEffect.render(gl, time, entities, context);
 		}*/
+	}
+
+	public void renderOverlays(GL gl)
+	{
+		for(ILook look : overlayLooks.keySet()) {
+			for(IVisible entity : entitiesLooks.get( look )) {
+//				System.out.println(entity);
+				look.render( gl, entity, this );
+			}
+		}
 	}
 	
 	/**
@@ -319,15 +329,26 @@ public class DefaultRenderingContext implements IRenderingContext
 	@Override
 	public void addVisible(IVisible entity)
 	{
-		lookClasses.add(entity.getLook().getClass().toString());
-		Collection <IVisible> entities = looks.get( entity.getLook() );
+		addVisible( entity, entity.getLook(), entitiesLooks );
+	}
+	
+	public void addOverlay(IVisible entity, ILook overlay) {
+		addVisible( entity, overlay, overlayLooks );
+	}
+	
+	private void addVisible(IVisible entity, ILook look, Multimap queue) {
+//		ILook look = entity.getLook();
+		lookClasses.add(look.getClass().toString());
+		Collection <IVisible> entities = queue.get( look );
 //		System.out.println(entity.getLook());
 		if(entities.size() == 0)
-			bornLooks.add(entity.getLook());
+			bornLooks.add(look);
 
-		looks.put( entity.getLook(), entity );
+		queue.put( look, entity );
 		entities.add( entity );
+		
 	}
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -335,17 +356,18 @@ public class DefaultRenderingContext implements IRenderingContext
 	@Override
 	public void removeVisible(IVisible entity)
 	{
-		Collection <IVisible> entities = looks.get( entity.getLook() );
+		Collection <IVisible> entities = entitiesLooks.get( entity.getLook() );
 		if(entities.size() == 1) {
-			looks.removeAll( entity.getLook() );
+			entitiesLooks.removeAll( entity.getLook() );
 			deadLooks.add( entity.getLook() );
 		}
 		else
-			looks.remove( entity.getLook(), entity );
+			entitiesLooks.remove( entity.getLook(), entity );
 		
 		entities.remove( entity );
 		
 	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -359,11 +381,16 @@ public class DefaultRenderingContext implements IRenderingContext
 	@Override
 	public <K> K getAssociatedEntity(ILook <K> look)
 	{
-		Collection <IVisible> associatedEntities = looks.get( look );
-		if(associatedEntities == null || associatedEntities.isEmpty())
-			return null;
+		Collection <IVisible> associatedEntities = entitiesLooks.get( look );
+		if(associatedEntities == null || associatedEntities.isEmpty()) 
+		{
+			associatedEntities = overlayLooks.get( look );
+			if(associatedEntities == null || associatedEntities.isEmpty()) 
+				return null;
+		}
 		
 		return (K)associatedEntities.iterator().next();
 	}
+
 
 }

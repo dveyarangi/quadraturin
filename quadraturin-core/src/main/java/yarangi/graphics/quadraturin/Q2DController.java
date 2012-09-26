@@ -210,6 +210,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		}
 		
 		Camera2D viewPoint = (Camera2D) currScene.getCamera();
+		context.setViewPoint( viewPoint );
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
 		// applying top-down orthogonal projection with zoom scaling
@@ -223,9 +224,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
 		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
-	
-		
-		context.setViewPoint(viewPoint);
+
 		
 		// updating view point transformation parameters:
 		viewPoint.updatePointModel(viewport, mvmatrix, projmatrix);
@@ -237,7 +236,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		context.render(gl);
+		context.renderEntities(gl);
 		assert Debug.drawWorldLayerOverlay( gl, currScene.getWorldLayer(), context );
 
 		// ////////////////////////////////////////////////////
@@ -252,6 +251,12 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			plugin.postRender(gl, context);
 			gl.glPopAttrib();
 		}
+		
+		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL.GL_PROJECTION);  gl.glLoadIdentity(); 
+		// ////////////////////////////////////////////////////
+		// ui rendering:
+		context.renderOverlays(gl);
 
 		// proceeding to next thread:
 		releaseNext();
