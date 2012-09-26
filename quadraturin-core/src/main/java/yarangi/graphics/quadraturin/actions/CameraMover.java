@@ -48,6 +48,8 @@ public class CameraMover implements ICameraMan
 		double ds = targetScale - viewPoint.getScale();
 		
 		double distanceSquare = distance.x()*distance.x() + distance.y()*distance.y();
+		if(distanceSquare < 10)
+			return false;
 		Vector2D speed = distance.normal().multiply(FORCE * distanceSquare);
 		double fs = FORCE * ds;
 		
