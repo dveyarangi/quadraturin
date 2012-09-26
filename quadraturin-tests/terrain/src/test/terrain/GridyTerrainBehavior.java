@@ -9,7 +9,6 @@ public class GridyTerrainBehavior implements IBehavior<GridyTerrainMap>
 	@Override
 	public boolean behave(double time, GridyTerrainMap grid, boolean isVisible)
 	{
-		grid.fireGridModified();
 		return false;
 	}
 

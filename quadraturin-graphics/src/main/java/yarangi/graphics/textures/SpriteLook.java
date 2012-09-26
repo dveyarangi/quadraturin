@@ -52,7 +52,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	 * @return texture object handler
 	 */
 	@Override
-	public void init(GL gl, IRenderingContext defaultContext) 
+	public void init(GL gl, IRenderingContext context) 
 	{
 		if(isInited)
 			return;
@@ -63,6 +63,9 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		// save viewport and set up new one
 		IntBuffer viewport = IntBuffer.allocate(4);
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
+		
+
+		T entity = context.getAssociatedEntity( this );
 		
 		// setting viewport to dimensions of our texture:
 //		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);

@@ -42,12 +42,37 @@ public interface IRenderingContext
 	 */
 	public void setDefaultBlendMode(GL gl);
 	
+	/**
+	 * animation time allocated for current animation frame 
+	 * @return
+	 */
 	public float getFrameLength();
 
+	/**
+	 * Provides 
+	 * @return
+	 */
 	public ViewPoint2D getViewPoint();
 
+	/** 
+	 * Removes an overlay from rendering queue
+	 * Entities added to scene and implementing IVisible will be automatically removed.
+	 *   
+	 * @param entity
+	 */
 	void removeVisible(IVisible entity);
 
+	/**
+	 * Adds visible overlay to rendering queue.
+	 * Entities added to scene and implementing IVisible will be automatically added.
+	 * @param entity
+	 */
 	void addVisible(IVisible entity);
 
+	/**
+	 * Hints at entity associated with specified look.
+	 * If look is used by multiple entities, any one of them will be returned.
+	 * @return null, in case no entity found.
+	 */
+	<K> K getAssociatedEntity(ILook <K>look);
 }

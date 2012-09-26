@@ -312,4 +312,15 @@ public class DefaultRenderingContext implements IRenderingContext
 	@Override
 	public ViewPoint2D getViewPoint() { return viewPoint; }
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <K> K getAssociatedEntity(ILook <K> look)
+	{
+		Collection <IVisible> associatedEntities = looks.get( look );
+		if(associatedEntities == null || associatedEntities.isEmpty())
+			return null;
+		
+		return (K)associatedEntities.iterator().next();
+	}
+
 }
