@@ -1,7 +1,7 @@
 package yarangi.graphics.quadraturin.actions;
 
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.ViewPoint2D;
+import yarangi.graphics.quadraturin.Camera2D;
 import yarangi.math.Vector2D;
 
 public class CameraMover implements ICameraMan
@@ -19,9 +19,9 @@ public class CameraMover implements ICameraMan
 	final double scrollStep = 100;
 	final double scaleStep = 0.9;
 	
-	private final ViewPoint2D viewPoint;
+	private final Camera2D viewPoint;
 	
-	public CameraMover(ViewPoint2D viewPoint) 
+	public CameraMover(Camera2D viewPoint) 
 	{
 		this.viewPoint = viewPoint;
 		this.targetScale = viewPoint.getScale();

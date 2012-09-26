@@ -6,9 +6,11 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 
 /**
- * Holds some rendering properties for use in {@link ILook} methods
+ * Holds some rendering properties and methods for use in {@link ILook} methods
  * TODO: maybe it should have a brighter future, encapsulating the GL object and 
  * becoming a real renderer.
+ * 
+ * Aims to be rendering tools class.
  * 
  * @author dveyarangi
  */
@@ -52,7 +54,7 @@ public interface IRenderingContext
 	 * Provides 
 	 * @return
 	 */
-	public ViewPoint2D getViewPoint();
+	public Camera2D getCamera();
 
 	/** 
 	 * Removes an overlay from rendering queue

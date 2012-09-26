@@ -101,7 +101,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		// saving OpenGL rendering modes:
 		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
 		
-		int [] viewport = context.getViewPoint().getViewport();
+		int [] viewport = context.getCamera().getViewport();
 		
 		// transforming the FBO plane to fit the light source location and scale:
 		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();

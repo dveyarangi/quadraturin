@@ -69,7 +69,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 		isoheightShader.setFloat4Uniform( gl, "underflow", 0.0f, 0.0f, 0.0f, 0.0f );
 		
 		isoheightShader.setFloat4Uniform( gl, "target", 1f, 0.5f, 0.0f, 0.7f );
-		renderTexture(gl, defaultContext.getViewPoint().getMinCoord(), defaultContext.getViewPoint().getMaxCoord());
+		renderTexture(gl, defaultContext.getCamera().getMinCoord(), defaultContext.getCamera().getMaxCoord());
 		isoheightShader.end(gl);
 	}
 

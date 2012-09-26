@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.media.opengl.GL;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
-import yarangi.graphics.quadraturin.ViewPoint2D;
+import yarangi.graphics.quadraturin.Camera2D;
 import yarangi.graphics.shaders.GLSLShader;
 import yarangi.graphics.shaders.ShaderFactory;
 
@@ -76,7 +76,7 @@ public class BlurVeil extends FBOVeilSkeleton
 	public void postRender(GL gl, IRenderingContext context) 
 	{
 		
-		ViewPoint2D vp = context.getViewPoint();
+		Camera2D vp = context.getCamera();
 		getFBO().bind( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL.GL_ENABLE_BIT);
 //		gl.glDisable(GL.GL_BLEND);

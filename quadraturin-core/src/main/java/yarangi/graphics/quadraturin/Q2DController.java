@@ -184,7 +184,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			// TODO: should not be locked in here, render a placeholder/progress bar instead:
 			currScene.init(gl, context);
 			
-			context.setViewPoint( (ViewPoint2D)currScene.getViewPoint() );
+			context.setViewPoint( (Camera2D)currScene.getCamera() );
 		}
 		
 		if(currScene == null)
@@ -209,7 +209,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			gl.glPopAttrib();
 		}
 		
-		ViewPoint2D viewPoint = (ViewPoint2D) currScene.getViewPoint();
+		Camera2D viewPoint = (Camera2D) currScene.getCamera();
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
 		// applying top-down orthogonal projection with zoom scaling

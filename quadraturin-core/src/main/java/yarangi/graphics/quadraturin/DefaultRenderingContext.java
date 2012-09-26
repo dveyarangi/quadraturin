@@ -23,6 +23,8 @@ import com.spinn3r.log5j.Logger;
 /**
  * Wraps rendering properties, tests GL capabilities and aggregates graphical plug-ins.
  * Should also wrap GL object, so it could be more separated from entity definition.
+ * Aims to be rendering tools class.
+ * 
  * @author dveyarangi
  *
  */
@@ -59,20 +61,41 @@ public class DefaultRenderingContext implements IRenderingContext
 	 */
 	private final Queue <ILook<?>> deadLooks = new LinkedList <ILook<?>> ();
 	
-	private ViewPoint2D viewPoint;
+	/** Camera properties */
+	private Camera2D viewPoint;
 	
 	public DefaultRenderingContext(EkranConfig config)
 	{
 		this.config = config;
 		plugins = config.createPlugins();
 		
-		this.viewPoint = new ViewPoint2D();
+		this.viewPoint = new Camera2D();
 	}
+	
+	
+////////////////////////////////////////////////////////////////////////////////////
+// service methods
 	
 	protected void setViewPort(int refx, int refy, int width, int height) 
 	{
 		this.viewPort = new ViewPort(refx, refy, width, height);
 	}
+	
+	protected void setViewPoint(Camera2D viewPoint)
+	{
+		this.viewPoint = viewPoint;
+	}
+	
+	protected void setFrameLength(float length) 
+	{
+		this.currFrameLength = length;
+	}
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////
+// 
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -82,7 +105,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	public <T> T getPlugin(String name) {
 		return (T) plugins.get(name);
 	}
-	
+
 	protected Collection <IGraphicsPlugin> getPlugins()
 	{
 		return plugins.values();
@@ -104,6 +127,11 @@ public class DefaultRenderingContext implements IRenderingContext
 		return gl;
 	}
 
+	/**
+	 * Sets OpenGL base environment. 
+	 * Initializes graphic plugins
+	 * @param gl
+	 */
 	protected void init(GL gl) {
 		
 		this.gl = gl;
@@ -245,6 +273,13 @@ public class DefaultRenderingContext implements IRenderingContext
 		}*/
 	}
 	
+	/**
+	 * Meant to handle graphics setup changes.
+	 * TODO: Should not reinitiate all plug-ins every step of window resizing.
+	 * @param width
+	 * @param height
+	 * @param gl
+	 */
 	protected void reinit(int width, int height, GL gl) {
 		
 		if(viewPort.getWidth() == width && viewPort.getHeight() == height)
@@ -258,6 +293,9 @@ public class DefaultRenderingContext implements IRenderingContext
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDefaultBlendMode(GL gl) 
 	{
@@ -265,17 +303,19 @@ public class DefaultRenderingContext implements IRenderingContext
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public final float getFrameLength()
 	{
 		return currFrameLength;
 	}
 	
-	protected void setFrameLength(float length) 
-	{
-		this.currFrameLength = length;
-	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addVisible(IVisible entity)
 	{
@@ -289,6 +329,9 @@ public class DefaultRenderingContext implements IRenderingContext
 		entities.add( entity );
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeVisible(IVisible entity)
 	{
@@ -303,15 +346,15 @@ public class DefaultRenderingContext implements IRenderingContext
 		entities.remove( entity );
 		
 	}
-
-	public void setViewPoint(ViewPoint2D viewPoint)
-	{
-		this.viewPoint = viewPoint;
-	}
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public ViewPoint2D getViewPoint() { return viewPoint; }
+	public Camera2D getCamera() { return viewPoint; }
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <K> K getAssociatedEntity(ILook <K> look)

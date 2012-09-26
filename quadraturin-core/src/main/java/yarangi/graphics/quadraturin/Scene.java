@@ -61,7 +61,7 @@ public abstract class Scene
 	/**
 	 * TODO: split for world and UI?
 	 */
-	private final ViewPoint2D viewPoint;
+	private final Camera2D camera;
 	
 	/**
 	 * TODO: move
@@ -85,7 +85,7 @@ public abstract class Scene
 		log = Logger.getLogger(name);
 		
 		// initial viewpoint:
-		viewPoint = sceneConfig.createViewpoint();
+		camera = sceneConfig.createViewpoint();
 			
 		// scene world aggregator:
 		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
@@ -138,7 +138,7 @@ public abstract class Scene
 	/**
 	 * @return Current viewpoint
 	 */
-	public IBeholder getViewPoint() { return viewPoint; }
+	public ICamera getCamera() { return camera; }
 	
 	/**
 	 * Appends a world entity.

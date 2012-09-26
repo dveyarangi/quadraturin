@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import yarangi.graphics.quadraturin.QVoices;
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.ViewPoint2D;
+import yarangi.graphics.quadraturin.Camera2D;
 import yarangi.java.ReflectionUtil;
 import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
@@ -50,9 +50,9 @@ public class SceneConfig
 		return ReflectionUtil.createInstance(sceneClass, this, ekranConfig, voices);
 	}
 
-	public ViewPoint2D createViewpoint() 
+	public Camera2D createViewpoint() 
 	{
-		return new ViewPoint2D(
+		return new Camera2D(
 				Vector2D.R(viewpoint.getCenterX(), viewpoint.getCenterY()), 
 				null,
 				new RangedDouble(viewpoint.getMinZoom(), viewpoint.getInitZoom(), viewpoint.getMaxZoom()),

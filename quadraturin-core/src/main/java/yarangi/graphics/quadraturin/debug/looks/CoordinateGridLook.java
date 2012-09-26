@@ -45,14 +45,14 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 		
 		float order;
 		for( order = 2048f; order > 0.000001; order /= 2f) {
-			if(Math.round(  order / context.getViewPoint().getScale()) == 0)
+			if(Math.round(  order / context.getCamera().getScale()) == 0)
 				break;
 		}
 		
 		// lower left screen corner in world coordinates
-		IVector2D screenMinCoord = context.getViewPoint().getMinCoord();
+		IVector2D screenMinCoord = context.getCamera().getMinCoord();
 		// higher right screen corner in world coordinates
-		IVector2D screenMaxCoord = context.getViewPoint().getMaxCoord();
+		IVector2D screenMaxCoord = context.getCamera().getMaxCoord();
 		
 		int steps = 8;
 		for(int i = 1; i <= steps; i ++) {

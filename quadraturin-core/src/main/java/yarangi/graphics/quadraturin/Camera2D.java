@@ -11,9 +11,11 @@ import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
 /**
+ * Camera properties.
+ * 
  * TODO: this class is exceptionally grotesque, rip its ugly tentacles 
  */
-public class ViewPoint2D implements IBeholder
+public class Camera2D implements ICamera
 {
 	public static GLU glu = new GLU();
 
@@ -44,7 +46,7 @@ public class ViewPoint2D implements IBeholder
 	{
 		this(new Vector2D(0,0), window);
 	}*/	
-	public ViewPoint2D(Vector2D center, Dimension window, RangedDouble scale, Dimension world)
+	public Camera2D(Vector2D center, Dimension window, RangedDouble scale, Dimension world)
 	{
 		this.center = center;
 
@@ -65,7 +67,7 @@ public class ViewPoint2D implements IBeholder
 		this.maxCoord = Vector2D.R( 0, 0 );
 	}
 	
-	public ViewPoint2D()
+	public Camera2D()
 	{
 		this.center = Vector2D.ZERO();
 		this.scale = new RangedDouble( 0,  0, 0 );
@@ -143,12 +145,12 @@ public class ViewPoint2D implements IBeholder
 	public double getMinScale() { return scale.getMin(); }
 	public double getMaxScale() { return scale.getMax(); }
 	
-	public void copyFrom(IBeholder viewPoint)
+	public void copyFrom(ICamera viewPoint)
 	{
-		if(!(viewPoint instanceof ViewPoint2D))
+		if(!(viewPoint instanceof Camera2D))
 			throw new IllegalArgumentException("Must be copied from " + this.getClass() + " type.");
 		
-		ViewPoint2D vp = (ViewPoint2D) viewPoint; 
+		Camera2D vp = (Camera2D) viewPoint; 
 		this.center.setxy( vp.getCenter().x(), vp.getCenter().y() );
 		this.scale.setMin( vp.getMinScale());
 		this.scale.setMax( vp.getMaxScale());

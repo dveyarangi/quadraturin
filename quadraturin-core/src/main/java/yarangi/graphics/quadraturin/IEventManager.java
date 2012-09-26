@@ -24,7 +24,7 @@ public interface IEventManager extends KeyListener, MouseListener, MouseMotionLi
 	 * TODO: unworthy creation of event object.
 	 * @param event
 	 */
-	public void updateViewPoint(ViewPoint2D viewPoint);
+	public void updateViewPoint(Camera2D viewPoint);
 	
 	/**
 	 * Register a cursor io listener.

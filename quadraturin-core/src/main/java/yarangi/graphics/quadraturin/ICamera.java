@@ -7,7 +7,7 @@ package yarangi.graphics.quadraturin;
  * 
  * @author Dve Yarangi
  */
-public interface IBeholder 
+public interface ICamera 
 {
 
 

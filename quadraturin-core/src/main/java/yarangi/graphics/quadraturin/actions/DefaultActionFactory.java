@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.ViewPoint2D;
+import yarangi.graphics.quadraturin.Camera2D;
 import yarangi.graphics.quadraturin.debug.Debug;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.EntityShell;
@@ -39,7 +39,7 @@ public class DefaultActionFactory
 		{
 			super(scene);
 			
-			cameraMover = new CameraMover((ViewPoint2D) scene.getViewPoint());
+			cameraMover = new CameraMover((Camera2D) scene.getCamera());
 			actions = appendNavActions(new HashMap <String, IAction> (), cameraMover, scene);
 			assert Debug.appendDebugActions( actions );
 		}
