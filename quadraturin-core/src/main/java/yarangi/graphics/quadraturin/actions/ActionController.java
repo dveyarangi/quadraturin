@@ -29,8 +29,12 @@ public abstract class ActionController
 	
 	private final UserLayer uiLayer;
 	
+	private final Scene scene;
+	
 	public ActionController(Scene scene)
 	{
+		this.scene = scene;
+		
 		worldLayer = scene.getWorldLayer();
 		
 		uiLayer = scene.getUILayer();
@@ -83,5 +87,7 @@ public abstract class ActionController
 	public abstract ICameraMan getCameraManager();
 
 	public void processEvent(UserActionEvent event) { }
+	
+	public Scene getScene() { return scene; }
 
 }
