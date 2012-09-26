@@ -27,12 +27,12 @@ public class EntityBodyLook implements ILook <IEntity>
 		gl.glColor4f( 1f, 1f, 0f, 0.2f );
 		gl.glBegin( GL.GL_LINE_STRIP );
 			gl.glVertex2f((float)(ref.x()), (float)(ref.y()));
-			gl.glVertex2f((float)(ref.x()+body.getForce().x()), (float)(ref.y()+body.getForce().y()));
+			gl.glVertex2f((float)(ref.x()+10*body.getForce().x()), (float)(ref.y()+10*body.getForce().y()));
 		gl.glEnd();
 		gl.glColor4f( 0f, 1f, 1f, 0.2f );
 		gl.glBegin( GL.GL_LINE_STRIP );
 			gl.glVertex2f((float)(ref.x()), (float)(ref.y()));
-			gl.glVertex2f((float)(ref.x()+body.getVelocity().x()), (float)(ref.y()+body.getVelocity().y()));
+			gl.glVertex2f((float)(ref.x()+10*body.getVelocity().x()), (float)(ref.y()+10*body.getVelocity().y()));
 		gl.glEnd();
 		
 		// TODO: print frequency
