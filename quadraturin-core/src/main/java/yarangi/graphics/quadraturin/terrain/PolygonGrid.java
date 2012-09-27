@@ -39,12 +39,14 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 	 * @param area
 	 * @return
 	 */
-	public void apply(double cx, double cy, double rx, double ry, boolean substract, Poly poly)
+	public boolean apply(double cx, double cy, double rx, double ry, boolean substract, Poly poly)
 	{
 		MaskingSensor sensor = new MaskingSensor (substract, poly);
 
 		
 		queryAABB(sensor, cx, cy, rx, ry);
+		
+		return sensor.isModified();
 	}
 	
 	
@@ -54,6 +56,7 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 		
 		private final boolean substract;
 		
+		private boolean modified = false;
 		
 		public MaskingSensor (boolean substract, Poly poly)
 		{
@@ -81,11 +84,15 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 	
 			if(modified)
 				PolygonGrid.this.setModified( tilePoly.getMinX(), tilePoly.getMinY() );
+			
+			this.modified |= modified;
 			return false;
 		}
 
 		@Override
-		public void clear() { }
+		public void clear() { modified = false; }
+		
+		public boolean isModified() { return modified; }
 		
 	}
 

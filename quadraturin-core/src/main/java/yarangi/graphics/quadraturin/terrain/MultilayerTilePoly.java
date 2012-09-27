@@ -60,8 +60,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	
 	@Override
 	public boolean add(Poly poly) {
-		
-		try {
+
 		if(isFull())
 			return false;
 		
@@ -86,18 +85,13 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 			isFull = structurePolys[idx].xor( borderPoly ).isEmpty();
 		
 		return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+
 		//     ^ clip to tile             ^ add current structure
 	}
 	
 	@Override
 	public boolean substract(Poly poly) {
-		
-		try {
+
 		if(isEmpty())
 			return false;
 		
@@ -105,7 +99,13 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		if(temp.isEmpty())
 			return false;
 		
+		
+		boolean modified = !structurePolys[0].intersection( temp ).isEmpty();
+		if(!modified)
+			return false;
+		
 		temp = borderPoly.xor( temp );
+		
 		
 //		if(temp.isEmpty()) {
 //			return;
@@ -121,15 +121,11 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 				structurePolys[idx] = null;
 		}
 		
-		if(isFull)
-			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
+//		if(isFull)
+//			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
 	
 		return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+
 	}
 
 	@Override
