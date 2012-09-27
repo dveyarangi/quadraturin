@@ -86,7 +86,9 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	public void renderGrid(GL gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
-		updateFrameBuffer( gl, context, grid );
+		synchronized(pendingTiles) {
+			updateFrameBuffer( gl, context, grid );
+		}
 // 
 		float minx = grid.getMinX();
 		float maxx = grid.getMaxX();

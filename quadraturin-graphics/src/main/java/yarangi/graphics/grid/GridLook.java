@@ -38,7 +38,10 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 	@Override
 	public void tilesModified(Tile<O> tile)
 	{
-		pendingTiles.add( tile );
+		synchronized ( pendingTiles )
+		{
+			pendingTiles.add( tile );
+		}
 	}
 
 	@Override
