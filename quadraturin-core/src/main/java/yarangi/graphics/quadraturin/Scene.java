@@ -77,6 +77,8 @@ public abstract class Scene
 	
 	private EntityShell<ActionController> actionController;	
 	
+	private final double timeModifier;
+	
 	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		// just for fun:
@@ -114,6 +116,8 @@ public abstract class Scene
 		
 		// storing event manager:
 //		this.voices = voices;
+		
+		this.timeModifier = sceneConfig.getTimeModifier();
 		
 		if(Debug.ON) // TODO: maybe actual instrumentation
 			Debug.instrumentate(this);
@@ -208,6 +212,8 @@ public abstract class Scene
 
 	public void animate(double time)
 	{
+		time *= timeModifier; // streches time linearily TODO: experiment with non constant modifiers
+		
 		getUILayer().animate(time);
 		
 		getWorldLayer().animate(time);

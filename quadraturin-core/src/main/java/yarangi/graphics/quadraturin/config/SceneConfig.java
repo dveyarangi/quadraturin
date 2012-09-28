@@ -22,6 +22,7 @@ public class SceneConfig
 	protected EventConfig [] events;
 	
 	protected int width, height;
+	protected double timeModifier;
 	
 	protected ViewPointConfig viewpoint;
 	protected PhysicsEngineConfig engine;
@@ -44,6 +45,8 @@ public class SceneConfig
 	public int getWidth() { return width; }
 
 	public int getHeight() { return height; }
+	
+	public double getTimeModifier() { return timeModifier; }
 
 	public Scene createScene(EkranConfig ekranConfig, QVoices voices) 
 	{
