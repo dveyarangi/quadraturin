@@ -27,8 +27,6 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	private double halfWidth, halfHeight;
 	
-	private final PickingSensor <Overlay> sensor = new PickingSensor <Overlay> ();
-	
 	private final Multimap <IVisible, ILook> overlays = LinkedListMultimap.<IVisible, ILook>create(); 
 	
 	// TODO: overlay spatial filter
@@ -95,6 +93,8 @@ public class UserLayer extends SceneLayer <Overlay>
 	public ILayerObject processPick(Point canvasLocation)
 	{
 		// collecting picked entities:
+		
+		PickingSensor <Overlay> sensor = new PickingSensor <Overlay> (canvasLocation.x, canvasLocation.y);
 		
 //		log.debug("picking at: " + (canvasLocation.x+halfWidth) + "," + (halfHeight-canvasLocation.y));
 		getEntityIndex().queryAABB(sensor, canvasLocation.x, canvasLocation.y, CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);

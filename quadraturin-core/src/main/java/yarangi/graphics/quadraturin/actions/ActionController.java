@@ -90,4 +90,10 @@ public abstract class ActionController
 	
 	public Scene getScene() { return scene; }
 
+	public void hover(ILayerObject prevEntity, ILayerObject pickedEntity)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

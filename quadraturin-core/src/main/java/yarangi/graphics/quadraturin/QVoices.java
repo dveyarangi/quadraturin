@@ -70,7 +70,9 @@ public class QVoices implements IEventManager, Loopy
 	/**
 	 * Logging name
 	 */
-	public static final String NAME="q-voice"; 
+	public static final String NAME="q-voice";
+	
+	public ILayerObject prevEntity;
 	
 	/**
 	 * Logger
@@ -109,9 +111,11 @@ public class QVoices implements IEventManager, Loopy
 		
 		// picking object under cursor:
 		ILayerObject pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
-		
 		// firing the cursor motion event:
 		cursorEvent.setSceneEntity(pickedEntity);
+		
+		if(pickedEntity != null || prevEntity != null)
+			controller.hover(prevEntity, pickedEntity);
 //		for(CursorListener l : cursorListeners)
 //			l.onCursorMotion(cursorEvent);
 		
@@ -122,10 +126,13 @@ public class QVoices implements IEventManager, Loopy
 			UserActionEvent event = userEvents.poll();
 //			log.trace("Firing user action event: " + event.getActionId());
 			
+			
 			IAction action = controller.getActions().get(event.getActionId());
 			if(action != null)
 				action.act( event );
 		}
+		
+		prevEntity = pickedEntity;
 
 	}
 	

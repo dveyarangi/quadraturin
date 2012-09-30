@@ -43,6 +43,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	 */
 	private final Queue <IEntity> deadEntities = new LinkedList <IEntity> ();
 
+
 	
 	public WorldLayer(int width, int height) 
 	{ 
@@ -214,7 +215,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 
 	public ILayerObject processPick(IVector2D worldLocation, ISpatialFilter <IEntity> filter)
 	{
-		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (filter);
+		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (worldLocation.x(), worldLocation.y(), filter);
 		getEntityIndex().queryAABB(sensor, worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
 		IEntity entity = sensor.getObject();
 //		System.out.println("picked: " + entity);
