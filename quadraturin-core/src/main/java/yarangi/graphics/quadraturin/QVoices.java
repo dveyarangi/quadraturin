@@ -179,7 +179,7 @@ public class QVoices implements IEventManager, Loopy
 	public void mousePressed(MouseEvent e) 
 	{ 
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
+		enqueueUserActionEvent(new InputHook(InputHook.PRESSED, InputHook.getMouseButtonFromModifiers(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
@@ -188,7 +188,7 @@ public class QVoices implements IEventManager, Loopy
 	{ 
 		// TODO: buggy, no button flags are lit on release, and thus input hook constructed incorrectly:
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
+		enqueueUserActionEvent(new InputHook(InputHook.RELEASED, InputHook.getMouseButtonFromModifiers(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */
@@ -196,7 +196,8 @@ public class QVoices implements IEventManager, Loopy
 	public void mouseClicked(MouseEvent e) 
 	{
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
+//		e.BU
+		enqueueUserActionEvent(new InputHook(InputHook.TAPPED, InputHook.getMouseButton(e.getButton()), e.getModifiers()));
 	}
 
 	/** {@inheritDoc} */
@@ -204,7 +205,7 @@ public class QVoices implements IEventManager, Loopy
 	public void mouseDragged(MouseEvent e) 
 	{ 
 		cursorEvent.setMouseLocation(e.getPoint());
-		enqueueUserActionEvent(new InputHook(InputHook.DRAGGED, InputHook.getMouseButton(e.getModifiersEx()), e.getModifiers()));
+		enqueueUserActionEvent(new InputHook(InputHook.DRAGGED, InputHook.getMouseButtonFromModifiers(e.getModifiersEx()), e.getModifiers()));
 	}
 	
 	/** {@inheritDoc} */

@@ -2,6 +2,7 @@ package yarangi.graphics.quadraturin.events;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class InputHook 
 {
@@ -89,7 +90,7 @@ public class InputHook
 	 * @param modifiers
 	 * @return
 	 */
-	public static int getMouseButton(int modifiers)
+	public static int getMouseButtonFromModifiers(int modifiers)
 	{
 		return (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0 ? MOUSE_LEFT_BUTTON : 
 		       (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0 ? MOUSE_RIGHT_BUTTON : 0;
@@ -132,6 +133,15 @@ public class InputHook
 		case BACKWARD:  return "backward";
 		}
 		return "unknown mode (" + modeId + ")";
+	}
+	public static int getMouseButton(int button)
+	{
+		switch(button)
+		{
+		case MouseEvent.BUTTON1: return MOUSE_LEFT_BUTTON;
+		case MouseEvent.BUTTON2:  return MOUSE_RIGHT_BUTTON;
+		default: return 0;
+		}
 	}
 
 }
