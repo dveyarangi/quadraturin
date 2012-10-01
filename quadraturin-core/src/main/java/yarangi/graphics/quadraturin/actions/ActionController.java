@@ -11,6 +11,7 @@ import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.math.IVector2D;
 import yarangi.spatial.ISpatialFilter;
+import yarangi.spatial.PickingSensor;
 
 /**
  * Input definitions interface
@@ -52,6 +53,13 @@ public abstract class ActionController
 	 */
 	public abstract ISpatialFilter <IEntity> getPickingFilter();
 	
+	/**
+	 * Allows to set up picking mode
+	 * @see {@link PickingSensor.Mode}
+	 * @return
+	 */
+	public PickingSensor.Mode getPickingMode() { return PickingSensor.Mode.ANY; } 
+	
 	/** 
 	 * Selects an entity at {@link CURSOR_PICK_SPAN} radius around cursor location
 
@@ -72,7 +80,7 @@ public abstract class ActionController
 			return picked;
 		
 		if(worldLocation != null)
-			picked = worldLayer.processPick(worldLocation, getPickingFilter());
+			picked = worldLayer.processPick(worldLocation, getPickingMode(), getPickingFilter());
 		
 		// TODO: terrain picks
 		// TODO: flexible pick priorities

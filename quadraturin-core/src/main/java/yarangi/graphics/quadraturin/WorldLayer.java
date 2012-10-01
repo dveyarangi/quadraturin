@@ -213,9 +213,9 @@ public class WorldLayer extends SceneLayer <IEntity>
 	}
 
 
-	public ILayerObject processPick(IVector2D worldLocation, ISpatialFilter <IEntity> filter)
+	public ILayerObject processPick(IVector2D worldLocation, PickingSensor.Mode mode, ISpatialFilter <IEntity> filter)
 	{
-		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (worldLocation.x(), worldLocation.y(), filter);
+		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (worldLocation.x(), worldLocation.y(), mode, filter);
 		getEntityIndex().queryAABB(sensor, worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
 		IEntity entity = sensor.getObject();
 //		System.out.println("picked: " + entity);
