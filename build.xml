@@ -1,0 +1,74 @@
+<project name="quadraturin" default="dist" basedir=".">
+	  <description>
+	      simple example build file
+	  </description>
+	<!-- set global properties for this build -->
+	<property name="project.name" location="Q"/>
+	<property name="src.dir" location="src"/>
+	<property name="lib.dir" location="lib"/>
+	<property name="build" location="build"/>
+	<property name="classes.dir" location="${build}/classes"/>
+	<property name="dist.dir"  location="dist"/>
+	
+	<property name="version.number" value="1.0"/>
+	
+	<target name="init">
+		<delete dir="${classes.dir}" />
+	    <mkdir dir="${classes.dir}" />
+		<delete dir="${dist.dir}" />
+	    <mkdir dir="${dist.dir}" />
+		<property name="jar.version" value="${major.minor}.${build.number}" />
+	</target>
+	
+	
+	<macrodef name="compilecode">
+	   <attribute name="srcdir"/>
+	   <attribute name="destdir"/>
+	   <sequential>
+
+	   </sequential>
+	</macrodef>	
+
+	
+	<macrodef name="buildjar">
+	   <attribute name="jarname"/>
+	   <attribute name="destdir"/>
+	   <sequential>
+	 		<jar destfile="@{jarname}" basedir="@{destdir}" />
+	   		<signjar jar="@{jarname}" alias="jarkey" keystore="key.store" storepass="kukaracha" keypass="kukaracha" />
+	      	<signjar alias="jarkey" keystore="key.store" storepass="kukaracha" keypass="kukaracha" >
+	   		  <fileset dir="lib/native" />
+	   	</signjar>	
+	   </sequential>
+	</macrodef>
+		
+	<macrodef name="buildmodule">
+		<attribute name="name"/>
+		<sequential>
+		</sequential>
+	</macrodef>
+	
+	<target name="dist-all" depends="init">
+		
+		
+	      <delete dir="${classes.dir}" />
+	      <mkdir dir="${classes.dir}" />
+        <javac
+	         destdir="${classes.dir}"
+	         optimize="true">
+  		<classpath>
+  			<fileset dir="${lib.dir}" />
+  			<fileset dir="${lib.dir}" />
+  		</classpath>
+        	<src path="quadraturin-core/src/main/java" />
+        	<src path="quadraturin-graphics/src/main/java" />
+	      </javac>				
+		
+		<copydir src="quadraturin-graphics/src/main/resources/shaders" dest="${classes.dir}/shaders" />
+		<buildnumber file="build.number"/>
+		<property name="jar.name" value="q-${version.number}.b${build.number}.jar" />
+		<buildjar jarname="${jar.name}" destdir="${classes.dir}" />
+	
+	</target>
+
+</project>
