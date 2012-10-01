@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.objects;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.Scene;
@@ -176,27 +177,28 @@ public class Entity implements IEntity
 	}
 	public void useEntityCoordinates(GL gl) {
 		Area area = getArea();
-		
+		GL2 gl2 = gl.getGL2();
 		// storing transformation matrix:
-		gl.glMatrixMode( GL.GL_MODELVIEW );
-		gl.glPushMatrix();
+		gl2.glMatrixMode( GL2.GL_MODELVIEW );
+		gl2.glPushMatrix();
 //		gl.glLoadIdentity(); 	
 		
 		// transforming into entity coordinates:
 		if(area == null)
-			gl.glTranslatef(0, 0, 0); // just adjusting priority
+			gl2.glTranslatef(0, 0, 0); // just adjusting priority
 		else
 		{
 			float priority = -look.getPriority();
-			gl.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
-			gl.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+			gl2.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
+			gl2.glRotatef((float)area.getOrientation(), 0, 0, 1 );
 		}
 
 	}
 	
 	public void useWorldCoordinates(GL gl) {
-		gl.glMatrixMode( GL.GL_MODELVIEW );
-		gl.glPopMatrix();
+		GL2 gl2 = gl.getGL2();
+		gl2.glMatrixMode( GL2.GL_MODELVIEW );
+		gl2.glPopMatrix();
 	}
 	
 	@Override

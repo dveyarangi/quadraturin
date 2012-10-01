@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.debug.Debug;
@@ -41,7 +42,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	public static final float MIN_DEPTH_PRIORITY = 0;
 	public static final float MAX_DEPTH_PRIORITY = 1;
 	
-	private GL gl;
+	private GL2 gl;
 	
 	private float currFrameLength;
 	
@@ -124,7 +125,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	}
 	
 	@Override
-	public final GL gl() {
+	public final GL2 gl() {
 		return gl;
 	}
 
@@ -133,7 +134,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	 * Initializes graphic plugins.
 	 * @param gl
 	 */
-	protected void init(GL gl) {
+	protected void init(GL2 gl) {
 		
 		this.gl = gl;
 		
@@ -154,18 +155,18 @@ public class DefaultRenderingContext implements IRenderingContext
 		gl.glEnable(GL.GL_BLEND);
 		setDefaultBlendMode( gl );
 		
-		gl.glShadeModel(GL.GL_SMOOTH);
-		gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+		gl.glShadeModel(GL2.GL_SMOOTH);
+		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
 		// disable lighting (TODO: remove)
-		gl.glDisable(GL.GL_LIGHTING);
+		gl.glDisable(GL2.GL_LIGHTING);
 		
 		// enable 2D texture mapping
-		gl.glEnable(GL.GL_TEXTURE_2D);	
+		gl.glEnable(GL2.GL_TEXTURE_2D);	
 		
 		// disable texture auto-mapping:
-		gl.glDisable(GL.GL_TEXTURE_GEN_S);
-		gl.glDisable(GL.GL_TEXTURE_GEN_T);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_T);
 
 
 		// antialiasing:

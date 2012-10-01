@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.debug.looks;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -36,8 +37,9 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 	public void init(GL gl, IRenderingContext context) { }
 
 	@Override
-	public void render(GL gl, SceneLayer entity, IRenderingContext context)
+	public void render(GL gl1, SceneLayer entity, IRenderingContext context)
 	{
+		GL2 gl = gl1.getGL2();
 		gl.glEnable(GL.GL_BLEND);
 		
 		int halfWidth = entity.getWidth() / 2;

@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GL2ES2;
 
 import com.spinn3r.log5j.Logger;
 
@@ -34,21 +36,21 @@ public abstract class GLSLShader {
 
 	protected static Logger log = Logger.getLogger("GLSL");
 	
-	abstract void init(GL gl);
+	abstract void init(GL2 gl);
 
-	protected void compileAndLink(GL gl, String vertexShaderStr, String fragmentShaderStr) 
+	protected void compileAndLink(GL2ES2 gl, String vertexShaderStr, String fragmentShaderStr) 
 	{
 		// compiling vertex shader:
 		if(vertexShaderStr != null)
 		{
-			vertexShaderId = compileShader(gl, GL.GL_VERTEX_SHADER, vertexShaderStr);
+			vertexShaderId = compileShader(gl, GL2ES2.GL_VERTEX_SHADER, vertexShaderStr);
 /*			System.out.println(shaderProgram.substring(vertexProgramOffset+VERTEX_DELIMETER.length(),
 					fragmentProgramOffset == -1 ? shaderProgram.length() : fragmentProgramOffset));*/ 
 		}
 		// compiling fragment shader:
 		if(fragmentShaderStr != null)
 		{
-			fragmentShaderId = compileShader(gl, GL.GL_FRAGMENT_SHADER, fragmentShaderStr);
+			fragmentShaderId = compileShader(gl, GL2ES2.GL_FRAGMENT_SHADER, fragmentShaderStr);
 //			System.out.println(shaderProgram.substring(fragmentProgramOffset+FRAGMENT_DELIMETER.length()));
 		}
 		// creating shader program:
@@ -63,7 +65,7 @@ public abstract class GLSLShader {
 	 * @param program shader code
 	 * @return
 	 */
-	protected int compileShader(GL gl, int type, String program)
+	protected int compileShader(GL2ES2 gl, int type, String program)
 	{
 		int shaderId = gl.glCreateShader(type);
 
@@ -82,7 +84,7 @@ public abstract class GLSLShader {
 	 * @param fragmentShaderId
 	 * @return
 	 */
-	protected int linkProgram(GL gl, int vertexShaderId, int fragmentShaderId)
+	protected int linkProgram(GL2ES2 gl, int vertexShaderId, int fragmentShaderId)
 	{
 		programId = gl.glCreateProgram();
 		
@@ -102,7 +104,7 @@ public abstract class GLSLShader {
 		return programId;
 	}
 	
-	public void printDebugInfo(GL gl)
+	public void printDebugInfo(GL2ES2 gl)
 	{
 		String info = getShaderInfoLog(gl, fragmentShaderId);
 		if(info != null)
@@ -110,7 +112,7 @@ public abstract class GLSLShader {
 
 	}
 	
-	public void setFloat1Uniform( GL gl, String name, float a)
+	public void setFloat1Uniform( GL2ES2 gl, String name, float a)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
@@ -120,7 +122,7 @@ public abstract class GLSLShader {
 		gl.glUniform1f(uniformId, a);
 	}
 	
-	public void setFloat2Uniform( GL gl, String name, float a, float b)
+	public void setFloat2Uniform( GL2ES2 gl, String name, float a, float b)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
@@ -129,7 +131,7 @@ public abstract class GLSLShader {
 		gl.glUniform2f(uniformId, a, b);
 	}
 	
-	public void setFloat3Uniform( GL gl, String name, float a, float b, float c)
+	public void setFloat3Uniform( GL2ES2 gl, String name, float a, float b, float c)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
@@ -138,7 +140,7 @@ public abstract class GLSLShader {
 		gl.glUniform3f(uniformId, a, b, c);
 	}	
 
-	public void setFloat4Uniform( GL gl, String name, float a, float b, float c, float d)
+	public void setFloat4Uniform( GL2ES2 gl, String name, float a, float b, float c, float d)
 	{
 		if(!isInitialized())
 			throw new IllegalStateException("Shader is not initialized.");
@@ -151,12 +153,12 @@ public abstract class GLSLShader {
 	 * Invokes the shader.
 	 * @param gl
 	 */
-	public void begin(GL gl) 
+	public void begin(GL2ES2 gl) 
 	{
 		gl.glUseProgram(programId);
 	}
 	
-	public void end(GL gl)
+	public void end(GL2ES2 gl)
 	{
 		gl.glUseProgram(0);
 	}
@@ -168,14 +170,14 @@ public abstract class GLSLShader {
 
 	protected int getShaderId(int type)
 	{
-		return type == GL.GL_FRAGMENT_SHADER ? fragmentShaderId : vertexShaderId;
+		return type == GL2ES2.GL_FRAGMENT_SHADER ? fragmentShaderId : vertexShaderId;
 	}
 	
-	protected String getShaderProgramInfo(GL gl)
+	protected String getShaderProgramInfo(GL2ES2 gl)
 	{
 	    IntBuffer infologLength = IntBuffer.allocate(1);
 
-		gl.glGetProgramiv(programId, GL.GL_INFO_LOG_LENGTH, infologLength);
+		gl.glGetProgramiv(programId, GL2ES2.GL_INFO_LOG_LENGTH, infologLength);
 
 		int logLength = infologLength.get(0);
 	    if (logLength > 0)
@@ -189,11 +191,11 @@ public abstract class GLSLShader {
 	    return null;
 	}
 	
-	protected String getShaderInfoLog(GL gl, int shaderId)
+	protected String getShaderInfoLog(GL2ES2 gl, int shaderId)
 	{
 	    IntBuffer infologLength = IntBuffer.allocate(1);
 
-		gl.glGetShaderiv(shaderId, GL.GL_INFO_LOG_LENGTH, infologLength);
+		gl.glGetShaderiv(shaderId, GL2ES2.GL_INFO_LOG_LENGTH, infologLength);
 
 		int logLength = infologLength.get(0);
 	    if (logLength > 0)

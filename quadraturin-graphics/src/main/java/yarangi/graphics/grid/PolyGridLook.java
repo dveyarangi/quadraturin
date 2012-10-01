@@ -1,6 +1,7 @@
 package yarangi.graphics.grid;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -56,7 +57,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 
 	@Override
-	public void renderGrid(GL gl, G grid, IRenderingContext context)
+	public void renderGrid(GL2 gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		updateLists( gl, grid );
@@ -99,7 +100,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)
 				if(listIds[idx][jdx] != NO_LIST_ID)
-					gl.glDeleteLists( listIds[idx][jdx], 1 );
+					gl.getGL2().glDeleteLists( listIds[idx][jdx], 1 );
 	}
 	
 	@Override
@@ -110,8 +111,9 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param gl
 	 * @param grid
 	 */
-	private void updateLists(GL gl, G grid)
+	private void updateLists(GL gl1, G grid)
 	{
+		GL2 gl = gl1.getGL2();
 		if(pendingTiles != null && pendingTiles.size() > 0)
 		{
 			// TODO: listen to viewpont changes and draw only the relevant tiles.
@@ -126,7 +128,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 				listId = gl.glGenLists( 1 );
 				listIds[tile.i()][tile.j()] = listId;
 				
-				gl.glNewList( listId, GL.GL_COMPILE );
+				gl.glNewList( listId, GL2.GL_COMPILE );
 
 					renderTile(gl, tile, grid, scale);
 					
@@ -144,15 +146,16 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param grid
 	 * @param scale
 	 */
-	protected abstract void renderTile(GL gl, Tile<O> tile, G grid, int scale);
+	protected abstract void renderTile(GL2 gl, Tile<O> tile, G grid, int scale);
 	
 	public void setDebugOverlay(boolean debug)
 	{
 		this.debug = debug;
 	}
 	
-	private boolean initDebug(GL gl, G grid)
+	private boolean initDebug(GL gl1, G grid)
 	{
+		GL2 gl = gl1.getGL2();
 		float minx = grid.getMinX();
 		float maxx = grid.getMaxX();
 		float miny = grid.getMinY();
@@ -226,7 +229,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 	
 
-	private boolean renderDebug(GL gl)
+	private boolean renderDebug(GL2 gl)
 	{
 		if(debug)
 			debugMesh.call( gl );

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.objects.ILook;
@@ -53,9 +54,10 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 	}
 
 	@Override
-	public final void render(GL gl, G entity, IRenderingContext context)
+	public final void render(GL gl1, G entity, IRenderingContext context)
 	{
-		gl.glPushAttrib( GL.GL_ENABLE_BIT );
+		GL2 gl = gl1.getGL2();
+		gl.glPushAttrib( GL2.GL_ENABLE_BIT );
 		if(blend) gl.glEnable(GL.GL_BLEND); else gl.glDisable(GL.GL_BLEND);
 		if(depthtest) gl.glEnable(GL.GL_DEPTH_TEST); else gl.glDisable(GL.GL_DEPTH_TEST);
 		
@@ -66,7 +68,7 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 		pendingTiles.clear();
 	}
 	
-	public abstract void renderGrid(GL gl, G entity, IRenderingContext context);
+	public abstract void renderGrid(GL2 gl, G entity, IRenderingContext context);
 
 	@Override
 	public boolean isCastsShadow() { return false; }

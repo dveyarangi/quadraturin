@@ -34,7 +34,7 @@ public class QuadJsonConfig implements IQuadConfig
 		
 		String fileContents = null;
 		try {
-			InputStream stream = null;//QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			InputStream stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			if(stream == null) {
 				stream = new FileInputStream( CONFIG_FILENAME);
 			}

@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.debug.looks;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
@@ -16,8 +17,9 @@ public class EntitySensorLook implements ILook <IEntity>
 	public void init(GL gl, IRenderingContext context) { }
 
 	@Override
-	public void render(GL gl, IEntity entity, IRenderingContext context)
+	public void render(GL gl1, IEntity entity, IRenderingContext context)
 	{
+		GL2 gl = gl1.getGL2();
 		gl.glEnable(GL.GL_BLEND);
 		gl.glColor4f( 0f, 1f, 0f, 0.2f );
 		gl.glBegin( GL.GL_LINE_STRIP );

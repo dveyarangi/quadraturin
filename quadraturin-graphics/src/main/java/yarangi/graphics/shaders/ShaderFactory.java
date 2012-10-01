@@ -3,6 +3,7 @@ package yarangi.graphics.shaders;
 import java.util.Map;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
@@ -24,8 +25,10 @@ public final class ShaderFactory extends ResourceFactory <GLSLShader> implements
 		}
 	}
 	
-	public void init(GL gl, IRenderingContext context)
+	@Override
+	public void init(GL gl1, IRenderingContext context)
 	{
+		GL2 gl = gl1.getGL2();
 		if(isInited) return;
 		
 		for(GLSLShader shaderResource : getHandles().values())
@@ -35,6 +38,7 @@ public final class ShaderFactory extends ResourceFactory <GLSLShader> implements
 		isInited = true;
 	}
 	
+	@Override
 	public void resize(GL gl, IRenderingContext context)
 	{
 		// lazy

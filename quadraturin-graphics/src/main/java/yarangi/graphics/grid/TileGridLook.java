@@ -3,6 +3,7 @@ package yarangi.graphics.grid;
 import java.awt.Point;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.GLList;
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -69,7 +70,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		fbo = FBO.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
 		Q.rendering.debug( "Created terrain FBO - id:" + fbo.getFboId());
 		
-		updateFrameBuffer( gl, context, grid );
+		updateFrameBuffer( gl.getGL2(), context, grid );
 		
 		assert initDebug(gl, grid);
 	}
@@ -83,7 +84,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	protected abstract Point getFBODimensions(IRenderingContext context, G grid);
 
 	@Override
-	public void renderGrid(GL gl, G grid, IRenderingContext context)
+	public void renderGrid(GL2 gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
 		synchronized(pendingTiles) {
@@ -101,7 +102,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		if(veil != null)
 			veil.weave( gl, context );
 		fbo.bindTexture(gl);
-			gl.glBegin(GL.GL_QUADS);
+			gl.glBegin(GL2.GL_QUADS);
 			gl.glColor4f( 0, 1, 0, 1 );
 				gl.glTexCoord2f(0,0); gl.glVertex2f( minx, miny );
 				gl.glTexCoord2f(0,1); gl.glVertex2f( minx, maxy );
@@ -131,24 +132,24 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	@Override
 	public float getPriority() { return -0f; }
 
-	protected void beginFrameBufferSpace(GL gl, G grid)
+	protected void beginFrameBufferSpace(GL2 gl, G grid)
 	{
 		// transforming the rendering plane to fit the terrain grid:
-		gl.glPushAttrib(GL.GL_VIEWPORT_BIT);	
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
+		gl.glPushAttrib(GL2.GL_VIEWPORT_BIT);	
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
 		gl.glViewport(0,0,dimensions.x, dimensions.y);
 		gl.glOrtho(grid.getMinX(), grid.getMaxX(), grid.getMinY(), grid.getMaxY(), -1, 1);
 
 		fbo.bind(gl);
 	}
 	
-	protected void endFrameBufferSpace(GL gl)
+	protected void endFrameBufferSpace(GL2 gl)
 	{
 		fbo.unbind(gl);
 		
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix(); 
+		gl.glMatrixMode(GL2.GL_PROJECTION); gl.glPopMatrix();
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glPopMatrix(); 
 		gl.glPopAttrib();	
 	}
 	
@@ -157,7 +158,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param gl
 	 * @param grid
 	 */
-	private void updateFrameBuffer(GL gl, IRenderingContext context, G grid)
+	private void updateFrameBuffer(GL2 gl, IRenderingContext context, G grid)
 	{
 		if(pendingTiles != null && pendingTiles.size() > 0)
 		{
@@ -180,15 +181,16 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param grid
 	 * @param scale
 	 */
-	protected abstract void renderTile(GL gl, IRenderingContext context, Tile<O> tile, G grid, int scale);
+	protected abstract void renderTile(GL2 gl, IRenderingContext context, Tile<O> tile, G grid, int scale);
 	
 	public void setDebugOverlay(boolean debug)
 	{
 		this.debug = debug;
 	}
 	
-	private boolean initDebug(GL gl, G grid)
+	private boolean initDebug(GL gl1, G grid)
 	{
+		GL2 gl = gl1.getGL2();
 		float minx = grid.getMinX();
 		float maxx = grid.getMaxX();
 		float miny = grid.getMinY();
@@ -262,7 +264,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 	
 
-	private boolean renderDebug(GL gl)
+	private boolean renderDebug(GL2 gl)
 	{
 		if(debug)
 			debugMesh.call( gl );

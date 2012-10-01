@@ -3,6 +3,8 @@ package yarangi.graphics.shaders;
 import java.io.IOException;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GL2ES2;
 
 import yarangi.resources.TextFileResource;
 
@@ -16,7 +18,7 @@ public class FileShader extends GLSLShader
 	public static final String VERTEX_DELIMETER = "[vertex_shader]";
 	public static final String FRAGMENT_DELIMETER = "[fragment_shader]";
 	
-	private TextFileResource resource;
+	private final TextFileResource resource;
 	
 	
 	public FileShader(String filename)
@@ -24,7 +26,7 @@ public class FileShader extends GLSLShader
 		resource = new TextFileResource(filename);
 	}
 
-	public void init(GL gl) 
+	public void init(GL2 gl) 
 	{
 		// reading program file:
 		String shaderProgram;

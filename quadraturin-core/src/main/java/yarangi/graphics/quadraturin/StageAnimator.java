@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin;
 
-import javax.media.opengl.GLCanvas;
+
+import javax.media.opengl.awt.GLCanvas;
 
 import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.StageConfig;
@@ -101,7 +102,7 @@ public class StageAnimator implements Loopy, StageListener
 		// Running scene behaviors:
 		// TODO: maxFPS not working
 		
-		frameTime = constantTime ? frameLength : approxFrameLength * frameLength;
+		frameTime = (constantTime ? frameLength : approxFrameLength * frameLength);
 		currScene.animate(frameTime);
 		//////////////////////////////////////////////////////////
 		currScene.postAnimate(frameTime);
@@ -124,7 +125,7 @@ public class StageAnimator implements Loopy, StageListener
 		
 		if(frameTimeLeft > 0)
 			try { // spending remaining frame time to match the maxFPS setting:
-				log.trace("Going to sleep for %d ns.", frameTimeLeft);
+//				log.trace("Going to sleep for %d ns.", frameTimeLeft);
 				Thread.sleep((long)(frameTimeLeft * FROM_NANO * 1000));
 			} 
 			catch (InterruptedException e) { log.warn("Animator thread sleep was interrupted."); }

@@ -39,13 +39,14 @@ final public class Color
 	
 	public void apply(GL gl)
 	{
-		gl.glColor4f( r, g, b, a );
+		gl.getGL2().glColor4f( r, g, b, a );
 	}
 	public boolean isVoid()
 	{
 		return r == 0 && b == 0 && g == 0 && a == 0;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "R:" + r + " G:" + g + " B:" + b + " A:" + a;

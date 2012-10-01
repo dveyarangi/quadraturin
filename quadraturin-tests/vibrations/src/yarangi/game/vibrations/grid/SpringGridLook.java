@@ -1,6 +1,7 @@
 package yarangi.game.vibrations.grid;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
@@ -15,8 +16,9 @@ public class SpringGridLook implements ILook <SpringGrid>
 	public void init(GL gl, IRenderingContext context){}
 
 	@Override
-	public void render(GL gl, SpringGrid entity, IRenderingContext context)
+	public void render(GL gl1, SpringGrid entity, IRenderingContext context)
 	{
+		GL2 gl = gl1.getGL2();
 		Tile <Joint> tile;
 		Joint joint;
 		Vector2D loc;
@@ -29,7 +31,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 				loc = tile.get().plus( tile.getX(), tile.getY() );
 				vel = Vector2D.R(tile.get().vx(), tile.get().vy()).normalize();
 				val = Vector2D.R(tile.get().vx(), tile.get().vy()).abs();
-				gl.glBegin( GL.GL_QUADS );
+				gl.glBegin( GL2.GL_QUADS );
 				gl.glColor4d(val, (Math.abs(vel.x()) + Math.abs(vel.y())-1)/0.4, (1.4-(Math.abs(vel.x()) + Math.abs(vel.y())))/0.4,1);
 //				 gl.glColor4d(val, val/2, 0, 1);
 				gl.glVertex2f( (float)loc.x()-SIZE, (float)loc.y()-SIZE );

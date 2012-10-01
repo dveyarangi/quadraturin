@@ -4,6 +4,7 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -172,14 +173,14 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 //		gl.glEnable(GL.GL_DEPTH_TEST);*/
 	}
 
-	private void renderTexture(GL gl, int texture, double r)
+	private void renderTexture(GL2 gl, int texture, double r)
 	{
 //		gl.glDisable(GL.GL_BLEND);
-		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
-		gl.glDisable(GL.GL_TEXTURE_GEN_S);
-		gl.glDisable(GL.GL_TEXTURE_GEN_T);
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_T);
 //		gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-		gl.glBegin(GL.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-textureSize/2, -textureSize/2);
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(+textureSize/2, -textureSize/2);
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(+textureSize/2, +textureSize/2);

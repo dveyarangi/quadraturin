@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import com.spinn3r.log5j.Logger;
 
@@ -18,8 +19,10 @@ public class TextureUtils
 	
 	public static Logger log = Logger.getLogger(TextureUtils.class);
 	
-	public static int createEmptyTexture2D(GL gl, int width, int height, boolean mipmap)
+	public static int createEmptyTexture2D(GL gl1, int width, int height, boolean mipmap)
 	{
+		GL2 gl = gl1.getGL2();
+
 		log.trace("Creating texture " + width + "x" + height);
 		// texture handle buffer
 		IntBuffer textureHandleBuffer = IntBuffer.allocate(1);
@@ -39,13 +42,13 @@ public class TextureUtils
 		// TODO: move to configuration?
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, mipmap ? GL.GL_LINEAR_MIPMAP_LINEAR : GL.GL_LINEAR);
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP);
-		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_BLEND);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_BLEND);
 //		GL_GENERATE_MIPMAP_EXT
 //		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP_EXT, GL.GL_FALSE);
 //		gl.glColorMask(true, true, true, true);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP, mipmap ? GL.GL_TRUE : GL.GL_FALSE);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_GENERATE_MIPMAP, mipmap ? GL.GL_TRUE : GL.GL_FALSE);
 		// associating the data array with the texture:
 		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, 
 				GL.GL_UNSIGNED_BYTE, colorBits);
@@ -56,8 +59,9 @@ public class TextureUtils
 		return textureHandle;
 	}
 	
-	public static int createBitmapTexture2D(GL gl, int width, int height, byte [] pixels, boolean mipmap)
+	public static int createBitmapTexture2D(GL gl1, int width, int height, byte [] pixels, boolean mipmap)
 	{
+		GL2 gl = gl1.getGL2();
 		// texture handle buffer
 		IntBuffer textureHandleBuffer = IntBuffer.allocate(1);
 		
@@ -76,12 +80,12 @@ public class TextureUtils
 		// TODO: move to configuration?
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, mipmap ? GL.GL_LINEAR_MIPMAP_LINEAR : GL.GL_LINEAR);
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL2.GL_CLAMP);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL2.GL_CLAMP);
 //		GL_GENERATE_MIPMAP_EXT
 //		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP_EXT, GL.GL_FALSE);
 //		gl.glColorMask(true, true, true, true);
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_GENERATE_MIPMAP, mipmap ? GL.GL_TRUE : GL.GL_FALSE);
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_GENERATE_MIPMAP, mipmap ? GL.GL_TRUE : GL.GL_FALSE);
 		// associating the data array with the texture:
 		gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, 
 				GL.GL_UNSIGNED_BYTE, colorBits);

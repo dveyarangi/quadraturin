@@ -3,6 +3,7 @@ package yarangi.graphics.textures;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
@@ -52,8 +53,9 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	 * @return texture object handler
 	 */
 	@Override
-	public void init(GL gl, IRenderingContext context) 
+	public void init(GL gl1, IRenderingContext context) 
 	{
+		GL2 gl = gl1.getGL2();
 		if(isInited)
 			return;
 		
@@ -97,7 +99,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		gl.glCopyTexImage2D(GL.GL_TEXTURE_2D, 1, GL.GL_RGBA, 1*width/4, 1*height/4, 3*width/4, 3*height/4, 0);
 		gl.glCopyTexImage2D(GL.GL_TEXTURE_2D, 2, GL.GL_RGBA, 3*width/8, 3*height/8, 5*width/8, 5*height/8, 0);
 		gl.glCopyTexImage2D(GL.GL_TEXTURE_2D, 3, GL.GL_RGBA, 5*width/16, 5*height/16, 11*width/16, 11*height/16, 0);
-		gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+		gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
 		
 		// remove the drawing		
 		// restoring matrices:
@@ -114,16 +116,17 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	
 	
 	@Override
-	public void render(GL gl, T entity, IRenderingContext defaultContext) 
+	public void render(GL gl1, T entity, IRenderingContext defaultContext) 
 	{
+		GL2 gl = gl1.getGL2();
 //		gl.glEnable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 
-		gl.glPushAttrib( GL.GL_ENABLE_BIT );
+		gl.glPushAttrib( GL2.GL_ENABLE_BIT );
 		gl.glDisable(GL.GL_DEPTH_TEST);
-		gl.glDisable(GL.GL_TEXTURE_GEN_S);
-		gl.glDisable(GL.GL_TEXTURE_GEN_T);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_T);
 		
-		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glBindTexture(GL.GL_TEXTURE_2D, textureHandle);
 ///		gl.glDisable(GL.GL_DEPTH_TEST);
 		//		viewOrtho(gl);
@@ -131,7 +134,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 //		gl.glColor4f(1.f, 1.f, 1.f,1.f);
 		// texture background color
 		gl.glColor4f(0.f, 0.f, 0.f, 0.f);
-		gl.glBegin(GL.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f(-width/2, -height/2);	// Bottom Left Of The Texture and Quad
 			gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f(width/2, -height/2);	// Bottom Right Of The Texture and Quad
 			gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f(width/2, height/2);	// Top Right Of The Texture and Quad
@@ -169,24 +172,24 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		// TODO: something is fishy around here
 //		gl.glDeleteTextures(1, textureHandle);
 	}
-	private void viewOrtho(GL gl, IEntity entity)  // Set Up An Ortho View
+	private void viewOrtho(GL2 gl, IEntity entity)  // Set Up An Ortho View
     {
-        gl.glMatrixMode(GL.GL_PROJECTION);  // Select Projection
+        gl.glMatrixMode(GL2.GL_PROJECTION);  // Select Projection
         gl.glPushMatrix();      // Push The Matrix
         gl.glLoadIdentity();      // Reset The Matrix
 //        gl.glOrtho((int)(-aabb.r),(int)(aabb.r),(int)(-aabb.r),(int)(aabb.r), -1, 1);  // Select Ortho Mode (640x480)
         gl.glOrtho(0, width, 0, height, -1, 1); 
 //        gl.glOrtho(0, 2*aabb.r, 0, 2*aabb.r, -1, 1);  // Select Ortho Mode (640x480)
-        gl.glMatrixMode(GL.GL_MODELVIEW);  // Select Modelview Matrix
+        gl.glMatrixMode(GL2.GL_MODELVIEW);  // Select Modelview Matrix
         gl.glPushMatrix();      // Push The Matrix
         gl.glLoadIdentity();      // Reset The Matrix
     }
 
-    private void viewPerspective(GL gl)    // Set Up A Perspective View
+    private void viewPerspective(GL2 gl)    // Set Up A Perspective View
     {
-        gl.glMatrixMode(GL.GL_PROJECTION);  // Select Projection
+        gl.glMatrixMode(GL2.GL_PROJECTION);  // Select Projection
         gl.glPopMatrix();      // Pop The Matrix
-        gl.glMatrixMode(GL.GL_MODELVIEW);  // Select Modelview
+        gl.glMatrixMode(GL2.GL_MODELVIEW);  // Select Modelview
         gl.glPopMatrix();      // Pop The Matrix
     }
 

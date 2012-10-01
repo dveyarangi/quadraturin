@@ -5,15 +5,17 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
+import javax.media.opengl.GLProfile;
 
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureData;
-import com.sun.opengl.util.texture.TextureIO;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
+import com.jogamp.opengl.util.texture.TextureIO;
+import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class TextureHandle 
 {
 	
-	private String filename;
+	private final String filename;
 	
 	private Texture texture;
 
@@ -38,14 +40,14 @@ public class TextureHandle
 		{
 			throw new IllegalArgumentException("file not found");
 		}
-		texture = TextureIO.newTexture(new TextureData(GL.GL_RGBA, GL.GL_RGBA, false, image));
-		texture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		texture = AWTTextureIO.newTexture( GLProfile.getGL2ES2(), image, false);
+		texture.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 		
-		texture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);		
+		texture.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);		
 	}
 
 	public void unload(GL gl)
 	{
-		texture.dispose();
+		texture.destroy(gl);
 	}
 }

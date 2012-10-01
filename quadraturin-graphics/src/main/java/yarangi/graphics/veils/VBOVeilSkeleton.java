@@ -1,6 +1,7 @@
 package yarangi.graphics.veils;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -9,6 +10,7 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
+
 import yarangi.math.BitUtils;
 
 /**
@@ -102,8 +104,9 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	 * Render veil full-screen texture
 	 * @param gl
 	 */
-	protected void renderTexture(GL gl)
+	protected void renderTexture(GL gl1)
 	{
+		GL2 gl = gl1.getGL2();
 		double lower[] = new double[4];// wx, wy, wz;// returned xyz coords
 		double higher[] = new double[4];// wx, wy, wz;// returned xyz coords
 		
@@ -112,8 +115,8 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		double projmatrix[] = new double[16];
 
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projmatrix, 0);
 		// 
 		glu.gluUnProject(viewport[0], viewport[1], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, lower, 0);
 		glu.gluUnProject(viewport[2], viewport[3], 0.0, mvmatrix, 0, projmatrix, 0, viewport, 0, higher, 0);
@@ -121,7 +124,7 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		getFBO().bindTexture( gl );
 //		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glColor4f( 0,0,0,1 );
-		gl.glBegin(GL.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float)lower[0],  (float)lower[1]);
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float)higher[0], (float)lower[1]);
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float)higher[0], (float)higher[1]);

@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.ui;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -29,18 +30,19 @@ public class PanelLook implements ILook <Overlay>
 	@Override
 	public void render(GL gl, Overlay entity, IRenderingContext context)
 	{
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glBlendEquation(GL.GL_FUNC_ADD);
+		GL2 gl2 = gl.getGL2();
+		gl2.glPushAttrib( GL2.GL_COLOR_BUFFER_BIT );
+		gl2.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl2.glBlendEquation(GL.GL_FUNC_ADD);
 		color.apply( gl );
 		final AABB area = (AABB)entity.getArea();
-		gl.glBegin( GL.GL_QUADS );
-			gl.glVertex2d( -area.getRX(), -area.getRY() );
-			gl.glVertex2d( area.getRX(), -area.getRY() );
-			gl.glVertex2d( area.getRX(), area.getRY() );
-			gl.glVertex2d( -area.getRX(), area.getRY() );
-		gl.glEnd();
-		gl.glPopAttrib();
+		gl2.glBegin( GL2.GL_QUADS );
+		gl2.glVertex2d( -area.getRX(), -area.getRY() );
+		gl2.glVertex2d( area.getRX(), -area.getRY() );
+		gl2.glVertex2d( area.getRX(), area.getRY() );
+		gl2.glVertex2d( -area.getRX(), area.getRY() );
+		gl2.glEnd();
+		gl2.glPopAttrib();
 		context.setDefaultBlendMode( gl );
 	}
 

@@ -7,8 +7,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
-import javax.media.opengl.GLCanvas;
+
 import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 
 import yarangi.graphics.quadraturin.config.IQuadConfig;
@@ -100,13 +101,13 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 
 //		loadNativeLibs();
 		log.debug("Configuring GL capabilities.");
-	    GLCapabilities capabilities = new GLCapabilities();
+/*	    GLCapabilities capabilities = new GLCapabilities();
 	    capabilities.setRedBits(8);
 	    capabilities.setBlueBits(8);
 	    capabilities.setGreenBits(8);
-	    capabilities.setAlphaBits(8);
+	    capabilities.setAlphaBits(8);*/
 
-	    canvas = new GLCanvas(capabilities);
+	    canvas = new GLCanvas();
 	    
 	    
 

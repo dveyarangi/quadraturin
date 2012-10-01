@@ -3,6 +3,7 @@ package yarangi.graphics.veils;
 import java.util.Map;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.shaders.GLSLShader;
@@ -56,8 +57,9 @@ public class IsoheightVeil extends FBOVeilSkeleton
 	}
 	
 	@Override
-	public void postRender(GL gl, IRenderingContext defaultContext) 
+	public void postRender(GL gl1, IRenderingContext defaultContext) 
 	{
+		GL2 gl = gl1.getGL2();
 		isoheightShader.begin( gl );
 		// TODO: parametrize and make more sense of it:
 		

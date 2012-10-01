@@ -6,11 +6,11 @@ import java.util.Map;
 
 import javax.media.opengl.GL;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.resources.ResourceFactory;
-
-import com.sun.opengl.util.texture.Texture;
 
 public final class TextureManager extends ResourceFactory <TextureHandle> implements IGraphicsPlugin
 {
@@ -58,7 +58,7 @@ public final class TextureManager extends ResourceFactory <TextureHandle> implem
 		// TODO: validate textures?
 		// TODO: go over registered Looks and test files?
 		IntBuffer bufferIdRef = IntBuffer.allocate( 1 );
-		gl.glGenBuffersARB( 1, bufferIdRef );
+		gl.glGenBuffers( 1, bufferIdRef );
 		bufferId = bufferIdRef.get();
 	}
 

@@ -1,11 +1,11 @@
 package yarangi.graphics.veils;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.graphics.quadraturin.objects.IVisible;
 import yarangi.graphics.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.graphics.textures.FBO;
 import yarangi.math.IVector2D;
@@ -103,10 +103,11 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	 * Render veil full-screen texture
 	 * @param gl
 	 */
-	protected void renderTexture(GL gl, IVector2D minCoord, IVector2D maxCoord)
+	protected void renderTexture(GL gl1, IVector2D minCoord, IVector2D maxCoord)
 	{
-		
-		gl.glPushAttrib( GL.GL_ENABLE_BIT );
+		GL2 gl = gl1.getGL2();
+
+		gl.glPushAttrib( GL2.GL_ENABLE_BIT );
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		
 
@@ -116,7 +117,7 @@ public abstract class FBOVeilSkeleton implements IVeil, IGraphicsPlugin
 		getFBO().bindTexture( gl );
 //		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		gl.glColor4f( 0,0,0,1 );
-		gl.glBegin(GL.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex2f((float) minCoord.x(), (float)minCoord.y());
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex2f((float) maxCoord.x(), (float)minCoord.y());
 		gl.glTexCoord2f(1.0f, 1.0f); gl.glVertex2f((float) maxCoord.x(), (float)maxCoord.y());

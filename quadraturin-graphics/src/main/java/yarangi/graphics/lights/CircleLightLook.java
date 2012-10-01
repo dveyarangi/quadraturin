@@ -1,6 +1,7 @@
 package yarangi.graphics.lights;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -95,17 +96,17 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void render(GL gl, K entity, IRenderingContext context) 
+	public void render(GL gl1, K entity, IRenderingContext context) 
 	{
-
+		GL2 gl = gl1.getGL2();
 		// saving OpenGL rendering modes:
-		gl.glPushAttrib(GL.GL_VIEWPORT_BIT | GL.GL_ENABLE_BIT);	
+		gl.glPushAttrib(GL2.GL_VIEWPORT_BIT | GL2.GL_ENABLE_BIT);	
 		
 		int [] viewport = context.getCamera().getViewport();
 		
 		// transforming the FBO plane to fit the light source location and scale:
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_PROJECTION); gl.glPushMatrix(); gl.glLoadIdentity();
 		
 		gl.glScalef((viewport[2]/textureSize),( viewport[3]/textureSize), 0);
 		gl.glViewport(0, 0, textureSize, textureSize);
@@ -123,7 +124,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 		
 		// shadow blending setting:
-		gl.glBlendEquation( GL.GL_MAX ); // maximal intensity of two shadows
+		gl.glBlendEquation( GL2.GL_MAX ); // maximal intensity of two shadows
 		gl.glBlendFunc(GL.GL_SRC_COLOR, GL.GL_DST_COLOR); // only red component is of interest 
 
 		///////////////////////////////////////////////////////////////
@@ -217,14 +218,14 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		// restoring to original view
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glPopMatrix();
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glPopMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION); gl.glPopMatrix();
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glPopMatrix();
 		
 		gl.glPopAttrib();
 
 		// storing OpenGL rendering modes:
 		
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL.GL_ENABLE_BIT);
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT);
 		
 		gl.glEnable( GL.GL_BLEND );
 		gl.glDisable( GL.GL_DEPTH_TEST ); // once again, all pixels are rendered
@@ -260,12 +261,12 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		gl.glEnd();*/
 	}
 
-	private void renderTexture(GL gl, IEntity entity)
+	private void renderTexture(GL2 gl, IEntity entity)
 	{
-		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
-		gl.glDisable(GL.GL_TEXTURE_GEN_S);
-		gl.glDisable(GL.GL_TEXTURE_GEN_T);
-		gl.glBegin(GL.GL_QUADS);
+		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+		gl.glDisable(GL2.GL_TEXTURE_GEN_T);
+		gl.glBegin(GL2.GL_QUADS);
 //		System.out.println(textureSize/2);
 		gl.glTexCoord2f(0.0f, 0.0f); gl.glVertex3f(-textureSize/2, -textureSize/2, 0f);
 		gl.glTexCoord2f(1.0f, 0.0f); gl.glVertex3f(+textureSize/2, -textureSize/2,  0f);

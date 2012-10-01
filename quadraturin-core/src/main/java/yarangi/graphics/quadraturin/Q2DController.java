@@ -2,8 +2,8 @@ package yarangi.graphics.quadraturin;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.media.opengl.DebugGL;
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
@@ -84,11 +84,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		log.debug("// JOGL INIT ////////////////////////////////////////////////");
 
 		if (Debug.ON) {
-			log.info("GL core is in debug mode.");
-			drawable.setGL(new DebugGL(drawable.getGL()));
+			log.info("GL core is in debug mode. TODO: not really");
+//			drawable.setGL(new DebugGL(drawable.getGL()));
 		}
 		
-		GL gl = drawable.getGL();
+		GL2 gl = drawable.getGL().getGL2();
 		
 		//////////////////////////////////////////////////////////////////
 		// Global settings:
@@ -160,7 +160,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			return;
 		}
 		
-		GL gl = glDrawable.getGL();
+		GL2 gl = glDrawable.getGL().getGL2();
 		
 		if(!this.isAlive())
 		{   // terminating GL listener:
@@ -201,10 +201,10 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		// ////////////////////////////////////////////////////
 		// scene preprocessing, in untranslated coordinates:
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity(); 
-		gl.glMatrixMode(GL.GL_PROJECTION);  gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL2.GL_PROJECTION);  gl.glLoadIdentity(); 
 		for(IGraphicsPlugin plugin : context.getPlugins()) {
-			gl.glPushAttrib( GL.GL_ENABLE_BIT );
+			gl.glPushAttrib( GL2.GL_ENABLE_BIT );
 				plugin.preRender(gl, context);
 			gl.glPopAttrib();
 		}
@@ -214,16 +214,16 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
 		
 		// applying top-down orthogonal projection with zoom scaling
-		gl.glMatrixMode(GL.GL_PROJECTION); gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_PROJECTION); gl.glLoadIdentity();
 		gl.glOrtho(-viewport[2]/2*viewPoint.getScale(), viewport[2]/2*viewPoint.getScale(), -viewport[3]/2*viewPoint.getScale(), viewport[3]/2*viewPoint.getScale(), -1, 1);
 		
 		// applying view point translation:
-		gl.glMatrixMode(GL.GL_MODELVIEW);  gl.glLoadIdentity();
+		gl.glMatrixMode(GL2.GL_MODELVIEW);  gl.glLoadIdentity();
 		gl.glTranslatef((float) viewPoint.getCenter().x(),
 				(float) viewPoint.getCenter().y(), 0/* -(float) viewPoint.getHeight()*/);
 		
-		gl.glGetDoublev(GL.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-		gl.glGetDoublev(GL.GL_PROJECTION_MATRIX, projmatrix, 0);
+		gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+		gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projmatrix, 0);
 
 		
 		// updating view point transformation parameters:
@@ -247,13 +247,13 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 
 		
 		for(IGraphicsPlugin plugin : context.getPlugins()) {
-			gl.glPushAttrib( GL.GL_ENABLE_BIT );
+			gl.glPushAttrib( GL2.GL_ENABLE_BIT );
 			plugin.postRender(gl, context);
 			gl.glPopAttrib();
 		}
 		
-		gl.glMatrixMode(GL.GL_MODELVIEW); gl.glLoadIdentity(); 
-		gl.glMatrixMode(GL.GL_PROJECTION);  gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glLoadIdentity(); 
+		gl.glMatrixMode(GL2.GL_PROJECTION);  gl.glLoadIdentity(); 
 		// ////////////////////////////////////////////////////
 		// ui rendering:
 		context.renderOverlays(gl);
@@ -266,23 +266,6 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		gl.glFlush();
 		glDrawable.swapBuffers();
 	}
-
-	/**
-	 * Called when the display mode has been changed. <B>!! CURRENTLY
-	 * UNIMPLEMENTED IN JOGL !!</B>
-	 * 
-	 * @param gLDrawable
-	 *            The GLDrawable object.
-	 * @param modeChanged
-	 *            Indicates if the video mode has changed.
-	 * @param deviceChanged
-	 *            Indicates if the video device has changed.
-	 */
-	@Override
-	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) { }
-
-
-
 
 	
 	@Override
@@ -299,6 +282,13 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	public IRenderingContext getRenderingContext()
 	{
 		return context;
+	}
+
+	@Override
+	public void dispose(GLAutoDrawable arg0)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

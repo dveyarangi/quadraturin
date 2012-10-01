@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.debug.looks;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
@@ -18,8 +19,9 @@ public class EntityBodyLook implements ILook <IEntity>
 	public void init(GL gl, IRenderingContext context) { }
 
 	@Override
-	public void render(GL gl, IEntity entity, IRenderingContext context)
+	public void render(GL gl1, IEntity entity, IRenderingContext context)
 	{
+		GL2 gl = gl1.getGL2();
 		gl.glEnable(GL.GL_BLEND);
 		IVector2D ref = entity.getArea().getAnchor();
 		Body body = entity.getBody();
