@@ -24,7 +24,7 @@ public class EntitySensorLook implements ILook <IEntity>
 		gl.glColor4f( 0f, 1f, 0f, 0.2f );
 		gl.glBegin( GL.GL_LINE_STRIP );
 		float x, y;
-		for(double a = 0; a <= Angles.PI_2; a += Angles.TRIG_STEP * 20) 
+		for(double a = 0; a <= Angles.TAU; a += Angles.TRIG_STEP * 20) 
 		{
 			x = (float)(entity.getArea().getAnchor().x() + entity.getEntitySensor().getRadius() * Angles.COS( a ));
 			y = (float)(entity.getArea().getAnchor().y() + entity.getEntitySensor().getRadius() * Angles.SIN( a ));

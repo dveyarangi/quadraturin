@@ -13,8 +13,8 @@ public class CameraMover implements ICameraMan
 	
 	private final Vector2D speed = Vector2D.ZERO();
 	
-	private static final double FORCE = 0.01;
-	private static final double MAX_SPEED = 1;
+	private static final double FORCE = 0.1;
+	private static final double MAX_SPEED = 5;
 	
 	final double scrollStep = 100;
 	final double scaleStep = 0.9;
@@ -45,12 +45,12 @@ public class CameraMover implements ICameraMan
 	public boolean behave(double time, Scene scene, boolean isVisible)
 	{
 		Vector2D distance = target.minus(viewPoint.getCenter());
-		double ds = targetScale - viewPoint.getScale();
+		double ds = /*targetScale - */viewPoint.getScale();
 		
 		double distanceSquare = distance.x()*distance.x() + distance.y()*distance.y();
-		if(distanceSquare < 10)
+		if(distanceSquare < 10*viewPoint.getScale())
 			return false;
-		Vector2D speed = distance.normal().multiply(FORCE * distanceSquare);
+		Vector2D speed = distance.normal().multiply(FORCE * Math.sqrt( distanceSquare) );
 		double fs = FORCE * ds;
 		
 		double speedScalar = speed.abs();
@@ -120,5 +120,12 @@ public class CameraMover implements ICameraMan
 		double s = viewPoint.getScale() * scaleStep;
 		viewPoint.setScale(s > viewPoint.getMinScale() ? s : viewPoint.getMinScale()); 
 
+	}
+
+	@Override
+	public void moveRelative(double x, double y) 
+	{
+		target.setx( viewPoint.getCenter().x() + (scrollStep*x/(x+y))*viewPoint.getScale() );
+		target.sety( viewPoint.getCenter().y() + (scrollStep*y/(x+y))*viewPoint.getScale() );
 	}
 }
