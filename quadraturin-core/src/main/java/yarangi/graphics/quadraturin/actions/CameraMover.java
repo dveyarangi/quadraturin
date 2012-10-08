@@ -121,4 +121,11 @@ public class CameraMover implements ICameraMan
 		viewPoint.setScale(s > viewPoint.getMinScale() ? s : viewPoint.getMinScale()); 
 
 	}
+
+	@Override
+	public void moveRelative(double x, double y) 
+	{
+		target.setx( viewPoint.getCenter().x() + (scrollStep*x/(x+y))*viewPoint.getScale() );
+		target.sety( viewPoint.getCenter().y() + (scrollStep*y/(x+y))*viewPoint.getScale() );
+	}
 }

@@ -32,6 +32,7 @@ public class UserActionEvent
 		this.cursor = cursor;
 	}
 	public String getActionId() { return actionId; }
+	public InputHook getInputHook() { return hook; }
 	
 	/**
 	 * Retrieves cursor picking event, which contains layer coordinates of the cursor and entity that can be picked.  

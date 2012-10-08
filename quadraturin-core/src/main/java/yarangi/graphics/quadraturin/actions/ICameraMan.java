@@ -19,5 +19,6 @@ public interface ICameraMan extends IBehavior <Scene>
 	public abstract void zoomIn();
 
 	public abstract void zoomOut();
-
+	
+	public abstract void moveRelative(double x, double y);
 }

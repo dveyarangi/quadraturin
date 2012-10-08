@@ -78,7 +78,7 @@ public abstract class ActionController
 		
 		if(picked != null)
 			return picked;
-		
+
 		if(worldLocation != null)
 			picked = worldLayer.processPick(worldLocation, getPickingMode(), getPickingFilter());
 		
