@@ -31,6 +31,5 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="quadraturin/lib/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/ai"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
