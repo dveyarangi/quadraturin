@@ -172,7 +172,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 		super.addEntity( entity );
 		
 		bornEntities.add(entity);
-		
+		if(deadEntities.contains( entity ))
+			deadEntities.remove(entity);
 //		if(testEntity(entity))
 //			bornEntities.add(entity);
 	}
@@ -188,6 +189,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 			throw new IllegalArgumentException("Entity cannon be null.");
 //		log.trace( "Entity %s is being removed.", entity );
 		deadEntities.add( entity );
+		if(bornEntities.contains( entity ))
+			bornEntities.remove(entity);
 		
 	}
 

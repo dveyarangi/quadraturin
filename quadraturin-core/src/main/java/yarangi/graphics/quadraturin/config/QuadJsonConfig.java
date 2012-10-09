@@ -34,9 +34,9 @@ public class QuadJsonConfig implements IQuadConfig
 		
 		String fileContents = null;
 		try {
-			InputStream stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			InputStream stream = new FileInputStream( CONFIG_FILENAME );
 			if(stream == null) {
-				stream = new FileInputStream( CONFIG_FILENAME);
+				stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			}
 //				throw new RuntimeException("Cannot find " + CONFIG_FILENAME + " file.");
 			fileContents = IOUtils.toString(stream);
