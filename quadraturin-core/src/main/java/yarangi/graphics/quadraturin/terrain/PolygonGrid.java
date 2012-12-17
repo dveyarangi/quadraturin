@@ -7,6 +7,12 @@ import yarangi.spatial.Tile;
 
 import com.seisw.util.geom.Poly;
 
+/** 
+ * A grid with tiles containing modifiable polygons. 
+ * @author dveyarangi
+ *
+ * @param <P>
+ */
 public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> implements ITileMap <P>
 {
 
@@ -35,15 +41,14 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 	}
 
 	/**
-	 * Retrieves and removes points in specified radius
+	 * Adds/substracts polygonal mask from the grid
 	 * @param area
 	 * @return
 	 */
-	public boolean apply(double cx, double cy, double rx, double ry, boolean substract, Poly poly)
+	public boolean apply(double cx, double cy, double rx, double ry, boolean substract, Poly mask)
 	{
-		MaskingSensor sensor = new MaskingSensor (substract, poly);
+		MaskingSensor sensor = new MaskingSensor (substract, mask);
 
-		
 		queryAABB(sensor, cx, cy, rx, ry);
 		
 		return sensor.isModified();
@@ -69,7 +74,6 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 		public boolean objectFound(P tilePoly)
 		{
 //			System.out.println("erroding behavior: erroding tile " + chunk.get() );
-			
 			boolean modified = false;
 			if(substract) 
 			{
@@ -82,8 +86,10 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 					modified = tilePoly.add( poly );
 			}
 	
-			if(modified)
+			if(modified) 
+			{
 				PolygonGrid.this.setModified( tilePoly.getMinX(), tilePoly.getMinY() );
+			}
 			
 			this.modified |= modified;
 			return false;

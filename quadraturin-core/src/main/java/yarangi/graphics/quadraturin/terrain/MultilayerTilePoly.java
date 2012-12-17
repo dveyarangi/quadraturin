@@ -1,5 +1,6 @@
 package yarangi.graphics.quadraturin.terrain;
 
+import yarangi.graphics.quadraturin.Q;
 import yarangi.physics.Body;
 import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
@@ -7,6 +8,12 @@ import yarangi.spatial.Area;
 import com.seisw.util.geom.Poly;
 import com.seisw.util.geom.PolyDefault;
 
+/**
+ * Tile with multiple layers of polygons
+ * 
+ * @author dveyarangi
+ *
+ */
 public class MultilayerTilePoly implements ITerrain, ITilePoly
 {
 	/**
@@ -87,6 +94,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		return true;
 
 		}catch(Exception e) {
+			Q.structure.warn( "TODO: Polygon operation failed, fix this damn thing", e ); // TODO
 			return false;
 		}
 		//     ^ clip to tile             ^ add current structure
@@ -96,85 +104,45 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	public boolean substract(Poly poly) {
 
 		try {
-		if(isEmpty())
-			return false;
-		
-		Poly temp = poly.intersection( borderPoly );
-		if(temp.isEmpty())
-			return false;
-		
-		
-		boolean modified = !structurePolys[0].intersection( temp ).isEmpty();
-		if(!modified)
-			return false;
-		
-		temp = borderPoly.xor( temp );
-		
-		
-//		if(temp.isEmpty()) {
-//			return;
-//		}
-		
-		for(int idx = 0; idx < structurePolys.length; idx ++) {
-			if(structurePolys[idx] == null) {
-				break;
+			if(isEmpty())
+				return false;
+			
+			Poly temp = poly.intersection( borderPoly );
+			if(temp.isEmpty())
+				return false;
+			
+			
+			boolean modified = !structurePolys[0].intersection( temp ).isEmpty();
+			if(!modified)
+				return false;
+			
+			temp = borderPoly.xor( temp );
+			
+			
+	//		if(temp.isEmpty()) {
+	//			return;
+	//		}
+			
+			for(int idx = 0; idx < structurePolys.length; idx ++) {
+				if(structurePolys[idx] == null) {
+					break;
+				}
+				
+				structurePolys[idx] = structurePolys[idx].intersection( temp );
+				if(structurePolys[idx].isEmpty())
+					structurePolys[idx] = null;
 			}
 			
-			structurePolys[idx] = structurePolys[idx].intersection( temp );
-			if(structurePolys[idx].isEmpty())
-				structurePolys[idx] = null;
-		}
+	//		if(isFull)
+	//			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
 		
-//		if(isFull)
-//			isFull = structurePolys[0].xor( borderPoly ).isEmpty();
-	
-		return true;
+			return true;
 		}catch(Exception e) {
+			Q.structure.warn( "TODO: Polygon operation failed, fix this damn thing", e );// TODO
 			return false;
 		}
 
 	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		return structurePolys[0] == null;
-	}
-
-	@Override
-	public Area getArea()
-	{
-		return area;
-	}
-
-	@Override
-	public Body getBody()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAlive()
-	{
-		
-		return !isEmpty();
-	}
-
-/*	@Override
-	public void markDead()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isIndexed()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}*/
-
 
 	@Override
 	public boolean isFull()
@@ -203,4 +171,29 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		return true;
 	}
 	
+
+	@Override
+	public boolean isEmpty()
+	{
+		return structurePolys[0] == null;
+	}
+
+	@Override
+	public Area getArea()
+	{
+		return area;
+	}
+
+	@Override
+	public Body getBody()
+	{
+		return null;
+	}
+
+	@Override
+	public boolean isAlive()
+	{
+		return !isEmpty();
+	}
+
 }
