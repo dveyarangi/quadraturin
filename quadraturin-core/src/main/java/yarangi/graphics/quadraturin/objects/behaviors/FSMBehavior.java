@@ -5,8 +5,10 @@ import yarangi.automata.ICondition;
 import yarangi.graphics.quadraturin.objects.IBehavior;
 
 /**
- * Behavior that aggregates state machine. The states are to implement {@link #IBehaviorState} amd are linked 
- * to machine using {@link #link(IBehaviorState, ICondition, IBehaviorState)} link... err, method.
+ * Behavior that aggregates state machine. The states are to implement {@link IBehaviorState} and are linked 
+ * to machine using {@link #link(IBehaviorState, IBehaviorCondition)} link... err, method.
+ * 
+ * Allows states to take less or more that one frame; this is specified by {@link IBehaviorState#behave(double, Object)} return value.
  * @author dveyarangi
  *
  * @param <K>
@@ -16,13 +18,17 @@ public class FSMBehavior <K> implements IBehavior <K>
 	/**
 	 * Finite state machine.
 	 */
-	private FSM <K, IBehaviorState<K>> fsm;
+	private final FSM <K, IBehaviorState<K>> fsm;
 	
 	/** 
 	 * Current state.
 	 */
 	private IBehaviorState <K> currState;
 	
+	/**
+	 * Creates FSM behavior with specified initial state.
+	 * @param initState
+	 */
 	public FSMBehavior(IBehaviorState <K> initState)
 	{
 		fsm = new FSM<K, IBehaviorState<K>>(initState);
@@ -67,7 +73,10 @@ public class FSMBehavior <K> implements IBehavior <K>
 		return true; // TODO: should make true entity change indication 
 	}
 
-
+	/**
+	 * Retrieves current behavior state
+	 * @return
+	 */
 	public IBehaviorState <K> getCurrentState() 
 	{
 		return currState;

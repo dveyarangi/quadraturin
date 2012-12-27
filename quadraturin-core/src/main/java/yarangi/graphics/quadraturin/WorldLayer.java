@@ -9,6 +9,7 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.math.IVector2D;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ITileMap;
@@ -17,20 +18,48 @@ import yarangi.spatial.SpatialHashMap;
 
 import com.spinn3r.log5j.Logger;
 
+/**
+ * This is the simulation-related subset of {@link Scene} features.
+ * 
+ * This class manages life-cycles of {@link IEntity} implementations, and 
+ * provides physics and collision map.
+ * 
+ * 
+ * 
+ * @author dveyarangi
+ *
+ */
 public class WorldLayer extends SceneLayer <IEntity> 
 {
 
-	
-	private final List <IEntity> entities = new ArrayList <IEntity> (100); 
-	
-	private IPhysicsEngine <IEntity> engine;
-	
+	/**
+	 * Simulation-world time reference.
+	 */
 	private double layerTime;
 	
-	private EntityShell <? extends ITileMap > terrain;
+	/**
+	 * List of managed entities
+	 */
+	private final List <IEntity> entities = new ArrayList <IEntity> (100); 
 	
+	/**
+	 * Physics engine
+	 */
+	private IPhysicsEngine <IEntity> engine;
+	
+	/**
+	 * Collision map
+	 */
+	private EntityShell <? extends ITileMap<ITerrain>> terrain;
+	
+	/**
+	 * Yes
+	 */
 	private final Logger log = Logger.getLogger("q-world");
 	
+	/**
+	 * 
+	 */
 	public static final double CURSOR_PICK_SPAN = 5;
 	
 	/**
@@ -70,7 +99,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 		this.engine = engine;
 	}
 
-	public void addTerrain(EntityShell <? extends ITileMap> terrain)
+	public void addTerrain(EntityShell <? extends ITileMap<ITerrain>> terrain)
 	{
 		this.terrain = terrain;
 		addEntity( terrain );
@@ -125,8 +154,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 					refPoint = entity.getArea().getAnchor();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getEntitySensor().clear();
-					double radiusSquare = entity.getEntitySensor().getRadius() * entity.getEntitySensor().getRadius();
-					getEntityIndex().queryRadius(entity.getEntitySensor(), refPoint.x(), refPoint.y(), radiusSquare);
+
+					getEntityIndex().queryRadius(entity.getEntitySensor(), refPoint.x(), refPoint.y(), entity.getEntitySensor().getRadius());
 
 				}
 			}
@@ -139,9 +168,8 @@ public class WorldLayer extends SceneLayer <IEntity>
 					refPoint = entity.getArea().getAnchor();
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getTerrainSensor().clear();
-					double radiusSquare = entity.getTerrainSensor().getRadius() * entity.getTerrainSensor().getRadius();
 					
-					terrain.getEssence().queryRadius(entity.getTerrainSensor(), refPoint.x(), refPoint.y(), radiusSquare);
+					terrain.getEssence().queryRadius(entity.getTerrainSensor(), refPoint.x(), refPoint.y(), entity.getTerrainSensor().getRadius());
 
 				}
 			}
@@ -209,10 +237,10 @@ public class WorldLayer extends SceneLayer <IEntity>
 		return test;
 	}
 
-
-	public <T> ITileMap <T> getTerrain()
+	
+	public <T extends ITileMap<ITerrain>> T getTerrain()
 	{
-		return  terrain == null ? null : (ITileMap <T> )terrain.getEssence();
+		return  terrain == null ? null : (T)terrain.getEssence();
 	}
 
 

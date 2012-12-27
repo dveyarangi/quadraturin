@@ -8,7 +8,7 @@ import yarangi.spatial.ISpatialFilter;
 
 /**
  * Sensor aspect of {@link Entity}.
- * Accumulates sensed entities into list; Override {@link #objectFound} if streamlining possible.
+ * Accumulates sensed entities into list; Override {@link #objectFound} if streamlining possible (to prevent double pass over sensed objects)
  * 
  * Filter may be used to reduce sensed entities list size.
  * 
@@ -31,6 +31,9 @@ public class Sensor <O> implements ISensor <O>
 	 */
 	private final double radius;
 	
+	/**
+	 * Filters out irrelevant entities
+	 */
 	private final ISpatialFilter <O> filter;
 
 

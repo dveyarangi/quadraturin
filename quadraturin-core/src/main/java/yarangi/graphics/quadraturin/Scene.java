@@ -15,6 +15,8 @@ import yarangi.graphics.quadraturin.objects.EntityShell;
 import yarangi.graphics.quadraturin.objects.IBehavior;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.simulations.ICollider;
+import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
+import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.graphics.quadraturin.ui.Overlay;
 import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
@@ -22,14 +24,14 @@ import yarangi.spatial.ITileMap;
 import com.spinn3r.log5j.Logger;
 
 /**
- * Represents current engine task. 
+ * Represents current engine task; 
  * 
  * Scene is composed of two layers: 
  * <li> {@link UserLayer} responsible to draw and animate user interface control elements.
  * <li> {@link WorldLayer} responsible to draw and animate game world.
- * Veils provide a way to add and remove {@link Entity} objects.
+ * Layers provide a way to add and remove {@link Entity} objects.
  * 
- * Any scene has to define {@link Scene#Scene(SceneConfig, QVoices)} constructor.
+ * Any scene has to define {@link Scene#Scene(SceneConfig, EkranConfig, QVoices)} constructor.
  * 
  * Log stuff into {@link #log}
  * 
@@ -50,6 +52,7 @@ public abstract class Scene
 	
 	/**
 	 * Game world layer.
+	 * Manages {@link IEntitiy}-s and defines {@link IPhysicsEngine} and {@link ITileMap}
 	 */
 	private final WorldLayer worldSection;
 	
@@ -68,10 +71,17 @@ public abstract class Scene
 	 */
 	private double frameLength;
 
+	
+	/**
+	 * This interface entity-less behaviors into scene.
+	 */
+	public static interface IWorker extends IBehavior <Scene> {}
+	
 	/**
 	 * For background faceless behaviors
+	 * Those are invoked each animation loop and receive this Scene as entity.
 	 */
-	private final List <IBehavior<Scene>> workers = new ArrayList <IBehavior<Scene>> ();
+	private final List <IWorker> workers = new ArrayList <IWorker> ();
 
 	private ICameraMan cameraMan;
 	
@@ -93,7 +103,7 @@ public abstract class Scene
 		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
 		
 		// initializing terrain:
-		EntityShell <? extends ITileMap> terrain = null;
+		EntityShell <? extends ITileMap<ITerrain>> terrain = null;
 		if(sceneConfig.getTerrainConfig() != null)
 		{
 			terrain = sceneConfig.getTerrainConfig().createTerrain( sceneConfig.getWidth(), sceneConfig.getHeight() );
@@ -210,24 +220,44 @@ public abstract class Scene
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENE ANIMATION
 
+	/**
+	 * Invokes behaviors
+	 * 
+	 * Call super if overriding.
+	 * @param time
+	 */
 	public void animate(double time)
 	{
 		time *= timeModifier; // streches time linearily TODO: experiment with non constant modifiers
 		
+		// animate ui layer
 		getUILayer().animate(time);
 		
+		// animate world layer
 		getWorldLayer().animate(time);
 
-		for(IBehavior <Scene> worker : workers)
+		// call any scheduled scene behaviors
+		for(IWorker worker : workers)
 			worker.behave( time, this, true );
 //	return changePending;
 	}
 
-	public void addWorker(IBehavior <Scene> worker)
+	/** 
+	 * Injects entity-less behavior into the animation loop.
+	*
+	 * @param worker
+	 */
+	public void addWorker(IWorker worker)
 	{
 		this.workers.add( worker );
 	}
-	public void removeWorker(IBehavior <Scene> worker)
+	
+	/** 
+	 * Removes entity-less behavior from the animation loop.
+	*
+	 * @param worker
+	 */
+	public void removeWorker(IWorker worker)
 	{
 		this.workers.remove( worker );
 	}

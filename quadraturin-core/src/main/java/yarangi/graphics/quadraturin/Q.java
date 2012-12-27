@@ -25,6 +25,7 @@ public class Q
 	public static final Logger structure = Logger.getLogger( "q-structure" );
 	public static final Logger rendering = Logger.getLogger( "q-renderer" );
 	public static final Logger config    = Logger.getLogger( "q-configurer" );
+	public static final Logger debug    = Logger.getLogger( "q-debug" );
 	
 	////////////////////////////////////
 	// VM properties

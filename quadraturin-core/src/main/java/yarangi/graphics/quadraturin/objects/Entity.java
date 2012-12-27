@@ -155,13 +155,6 @@ public class Entity implements IEntity
 	@Override
 	@SuppressWarnings("rawtypes")
 	public final ISensor getTerrainSensor() { return terrainSensorAspect; }
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public void init(GL gl, IRenderingContext context)
-	{
-		look.init( gl, context );
-	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -199,13 +192,6 @@ public class Entity implements IEntity
 		GL2 gl2 = gl.getGL2();
 		gl2.glMatrixMode( GL2.GL_MODELVIEW );
 		gl2.glPopMatrix();
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		look.destroy( gl, context );
 	}
 
 	@SuppressWarnings("unchecked")

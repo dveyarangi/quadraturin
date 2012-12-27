@@ -29,7 +29,7 @@ import com.spinn3r.log5j.Logger;
 
 public class Debug 
 {
-	public static Logger LOG = Logger.getLogger("q-debug");
+	public static Logger LOG = Q.debug;
 
 	public static boolean ON = Boolean.valueOf(System.getProperty(Q.DEBUG_MODE));
 	static ILook userLayerSpatialOverlay = null;

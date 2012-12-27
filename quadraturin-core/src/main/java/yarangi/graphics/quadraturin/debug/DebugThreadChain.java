@@ -2,6 +2,7 @@ package yarangi.graphics.quadraturin.debug;
 
 import com.spinn3r.log5j.Logger;
 
+import yarangi.graphics.quadraturin.Q;
 import yarangi.graphics.quadraturin.threads.IChainedThread;
 import yarangi.graphics.quadraturin.threads.ITerminationListener;
 import yarangi.graphics.quadraturin.threads.Loopy;
@@ -34,7 +35,7 @@ public class DebugThreadChain extends ThreadChain
 	/**
 	 * Logger, yea, no doubt.
 	 */
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected Logger log = Q.debug;
 
 	/**
 	 * @param iterations number of iterations for statistics calculation

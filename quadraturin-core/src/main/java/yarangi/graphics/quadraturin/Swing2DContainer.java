@@ -63,7 +63,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 	/**
 	 * Animation thread.
 	 */
-	private final StageAnimator animator;
+	private final QAnimator animator;
 	
 	/**
 	 * Contains {@link #voices}, {@link #controller} and {@link #animator} threads
@@ -92,7 +92,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 
 		if(Debug.ON) {/* Debug statics called */}
 		
-		
+		// loading configuration (rendering properties and extensions, key bindings and scenes
 		IQuadConfig config = QuadConfigFactory.getConfig();	
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,16 +111,25 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 	    
 	    
 
-		// remove mouse cursor:
+		// remove mouse cursor: TODO: add method to {@link ActionController}
+	    
 /*		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
 									cursorImg, new Point(0, 0), "blank cursor");
 		getContentPane().setCursor(blankCursor);	*/	
-		
-	    
 	    
 		log.debug("Creating thread chain...");
 		
+		/**
+		 * Engine features are managed by several specialized threads, whose run methods are invoked consequently in endless loop.
+		 * {@link ThreadChain} class provides semaphores to protect thread's context-sensitive parts, and allowing unsynchronized 
+		 * program blocks.
+		 * The loop consists of following threads:
+		 * <li>{@link QVoices} controls user input, acting as Swing event transformer. It also provides engine-specific event, like 
+		 * {@link ILayerObject} picking.
+		 * <li>{@link QAnimator} controls frame-rate and invokes {@link IBehavior} methods.
+		 * <li>{@link Q2DController} implements GLEventListener and act a starting point for rendering procedures. 
+		 */
 		if(Debug.ON)
 			chain = new DebugThreadChain(100, this);
 		else
@@ -130,23 +139,34 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		// initializing event manager:
 		log.debug("Creating event manager...");
 		voices = new QVoices(config.getInputConfig());
+		chain.addThread(new LoopyChainedThread(QVoices.NAME, chain, voices));
 		log.trace("Event manager created.");
 		
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // creating stage animation thread:
+	    // creating animation thread:
 		log.debug("Creating stage animator...");
 
-	    animator = new StageAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
+	    animator = new QAnimator(canvas, config.getStageConfig(), config.getEkranConfig());
+		chain.addThread(new LoopyChainedThread(QAnimator.NAME, chain, animator));
+		
 		log.trace("Entity stage animator created.");
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // creating render:
+	    // creating JOGL render:
 		log.debug("Creating GL listener...");
+		
 		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, animator, chain);
+		chain.addThread(controller);
+		
+		log.trace("GL controller created.");
 		
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	    // creating engine stage, that handles scene loading and switching:
+	    // creating engine stage
+		/**
+		 * Stage serves as {@link Scene} organizer, providing means to actualize specific Scene implementation.
+		 * TODO: should feature some configurable conditional Scene transition graph.
+		 */
 		log.debug("Creating entity stage...");
 		try {
 			stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
@@ -154,34 +174,32 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		catch(Exception e)
 		{
 			log.fatal( "Failed to initialize engine", e );
-			System.exit( 1 );
+			onGeneralError();
 		}
 		
 		 // TODO: ugly
+		/**
+		 * Each of the engine threads listens to Scene transition events and controls relevant resource loading/unloading separately.
+		 */
 		stage.addListener(voices);
 		stage.addListener(controller);
 		stage.addListener(animator);
 		
-		
-		chain.addThread(new LoopyChainedThread(QVoices.NAME, chain, voices));
-		chain.addThread(new LoopyChainedThread(StageAnimator.NAME, chain, animator));
-		chain.addThread(controller);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    log.trace("Registering Quadraturin controller...");
 	    canvas.addGLEventListener(controller);
 		
+	    log.trace("Registering AWT events listener...");
 		canvas.addMouseListener(voices);
 		canvas.addMouseMotionListener(voices);
 		canvas.addMouseWheelListener(voices);
 		canvas.addKeyListener(voices);
-
-		log.trace("Quadraturin controller created.");
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// organizing JFrame contents:
 		
-	    log.trace("Organizing swing frame...");
+	    log.trace("Organizing AWT frame...");
 		this.setName(applicationName);
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -220,10 +238,12 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		// All done
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
 		log.info("/////////////////////////////////////////////////////////////");
+		
+		// now engine can load Scenes
 	}
 
 	/**
-	 * Starts the animation.
+	 * Starts the engine.
 	 */
 	public void start()
 	{
@@ -257,16 +277,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		log.info("/////////////////////////////////////////////////////////////");
 	}
 
-	/**
-	 * TODO: event dispatcher should be static?
-	 * @return
-	 */
-	public IEventManager getEventManager() 
-	{
-		return voices; 
-	}
-
-	public Stage getStage()
+	protected Stage getStage()
 	{
 		return stage;
 	}
@@ -301,7 +312,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 					
 				Swing2DContainer.this.dispose();
 				log.trace("Terminating JVM...");
-				System.exit(-1);
+				onGeneralError();
 			}
 		});
 	}

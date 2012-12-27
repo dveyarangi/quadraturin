@@ -24,7 +24,7 @@ public class CursorEvent implements ICursorEvent
 	private Point canvasLocation;
 
 	/**
-	 * Set if the cursor if hovering over an entity.
+	 * Set if the cursor is hovering over an entity.
 	 */
 	private ILayerObject entity;
 	

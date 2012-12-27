@@ -44,4 +44,6 @@ public interface ITilePoly
 	double getMaxX();
 	double getMaxY();
 
+	Poly getPoly();
+
 }

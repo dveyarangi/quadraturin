@@ -14,7 +14,7 @@ import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.PickingSensor;
 
 /**
- * Input definitions interface
+ * Input definitions interface; may be overriden by scene implementations ({@link Scene#getActionController()}).
  * 
  * @author dveyarangi
  */
@@ -89,19 +89,20 @@ public abstract class ActionController
 	}
 
 	/**
-	 * Defines camera moving functions
+	 * Defines camera moving method
 	 * @return
 	 */
 	public abstract ICameraMan getCameraManager();
-
-	public void processEvent(UserActionEvent event) { }
 	
 	public Scene getScene() { return scene; }
 
+	/**
+	 * Called on mouse hovering over selectable {@link ILayerObject}
+	 * @param prevEntity
+	 * @param pickedEntity
+	 */
 	public void hover(ILayerObject prevEntity, ILayerObject pickedEntity)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 }

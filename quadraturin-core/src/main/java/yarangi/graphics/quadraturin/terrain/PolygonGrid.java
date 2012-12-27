@@ -13,7 +13,7 @@ import com.seisw.util.geom.Poly;
  *
  * @param <P>
  */
-public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> implements ITileMap <P>
+public class PolygonGrid extends GridMap <Tile <ITilePoly>, ITilePoly> implements ITileMap <ITilePoly>
 {
 
 	public PolygonGrid(int cellSize, float width, float height)
@@ -23,13 +23,13 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 	}
 
 	@Override
-	protected Tile<P> createEmptyCell(int i, int j, double x, double y)
+	protected Tile<ITilePoly> createEmptyCell(int i, int j, double x, double y)
 	{
-		return new Tile <P> (i, j, x, y, getCellSize(), getCellSize());
+		return new Tile <ITilePoly> (i, j, x, y, getCellSize(), getCellSize());
 	}
 
 	@Override
-	protected Tile<P>[] createMap(int cellSize, int width, int height)
+	protected Tile<ITilePoly>[] createMap(int cellSize, int width, int height)
 	{
 		return new Tile [width*height];
 	}
@@ -55,7 +55,7 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 	}
 	
 	
-	public class MaskingSensor implements ISpatialSensor <P>
+	public class MaskingSensor implements ISpatialSensor <ITilePoly>
 	{
 		private final Poly poly;
 		
@@ -71,7 +71,7 @@ public class PolygonGrid <P extends ITilePoly> extends GridMap <Tile <P>, P> imp
 		}
 
 		@Override
-		public boolean objectFound(P tilePoly)
+		public boolean objectFound(ITilePoly tilePoly)
 		{
 //			System.out.println("erroding behavior: erroding tile " + chunk.get() );
 			boolean modified = false;

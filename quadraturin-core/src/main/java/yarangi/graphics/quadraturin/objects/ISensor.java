@@ -19,8 +19,17 @@ public interface ISensor <K> extends ISpatialSensor <K>
 	 */
 	public abstract List<K> getEntities();
 
+	/**
+	 * Sensing radius.
+	 * @return
+	 */
 	public abstract double getRadius();
 	
+	/**
+	 * Specifies sensing interval
+	 * @param time
+	 * @return
+	 */
 	public boolean isSensingNeeded(double time);
  
 }

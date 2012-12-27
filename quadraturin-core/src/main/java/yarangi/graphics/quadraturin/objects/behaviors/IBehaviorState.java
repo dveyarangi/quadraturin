@@ -18,7 +18,7 @@ public interface IBehaviorState <K> extends IState <K>
 	 * @param time
 	 * @param entity
 	 * @param isVisible
-	 * @return amount of time remaining
+	 * @return amount of time remaining, positive if behavior took less time than provided; negative if it needs more time, or zero
 	 */
 	public double behave(double time, K entity);
 }

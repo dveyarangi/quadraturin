@@ -1,9 +1,9 @@
 package yarangi.graphics.quadraturin.actions;
 
 import yarangi.graphics.quadraturin.Scene;
-import yarangi.graphics.quadraturin.objects.IBehavior;
+import yarangi.graphics.quadraturin.Scene.IWorker;
 
-public interface ICameraMan extends IBehavior <Scene>
+public interface ICameraMan extends IWorker
 {
 	@Override
 	public abstract boolean behave(double time, Scene scene, boolean isVisible);

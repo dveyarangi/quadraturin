@@ -34,7 +34,7 @@ import com.spinn3r.log5j.Logger;
  * the future.  Runs in a separate thread. All accumulated event are dispatched at once.
  * 
  * TODO: fire GUIEvents?
- * TODO: replacing the AWT event queue shall be more efficient.
+ * TODO: totally detaching and replacing the AWT event queue shall be more efficient.
  * TODO: replace InputHooks with mode-key-modifiers hierarchy and make pool for UserActionEvents
  * 
  * @author Dve Yarangi
@@ -72,6 +72,9 @@ public class QVoices implements IEventManager, Loopy
 	 */
 	public static final String NAME="q-voice";
 	
+	/**
+	 * Last picked entity
+	 */
 	public ILayerObject prevEntity;
 	
 	/**

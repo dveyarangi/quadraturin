@@ -37,24 +37,12 @@ public class EntityShell <E> extends Entity
 	{
 		return essence;
 	}
-	
-	@Override
-	public void init(GL gl, IRenderingContext context)
-	{
-		getLook().init( gl, context );
-	}
-	
+
 	@Override
 	public void render(GL gl, IRenderingContext context)
 	{
 		// rendering this entity:
 		getLook().render(gl,essence, context);
-	}
-	
-	@Override
-	public void destroy(GL gl, IRenderingContext context)
-	{
-		getLook().destroy( gl, context );
 	}
 
 	@Override

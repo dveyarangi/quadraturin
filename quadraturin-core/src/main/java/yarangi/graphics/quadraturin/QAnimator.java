@@ -13,7 +13,7 @@ import com.spinn3r.log5j.Logger;
 /**
  * Invokes scene behavior.
  */
-public class StageAnimator implements Loopy, StageListener 
+public class QAnimator implements Loopy, StageListener 
 {
 	
 	/**
@@ -59,7 +59,7 @@ public class StageAnimator implements Loopy, StageListener
 	
 	private double frameTime;
 	
-	public StageAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
+	public QAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
 	{
 		if (canvas == null)
 			throw new IllegalArgumentException("Canvas cannot be null.");

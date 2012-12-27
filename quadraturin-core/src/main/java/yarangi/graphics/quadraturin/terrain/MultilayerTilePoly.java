@@ -60,7 +60,14 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 		area = AABB.createFromEdges( minx, miny, maxx, maxy, 0 );
 	}
 	
-	public Poly [] getPoly() 
+
+	@Override
+	public Poly getPoly()
+	{
+		return structurePolys[0];
+	}
+	
+	public Poly [] getPolys() 
 	{
 		return structurePolys;
 	}
