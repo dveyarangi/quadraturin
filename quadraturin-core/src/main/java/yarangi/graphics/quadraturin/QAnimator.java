@@ -57,7 +57,7 @@ public class QAnimator implements Loopy, StageListener
 	 */
 	private double approxFrameLength;
 	
-	private double frameTime;
+	private static double frameTime;
 	
 	public QAnimator(GLCanvas canvas, StageConfig stageConfig, EkranConfig ekranConfig)
 	{
@@ -162,7 +162,7 @@ public class QAnimator implements Loopy, StageListener
 	}
 
 
-	public double getLastFrameLength()
+	public static double getLastFrameLength()
 	{
 		return frameTime;
 	}

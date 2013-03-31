@@ -45,8 +45,6 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	 */
 	private final IEventManager voices;
 	
-	private final QAnimator animator;
-	
 	/**
 	 * Set of rendering environment properties for {@link ILook} to consider. 
 	 */
@@ -56,13 +54,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	double mvmatrix[] = new double[16];
 	double projmatrix[] = new double[16]; 
 	
-	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, QAnimator animator, ThreadChain chain) {
+	public Q2DController(String moduleName, EkranConfig ekranConfig, IEventManager voices, ThreadChain chain) {
 
 		super(moduleName, chain);
 		
 		this.voices = voices;
-		
-		this.animator = animator;
 		
 		this.context = new DefaultRenderingContext(ekranConfig);
 	}
@@ -197,7 +193,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// RENDERING CURRENT FRAME:
 		////////////////////////////////////////////////////////////////////
 		
-		context.setFrameLength( (float)animator.getLastFrameLength() );
+		context.setFrameLength( (float)QAnimator.getLastFrameLength() );
 		
 		// ////////////////////////////////////////////////////
 		// scene preprocessing, in untranslated coordinates:
