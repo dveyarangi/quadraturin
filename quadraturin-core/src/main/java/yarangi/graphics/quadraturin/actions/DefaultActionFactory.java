@@ -28,41 +28,7 @@ public class DefaultActionFactory
 		return new EntityShell <ActionController> (new DefaultActionController(scene), null, null);
 	}
 	
-	static class DefaultActionController extends ActionController 
-	{
-		
-		Map <String, IAction> actions;
-		
-		ICameraMan cameraMover;
-		
-		public DefaultActionController(Scene scene)
-		{
-			super(scene);
-			
-			cameraMover = new CameraMover((Camera2D) scene.getCamera());
-			actions = appendNavActions(new HashMap <String, IAction> (), cameraMover, scene);
-			assert Debug.appendDebugActions( actions );
-		}
 
-		@Override
-		public Map<String, IAction> getActions()
-		{
-			return actions;
-		}
-
-		@Override
-		public ISpatialFilter<IEntity> getPickingFilter()
-		{
-			return null;
-		}
-
-		@Override
-		public ICameraMan getCameraManager()
-		{
-			return cameraMover;
-		}
-
-	}
 	
 	public static Map <String, IAction> appendNavActions(Map <String, IAction> actions, final ICameraMan mover, Scene scene)
 	{
