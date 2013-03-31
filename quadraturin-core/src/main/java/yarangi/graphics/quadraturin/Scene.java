@@ -295,6 +295,7 @@ public abstract class Scene
 	 * Exposes collision manager to register collision handlers
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public ICollider getCollisionManager()
 	{
 		return getWorldLayer().getPhysicsEngine().getCollisionManager();

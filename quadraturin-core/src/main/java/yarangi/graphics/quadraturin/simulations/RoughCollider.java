@@ -76,9 +76,9 @@ public class RoughCollider <B extends IPhysicalObject, T extends ITerrain> imple
 		terrainSensor.setSource( entity );
 		AABB aabb = (AABB)entity.getArea();
 //		System.out.println("RoughCollider: " + entity + " : " + entity.getArea());
-		indexer.queryAABB( worldSensor, aabb.getCenterX(), aabb.getCenterY(), aabb.getRX(), aabb.getRY());
+		indexer.queryAABB( worldSensor, (float)aabb.getCenterX(), (float)aabb.getCenterY(), (float)aabb.getRX(), (float)aabb.getRY());
 		if(terrain != null)
-			terrain.queryAABB(terrainSensor, aabb.getCenterX(), aabb.getCenterY(), aabb.getRX(), aabb.getRY());
+			terrain.queryAABB(terrainSensor, (float)aabb.getCenterX(), (float)aabb.getCenterY(), (float)aabb.getRX(), (float)aabb.getRY());
 		
 	}
 

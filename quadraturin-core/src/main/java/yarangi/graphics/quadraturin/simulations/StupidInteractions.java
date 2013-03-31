@@ -77,9 +77,28 @@ public class StupidInteractions <K extends IPhysicalObject> implements IPhysicsE
 			
 			// TODO: add volume and rotation :)
 			
-			if(body.isInert()) {
-				// TODO: probably should use some Runga-Kutta (research it). 
+			if(body.isInert()) 
+			{
+				
+				if(body.getFrictionCoef() != 0)
+				{
+					
+					double vabs = body.getVelocity().abs();
+					if(vabs != 0) {
+						double fricoef = body.getFrictionCoef() * time;
+						double fvdx = -body.getVelocity().x()/vabs * fricoef;
+						double fvdy = -body.getVelocity().y()/vabs * fricoef;
+//						System.out.println("friction: " + fvdx + " : " + fvdy);
+						body.addForce( fvdx, fvdy );
+					}
+				}
+				
+				
+				// TODO: probably should use some Runga-Kutta. 
 				body.addVelocity(body.getForce().x() / body.getMass() * time, body.getForce().y() / body.getMass() * time);
+				
+				
+
 				
 				// TODO: add limits for forces and velocities
 				// TODO: warn about potentially destabilizing limit overflows (more than some percentage of limit)

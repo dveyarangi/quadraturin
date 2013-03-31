@@ -17,6 +17,6 @@ public interface IBehavior <An>
 	 * @return true, if behavior changes the {@link IEntity#getArea()}. 
 	 * TODO: invalidate entity's Area instead, to remove this illicit dependency on return type.
 	 */
-	public boolean behave(double time, An entity, boolean isVisible);
+	public boolean behave(double dt, An entity, boolean isVisible);
 	
 }

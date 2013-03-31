@@ -60,7 +60,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	/**
 	 * 
 	 */
-	public static final double CURSOR_PICK_SPAN = 5;
+	public static final float CURSOR_PICK_SPAN = 5;
 	
 	/**
 	 * Queue of entities waiting to be initialized.
@@ -155,7 +155,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getEntitySensor().clear();
 
-					getEntityIndex().queryRadius(entity.getEntitySensor(), refPoint.x(), refPoint.y(), entity.getEntitySensor().getRadius());
+					getEntityIndex().queryRadius(entity.getEntitySensor(), (float)refPoint.x(), (float)refPoint.y(), (float)entity.getEntitySensor().getRadius());
 
 				}
 			}
@@ -169,7 +169,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 					// this implementation extracts live entity objects, entity locations thus updated regardless of sensing frequency
 					entity.getTerrainSensor().clear();
 					
-					terrain.getEssence().queryRadius(entity.getTerrainSensor(), refPoint.x(), refPoint.y(), entity.getTerrainSensor().getRadius());
+					terrain.getEssence().queryRadius(entity.getTerrainSensor(), (float)refPoint.x(), (float)refPoint.y(), (float)entity.getTerrainSensor().getRadius());
 
 				}
 			}
@@ -247,7 +247,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	public ILayerObject processPick(IVector2D worldLocation, PickingSensor.Mode mode, ISpatialFilter <IEntity> filter)
 	{
 		PickingSensor <IEntity> sensor = new PickingSensor <IEntity> (worldLocation.x(), worldLocation.y(), mode, filter);
-		getEntityIndex().queryAABB(sensor, worldLocation.x(), worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
+		getEntityIndex().queryAABB(sensor, (float)worldLocation.x(), (float)worldLocation.y(), CURSOR_PICK_SPAN, CURSOR_PICK_SPAN);
 		IEntity entity = sensor.getObject();
 //		System.out.println("picked: " + entity);
 		if(entity == null)

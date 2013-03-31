@@ -156,7 +156,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 	    // creating JOGL render:
 		log.debug("Creating GL listener...");
 		
-		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, animator, chain);
+		controller = new Q2DController("q-renderer", config.getEkranConfig(), voices, chain);
 		chain.addThread(controller);
 		
 		log.trace("GL controller created.");

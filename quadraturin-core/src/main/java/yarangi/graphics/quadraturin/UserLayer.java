@@ -23,7 +23,7 @@ public class UserLayer extends SceneLayer <Overlay>
 
 	private final Panel basePanel;
 	
-	public static final double CURSOR_PICK_SPAN = 5;
+	public static final float CURSOR_PICK_SPAN = 5;
 	
 	private double halfWidth, halfHeight;
 	
