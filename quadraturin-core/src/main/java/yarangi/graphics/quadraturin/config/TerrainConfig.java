@@ -9,7 +9,7 @@ import yarangi.java.ReflectionUtil;
 public class TerrainConfig
 {
 	private String factoryClass;
-	private final int cellsize = 10;
+	private int cellsize = 10;
 	
 	public EntityShell<? extends ITileMap<ITerrain>> createTerrain(float sceneWidth, float sceneHeight)
 	{

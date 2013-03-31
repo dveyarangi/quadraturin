@@ -21,7 +21,7 @@ public class QuadJsonConfig implements IQuadConfig
 		if(configFileProp != null)
 			CONFIG_FILENAME = configFileProp;
 		else 
-			CONFIG_FILENAME = "quadraturin-config.json";
+			CONFIG_FILENAME = "q.json";
 		
 		LOG.debug( "Using [" + new File(CONFIG_FILENAME).getAbsolutePath() + "] configuration file." );
 	}
@@ -34,9 +34,9 @@ public class QuadJsonConfig implements IQuadConfig
 		
 		String fileContents = null;
 		try {
-			InputStream stream = new FileInputStream( CONFIG_FILENAME );
+			InputStream stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			if(stream == null) {
-				stream = QuadJsonConfig.class.getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+				 stream = new FileInputStream( CONFIG_FILENAME );
 			}
 //				throw new RuntimeException("Cannot find " + CONFIG_FILENAME + " file.");
 			fileContents = IOUtils.toString(stream);

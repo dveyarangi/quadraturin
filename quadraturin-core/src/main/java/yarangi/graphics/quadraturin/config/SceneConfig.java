@@ -18,11 +18,11 @@ public class SceneConfig
 	protected String sceneClass;
 	protected String engineClass;
 	protected String colliderClass;
-	protected double frameLength;
+	protected double frameLength = 1;
 	protected EventConfig [] events;
 	
 	protected int width, height;
-	protected double timeModifier;
+	protected double timeModifier = 1;
 	
 	protected ViewPointConfig viewpoint;
 	protected PhysicsEngineConfig engine;
