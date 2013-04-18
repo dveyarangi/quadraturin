@@ -189,10 +189,10 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		
 	 	// tiles
 		gl.glColor4f(0,0.5f,0, 0.2f);
-		for(float x = minx; x <= maxx; x += grid.getCellSize())
-			for(float y = miny; y <= maxy; y += grid.getCellSize())
+		for(float x = minx; x < maxx; x += grid.getCellSize())
+			for(float y = miny; y < maxy; y += grid.getCellSize())
 			{
-				if(!grid.isEmptyAt(x, y))
+				if(!grid.isEmptyAtCoord(x, y))
 				{
 					gl.glBegin(GL.GL_LINE_STRIP);
 					gl.glVertex2f( x, y+grid.getCellSize() );

@@ -24,9 +24,9 @@ public class TilePoly implements IBeing, ITilePoly
 	
 	private boolean isFull = false;
 	
-	private final double minx, miny, maxx, maxy;
+	private final float minx, miny, maxx, maxy;
 	
-	public TilePoly(double minx, double miny, double maxx, double maxy)
+	public TilePoly(float minx, float miny, float maxx, float maxy)
 	{
 		
 		this.minx = minx;
@@ -49,6 +49,7 @@ public class TilePoly implements IBeing, ITilePoly
 		area = AABB.createFromEdges( minx, miny, maxx, maxy, 0 );
 	}
 	
+	@Override
 	public Poly getPoly() 
 	{
 		return structurePoly;
@@ -153,11 +154,11 @@ public class TilePoly implements IBeing, ITilePoly
 		return false;
 	}
 
-	@Override public double getMinX() { return minx; }
-	@Override public double getMinY() {	return miny; }
+	@Override public float getMinX() { return minx; }
+	@Override public float getMinY() {	return miny; }
 
-	@Override public double getMaxX() { return maxx; }
-	@Override public double getMaxY() {	return maxy; }
+	@Override public float getMaxX() { return maxx; }
+	@Override public float getMaxY() {	return maxy; }
 	
 	@Override
 	public boolean isFull()

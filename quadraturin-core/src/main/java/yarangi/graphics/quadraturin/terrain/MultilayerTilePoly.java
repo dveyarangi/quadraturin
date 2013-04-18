@@ -21,7 +21,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	 */
 	private final Poly borderPoly;
 	
-	private final double minx, miny, maxx, maxy;
+	private final float minx, miny, maxx, maxy;
 	
 	/**
 	 * Specifies real structure of this tile:
@@ -32,7 +32,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	
 	private boolean isFull = false;
 	
-	public MultilayerTilePoly(double minx, double miny, double maxx, double maxy, int layersNum, boolean fill)
+	public MultilayerTilePoly(float minx, float miny, float maxx, float maxy, int layersNum, boolean fill)
 	{
 		this.minx = minx;
 		this.maxx = maxx;
@@ -158,13 +158,13 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	}
 
 	@Override
-	public final double getMaxX() { return maxx; }
+	public final float getMaxX() { return maxx; }
 	@Override
-	public final double getMaxY() { return maxy; }
+	public final float getMaxY() { return maxy; }
 	@Override
-	public final double getMinX() { return minx; }
+	public final float getMinX() { return minx; }
 	@Override
-	public final double getMinY() { return miny; }
+	public final float getMinY() { return miny; }
 
 	@Override
 	public boolean overlaps(AABB aabb)

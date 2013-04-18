@@ -39,10 +39,10 @@ public interface ITilePoly
 	/*
 	 * tile boundary coordinates
 	 */
-	double getMinX();
-	double getMinY();
-	double getMaxX();
-	double getMaxY();
+	float getMinX();
+	float getMinY();
+	float getMaxX();
+	float getMaxY();
 
 	Poly getPoly();
 

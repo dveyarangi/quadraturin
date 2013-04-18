@@ -12,14 +12,34 @@ import yarangi.spatial.IGrid;
 import yarangi.spatial.IGridListener;
 import yarangi.spatial.Tile;
 
+/**
+ * Abstract grid renderer.
+ * 
+ * @author dveyarangi
+ *
+ * @param <O>
+ * @param <G>
+ */
 public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <G>, IGridListener<Tile<O>>
 {
-	
+	/**
+	 * Tiles that need re-rendering
+	 */
 	protected Collection <Tile<O>> pendingTiles;
 
+	/**
+	 * TODO: rendering parameters
+	 */
 	protected boolean depthtest, blend;
+	
+	/**
+	 * Allows to toggle rendering.
+	 */
 	protected boolean isVisible = true;
 	
+	/**
+	 * The Grid
+	 */
 	protected final G grid;
 
 	public GridLook(G grid, boolean depthtest, boolean blend)
@@ -65,7 +85,10 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 			renderGrid( gl, entity, context );
 		gl.glPopAttrib();
 		
-		pendingTiles.clear();
+		synchronized ( pendingTiles ) 
+		{
+			pendingTiles.clear();
+		}
 	}
 	
 	public abstract void renderGrid(GL2 gl, G entity, IRenderingContext context);

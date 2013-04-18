@@ -77,11 +77,11 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 		return tile;
 	}
 	
-	public Tile <Bitmap> setPixel(double x, double y, Color color)
+	public Tile <Bitmap> setPixel(float x, float y, Color color)
 	{
 		if(x < getMinX() || x > getMaxX() || y < getMinY() || y > getMaxY())
 			return null;
-		Tile <Bitmap> tile = getTile( x, y );
+		Tile <Bitmap> tile = getTileByCoord( x, y );
 		if(tile == null)
 			return null;
 		
@@ -100,7 +100,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 	 * @param area
 	 * @return
 	 */
-	public void apply(double ox, double oy, boolean substract, int maskWidth, byte [] mask)
+	public void apply(float ox, float oy, boolean substract, int maskWidth, byte [] mask)
 	{
 		MaskingSensor sensor = new MaskingSensor (substract, ox, oy, maskWidth, mask);
 		float maskRealWidth = maskWidth*pixelSize;
@@ -146,7 +146,7 @@ public class GridyTerrainMap extends GridMap<Tile <Bitmap>, Bitmap> implements I
 				changed = bitmap.addMask( ioffset, joffset, maskWidth, mask );
 			
 			if(changed)
-				setModified(bitmap.getMinX(), bitmap.getMinY() );
+				setModifiedByCoord((float)bitmap.getMinX(), (float)bitmap.getMinY() );
 			
 			return false;
 		}
