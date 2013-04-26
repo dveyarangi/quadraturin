@@ -2,7 +2,7 @@ package yarangi.graphics.quadraturin.ui;
 
 import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.spatial.Area;
+import yarangi.spatial.AABB;
 
 /**
  * TODO: this class is not yet implemented
@@ -45,7 +45,7 @@ public class Overlay implements ILayerObject
 	public final ILook getLook() { return look; }
 
 	@Override
-	public Area getArea() {
+	public AABB getArea() {
 		// parent panel defines the pickable area:
 		return parent.getAABB();
 	}

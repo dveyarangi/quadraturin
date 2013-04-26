@@ -20,7 +20,7 @@ public class TilePoly implements IBeing, ITilePoly
 	 */
 	private Poly structurePoly;
 	
-	private final Area area;
+	private final AABB area;
 	
 	private boolean isFull = false;
 	
@@ -126,7 +126,7 @@ public class TilePoly implements IBeing, ITilePoly
 	}
 
 	@Override
-	public Area getArea()
+	public AABB getArea()
 	{
 		
 		return area;

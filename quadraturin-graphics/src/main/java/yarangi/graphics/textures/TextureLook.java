@@ -23,7 +23,7 @@ public class TextureLook implements ILook <IEntity>
 {
 
 //		private IsoheightVeil veil;
-//	private IVeil veil;
+	private IVeil veil;
 	
 	private static Texture texture;
 	
@@ -71,7 +71,7 @@ public class TextureLook implements ILook <IEntity>
 	public void render(GL gl1, IEntity entity, IRenderingContext context) {
 		
 		GL2 gl = gl1.getGL2();
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT);
 		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		
@@ -79,6 +79,7 @@ public class TextureLook implements ILook <IEntity>
 		texture.bind(gl);
 		gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
 		
+		gl.glEnable(GL.GL_BLEND);
 		
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glColor4f( 1,1,1,1 );
@@ -108,7 +109,7 @@ public class TextureLook implements ILook <IEntity>
 		return false;
 	}
 	@Override
-	public IVeil getVeil() { return null; }
+	public IVeil getVeil() { return veil; }
 
 	@Override
 	public boolean isOriented() { return true; }

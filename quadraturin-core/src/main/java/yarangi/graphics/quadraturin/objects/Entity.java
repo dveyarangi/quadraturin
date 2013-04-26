@@ -8,6 +8,7 @@ import yarangi.graphics.quadraturin.Scene;
 import yarangi.graphics.quadraturin.SceneLayer;
 import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.physics.Body;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 
 /**
@@ -41,12 +42,23 @@ public class Entity implements IEntity
 	/**
 	 * Area span
 	 */
-	private Area spatialAspect;
+	private AABB spatialAspect;
 	
+	/**
+	 * Physically-interactive body of this entity
+	 */
 	private Body physicalAspect;
 
+	/**
+	 * Sensor for other entities
+	 */
 	private ISensor <?> sensorAspect;
+	
+	/**
+	 * Sensor for terrain features
+	 */
 	private ISensor <?> terrainSensorAspect;
+	
 	/**
 	 * Dead entities are automatically removed from the stage.
 	 */
@@ -78,7 +90,7 @@ public class Entity implements IEntity
 	 * Space entity takes in its layer
 	 * @param area
 	 */
-	public void setArea(Area area) { this.spatialAspect = area; }
+	public void setArea(AABB area) { this.spatialAspect = area; }
 
 	/**
 	 * Physical properties
@@ -134,7 +146,7 @@ public class Entity implements IEntity
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final Area getArea() { return spatialAspect; }
+	public final AABB getArea() { return spatialAspect; }
 
 	/**
 	 * {@inheritDoc}

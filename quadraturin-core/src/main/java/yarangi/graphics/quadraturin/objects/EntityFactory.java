@@ -1,12 +1,12 @@
 package yarangi.graphics.quadraturin.objects;
 
 import yarangi.physics.Body;
-import yarangi.spatial.Area;
+import yarangi.spatial.AABB;
 
 public class EntityFactory 
 {
 	
-	public static <K> ILayerObject createEntity(ILook <K> look, IBehavior <K> behavior, Area area, Body body, ISensor sensor)
+	public static <K> ILayerObject createEntity(ILook <K> look, IBehavior <K> behavior, AABB area, Body body, ISensor sensor)
 	{
 		Entity entity = new Entity();
 		entity.setLook(look);

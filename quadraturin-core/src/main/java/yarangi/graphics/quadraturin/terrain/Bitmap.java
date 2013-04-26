@@ -27,7 +27,7 @@ public class Bitmap extends AABB implements ITerrain
 	 */
 	public Bitmap(double cx, double cy, double width, int size)
 	{
-		super(cx, cy, width, width, 0);
+		update(cx, cy, width, width, 0);
 //		area = new PointArea(cx, cy);
 		
 		this.pixels = new byte[size*size*4];
@@ -240,7 +240,7 @@ public class Bitmap extends AABB implements ITerrain
 
 //	public double getPixelSize() { return pixelsize; }
 	@Override
-	public Area getArea()
+	public AABB getArea()
 	{
 		return this;
 	}

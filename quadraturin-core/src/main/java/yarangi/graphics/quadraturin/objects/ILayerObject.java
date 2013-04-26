@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin.objects;
 
 import yarangi.graphics.quadraturin.SceneLayer;
+import yarangi.spatial.AABB;
 import yarangi.spatial.Area;
 import yarangi.spatial.ISpatialObject;
 
@@ -17,7 +18,7 @@ public interface ILayerObject extends ISpatialObject
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Area getArea();
+	public AABB getArea();
 
 	/**
 	 * Alive flag, for collection of dead entities.

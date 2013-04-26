@@ -186,7 +186,7 @@ public class MultilayerTilePoly implements ITerrain, ITilePoly
 	}
 
 	@Override
-	public Area getArea()
+	public AABB getArea()
 	{
 		return area;
 	}
