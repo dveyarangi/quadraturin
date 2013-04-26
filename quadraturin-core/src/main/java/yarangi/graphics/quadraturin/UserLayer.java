@@ -16,9 +16,16 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.spinn3r.log5j.Logger;
 
+/**
+ * This class is for user interface elements.
+ * TODO: user interface elements
+ * 
+ * @author dveyarangi
+ */
 public class UserLayer extends SceneLayer <Overlay>
 {
 
+	private static final String NAME = "q-userlayer";
 //	private List <ActionOverlay> actionIOverlays = new LinkedList <ActionOverlay> ();
 
 	private final Panel basePanel;
@@ -31,14 +38,14 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	// TODO: overlay spatial filter
 
-	protected Logger log = Logger.getLogger("q-userlayer");
+	protected Logger log = Logger.getLogger();
 	public UserLayer(int width, int height)
 	{
 		super(width, height);
 		this.halfHeight = height/2;
 		this.halfWidth = width/2;
 		basePanel = new Panel(new ViewPort(0, 0, width, height));
-		setEntityIndex( new SpatialHashMap	<Overlay>(width*height/100, 10, width, height) );
+		setEntityIndex( new SpatialHashMap	<Overlay>(NAME, width*height/100, 10, width, height) );
 //		this.viewPoint = viewPoint;
 	}
 
@@ -77,7 +84,7 @@ public class UserLayer extends SceneLayer <Overlay>
 			this.halfWidth = width/2;
 			// TODO: might be a bit heavy:
 			log.debug("Creating new spatial hash map (" + width + "x" +height + ")");
-			setEntityIndex( new SpatialHashMap<Overlay>(width*height/100, 10, width, height) );
+			setEntityIndex( new SpatialHashMap<Overlay>( NAME, width*height/100, 10, width, height ) );
 			
 //			for(Overlay overlay : getEntities())
 //				if(overlay.isIndexed())

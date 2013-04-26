@@ -11,6 +11,7 @@ import yarangi.graphics.quadraturin.objects.ILayerObject;
 import yarangi.graphics.quadraturin.simulations.IPhysicsEngine;
 import yarangi.graphics.quadraturin.terrain.ITerrain;
 import yarangi.math.IVector2D;
+import yarangi.spatial.AABB;
 import yarangi.spatial.ISpatialFilter;
 import yarangi.spatial.ITileMap;
 import yarangi.spatial.PickingSensor;
@@ -32,6 +33,8 @@ import com.spinn3r.log5j.Logger;
 public class WorldLayer extends SceneLayer <IEntity> 
 {
 
+	private static String NAME = "q-world";
+	
 	/**
 	 * Simulation-world time reference.
 	 */
@@ -55,7 +58,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 	/**
 	 * Yes
 	 */
-	private final Logger log = Logger.getLogger("q-world");
+	private final Logger log = Logger.getLogger(NAME);
 	
 	/**
 	 * 
@@ -76,12 +79,12 @@ public class WorldLayer extends SceneLayer <IEntity>
 	
 	public WorldLayer(int width, int height) 
 	{ 
-//		super(new SpatialHashMap<ISpatialObject>(100, 10, width, height));
 		super(width, height);
 		
-		setEntityIndex( new SpatialHashMap	<IEntity>(width*height/10, 10, width, height) );
 		
-		log.debug("Allocated " + width*height/10 + " cells.");
+		// creating index for world entities:
+		setEntityIndex( new SpatialHashMap	<IEntity>( NAME, width*height/10, 10, width, height) );
+		
 	}
 	
 
@@ -220,6 +223,7 @@ public class WorldLayer extends SceneLayer <IEntity>
 		if(bornEntities.contains( entity ))
 			bornEntities.remove(entity);
 		
+//		AABB.release( (AABB)entity.getArea() );
 	}
 
 
