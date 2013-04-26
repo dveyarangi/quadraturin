@@ -31,14 +31,14 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 		for(int x = 0; x < entity.getGridWidth(); x ++)
 			for(int y = 0; y < entity.getGridHeight(); y ++)
 			{
-				tile = entity.getTile( x, y );
+				tile = entity.getTileByIndex( x, y );
 				curr = tile.get().plus( tile.getX(), tile.getY());
 				
 //				System.out.println("-------");
 				Vector2D force = Vector2D.ZERO();
 				if(x > 0)
 				{
-					tempTile = entity.getTile( x-1, y );
+					tempTile = entity.getTileByIndex( x-1, y );
 					temp = tempTile.get().plus( tempTile.getX(), tempTile.getY() ).minus( curr );
 					length = temp.abs();
 					coef = (length - entity.getCellSize())* SPRING_K / length;
@@ -46,7 +46,7 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 				}
 				if(x < entity.getGridWidth()-1)
 				{
-					tempTile = entity.getTile( x+1, y );
+					tempTile = entity.getTileByIndex( x+1, y );
 					temp = tempTile.get().plus( tempTile.getX(), tempTile.getY() ).minus( curr );
 					length = temp.abs();
 					coef = (length - entity.getCellSize())* SPRING_K / length;
@@ -54,7 +54,7 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 				}
 				if(y > 0)
 				{
-					tempTile = entity.getTile( x, y-1 );
+					tempTile = entity.getTileByIndex( x, y-1 );
 					temp = tempTile.get().plus( tempTile.getX(), tempTile.getY() ).minus( curr );
 					length = temp.abs();
 					coef = (length - entity.getCellSize())* SPRING_K / length;
@@ -62,7 +62,7 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 				}
 				if(y < entity.getGridHeight()-1)
 				{
-					tempTile = entity.getTile( x, y+1 );
+					tempTile = entity.getTileByIndex( x, y+1 );
 					temp = tempTile.get().plus( tempTile.getX(), tempTile.getY() ).minus( curr );
 					length = temp.abs();
 					coef = (length - entity.getCellSize()) * SPRING_K / length;
@@ -106,8 +106,8 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 //				r = ry[y];
 				r = RandomUtil.STD( 0, 10 );
 				
-				entity.getTile( 0, y ).get().setxy( r, r);
-				entity.getTile( entity.getGridHeight()-1, y ).get().setxy( r, r);
+				entity.getTileByIndex( 0, y ).get().setxy( r, r);
+				entity.getTileByIndex( entity.getGridHeight()-1, y ).get().setxy( r, r);
 			}
 			for(int x = 0; x < entity.getGridWidth(); x ++)
 			{
@@ -116,8 +116,8 @@ public class SpringGridBehavior implements IBehavior <SpringGrid>
 				//r = rx[x];
 //				r = RandomUtil.getRandomGaussian( 10, 10 );
 				r = RandomUtil.STD( 0, 10 );
-				entity.getTile( x, 0 ).get().setxy( r, r);
-				entity.getTile( x, entity.getGridHeight()-1 ).get().setxy( r, r);
+				entity.getTileByIndex( x, 0 ).get().setxy( r, r);
+				entity.getTileByIndex( x, entity.getGridHeight()-1 ).get().setxy( r, r);
 			}
 			lastPull = gridTime;
 			pullOut = !pullOut;

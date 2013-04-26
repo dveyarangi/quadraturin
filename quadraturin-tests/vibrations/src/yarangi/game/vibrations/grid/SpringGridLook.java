@@ -27,7 +27,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 		for(int i = 0; i < entity.getGridWidth(); i ++)
 			for(int j = 0; j < entity.getGridWidth(); j ++)
 			{
-				tile = entity.getTile( i, j );
+				tile = entity.getTileByIndex( i, j );
 				loc = tile.get().plus( tile.getX(), tile.getY() );
 				vel = Vector2D.R(tile.get().vx(), tile.get().vy()).normalize();
 				val = Vector2D.R(tile.get().vx(), tile.get().vy()).abs();

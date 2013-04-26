@@ -9,6 +9,8 @@ import yarangi.graphics.quadraturin.config.EkranConfig;
 import yarangi.graphics.quadraturin.config.SceneConfig;
 import yarangi.graphics.quadraturin.terrain.Bitmap;
 import yarangi.graphics.quadraturin.terrain.GridyTerrainMap;
+import yarangi.graphics.quadraturin.terrain.ITerrain;
+import yarangi.spatial.ITileMap;
 
 public class Scene1 extends Scene
 {
@@ -25,9 +27,9 @@ public class Scene1 extends Scene
 		// default nav keys
 		this.setActionController( DefaultActionFactory.createDefaultController( this ));
 
-		GridyTerrainMap terrain = (GridyTerrainMap)	(getWorldLayer().<Bitmap>getTerrain());
+		ITileMap <ITerrain> terrain = (getWorldLayer().getTerrain());
 		
-		terrain.apply( 0, 0, false, 20, MaskUtil.createCircleMask( 10, new Color(1,1,1,1), false ) );
+//		terrain.apply( 0, 0, false, 20, MaskUtil.createCircleMask( 10, new Color(1,1,1,1), false ) );
 	}
 
 	@Override
