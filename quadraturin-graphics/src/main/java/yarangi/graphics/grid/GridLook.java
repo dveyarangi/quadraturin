@@ -66,23 +66,25 @@ public abstract class GridLook <O, G extends IGrid <Tile<O>>> implements ILook <
 	}
 
 	@Override
-	public void init(GL gl, IRenderingContext context) {}
+	public void init(IRenderingContext context) {}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) {
+	public void destroy(IRenderingContext context) {
 		grid.setModificationListener( null );
 	}
 
 	@Override
-	public final void render(GL gl1, G entity, IRenderingContext context)
+	public final void render( G entity, IRenderingContext ctx)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
 		gl.glPushAttrib( GL2.GL_ENABLE_BIT );
+		
 		if(blend) gl.glEnable(GL.GL_BLEND); else gl.glDisable(GL.GL_BLEND);
 		if(depthtest) gl.glEnable(GL.GL_DEPTH_TEST); else gl.glDisable(GL.GL_DEPTH_TEST);
 		
 		if(isVisible)
-			renderGrid( gl, entity, context );
+			renderGrid( gl, entity, ctx );
+		
 		gl.glPopAttrib();
 		
 		synchronized ( pendingTiles ) 

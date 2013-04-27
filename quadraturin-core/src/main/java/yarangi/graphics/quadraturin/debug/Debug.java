@@ -19,9 +19,7 @@ import yarangi.graphics.quadraturin.debug.looks.EntitySensorLook;
 import yarangi.graphics.quadraturin.events.UserActionEvent;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.graphics.quadraturin.objects.ISensor;
 import yarangi.graphics.quadraturin.objects.IVisible;
-import yarangi.graphics.quadraturin.objects.Sensor;
 import yarangi.spatial.SpatialHashMap;
 import yarangi.spatial.SpatialIndexer;
 
@@ -64,7 +62,7 @@ public class Debug
 			return true;
 		
 		if(SHOW_COORDINATE_GRID)
-			coordinateGridLook.render( gl, layer, context );
+			coordinateGridLook.render( layer, context );
 		
 		return true;
 	}
@@ -96,15 +94,15 @@ public class Debug
 		
 		if(SHOW_SENSORS) {
 			if(entity.getEntitySensor() != null)
-				sensorLook.render( gl, entity, context );
+				sensorLook.render( entity, context );
 		}
 		if(SHOW_AREAS) {
 			if(entity.getArea() != null)
-				areaLook.render( gl, entity, context );
+				areaLook.render( entity, context );
 		}
 		if(SHOW_BODIES) {
 			if(entity.getBody() != null)
-				bodyLook.render( gl, entity, context );
+				bodyLook.render( entity, context );
 		}
 		return true;
 	}

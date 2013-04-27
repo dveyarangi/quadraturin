@@ -12,18 +12,24 @@ import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.math.FastMath;
 import yarangi.spatial.SpatialHashMap;
 
+/**
+ * Renders entity index
+ * 
+ * @author dveyarangi
+ *
+ */
 public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 {
 	
 	private int gridMeshId;
 
 	@Override
-	public void init(GL gl, IRenderingContext context) {}
+	public void init(IRenderingContext context) {}
 
 	@Override
-	public void render(GL gl, SpatialHashMap<IEntity> map, IRenderingContext context) 
+	public void render(SpatialHashMap<IEntity> map, IRenderingContext ctx) 
 	{
-		GL2 gl2 = gl.getGL2();
+		GL2 gl = ctx.gl();
 		gl.glEnable( GL.GL_BLEND );
 		int cellX, cellY;
 		float cellsize = (float)map.getCellSize();
@@ -32,21 +38,21 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 		float maxx = map.getWidth()+halfCellSize;
 		float miny = -halfCellSize;
 		float maxy = map.getHeight()+halfCellSize;
-		gl2.glColor4f(0f, 0f, 0.4f, 0.5f);
+		gl.glColor4f(0f, 0f, 0.4f, 0.5f);
 		for(float y = miny; y <= maxy; y += map.getCellSize())
 		{
-			gl2.glBegin(GL.GL_LINE_STRIP);
-			gl2.glVertex3f(minx, y, 0f);
-			gl2.glVertex3f(maxx, y, 0f);
-			gl2.glEnd();
+			gl.glBegin(GL.GL_LINE_STRIP);
+			gl.glVertex3f(minx, y, 0f);
+			gl.glVertex3f(maxx, y, 0f);
+			gl.glEnd();
 		}
 		
 		for(float x = minx; x <= maxx; x += map.getCellSize())
 		{
-			gl2.glBegin(GL.GL_LINE_STRIP);
-			gl2.glVertex3f(x, miny, 0f);
-			gl2.glVertex3f(x, maxy, 0f);
-			gl2.glEnd();
+			gl.glBegin(GL.GL_LINE_STRIP);
+			gl.glVertex3f(x, miny, 0f);
+			gl.glVertex3f(x, maxy, 0f);
+			gl.glEnd();
 		}
 
 		
@@ -76,38 +82,38 @@ public class DebugSpatialHashMapLook implements ILook <SpatialHashMap<IEntity>>
 					}
 				}
 				if(bucket == null) {
-					gl2.glColor4f(1f, 0f, 0.0f, 0.5f);
-					gl2.glBegin(GL.GL_LINE_STRIP);
-					gl2.glVertex3f(x, y, 0f);
-					gl2.glVertex3f(x+cellsize, y+cellsize, 0f);
-					gl2.glEnd();
-					gl2.glBegin(GL.GL_LINE_STRIP);
-					gl2.glVertex3f(x, y+cellsize, 0f);
-					gl2.glVertex3f(x+cellsize, y, 0f);
-					gl2.glEnd();
+					gl.glColor4f(1f, 0f, 0.0f, 0.5f);
+					gl.glBegin(GL.GL_LINE_STRIP);
+					gl.glVertex3f(x, y, 0f);
+					gl.glVertex3f(x+cellsize, y+cellsize, 0f);
+					gl.glEnd();
+					gl.glBegin(GL.GL_LINE_STRIP);
+					gl.glVertex3f(x, y+cellsize, 0f);
+					gl.glVertex3f(x+cellsize, y, 0f);
+					gl.glEnd();
 
 				}
 				else
 				if(bucket.size() != 0)
 				{
 					if(isReal)		
-						gl2.glColor4f(0.8f, 0.6f, 0.8f, 0.2f);
+						gl.glColor4f(0.8f, 0.6f, 0.8f, 0.2f);
 					else
-						gl2.glColor4f(0.1f, 0.6f, 0.8f, 0.1f);
-					gl2.glBegin(GL2.GL_QUADS);
-					gl2.glVertex3f(x, y, 0f);
-					gl2.glVertex3f(x, y+cellsize, 0f);
-					gl2.glVertex3f(x+cellsize, y+cellsize, 0f);
-					gl2.glVertex3f(x+cellsize, y, 0f);
+						gl.glColor4f(0.1f, 0.6f, 0.8f, 0.1f);
+					gl.glBegin(GL2.GL_QUADS);
+					gl.glVertex3f(x, y, 0f);
+					gl.glVertex3f(x, y+cellsize, 0f);
+					gl.glVertex3f(x+cellsize, y+cellsize, 0f);
+					gl.glVertex3f(x+cellsize, y, 0f);
 				
-					gl2.glEnd();
+					gl.glEnd();
 				}	
 			}
 		}
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) {}
+	public void destroy(IRenderingContext context) {}
 
 	@Override
 	public boolean isCastsShadow() { return false; }

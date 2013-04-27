@@ -1,6 +1,7 @@
 package yarangi.graphics.quadraturin;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.objects.ILook;
 import yarangi.graphics.quadraturin.objects.IVisible;
@@ -35,7 +36,7 @@ public interface IRenderingContext
 	 * 
 	 * @return OpenGL renderer object
 	 */
-	public GL gl();
+	public GL2 gl();
 	
 	/**
 	 * Restores default blending methods
@@ -77,4 +78,5 @@ public interface IRenderingContext
 	 * @return null, in case no entity found.
 	 */
 	<K> K getAssociatedEntity(ILook <K>look);
+
 }

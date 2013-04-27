@@ -8,15 +8,13 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLProfile;
 
-import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.TextureData;
-import com.jogamp.opengl.util.texture.TextureIO;
-import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
-
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILook;
+
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 
 public class TextureLook implements ILook <IEntity>
@@ -35,10 +33,13 @@ public class TextureLook implements ILook <IEntity>
 	}
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) {
+	public void init(IRenderingContext ctx) {
 		
 		if(texture != null)
 			return;
+		
+		GL2 gl = ctx.gl();
+
 		BufferedImage image;
 		try
 		{
@@ -68,9 +69,10 @@ public class TextureLook implements ILook <IEntity>
 	}
 
 	@Override
-	public void render(GL gl1, IEntity entity, IRenderingContext context) {
+	public void render(IEntity entity, IRenderingContext ctx) {
 		
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
+		
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT);
 		gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
@@ -91,11 +93,12 @@ public class TextureLook implements ILook <IEntity>
 		
 		gl.glBindTexture( GL.GL_TEXTURE_2D, 0 );
 		gl.glPopAttrib();
-		context.setDefaultBlendMode( gl );
+		ctx.setDefaultBlendMode( gl );
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) {
+	public void destroy(IRenderingContext ctx) {
+		GL2 gl = ctx.gl();
 		texture.destroy( gl );
 	}
 

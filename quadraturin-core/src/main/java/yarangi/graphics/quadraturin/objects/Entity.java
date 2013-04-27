@@ -170,12 +170,13 @@ public class Entity implements IEntity
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public void render(GL gl,IRenderingContext context)
+	public void render(IRenderingContext ctx)
 	{
+		GL2 gl = ctx.gl();
 
 		if(look.isOriented())
 			useEntityCoordinates(gl);
-		look.render(gl, this, context);
+		look.render(this, ctx);
 		if(look.isOriented())
 			useWorldCoordinates(gl);
 		

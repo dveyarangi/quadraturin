@@ -1,6 +1,5 @@
 package yarangi.game.vibrations.grid;
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import yarangi.graphics.quadraturin.IRenderingContext;
@@ -13,12 +12,12 @@ public class SpringGridLook implements ILook <SpringGrid>
 {
 	public static final int SIZE = 3;
 	@Override
-	public void init(GL gl, IRenderingContext context){}
+	public void init(IRenderingContext ctx){}
 
 	@Override
-	public void render(GL gl1, SpringGrid entity, IRenderingContext context)
+	public void render(SpringGrid entity, IRenderingContext ctx)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
 		Tile <Joint> tile;
 		Joint joint;
 		Vector2D loc;
@@ -43,7 +42,7 @@ public class SpringGridLook implements ILook <SpringGrid>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context){}
+	public void destroy(IRenderingContext context){}
 
 	@Override
 	public float getPriority()

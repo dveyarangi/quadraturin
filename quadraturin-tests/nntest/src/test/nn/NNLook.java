@@ -11,16 +11,16 @@ public class NNLook implements ILook<NNEntity>
 {
 
 	@Override
-	public void init(GL gl, IRenderingContext context)
+	public void init(IRenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void render(GL gl1, NNEntity entity, IRenderingContext context)
+	public void render(NNEntity entity, IRenderingContext ctx)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
 
 		gl.glBegin(GL.GL_LINE_STRIP);
 		gl.glColor3f(0,1,0);
@@ -40,7 +40,7 @@ public class NNLook implements ILook<NNEntity>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context)
+	public void destroy(IRenderingContext context)
 	{
 		// TODO Auto-generated method stub
 		

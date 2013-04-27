@@ -14,12 +14,12 @@ public class EntitySensorLook implements ILook <IEntity>
 	
 
 	@Override
-	public void init(GL gl, IRenderingContext context) { }
+	public void init(IRenderingContext context) { }
 
 	@Override
-	public void render(GL gl1, IEntity entity, IRenderingContext context)
+	public void render(IEntity entity, IRenderingContext ctx)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
 		gl.glEnable(GL.GL_BLEND);
 		gl.glColor4f( 0f, 1f, 0f, 0.2f );
 		gl.glBegin( GL.GL_LINE_STRIP );
@@ -36,7 +36,7 @@ public class EntitySensorLook implements ILook <IEntity>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) { }
+	public void destroy(IRenderingContext context) { }
 
 	@Override
 	public float getPriority() { return 0; }

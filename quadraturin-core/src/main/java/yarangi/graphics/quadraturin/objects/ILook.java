@@ -1,7 +1,5 @@
 package yarangi.graphics.quadraturin.objects;
 
-import javax.media.opengl.GL;
-
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.Q2DController;
@@ -25,7 +23,7 @@ public interface ILook <An>
 	 * @param entity
 	 * @param context some global rendering properties
 	 */
-	public void init(GL gl, IRenderingContext context);
+	public void init(IRenderingContext ctx);
 	
 	/**
 	 * Renders this entity.
@@ -34,7 +32,7 @@ public interface ILook <An>
 	 * @param time scene time for animation
 	 * @param context some global rendering properties
 	 */
-	public void render(GL gl, An entity, IRenderingContext context);
+	public void render(An entity, IRenderingContext ctx);
 
 	/**
 	 * Invoked on entity deconstruction, should implement cleanup logic.
@@ -43,7 +41,7 @@ public interface ILook <An>
 	 * @param context some global rendering properties
 	 * 
 	 */
-	public void destroy(GL gl, IRenderingContext context);
+	public void destroy(IRenderingContext ctx);
 
 	/**
 	 * Defines look visual priority (looks with priority closer to 0 will override looks below.)

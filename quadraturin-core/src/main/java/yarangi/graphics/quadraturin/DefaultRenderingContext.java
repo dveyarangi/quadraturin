@@ -228,13 +228,13 @@ public class DefaultRenderingContext implements IRenderingContext
 		while(!bornLooks.isEmpty())
 		{
 			ILook<?> born = bornLooks.poll();
-			born.init( gl, this );
+			born.init( this );
 		}
 		
 		while(!deadLooks.isEmpty())
 		{
 			ILook<?> dead = deadLooks.poll();
-			dead.destroy( gl, this );
+			dead.destroy( this );
 		}
 		
 	    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -256,7 +256,7 @@ public class DefaultRenderingContext implements IRenderingContext
 					veil.weave( gl, this );
 				for(IVisible entity : entitiesLooks.get( look )) {
 //					System.out.println(entity);
-					entity.render( gl,  this );
+					entity.render( this );
 				}
 				if(veil != null)
 					veil.tear( gl );
@@ -279,7 +279,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		for(ILook look : overlayLooks.keySet()) {
 			for(IVisible entity : entitiesLooks.get( look )) {
 //				System.out.println(entity);
-				look.render( gl, entity, this );
+				look.render( entity, this );
 			}
 		}
 	}

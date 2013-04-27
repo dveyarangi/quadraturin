@@ -53,9 +53,10 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	 * @return texture object handler
 	 */
 	@Override
-	public void init(GL gl1, IRenderingContext context) 
+	public void init(IRenderingContext ctx) 
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
+
 		if(isInited)
 			return;
 		
@@ -67,7 +68,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		gl.glGetIntegerv(GL.GL_VIEWPORT, viewport);
 		
 
-		T entity = context.getAssociatedEntity( this );
+		T entity = ctx.getAssociatedEntity( this );
 		
 		// setting viewport to dimensions of our texture:
 //		gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
@@ -90,7 +91,7 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 //		gl.glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 //	   	gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 	
-		spriteLook.render(gl, entity, null);
+		spriteLook.render(entity, ctx);
 		
 		gl.glBindTexture(GL.GL_TEXTURE_2D, textureHandle);
 		// copying data from color buffer:
@@ -116,9 +117,9 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 	
 	
 	@Override
-	public void render(GL gl1, T entity, IRenderingContext defaultContext) 
+	public void render(T entity, IRenderingContext ctx) 
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
 //		gl.glEnable(GL.GL_TEXTURE_2D);					// Enable 2D Texture Mapping
 
 		gl.glPushAttrib( GL2.GL_ENABLE_BIT );
@@ -162,12 +163,12 @@ public class SpriteLook <T extends IEntity> implements ILook <T>
 		gl.glPopAttrib();
 		// unbinding texture
 		if(overlay)
-			spriteLook.render(gl, entity, defaultContext);
+			spriteLook.render(entity, ctx);
 		
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext defaultContext) 
+	public void destroy(IRenderingContext ctx) 
 	{
 		// TODO: something is fishy around here
 //		gl.glDeleteTextures(1, textureHandle);

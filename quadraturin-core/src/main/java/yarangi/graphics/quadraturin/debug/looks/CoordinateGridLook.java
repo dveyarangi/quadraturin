@@ -7,9 +7,7 @@ import yarangi.graphics.colors.Color;
 import yarangi.graphics.quadraturin.IRenderingContext;
 import yarangi.graphics.quadraturin.IVeil;
 import yarangi.graphics.quadraturin.SceneLayer;
-import yarangi.graphics.quadraturin.objects.IEntity;
 import yarangi.graphics.quadraturin.objects.ILook;
-import yarangi.math.Angles;
 import yarangi.math.FastMath;
 import yarangi.math.IVector2D;
 
@@ -34,12 +32,12 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 	}
 
 	@Override
-	public void init(GL gl, IRenderingContext context) { }
+	public void init(IRenderingContext context) { }
 
 	@Override
-	public void render(GL gl1, SceneLayer entity, IRenderingContext context)
+	public void render(SceneLayer entity, IRenderingContext context)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = context.gl();
 		gl.glEnable(GL.GL_BLEND);
 		
 		int halfWidth = entity.getWidth() / 2;
@@ -88,7 +86,7 @@ public class CoordinateGridLook implements ILook <SceneLayer>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) { }
+	public void destroy(IRenderingContext context) { }
 
 	@Override
 	public float getPriority() { return 0; }

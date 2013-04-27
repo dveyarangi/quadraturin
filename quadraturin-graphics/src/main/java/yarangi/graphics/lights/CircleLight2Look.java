@@ -41,7 +41,9 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	}
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) {
+	public void init(IRenderingContext ctx) {
+		
+		GL2 gl = ctx.gl();
 		
 //		System.out.println(size + " : " + entity.getLightRadius()*2);
 		lightTexture = TextureUtils.createEmptyTexture2D(gl, textureSize, textureSize, false);
@@ -58,7 +60,7 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void render(GL gl, K entity, IRenderingContext context) 
+	public void render(K entity, IRenderingContext ctx) 
 	{
 /*		if(context.isForEffect())
 			return;
@@ -195,8 +197,10 @@ public class CircleLight2Look <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) 
+	public void destroy(IRenderingContext ctx) 
 	{
+		GL2 gl = ctx.gl();
+		
 		gl.glDeleteTextures(GL.GL_TEXTURE_2D, new int [] {lightTexture}, 1);
 	}
 

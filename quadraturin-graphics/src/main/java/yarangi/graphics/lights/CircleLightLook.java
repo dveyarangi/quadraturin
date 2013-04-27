@@ -77,8 +77,9 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) {
+	public void init(IRenderingContext ctx) {
 		
+		GL2 gl = ctx.gl();
 		// rounding texture size to power of 2:
 		// TODO: enable non-square textures
 
@@ -87,7 +88,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		fbo = FBO.createFBO(gl, textureSize, textureSize, true);
 		
 		// preparing shaders:
-		ShaderFactory factory = context.getPlugin(ShaderFactory.NAME);
+		ShaderFactory factory = ctx.getPlugin(ShaderFactory.NAME);
 		
 		lightShader = factory.getShader("light");
 		penumbraShader = factory.getShader("penumbra");
@@ -96,13 +97,14 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void render(GL gl1, K entity, IRenderingContext context) 
+	public void render(K entity, IRenderingContext ctx) 
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = ctx.gl();
+
 		// saving OpenGL rendering modes:
 		gl.glPushAttrib(GL2.GL_VIEWPORT_BIT | GL2.GL_ENABLE_BIT);	
 		
-		int [] viewport = context.getCamera().getViewport();
+		int [] viewport = ctx.getCamera().getViewport();
 		
 		// transforming the FBO plane to fit the light source location and scale:
 		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glPushMatrix();  gl.glLoadIdentity();
@@ -250,7 +252,7 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 		
 //		gl.glBlendEquation( GL.GL_FUNC_ADD );
 		gl.glPopAttrib(); // recover OpenGL modes:
-		context.setDefaultBlendMode( gl );
+		ctx.setDefaultBlendMode( gl );
 /**/
 /*		gl.glBegin(GL.GL_QUADS);
 	//		System.out.println(textureSize/2);
@@ -276,9 +278,9 @@ public class CircleLightLook <K extends IEntity> implements ILook <K>
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context) 
+	public void destroy(IRenderingContext ctx) 
 	{
-		fbo.destroy(gl);
+		fbo.destroy(ctx.gl());
 	}
 
 

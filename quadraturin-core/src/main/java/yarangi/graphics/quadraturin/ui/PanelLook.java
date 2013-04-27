@@ -21,33 +21,33 @@ public class PanelLook implements ILook <Overlay>
 	}
 
 	@Override
-	public void init(GL gl, IRenderingContext context)
+	public void init(IRenderingContext context)
 	{
 //		if(!(entity.getArea() instanceof AABB))
 //			throw new IllegalArgumentException(this.getClass() + " look supports only " + AABB.class + " area.");
 	}
 
 	@Override
-	public void render(GL gl, Overlay entity, IRenderingContext context)
+	public void render(Overlay entity, IRenderingContext ctx)
 	{
-		GL2 gl2 = gl.getGL2();
-		gl2.glPushAttrib( GL2.GL_COLOR_BUFFER_BIT );
-		gl2.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		gl2.glBlendEquation(GL.GL_FUNC_ADD);
+		GL2 gl = ctx.gl();
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		color.apply( gl );
-		final AABB area = (AABB)entity.getArea();
-		gl2.glBegin( GL2.GL_QUADS );
-		gl2.glVertex2d( -area.getRX(), -area.getRY() );
-		gl2.glVertex2d( area.getRX(), -area.getRY() );
-		gl2.glVertex2d( area.getRX(), area.getRY() );
-		gl2.glVertex2d( -area.getRX(), area.getRY() );
-		gl2.glEnd();
-		gl2.glPopAttrib();
-		context.setDefaultBlendMode( gl );
+		final AABB area = entity.getArea();
+		gl.glBegin( GL2.GL_QUADS );
+		gl.glVertex2d( -area.getRX(), -area.getRY() );
+		gl.glVertex2d( area.getRX(), -area.getRY() );
+		gl.glVertex2d( area.getRX(), area.getRY() );
+		gl.glVertex2d( -area.getRX(), area.getRY() );
+		gl.glEnd();
+		gl.glPopAttrib();
+		ctx.setDefaultBlendMode( gl );
 	}
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context){}
+	public void destroy(IRenderingContext context){}
 
 	@Override
 	public float getPriority()

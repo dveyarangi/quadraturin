@@ -46,12 +46,15 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 	
 	@Override
-	public void init(GL gl, IRenderingContext context)
+	public void init(IRenderingContext ctx)
 	{
-		super.init( gl, context );
+		super.init( ctx );
+		
+		GL2 gl = ctx.gl();
+
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
- 		this.dimensions = getFBODimensions( context, grid );
+ 		this.dimensions = getFBODimensions( ctx, grid );
 //		this.dimensions = new Point(BitUtils.po2Ceiling(  (int)(grid.getMaxX()-grid.getMinX()) ), BitUtils.po2Ceiling( (int)(grid.getMaxY()-grid.getMinY()) ));
 //		this.dimensions = new Point( 512, 512);
 		// TODO: divide to 1024x1024 textures
@@ -70,7 +73,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 		fbo = FBO.createFBO( gl, texture, TextureUtils.ILLEGAL_ID );
 		Q.rendering.debug( "Created terrain FBO - id:" + fbo.getFboId());
 		
-		updateFrameBuffer( gl.getGL2(), context, grid );
+		updateFrameBuffer( gl.getGL2(), ctx, grid );
 		
 		assert initDebug(gl, grid);
 	}
@@ -119,9 +122,11 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context)
+	public void destroy(IRenderingContext ctx)
 	{
-		super.destroy( gl, context );
+		GL2 gl = ctx.gl();
+
+		super.destroy( ctx );
 
 		fbo.destroy( gl );
 	}

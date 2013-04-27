@@ -31,8 +31,7 @@ public interface IVisible
 	 * Called to render this entity; basic implementation just invokes {@link ILook#render(GL, Object, IRenderingContext)},
 	 * but customized procedures are sometimes required (see implementations)
 	 * 
-	 * @param gl
 	 * @param context
 	 */
-	public void render(GL gl, IRenderingContext context);
+	public void render(IRenderingContext context);
 }

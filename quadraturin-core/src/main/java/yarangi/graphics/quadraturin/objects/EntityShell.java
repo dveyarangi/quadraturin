@@ -39,10 +39,10 @@ public class EntityShell <E> extends Entity
 	}
 
 	@Override
-	public void render(GL gl, IRenderingContext context)
+	public void render(IRenderingContext context)
 	{
 		// rendering this entity:
-		getLook().render(gl,essence, context);
+		getLook().render(essence, context);
 	}
 
 	@Override

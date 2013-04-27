@@ -40,9 +40,11 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 	
 	@Override
-	public void init(GL gl, IRenderingContext context)
+	public void init(IRenderingContext ctx)
 	{
-		super.init( gl, context );
+		super.init( ctx );
+		GL2 gl = ctx.gl();
+
 		Q.rendering.debug( "Initializing tiled grid renderer for [" + grid + "]...");
 		// rounding texture size to power of 2:
 		
@@ -57,7 +59,7 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	}
 
 	@Override
-	public void renderGrid(GL2 gl, G grid, IRenderingContext context)
+	public void renderGrid(GL2 gl, G grid, IRenderingContext ctx)
 	{
 		// redrawing changed tiles to frame buffer
 		updateLists( gl, grid );
@@ -93,9 +95,10 @@ public abstract class PolyGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 
 
 	@Override
-	public void destroy(GL gl, IRenderingContext context)
+	public void destroy( IRenderingContext ctx)
 	{
-		
+		GL2 gl = ctx.gl();
+
 		// destroying lists:
 		for(int idx = 0; idx < grid.getGridWidth(); idx ++)
 			for(int jdx = 0; jdx < grid.getGridHeight(); jdx ++)
