@@ -25,7 +25,14 @@ JVM params
 * Use -Dsun.awt.noerasebackground=true JVM parameter to disable flickering on aplication's frame resize.
 * Use -Dsun.java2d.noddraw=true to disable DirectX for swing (prevent graphic artifacts outside of the GLCanvas).
 
+Project layout
+--------------
 
+* q-core - game engine core classes
+* q-graphics - graphic utilities and plugins
+* q-profiler - TBD: profiling agent
+* q-test - some usage examples
+* lib - jar dependencies
 
 
 
