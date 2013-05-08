@@ -1,35 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="quadraturin-graphics/src/main/resources"/>
-	<classpathentry kind="src" path="quadraturin-tests/nntest/src"/>
-	<classpathentry kind="src" path="quadraturin-tests/vibrations/src"/>
-	<classpathentry kind="src" path="quadraturin-tests/terrain/src"/>
-	<classpathentry kind="src" path="quadraturin-graphics/src/main/java"/>
-	<classpathentry kind="src" path="quadraturin-core/src/main/java">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="quadraturin"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="quadraturin-core/src/main/resources">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="quadraturin/quadraturin-core/src/main/resources"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="q-graphics/src/main/java"/>
+	<classpathentry kind="src" path="q-core/src/main/resources"/>
+	<classpathentry kind="src" path="q-tests/terrain/src"/>
+	<classpathentry kind="src" path="q-graphics/src/main/resources"/>
+	<classpathentry kind="src" path="q-tests/nntest/src"/>
+	<classpathentry kind="src" path="q-tests/vibrations/src"/>
+	<classpathentry kind="src" path="q-profiler/src/java"/>
+	<classpathentry kind="src" path="q-core/src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
 	<classpathentry exported="true" kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-1.7.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log5j-2.1.2.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ai"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/util"/>
-	<classpathentry exported="true" kind="lib" path="lib/native/windows/32">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="quadraturin/lib/native/windows/32"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/gluegen-rt.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gluegen.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jogl-all.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="quadraturin/lib/native"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-13.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/trove-3.0.0rc1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp/gluegen-rt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jogamp/jogl-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
