@@ -36,6 +36,7 @@ public class Debug
 	static boolean SHOW_SENSORS = false;
 	static boolean SHOW_AREAS = false;
 	static boolean SHOW_BODIES = false;
+	static boolean SHOW_CONSOLE = false;
 	
 	static {
 		if(!ON) 
@@ -121,7 +122,9 @@ public class Debug
 			@Override public void act(UserActionEvent event) { SHOW_BODIES = !SHOW_BODIES; }});
 		actionsMap.put("show-coordinates", new IAction() {
 			@Override public void act(UserActionEvent event) { SHOW_COORDINATE_GRID = !SHOW_COORDINATE_GRID; }});
-		
+		actionsMap.put("show-console", new IAction() {
+			@Override public void act(UserActionEvent event) { SHOW_CONSOLE = !SHOW_CONSOLE; }});
+	
 		return true;
 	}
 

@@ -277,7 +277,7 @@ public class DefaultRenderingContext implements IRenderingContext
 	public void renderOverlays(GL gl)
 	{
 		for(ILook look : overlayLooks.keySet()) {
-			for(IVisible entity : entitiesLooks.get( look )) {
+			for(IVisible entity : overlayLooks.get( look )) {
 //				System.out.println(entity);
 				look.render( entity, this );
 			}
@@ -338,8 +338,9 @@ public class DefaultRenderingContext implements IRenderingContext
 		addVisible( entity, entity.getLook(), entitiesLooks );
 	}
 	
-	public void addOverlay(IVisible entity, ILook overlay) {
-		addVisible( entity, overlay, overlayLooks );
+	@Override
+	public void addOverlay(IVisible overlay) {
+		addVisible( overlay, overlay.getLook(), overlayLooks );
 	}
 	
 	private void addVisible(IVisible entity, ILook look, Multimap queue) {

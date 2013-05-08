@@ -96,7 +96,35 @@ public class UserLayer extends SceneLayer <Overlay>
 		
 //		super.display( gl, context );
 	}
+	/**
+	 * Adds an entity to the injection queue. The entity will be inserted into scene
+	 * on the next iteration of animation loop.
+	 * @param entity
+	 */
+	@Override
+	public void addEntity(Overlay entity) 
+	{	
+		if(entity == null)
+			throw new IllegalArgumentException("Entity cannot be null.");
+//		if(entity.getLook() == null)
+//			throw new IllegalArgumentException("Entity look cannot be null.");
+//		if(entity.getBehavior() == null)
+//			throw new IllegalArgumentException("Entity behavior cannot be null.");
+//		if(entity.getAABB() == null)
+//			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
+		
+		if(entity instanceof IVisible) {
+			IVisible visible = entity;
+			if(visible.getLook() == null)
+				log.debug("Entity [" + entity + "] have no look.");
+			else
+				context.addOverlay( visible );
+		}
+		
+		if(entity.isIndexed())
+			indexer.add(entity.getArea(), entity);
 
+	}
 	public ILayerObject processPick(Point canvasLocation)
 	{
 		// collecting picked entities:

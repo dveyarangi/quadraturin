@@ -125,7 +125,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		// resetting context:
 		context.reinit( width, height, gl);
-
+		currScene.getUILayer().display(gl, context);
 	}
 
 	/**
@@ -247,6 +247,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glLoadIdentity(); 
 		gl.glMatrixMode(GL2.GL_PROJECTION);  gl.glLoadIdentity(); 
+		
+		// resetting to window coordinates:
+		gl.glOrtho(0, context.getViewPort().getWidth(), 0, context.getViewPort().getHeight(), -1, 1);
 		// ////////////////////////////////////////////////////
 		// ui rendering:
 		context.renderOverlays(gl);

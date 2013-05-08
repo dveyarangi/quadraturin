@@ -71,7 +71,8 @@ public interface IRenderingContext
 	 * @param entity
 	 */
 	void addVisible(IVisible entity);
-
+	
+	public void addOverlay(IVisible entity);
 	/**
 	 * Hints at entity associated with specified look.
 	 * If look is used by multiple entities, any one of them will be returned.

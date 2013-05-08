@@ -31,16 +31,17 @@ public class PanelLook implements ILook <Overlay>
 	public void render(Overlay entity, IRenderingContext ctx)
 	{
 		GL2 gl = ctx.gl();
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT );
+		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT |  GL2.GL_ENABLE_BIT);
+		gl.glEnable( GL.GL_BLEND );
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		color.apply( gl );
 		final AABB area = entity.getArea();
 		gl.glBegin( GL2.GL_QUADS );
-		gl.glVertex2d( -area.getRX(), -area.getRY() );
-		gl.glVertex2d( area.getRX(), -area.getRY() );
-		gl.glVertex2d( area.getRX(), area.getRY() );
-		gl.glVertex2d( -area.getRX(), area.getRY() );
+		gl.glVertex2d( area.getMinX(), area.getMinY() );
+		gl.glVertex2d( area.getMinX(), area.getMaxY() );
+		gl.glVertex2d( area.getMaxX(), area.getMaxY() );
+		gl.glVertex2d( area.getMaxX(), area.getMinY() );
 		gl.glEnd();
 		gl.glPopAttrib();
 		ctx.setDefaultBlendMode( gl );

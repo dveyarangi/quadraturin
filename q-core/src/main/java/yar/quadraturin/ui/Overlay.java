@@ -1,14 +1,16 @@
 package yar.quadraturin.ui;
 
+import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.objects.ILayerObject;
 import yar.quadraturin.objects.ILook;
+import yar.quadraturin.objects.IVisible;
 import yarangi.spatial.AABB;
 
 /**
  * TODO: this class is not yet implemented
  * @author dveyarangi
  */
-public class Overlay implements ILayerObject
+public class Overlay implements ILayerObject, IVisible
 {
 	/**
 	 * Overlay look
@@ -41,6 +43,7 @@ public class Overlay implements ILayerObject
 	 * How the object looks.
 	 * @return
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public final ILook getLook() { return look; }
 
@@ -58,5 +61,15 @@ public class Overlay implements ILayerObject
 	
 	@Override
 	public boolean isIndexed() { return isPickable; }
+
+	@Override
+	public void render(IRenderingContext ctx)
+	{
+//		if(look.isOriented())
+//			useEntityCoordinates(ctx.gl());
+		look.render( this, ctx );
+//		if(look.isOriented())
+//			useWorldCoordinates(ctx.gl());
+	}
 
 }

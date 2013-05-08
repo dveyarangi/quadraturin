@@ -32,12 +32,12 @@ public abstract class SceneLayer <K extends ILayerObject>
 	/**
 	 * Indexes the object's locations
 	 */
-	private SpatialIndexer <K> indexer;
+	protected SpatialIndexer <K> indexer;
 
 	
 	private final Logger log = Q.structure;
 	
-	private IRenderingContext context;
+	protected IRenderingContext context;
 	
 //	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
@@ -100,9 +100,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 		
 		if(entity.isIndexed())
 			indexer.add(entity.getArea(), entity);
-		
-//		if(testEntity(entity))
-//			bornEntities.add(entity);
+
 	}
 	
 	/**

@@ -33,5 +33,5 @@ public interface IVisible
 	 * 
 	 * @param context
 	 */
-	public void render(IRenderingContext context);
+	public void render(IRenderingContext ctx);
 }
