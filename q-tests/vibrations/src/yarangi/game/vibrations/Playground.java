@@ -1,5 +1,6 @@
 package yarangi.game.vibrations;
 
+import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.QVoices;
 import yar.quadraturin.Scene;
 import yar.quadraturin.actions.DefaultActionFactory;

@@ -47,7 +47,6 @@ public abstract class SceneLayer <K extends ILayerObject>
 	{
 		this.width = width;
 		this.height = height;
-		this.context = Q.getRenderingContext();
 	}
 
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }

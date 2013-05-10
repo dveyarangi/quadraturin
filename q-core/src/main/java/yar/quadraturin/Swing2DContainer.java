@@ -7,8 +7,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
-
-import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 
@@ -98,6 +96,9 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// initializing JOGL engine
 		
+		String os = System.getProperty("os.version");
+		String archDataModel = System.getProperty("sun.arch.data.model");
+		log.debug("OS: %s, arch: %s", os, archDataModel);
 
 //		loadNativeLibs();
 		log.debug("Configuring GL capabilities.");
@@ -169,7 +170,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		 */
 		log.debug("Creating entity stage...");
 		try {
-			stage = Stage.init(config.getStageConfig(), config.getEkranConfig(), voices);
+			stage = Stage.init( config.getStageConfig(), config.getEkranConfig(), voices );
 		}
 		catch(Exception e)
 		{
@@ -283,7 +284,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 	}
 
 	
-	private void loadNativeLibs() 
+/*	private void loadNativeLibs() 
 	{
 		String os = System.getProperty("os.version");
 		String archDataModel = System.getProperty("sun.arch.data.model");
@@ -291,7 +292,7 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		System.loadLibrary(archDataModel + File.separator + "jogl");
 		System.loadLibrary(archDataModel + File.separator + "jogl_awt");
 		System.loadLibrary(archDataModel + File.separator + "jogl_cg");
-	}
+	}*/
 
 	public IRenderingContext getRenderingContext()
 	{

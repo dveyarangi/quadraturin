@@ -1,14 +1,11 @@
 package test.terrain;
 
+import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.QVoices;
 import yar.quadraturin.Scene;
 import yar.quadraturin.actions.DefaultActionFactory;
 import yar.quadraturin.config.EkranConfig;
 import yar.quadraturin.config.SceneConfig;
-import yar.quadraturin.graphics.colors.Color;
-import yar.quadraturin.graphics.colors.MaskUtil;
-import yar.quadraturin.terrain.Bitmap;
-import yar.quadraturin.terrain.GridyTerrainMap;
 import yar.quadraturin.terrain.ITerrain;
 import yarangi.spatial.ITileMap;
 

@@ -5,6 +5,7 @@ import javax.media.opengl.GL2;
 
 import yar.quadraturin.objects.ILook;
 import yar.quadraturin.objects.IVisible;
+import yarangi.spatial.Area;
 
 /**
  * Holds some rendering properties and methods for use in {@link ILook} methods
@@ -80,4 +81,5 @@ public interface IRenderingContext
 	 */
 	<K> K getAssociatedEntity(ILook <K>look);
 
+	
 }

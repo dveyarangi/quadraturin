@@ -1,19 +1,20 @@
 package yar.quadraturin;
 
 import java.awt.Point;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.media.opengl.GL;
 
 import yar.quadraturin.objects.ILayerObject;
-import yar.quadraturin.objects.ILook;
 import yar.quadraturin.objects.IVisible;
 import yar.quadraturin.ui.Overlay;
 import yar.quadraturin.ui.Panel;
+import yarangi.Zen;
 import yarangi.spatial.PickingSensor;
 import yarangi.spatial.SpatialHashMap;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.base.Preconditions;
 import com.spinn3r.log5j.Logger;
 
 /**
@@ -34,7 +35,7 @@ public class UserLayer extends SceneLayer <Overlay>
 	
 	private double halfWidth, halfHeight;
 	
-	private final Multimap <IVisible, ILook> overlays = LinkedListMultimap.<IVisible, ILook>create(); 
+	private final Set <Panel> panels = new HashSet<Panel>(); 
 	
 	// TODO: overlay spatial filter
 
@@ -72,57 +73,67 @@ public class UserLayer extends SceneLayer <Overlay>
 		return basePanel;
 	}
 	
-	public void display(GL gl, IRenderingContext context) 
+	public void reshape(GL gl, IRenderingContext context) 
 	{
-		if(basePanel.getViewPort() != context.getViewPort())
-		{
-			log.debug("Layer vieweport has changed.");
-			basePanel.revalidate( context.getViewPort() );
-			int width = context.getViewPort().getWidth();
-			int height = context.getViewPort().getHeight();
-			this.halfHeight = height/2;
-			this.halfWidth = width/2;
-			// TODO: might be a bit heavy:
-			log.debug("Creating new spatial hash map (" + width + "x" +height + ")");
-			setEntityIndex( new SpatialHashMap<Overlay>( NAME, width*height/100, 10, width, height ) );
-			
-//			for(Overlay overlay : getEntities())
-//				if(overlay.isIndexed())
-//					getEntityIndex().add( overlay.getArea(), overlay );
-		}
+		if(basePanel.getViewPort() == context.getViewPort())
+			return;
+		
+		log.debug("Layer vieweport has changed.");
+		basePanel.revalidate( context.getViewPort() );
+		int width = context.getViewPort().getWidth();
+		int height = context.getViewPort().getHeight();
+		this.halfHeight = height/2;
+		this.halfWidth = width/2;
+		// TODO: might be a bit heavy:
+		log.debug("Creating new spatial hash map (" + width + "x" +height + ")");
+		setEntityIndex( new SpatialHashMap<Overlay>( NAME, width*height/100, 10, width, height ) );
+		
+		for(Panel panel : panels)
+			panel.revalidate( context.getViewPort() );
 		
 //		if(Debug.ON)
 //			Debug.drawUserLayerOverlay(gl, this, context);
 		
 //		super.display( gl, context );
 	}
+	
+	@Override
+	public void addEntity(Overlay entity)
+	{
+		Zen.notSupported();
+	}
 	/**
 	 * Adds an entity to the injection queue. The entity will be inserted into scene
 	 * on the next iteration of animation loop.
 	 * @param entity
 	 */
-	@Override
-	public void addEntity(Overlay entity) 
+	public void addOverlay(Overlay overlay) 
 	{	
-		if(entity == null)
-			throw new IllegalArgumentException("Entity cannot be null.");
-//		if(entity.getLook() == null)
-//			throw new IllegalArgumentException("Entity look cannot be null.");
-//		if(entity.getBehavior() == null)
-//			throw new IllegalArgumentException("Entity behavior cannot be null.");
-//		if(entity.getAABB() == null)
-//			throw new IllegalArgumentException("Entity AABB bracket cannot be null.");
+		Preconditions.checkNotNull( overlay, "Overlay cannot be null." );
+		Preconditions.checkNotNull( overlay.getArea(), "Overlay AABB bracket cannot be null.");
 		
-		if(entity instanceof IVisible) {
-			IVisible visible = entity;
-			if(visible.getLook() == null)
-				log.debug("Entity [" + entity + "] have no look.");
-			else
-				context.addOverlay( visible );
-		}
+		if(overlay.getLook() == null)
+			log.debug("Overlay [" + overlay + "] have no look.");
+		else
+			context.addOverlay( overlay );
 		
-		if(entity.isIndexed())
-			indexer.add(entity.getArea(), entity);
+		panels.add( overlay.getParent() );
+
+		if(overlay.isIndexed())
+			indexer.add(overlay.getArea(), overlay);
+
+	}
+	
+	public void removeOverlay(Overlay overlay)
+	{
+		Preconditions.checkNotNull( overlay, "Overlay cannot be null." );
+		
+		if(overlay.isIndexed())
+			indexer.remove(overlay);
+		
+		context.removeVisible((IVisible) overlay);
+		
+		panels.remove( overlay.getParent() );
 
 	}
 	public ILayerObject processPick(Point canvasLocation)

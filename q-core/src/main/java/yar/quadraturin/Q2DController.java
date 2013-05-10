@@ -48,7 +48,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	/**
 	 * Set of rendering environment properties for {@link ILook} to consider. 
 	 */
-	static DefaultRenderingContext context;
+	private final DefaultRenderingContext context;
 	
 	int viewport[] = new int[4];
 	double mvmatrix[] = new double[16];
@@ -60,7 +60,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		this.voices = voices;
 		
-		this.context = new DefaultRenderingContext(ekranConfig);
+		context = new DefaultRenderingContext(ekranConfig);
 	}
 
 	@Override
@@ -121,11 +121,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		final GL gl = glDrawable.getGL();
 
 		// adjusting viewport (implicit)
-//		gl.glViewport(0, 0, width, height);
+		// gl.glViewport(0, 0, width, height);
 		
 		// resetting context:
 		context.reinit( width, height, gl);
-		currScene.getUILayer().display(gl, context);
+		currScene.getUILayer().reshape(gl, context);
 	}
 
 	/**
@@ -270,8 +270,8 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		this.prevScene = this.currScene;
 		this.currScene = currScene;
 		
-//		if(isScenePending.getAndSet(true)) // sanity TODO: estimate harm
-//			throw new IllegalStateException("Previous scene was not yet processed.");
+		if(isScenePending.getAndSet(true)) // sanity TODO: estimate harm
+			throw new IllegalStateException("Previous scene was not yet processed.");
 //			log.warn("TODO: Scene is already queued, and  not initialized yet, not gracefull at all.");
 	}
 

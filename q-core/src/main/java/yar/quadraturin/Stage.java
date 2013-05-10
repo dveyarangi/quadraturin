@@ -96,15 +96,10 @@ public final class Stage
 	 */
 	public synchronized void setScene(String name)
 	{
-		if(scene != null)
-			scene.destroy();
-		
 		
 		scene = scenes.get(name);
 		if(scene == null)
 			throw new IllegalArgumentException("Scene [" + name + "] is not defined.");
-		
-		scene.init();
 		
 		if(scene.getActionController() == null) {
 			log.debug( "Using default action controller" );

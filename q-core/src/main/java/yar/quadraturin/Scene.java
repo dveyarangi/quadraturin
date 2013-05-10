@@ -89,10 +89,14 @@ public abstract class Scene
 	
 	private final double timeModifier;
 	
+	private SceneConfig sceneConfig;
+	
 	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		// just for fun:
 		this.name = sceneConfig.getName();
+		
+		this.sceneConfig = sceneConfig;
 		
 		log = Logger.getLogger(name);
 		
@@ -101,23 +105,7 @@ public abstract class Scene
 			
 		// scene world aggregator:
 		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
-		
-		// initializing terrain:
-		EntityShell <? extends ITileMap<ITerrain>> terrain = null;
-		if(sceneConfig.getTerrainConfig() != null)
-		{
-			terrain = sceneConfig.getTerrainConfig().createTerrain( sceneConfig.getWidth(), sceneConfig.getHeight() );
-			worldSection.addTerrain( terrain );
-			log.debug( "Using terrain " + terrain.getEssence() );
-		}
-		else
-			log.debug( "No terrain configuration found." );
 
-		// initializing physics engine:
-		if(sceneConfig.getEngineConfig() != null)
-			worldSection.setPhysicsEngine( sceneConfig.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
-					terrain == null ? null : terrain.getEssence()));
-		
 		// scene ui aggregator
 		this.uiLayer = new UserLayer(ekranConfig.getXres(), ekranConfig.getYres());
 		
@@ -132,9 +120,6 @@ public abstract class Scene
 		if(Debug.ON) // TODO: maybe actual instrumentation
 			Debug.instrumentate(this);
 	}
-	
-	public abstract void init();
-	public abstract void destroy();
 
 	/**
 	 * @return Scene name.
@@ -174,12 +159,12 @@ public abstract class Scene
 	
 	final public void addOverlay(Overlay entity)
 	{
-		uiLayer.addEntity(entity);
+		uiLayer.addOverlay(entity);
 	}
 	
 	final public void removeOverlay(Overlay entity)
 	{
-		uiLayer.removeEntity(entity);
+		uiLayer.removeOverlay(entity);
 	}
 
 	/**
@@ -202,6 +187,23 @@ public abstract class Scene
 		
 		getWorldLayer().init(gl, context);
 		getUILayer().init(gl, context);
+
+		// initializing terrain:
+		EntityShell <? extends ITileMap<ITerrain>> terrain = null;
+		if(sceneConfig.getTerrainConfig() != null)
+		{
+			terrain = sceneConfig.getTerrainConfig().createTerrain( sceneConfig.getWidth(), sceneConfig.getHeight() );
+			worldSection.addTerrain( terrain );
+			log.debug( "Using terrain " + terrain.getEssence() );
+		}
+		else
+			log.debug( "No terrain configuration found." );
+
+		// initializing physics engine:
+		if(sceneConfig.getEngineConfig() != null)
+			worldSection.setPhysicsEngine( sceneConfig.getEngineConfig().createEngine(worldSection.getEntityIndex(), 
+					terrain == null ? null : terrain.getEssence()));
+				
 		
 //		actionController.getLook().init( gl, actionController, context );
 		

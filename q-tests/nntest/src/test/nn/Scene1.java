@@ -1,5 +1,6 @@
 package test.nn;
 
+import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.QVoices;
 import yar.quadraturin.Scene;
 import yar.quadraturin.actions.DefaultActionFactory;
@@ -12,7 +13,7 @@ public class Scene1 extends Scene
 	public Scene1(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
 		super( sceneConfig, ekranConfig, voices );
-		}
+	}
 
 	@Override
 	public void init()

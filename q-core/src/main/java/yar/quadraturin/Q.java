@@ -75,9 +75,4 @@ public class Q
 		return stage;
 	}
 
-	public static IRenderingContext getRenderingContext()
-	{
-		return Q2DController.context;
-	}
-
 }

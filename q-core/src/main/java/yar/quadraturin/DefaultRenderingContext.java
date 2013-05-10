@@ -16,6 +16,7 @@ import yar.quadraturin.debug.Debug;
 import yar.quadraturin.objects.ILook;
 import yar.quadraturin.objects.IVisible;
 import yar.quadraturin.plugin.IGraphicsPlugin;
+import yarangi.spatial.AABB;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -279,7 +280,7 @@ public class DefaultRenderingContext implements IRenderingContext
 		for(ILook look : overlayLooks.keySet()) {
 			for(IVisible entity : overlayLooks.get( look )) {
 //				System.out.println(entity);
-				look.render( entity, this );
+				entity.render( this );
 			}
 		}
 	}
@@ -397,6 +398,31 @@ public class DefaultRenderingContext implements IRenderingContext
 		}
 		
 		return (K)associatedEntities.iterator().next();
+	}
+
+	public static void useEntityCoordinates(GL gl, AABB area, ILook look) {
+		GL2 gl2 = gl.getGL2();
+		// storing transformation matrix:
+		gl2.glMatrixMode( GL2.GL_MODELVIEW );
+		gl2.glPushMatrix();
+//		gl.glLoadIdentity(); 	
+		
+		// transforming into entity coordinates:
+		if(area == null)
+			gl2.glTranslatef(0, 0, 0); // just adjusting priority
+		else
+		{
+			float priority = -look.getPriority();
+			gl2.glTranslatef((float)area.getAnchor().x(), (float)area.getAnchor().y(), priority);
+			gl2.glRotatef((float)area.getOrientation(), 0, 0, 1 );
+		}
+
+	}
+	
+	public static void useWorldCoordinates(GL gl) {
+		GL2 gl2 = gl.getGL2();
+		gl2.glMatrixMode( GL2.GL_MODELVIEW );
+		gl2.glPopMatrix();
 	}
 
 
