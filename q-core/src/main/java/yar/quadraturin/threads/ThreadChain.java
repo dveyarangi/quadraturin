@@ -16,7 +16,7 @@ import java.util.concurrent.Semaphore;
  * operation. 
  * 
  * Thread will be executed in the order of {@link #addThread(IChainedThread)}
- * invokations.
+ * invocations.
  *  
  * 
  * @author Dve Yarangi
@@ -147,9 +147,6 @@ public class ThreadChain
 		}
 	}
 	
-	@Override
-	public String toString() { return name; }
-	
 	public void reportGeneralError(IChainedThread thread, Throwable e)
 	{
 		
@@ -158,4 +155,9 @@ public class ThreadChain
 		if(listener != null)
 			listener.onGeneralError();
 	}
+	
+	
+	@Override
+	public String toString() { return name; }
+
 }
