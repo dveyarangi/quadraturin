@@ -1,5 +1,6 @@
 package yar.quadraturin.ui;
 
+import yar.quadraturin.GL2RenderingContext;
 import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.objects.ILayerObject;
 import yar.quadraturin.objects.ILook;
@@ -7,7 +8,7 @@ import yar.quadraturin.objects.IVisible;
 import yarangi.spatial.AABB;
 
 /**
- * TODO: this class is not yet implemented
+ * Overlay
  * @author dveyarangi
  */
 public class Overlay implements ILayerObject, IVisible
@@ -65,11 +66,18 @@ public class Overlay implements ILayerObject, IVisible
 	@Override
 	public void render(IRenderingContext ctx)
 	{
-//		if(look.isOriented())
-//			useEntityCoordinates(ctx.gl());
+		if(look.isOriented())
+			GL2RenderingContext.useEntityCoordinates(ctx.gl(), getArea(), getLook());
 		look.render( this, ctx );
-//		if(look.isOriented())
-//			useWorldCoordinates(ctx.gl());
+		if(look.isOriented())
+			GL2RenderingContext.useWorldCoordinates(ctx.gl());
 	}
+
+	public Panel getParent()
+	{
+		return parent;
+	}
+	
+	
 
 }
