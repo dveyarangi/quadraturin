@@ -114,11 +114,16 @@ public class QVoices implements IEventManager, Loopy
 		
 		// picking object under cursor:
 		ILayerObject pickedEntity = controller.pick(cursorEvent.getWorldLocation(), cursorEvent.getCanvasLocation());
-		// firing the cursor motion event:
-		cursorEvent.setSceneEntity(pickedEntity);
 		
+		
+		
+		// preparing hover event:
+		cursorEvent.setSceneEntity(pickedEntity);
+
 		if(pickedEntity != null || prevEntity != null)
 			controller.hover(prevEntity, pickedEntity);
+		
+		// firing cursor motion event:
 //		for(CursorListener l : cursorListeners)
 //			l.onCursorMotion(cursorEvent);
 		
@@ -128,7 +133,6 @@ public class QVoices implements IEventManager, Loopy
 		{
 			UserActionEvent event = userEvents.poll();
 //			log.trace("Firing user action event: " + event.getActionId());
-			
 			
 			IAction action = controller.getActions().get(event.getActionId());
 			if(action != null)
@@ -151,6 +155,7 @@ public class QVoices implements IEventManager, Loopy
 	 */
 	private void enqueueUserActionEvent(InputHook hook)
 	{
+//		if(log.isDebugEnabled()) log.debug( "Event detected: %s", hook );
 		if(binding.containsKey(hook))
 			userEvents.add(new UserActionEvent(binding.get(hook), hook, cursorEvent));
 	}	

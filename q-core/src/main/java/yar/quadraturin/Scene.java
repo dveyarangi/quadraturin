@@ -3,8 +3,6 @@ package yar.quadraturin;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL;
-
 import yar.quadraturin.actions.ActionController;
 import yar.quadraturin.actions.ICameraMan;
 import yar.quadraturin.config.EkranConfig;
@@ -18,7 +16,6 @@ import yar.quadraturin.simulations.ICollider;
 import yar.quadraturin.simulations.IPhysicsEngine;
 import yar.quadraturin.terrain.ITerrain;
 import yar.quadraturin.ui.Overlay;
-import yarangi.spatial.ISpatialSetIndex;
 import yarangi.spatial.ITileMap;
 
 import com.spinn3r.log5j.Logger;
@@ -54,17 +51,17 @@ public abstract class Scene
 	 * Game world layer.
 	 * Manages {@link IEntitiy}-s and defines {@link IPhysicsEngine} and {@link ITileMap}
 	 */
-	private final WorldLayer worldSection;
+	private WorldLayer worldSection;
 	
 	/**
 	 * User interface layer.
 	 */
-	private final UserLayer uiLayer;
+	protected UserLayer uiLayer;
 	
 	/**
 	 * TODO: split for world and UI?
 	 */
-	private final Camera2D camera;
+	protected Camera2D camera;
 	
 	/**
 	 * TODO: move
@@ -85,40 +82,36 @@ public abstract class Scene
 
 	private ICameraMan cameraMan;
 	
-	private EntityShell<ActionController> actionController;	
+	private ActionController actionController;	
 	
-	private final double timeModifier;
+	private double timeModifier;
+	
+	protected int width, height;
 	
 	private SceneConfig sceneConfig;
 	
+	/**
+	 * Constructs the scene handler.
+	 * This called on engine start, so no long tasks are allowed here.
+	 * Time-hungry loading should go to {@link #init()}
+	 * 
+	 * @param sceneConfig
+	 * @param ekranConfig
+	 * @param voices
+	 */
 	public Scene(SceneConfig sceneConfig, EkranConfig ekranConfig, QVoices voices)
 	{
+		
 		// just for fun:
 		this.name = sceneConfig.getName();
 		
 		this.sceneConfig = sceneConfig;
 		
-		log = Logger.getLogger(name);
+		log = Logger.getLogger(name == null ? "scene" : "scene:" + name);
 		
-		// initial viewpoint:
-		camera = sceneConfig.createViewpoint();
-			
-		// scene world aggregator:
-		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
-
-		// scene ui aggregator
-		this.uiLayer = new UserLayer(ekranConfig.getXres(), ekranConfig.getYres());
+		width = ekranConfig.getXres();
+		height = ekranConfig.getYres();
 		
-		// scene time / second
-		this.frameLength = sceneConfig.getFrameLength();
-		
-		// storing event manager:
-//		this.voices = voices;
-		
-		this.timeModifier = sceneConfig.getTimeModifier();
-		
-		if(Debug.ON) // TODO: maybe actual instrumentation
-			Debug.instrumentate(this);
 	}
 
 	/**
@@ -132,7 +125,7 @@ public abstract class Scene
 	 * @return game time unit / sec ratio
 	 */
 	public final double getFrameLength() { return frameLength; }
-	public final void setFrameLength(double length) { this.frameLength = length; }
+	protected final void setFrameLength(double length) { this.frameLength = length; }
 	
 	/**
 	 * @return Current viewpoint
@@ -159,12 +152,12 @@ public abstract class Scene
 	
 	final public void addOverlay(Overlay entity)
 	{
-		uiLayer.addOverlay(entity);
+		uiLayer.addEntity(entity);
 	}
 	
 	final public void removeOverlay(Overlay entity)
 	{
-		uiLayer.removeOverlay(entity);
+		uiLayer.addEntity(entity);
 	}
 
 	/**
@@ -177,16 +170,30 @@ public abstract class Scene
 	 */
 	final public UserLayer getUILayer() { return uiLayer; }
 	
-
 	/**
-	 * Initializing world and UI layers
-	 * @param gl
+	 * Initializes scene data structures and IO.
+	 * Invoked on scene actualization.
 	 */
-	public void init(GL gl, IRenderingContext context)
+	@SuppressWarnings("unchecked")
+	public void init()
 	{
 		
-		getWorldLayer().init(gl, context);
-		getUILayer().init(gl, context);
+		// initial viewpoint:
+		camera = sceneConfig.createViewpoint();
+			
+		// scene world aggregator:
+		this.worldSection = new WorldLayer(sceneConfig.getWidth(), sceneConfig.getHeight());
+
+		// scene ui aggregator
+		this.uiLayer = new UserLayer(width, height);
+		
+		// scene time / second
+		this.frameLength = sceneConfig.getFrameLength();
+		
+		// storing event manager:
+//		this.voices = voices;
+		
+		this.timeModifier = sceneConfig.getTimeModifier();
 
 		// initializing terrain:
 		EntityShell <? extends ITileMap<ITerrain>> terrain = null;
@@ -206,17 +213,61 @@ public abstract class Scene
 				
 		
 //		actionController.getLook().init( gl, actionController, context );
+		if(Debug.ON) // TODO: maybe actual instrumentation
+			Debug.instrumentate(this);
 		
-		Debug.init(gl, this, context);
 	}
 	
-	public void destroy(GL gl, IRenderingContext context)
+	public void postInit() { }
+	
+	public void destroy()
 	{
-		Debug.destroy(gl, this, context);
-		getWorldLayer().destroy(gl, context);
-		getUILayer().destroy(gl, context);
+		uiLayer = null;
+		worldSection = null;
+	}
+	
+	public void preRender( IRenderingContext ctx )
+	{
+		ctx.gl().glClearColor(0.0f,0.0f, 0.0f, 1.0f);
 	}
 
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SCENE INNER INITIALIZATION
+	
+	/**
+	 * Initializes the rendering context with scene-specific stuff.
+	 * @param ctx
+	 */
+	void initContext(IRendererAggregate ctx)
+	{
+		//////////////////////////////////////////////////////////////////
+		// Global settings:
+		
+		log.debug("Preparing scene rendering context.");
+		ctx.setViewPoint( (Camera2D)getCamera() );
+		
+		if(worldSection != null)
+			ctx.setWorldLookManager( worldSection.getLooks() );
+		if(uiLayer != null)
+			ctx.setUILookManager( uiLayer.getLooks() );
+
+		Debug.init(this, ctx);
+	}
+	
+	void revokeContext(IRenderingContext context)
+	{
+		Debug.destroy(this, context);
+//		getWorldLayer().destroy(context);
+//		getUILayer().destroy(context);
+	}
+
+	void reshape(GL2RenderingContext context)
+	{
+		if(getUILayer() != null)
+			getUILayer().reshape( context );
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,15 +284,17 @@ public abstract class Scene
 		time *= timeModifier; // streches time linearily TODO: experiment with non constant modifiers
 		
 		// animate ui layer
-		getUILayer().animate(time);
+		if(uiLayer != null)
+			uiLayer.animate(time);
 		
 		// animate world layer
-		getWorldLayer().animate(time);
+		if(worldSection != null)
+			worldSection.animate(time);
 
 		// call any scheduled scene behaviors
 		for(IWorker worker : workers)
 			worker.behave( time, this, true );
-//	return changePending;
+	//	return changePending;
 	}
 
 	/** 
@@ -267,23 +320,20 @@ public abstract class Scene
 	public void postAnimate(double time) 
 	{
 	}
-
-	final public ISpatialSetIndex<IEntity> getEntityIndex() { return worldSection.getEntityIndex(); }
-	final public ISpatialSetIndex<Overlay> getOverlayIndex() { return uiLayer.getEntityIndex(); }
 	
 	/**
 	 * Set user action controller. May be set any time after scene initialization.
 	 * @param actionController
 	 */
-	public void setActionController(EntityShell<ActionController> actionController)
+	public void setActionController(ActionController actionController)
 	{
-		if(this.actionController != null)
-			removeEntity( this.actionController );
-		addEntity( actionController );		
+//		if(this.actionController != null)
+//			removeEntity( this.actionController );
+//		addEntity( actionController );		
 		if(cameraMan != null)
 			removeWorker( cameraMan );
 		
-		cameraMan = actionController.getEssence().getCameraManager(); 
+		cameraMan = actionController.getCameraManager(); 
 		if(cameraMan != null)
 			addWorker( cameraMan );
 
@@ -291,7 +341,7 @@ public abstract class Scene
 		
 	}
 	
-	public  ActionController getActionController() { return actionController == null ? null : actionController.getEssence(); }
+	public  ActionController getActionController() { return actionController; }
 	
 	/**
 	 * Exposes collision manager to register collision handlers
@@ -302,5 +352,6 @@ public abstract class Scene
 	{
 		return getWorldLayer().getPhysicsEngine().getCollisionManager();
 	}
+
 
 }

@@ -30,6 +30,14 @@ public class SceneConfig
 	
 	protected Logger log = IQuadConfig.LOG;
 
+	public SceneConfig()
+	{
+	}
+	public SceneConfig(String name)
+	{
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -51,6 +59,12 @@ public class SceneConfig
 	public Scene createScene(EkranConfig ekranConfig, QVoices voices) 
 	{
 		return ReflectionUtil.createInstance(sceneClass, this, ekranConfig, voices);
+	}
+	
+	public static Scene createScene(String sceneClass, String name, EkranConfig ekranConfig, QVoices voices) 
+	{
+		SceneConfig sceneConfig = new SceneConfig(name);
+		return ReflectionUtil.createInstance(sceneClass, sceneConfig, ekranConfig, voices);
 	}
 
 	public Camera2D createViewpoint() 

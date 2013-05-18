@@ -2,8 +2,6 @@ package yar.quadraturin.debug;
 
 import java.util.Map;
 
-import javax.media.opengl.GL;
-
 import yar.quadraturin.IRenderingContext;
 import yar.quadraturin.Q;
 import yar.quadraturin.Scene;
@@ -38,6 +36,8 @@ public class Debug
 	static boolean SHOW_BODIES = false;
 	static boolean SHOW_CONSOLE = false;
 	
+//	private static Console console = new Console();
+	
 	static {
 		if(!ON) 
 			LOG.info("To start Quadraturin profiling features, set true '" + Q.DEBUG_MODE + "' JVM variable.");
@@ -55,9 +55,9 @@ public class Debug
 //		scene.addOverlay(new SceneDebugOverlay(scene.getWorldLayer().getEntityIndex()));
 	}
 	
-	private static ILook<SceneLayer> coordinateGridLook = new CoordinateGridLook( new Color(0.0f, 0.5f, 1f, 1f) );
+	private static ILook <SceneLayer> coordinateGridLook = new CoordinateGridLook( new Color(0.0f, 0.5f, 1f, 1f) );
 	
-	public static boolean drawWorldLayerOverlay(GL gl, WorldLayer layer, IRenderingContext context)
+	public static boolean drawWorldLayerOverlay(WorldLayer layer, IRenderingContext context)
 	{
 		if(!Debug.ON)
 			return true;
@@ -68,15 +68,15 @@ public class Debug
 		return true;
 	}
 
-	public static void drawUserLayerOverlay(GL gl, UserLayer layer, IRenderingContext context)
+	public static void drawUserLayerOverlay(UserLayer layer, IRenderingContext context)
 	{
 //		userLayerSpatialOverlay.render( gl, 0, layer.getEntityIndex(), context );
 	}
 
-	public static void init(GL gl, Scene scene, IRenderingContext context) {
+	public static void init(Scene scene, IRenderingContext context) {
 //		userLayerSpatialOverlay.init(gl, scene.getUILayer().getEntityIndex(), context);
 	}
-	public static void destroy(GL gl, Scene scene, IRenderingContext context) {
+	public static void destroy(Scene scene, IRenderingContext context) {
 //		userLayerSpatialOverlay.destroy(gl, scene.getUILayer().getEntityIndex(), context);
 	}
 	
@@ -84,7 +84,7 @@ public class Debug
 	private static ILook <IEntity> areaLook = new EntityAreaLook();
 	private static ILook <IEntity> bodyLook = new EntityBodyLook();
 
-	public static boolean renderEntityOverlay(GL gl, IVisible e, IRenderingContext context)
+	public static boolean renderEntityOverlay(IVisible e, IRenderingContext context)
 	{
 		if(!Debug.ON)
 			return true;
@@ -105,6 +105,7 @@ public class Debug
 			if(entity.getBody() != null)
 				bodyLook.render( entity, context );
 		}
+
 		return true;
 	}
 	

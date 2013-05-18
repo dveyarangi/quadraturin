@@ -23,9 +23,9 @@ import yarangi.spatial.ISpatialFilter;
  */
 public class DefaultActionFactory 
 {
-	public static EntityShell <ActionController> createDefaultController(Scene scene)
+	public static ActionController createDefaultController(Scene scene)
 	{
-		return new EntityShell <ActionController> (new DefaultActionController(scene), null, null);
+		return new DefaultActionController(scene);
 	}
 	
 

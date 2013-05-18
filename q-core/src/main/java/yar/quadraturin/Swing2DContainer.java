@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
@@ -234,7 +233,6 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		this.getContentPane().validate();
 		this.pack();
 		
-		
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// All done
 		log.info("Quadraturin, da fiersum enjun, is ready to load scenes.");
@@ -265,6 +263,8 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 //		stage.setScene(loadingScreenId);
 
 		chain.stop();
+		
+		
 
 		// force redraw to dispose of entities looks:
 		canvas.display();
@@ -294,11 +294,6 @@ public class Swing2DContainer extends JFrame implements ITerminationListener
 		System.loadLibrary(archDataModel + File.separator + "jogl_cg");
 	}*/
 
-	public IRenderingContext getRenderingContext()
-	{
-		return controller.getRenderingContext();
-	}
-	
 	
 	private void linkShutdownHook()
 	{

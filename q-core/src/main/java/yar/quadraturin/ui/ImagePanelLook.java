@@ -54,10 +54,11 @@ public class ImagePanelLook implements ILook <Overlay>
 		GL2 gl = ctx.gl();
 //		ctx.setDefaultBlendMode( gl );
 		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT |  GL2.GL_ENABLE_BIT);
-		gl.glDisable( GL.GL_BLEND );
+//		gl.glEnable( GL.GL_BLEND );
 		texture.bind(gl);
 
 		final AABB area = entity.getArea();
+		gl.glColor4f( 0,0,0,1 );
 		gl.glBegin( GL2.GL_QUADS );
 		gl.glTexCoord2d(1, 0);
 		gl.glVertex2d(  area.getRX(),  area.getRY() );

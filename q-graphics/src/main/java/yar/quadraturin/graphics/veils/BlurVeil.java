@@ -59,9 +59,9 @@ public class BlurVeil extends FBOVeilSkeleton
 	
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) 
+	public void init(IRenderingContext context) 
 	{
-		super.init(gl, context);
+		super.init(context);
 		
 		ShaderFactory factory = context.getPlugin( ShaderFactory.NAME );
 		if(factory == null)
@@ -74,30 +74,34 @@ public class BlurVeil extends FBOVeilSkeleton
 
 	
 	@Override
-	public void postRender(GL gl1, IRenderingContext context) 
+	public void postRender(IRenderingContext context) 
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = context.gl();
 		
 		Camera2D vp = context.getCamera();
+		
 		getFBO().bind( gl );
-		gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT);
-//		gl.glDisable(GL.GL_BLEND);
-		gl.glBlendFuncSeparate( GL.GL_ONE, GL.GL_ZERO, GL.GL_ONE, GL.GL_ZERO );
-//		gl.glBlendEquation(GL.GL_REPLACE);
-		gl.glDisable(GL.GL_DEPTH_TEST);
-/*		vblurShader.begin( gl );
-		renderTexture(gl);
-		vblurShader.end(gl);
-		hblurShader.begin( gl );
-		renderTexture(gl);
-		hblurShader.end(gl);*/
-//		System.out.println("prev");
-		fadeShader.begin( gl );
-		fadeShader.setFloat1Uniform( gl, "decay", decayAmount * context.getFrameLength() );
-		renderTexture(gl, vp.getPrevMinCoord(), vp.getPrevMaxCoord());
-		fadeShader.end(gl);
-		gl.glPopAttrib();
-		context.setDefaultBlendMode( gl );
+			gl.glPushAttrib( GL.GL_COLOR_BUFFER_BIT | GL2.GL_ENABLE_BIT);
+		//		gl.glDisable(GL.GL_BLEND);
+			// this blending mode ensures that alpha channel is cleared correctly:
+				gl.glBlendFuncSeparate( GL.GL_ONE, GL.GL_ZERO, GL.GL_ONE, GL.GL_ZERO );
+		//		gl.glBlendEquation(GL.GL_REPLACE);
+				gl.glDisable(GL.GL_DEPTH_TEST);
+				
+		/*		vblurShader.begin( gl );
+				renderTexture(gl);
+				vblurShader.end(gl);
+				hblurShader.begin( gl );
+				renderTexture(gl);
+				hblurShader.end(gl);*/
+				// XXX: this texture scaling is wrong!
+				fadeShader.begin( gl );
+					fadeShader.setFloat1Uniform( gl, "decay", decayAmount * context.getFrameLength() );
+					renderTexture(gl, vp.getPrevMinCoord(), vp.getPrevMaxCoord());
+				fadeShader.end(gl);
+			
+			gl.glPopAttrib();
+			context.setDefaultBlendMode( gl );
 		getFBO().unbind( gl );
 //		System.out.println("curr");
 		renderTexture(gl, vp.getMinCoord(), vp.getMaxCoord());

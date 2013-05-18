@@ -1,33 +1,26 @@
 package yar.quadraturin;
 
-import javax.media.opengl.GL;
-
 import yar.quadraturin.objects.ILook;
-import yar.quadraturin.objects.IVisible;
 
 /**
  * Represents a rendering space, that may be customized for 
- * different {@link ILook} rendering modes.
+ * different {@link ILook} rendering effects.
  * 
- * TODO: consider (merging/replacing/making difference explicit) with {@link IRenderingContext}
  * @author dveyarangi
- *
  */
 public interface IVeil
 {
 	
 	/**
 	 * Marks start of the veil rendering.
-	 * @param gl
-	 * @param entity
 	 * @param context
 	 */
-	public void weave(GL gl, IRenderingContext context);
+	public void weave(IRenderingContext context);
 	
 	/**
 	 * Marks end of the veil rendering.
-	 * @param gl
+	 * @param context
 	 */
-	public void tear(GL gl);
+	public void tear(IRenderingContext context);
 
 }

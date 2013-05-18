@@ -4,15 +4,13 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import yar.quadraturin.objects.ILook;
-import yar.quadraturin.objects.IVisible;
-import yarangi.spatial.Area;
 
 /**
  * Holds some rendering properties and methods for use in {@link ILook} methods
  * TODO: maybe it should have a brighter future, encapsulating the GL object and 
  * becoming a real renderer.
  * 
- * Aims to be rendering tools class.
+ * Aims to be rendering tools API.
  * 
  * @author dveyarangi
  */
@@ -33,8 +31,6 @@ public interface IRenderingContext
 	public <T> T getPlugin(String name);
 	
 	/**
-	 * TODO: use it in {@link ILook}-s or delete it.
-	 * 
 	 * @return OpenGL renderer object
 	 */
 	public GL2 gl();
@@ -53,33 +49,10 @@ public interface IRenderingContext
 	public float getFrameLength();
 
 	/**
-	 * Provides 
+	 * Provides camera properties
 	 * @return
 	 */
 	public Camera2D getCamera();
-
-	/** 
-	 * Removes an overlay from rendering queue
-	 * Entities added to scene and implementing IVisible will be automatically removed.
-	 *   
-	 * @param entity
-	 */
-	void removeVisible(IVisible entity);
-
-	/**
-	 * Adds visible overlay to rendering queue.
-	 * Entities added to scene and implementing IVisible will be automatically added.
-	 * @param entity
-	 */
-	void addVisible(IVisible entity);
-	
-	public void addOverlay(IVisible entity);
-	/**
-	 * Hints at entity associated with specified look.
-	 * If look is used by multiple entities, any one of them will be returned.
-	 * @return null, in case no entity found.
-	 */
-	<K> K getAssociatedEntity(ILook <K>look);
 
 	
 }

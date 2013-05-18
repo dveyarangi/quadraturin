@@ -19,6 +19,7 @@ public interface IVisible
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public abstract ILook getLook();
 
 	/**
@@ -34,4 +35,5 @@ public interface IVisible
 	 * @param context
 	 */
 	public void render(IRenderingContext ctx);
+	
 }

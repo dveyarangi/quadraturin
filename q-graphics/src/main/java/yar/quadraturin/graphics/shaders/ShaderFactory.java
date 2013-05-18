@@ -2,7 +2,6 @@ package yar.quadraturin.graphics.shaders;
 
 import java.util.Map;
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import yar.quadraturin.IRenderingContext;
@@ -26,9 +25,9 @@ public final class ShaderFactory extends ResourceFactory <GLSLShader> implements
 	}
 	
 	@Override
-	public void init(GL gl1, IRenderingContext context)
+	public void init(IRenderingContext context)
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = context.gl();
 		if(isInited) return;
 		
 		for(GLSLShader shaderResource : getHandles().values())
@@ -39,16 +38,16 @@ public final class ShaderFactory extends ResourceFactory <GLSLShader> implements
 	}
 	
 	@Override
-	public void resize(GL gl, IRenderingContext context)
+	public void resize(IRenderingContext context)
 	{
 		// lazy
 	}
 
 	@Override
-	public void preRender(GL gl, IRenderingContext context) { /* useless here */ }
+	public void preRender(IRenderingContext context) { /* useless here */ }
 
 	@Override
-	public void postRender(GL gl, IRenderingContext context) { /* also useless */ }
+	public void postRender(IRenderingContext context) { /* also useless */ }
 	
 	public GLSLShader getShader(String resourceId)
 	{
@@ -62,10 +61,13 @@ public final class ShaderFactory extends ResourceFactory <GLSLShader> implements
 	}
 
 	@Override
-	public void destroy(GL gl)
+	public void destroy(IRenderingContext context)
 	{
 		if(!isInited)
 			throw new IllegalStateException("Trying to destroy not initialized plugin");
+		
+		GL2 gl = context.gl();
+		
 		for(GLSLShader shaderResource : getHandles().values())
 		{
 			shaderResource.destroy(gl);

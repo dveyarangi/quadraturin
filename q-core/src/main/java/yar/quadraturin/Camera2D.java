@@ -11,7 +11,7 @@ import yarangi.math.RangedDouble;
 import yarangi.math.Vector2D;
 
 /**
- * Camera properties.
+ * Camera properties and control
  * 
  * TODO: this class is exceptionally grotesque, rip its ugly tentacles 
  */

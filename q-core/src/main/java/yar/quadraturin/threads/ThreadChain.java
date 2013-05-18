@@ -71,6 +71,20 @@ public class ThreadChain
 	}
 	
 	/**
+	 * Starts execution by running the {@link Loopy} threads consequentially.
+	 */
+	public void start()
+	{
+
+		semaphores.get(0).release();
+		
+		for(IChainedThread thread : threads)
+		{
+			thread.start();
+		}
+	}
+	
+	/**
 	 * Executed by {@link ChainableThread} at the beginning of each turn in
 	 * its inner loop, insuring that the next iteration of thread {@link runBody()}
 	 * will not run until the previous thread in the loop finishes it's body.  
@@ -81,7 +95,9 @@ public class ThreadChain
 	public void waitForRelease(IChainedThread thread) throws InterruptedException
 	{
 		Semaphore procedural = semaphores.get(thread.getOrdial());
+//		System.out.println("CHAIN: thread [" + thread.getOrdial() + "] is waiting for permit.");
 		procedural.acquire();
+//		System.out.println("CHAIN: thread [" + thread.getOrdial() + "] acquired permit.");
 	}
 	
 	
@@ -97,6 +113,7 @@ public class ThreadChain
 		Semaphore sequential = semaphores.get(idx == threads.size() ? 0 : idx);
 		// releasing next thread:
 		sequential.release();
+//		System.out.println("CHAIN: released semaphore for thread [" + idx + "], permits available: " + sequential.availablePermits());
 	}
 	
 	/**
@@ -119,20 +136,6 @@ public class ThreadChain
 		return threads.size(); 
 	}
 	
-	/**
-	 * Starts execution by running the {@link Loopy} threads consequentially.
-	 */
-	public void start()
-	{
-
-		
-		semaphores.get(0).release(1);
-		
-		for(IChainedThread thread : threads)
-		{
-			thread.start();
-		}
-	}
 	
 	/**
 	 * Stops execution of all {@link Loopy}-s in the chain.

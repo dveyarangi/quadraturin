@@ -1,5 +1,9 @@
 package yar.quadraturin.terrain;
 
+import java.awt.geom.Point2D;
+import java.util.LinkedList;
+import java.util.List;
+
 import yarangi.spatial.GridMap;
 import yarangi.spatial.ISpatialSensor;
 import yarangi.spatial.ITileMap;
@@ -54,6 +58,46 @@ public class PolygonGrid extends GridMap <Tile <ITilePoly>, ITilePoly> implement
 		return sensor.isModified();
 	}
 	
+	/**
+	 * Adds/substracts polygonal mask from the grid
+	 * @param area
+	 * @return
+	 */
+	public List <Point2D> query(double cx, double cy, double rx, double ry)
+	{
+		QueryingSensor sensor = new QueryingSensor ();
+
+		queryAABB(sensor, cx, cy, rx, ry);
+		
+		return sensor.getPoints();
+	}	
+	
+	public class QueryingSensor implements ISpatialSensor <ITilePoly>
+	{
+		List <Point2D> points = new LinkedList <Point2D> ();
+		
+		@Override
+		public boolean objectFound(ITilePoly tilePoly)
+		{
+			Poly poly = tilePoly.getPoly();
+			if(poly == null)
+				return false;
+			for(int idx = 0; idx < poly.getNumPoints(); idx ++)
+			{
+				points.add( new Point2D.Double( poly.getX( idx ), poly.getY( idx ) ) );
+			}
+			
+			return false;
+		}
+
+		@Override
+		public void clear()
+		{
+			points = new LinkedList <Point2D> ();
+		}
+		
+		public List <Point2D> getPoints() { return points; }
+	}
 	
 	public class MaskingSensor implements ISpatialSensor <ITilePoly>
 	{

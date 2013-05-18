@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import yar.quadraturin.actions.DefaultActionFactory;
 import yar.quadraturin.config.EkranConfig;
@@ -46,20 +47,34 @@ public final class Stage
 	 * Current scene
 	 */
 	private Scene scene;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// service
 	
 	/**
-	 * Listeners to be informed on world global state changes.
+	 * Listeners to be informed on scene lifecycle events.
 	 */
 	private final List <StageListener> listeners = new LinkedList <StageListener> ();
 	
 	/**
-	 * 
+	 * Take a guess
 	 */
 	private final Logger log = Logger.getLogger(this.getClass());
 	
+	/**
+	 * Stage configuration object
+	 */
 	private final StageConfig stageConfig;
+	
+	/**
+	 * Marks that scene is currently being loaded.
+	 */
+	private volatile boolean sceneLoading = false;
+	
+	public static final String LOADING_SCENE_NAME = "q-intro";
+	
+	private Queue <Scene> pendingScenes = new LinkedList <Scene> ();
+	
 	/**
 	 * Create a stage.
 	 * @param frameLength
@@ -68,12 +83,26 @@ public final class Stage
 	{
 		this.stageConfig = stageConfig;
 		
+		// instantiating all declared scene handlers
+		// no long tasks should be done there
 		for(SceneConfig scene : stageConfig.getScenes())
 		{
 			addScene(scene.createScene(ekranConfig, voices));
 			log.info("Registered scene %s (class: %s)", scene.getName(), scene.getSceneClass());
 		}
 		
+		// TODO: this is a placeholder for loading screen:
+		Scene placeholder = SceneConfig.createScene( "yar.quadraturin.ui.transition.DummyLoadingScreen", LOADING_SCENE_NAME, ekranConfig, voices );
+		addScene( placeholder );
+		
+		setScene( placeholder.getName() );
+		
+//		setSceme( get)
+	}
+	
+	static Scene getLoadingScene()
+	{
+		return singleton.scenes.get(LOADING_SCENE_NAME);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,23 +120,81 @@ public final class Stage
 	}
 
 	/**
-	 * Actualizes scene with specified id
+	 * Actualizes scene with specified name
 	 * @param id Scene id
 	 */
-	public synchronized void setScene(String name)
+	public void setScene(String name)
 	{
-		
-		scene = scenes.get(name);
-		if(scene == null)
-			throw new IllegalArgumentException("Scene [" + name + "] is not defined.");
-		
-		if(scene.getActionController() == null) {
-			log.debug( "Using default action controller" );
-			scene.setActionController(DefaultActionFactory.createDefaultController( scene ));
+		while( sceneLoading ) {
+			try
+			{
+				Thread.sleep( 500 );
+			} catch ( InterruptedException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
 		
-		fireStageChanged(scene);
+		sceneLoading = true;
+		
+		if( scene != null ) // destroying previous scene
+		{
+			scene.destroy();
+		}
+		
+		// getting scene handle:
+		scene = scenes.get(name);
+		if( scene == null )
+			throw new IllegalArgumentException( "Scene [" + name + "] is not defined." );
+		
+
+		new Thread( new SceneInitializer( scene ) ).start();
+	}
+	
+	/**
+	 * Scene initializer runnable. Destined to carry the scene IO loading tasks,
+	 * that may run simultaneously with previous scene rendering.
+	 */
+	protected class SceneInitializer implements Runnable
+	{
+		private Scene scene;
+		
+		public SceneInitializer(Scene scene)
+		{
+			this.scene = scene;
+		}
+		
+		@Override
+		public void run()
+		{
+			log.debug( "Initializing scene [%s].", scene.getName() );
+			
+			try 
+			{
+				scene.init();
+				
+				fireStageChanged( scene );
+				
+				if( scene.getActionController() == null && scene.getCamera() != null ) 
+				{
+					log.debug( "Using default action controller" );
+					scene.setActionController( DefaultActionFactory.createDefaultController( scene ) );
+				}
+				
+				log.debug( "Scene [%s] initialized.", scene.getName() );
+				
+				scene.postInit();
+			}
+			catch( Exception e ) {
+				log.error( "Failed to initialize scene [%s]:", e );
+			}
+			finally {
+				sceneLoading = false;
+			}
+			
+		}
+		
 	}
 	
 	void addListener(StageListener l)
@@ -139,6 +226,11 @@ public final class Stage
 	public static void addEntity(IEntity entity)
 	{
 		singleton.scene.addEntity( entity );
+	}
+	
+	public static void setNextScene(String sceneName)
+	{
+		singleton.setScene( sceneName );
 	}
 
 	/**

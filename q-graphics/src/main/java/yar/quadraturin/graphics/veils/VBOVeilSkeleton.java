@@ -35,7 +35,9 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	private final boolean isInited = false;
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) {
+	public void init(IRenderingContext context) 
+	{
+		GL2 gl = context.gl();
 		this.width = context.getViewPort().getWidth();
 		this.height = context.getViewPort().getHeight();
 		int textureWidth = BitUtils.po2Ceiling(width/16);
@@ -47,29 +49,31 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	}
 	
 	@Override
-	public void resize(GL gl, IRenderingContext context) {
+	public void resize(IRenderingContext context) 
+	{
 		if(veil == null)
 			throw new IllegalStateException("Cannot reinit not initiated veil,");
-		destroy(gl);
-		init(gl, context);
+		destroy(context);
+		init(context);
 	}
 	
 	public final int getWidth()  { return width; }
 	public final int getHeight() { return height; }
 	
 	@Override
-	public void preRender(GL gl, IRenderingContext context) { }
+	public void preRender(IRenderingContext context) { }
 
 	@Override
-	public void postRender(GL gl, IRenderingContext context) { }
+	public void postRender(IRenderingContext context) { }
 
 	/**
 	 * Binds veil's buffer; after invocation all GL rendering will go to this buffer 
 	 * @param gl
 	 */
 	@Override
-	public void weave(GL gl, IRenderingContext context)
+	public void weave(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
 		veil.bind(gl);
 //		gl.glPushAttrib( COLOR )
 //		gl.glDisable(GL.GL_DEPTH_TEST);
@@ -80,8 +84,9 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	 * @param gl
 	 */
 	@Override
-	public void tear(GL gl)
+	public void tear(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glBlendEquation(GL.GL_FUNC_ADD);
 		
@@ -137,8 +142,10 @@ public abstract class VBOVeilSkeleton implements IVeil, IGraphicsPlugin
 	
 
 	@Override
-	public void destroy(GL gl)
+	public void destroy(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
+		
 		if(veil == null)
 			throw new IllegalStateException("Cannot destroy not initiated veil.");
 		

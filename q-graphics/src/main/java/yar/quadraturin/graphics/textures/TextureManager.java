@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -53,8 +54,9 @@ public final class TextureManager extends ResourceFactory <TextureHandle> implem
 	}
 
 	@Override
-	final public void init(GL gl, IRenderingContext context)
+	final public void init(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
 		// TODO: validate textures?
 		// TODO: go over registered Looks and test files?
 		IntBuffer bufferIdRef = IntBuffer.allocate( 1 );
@@ -63,25 +65,26 @@ public final class TextureManager extends ResourceFactory <TextureHandle> implem
 	}
 
 	@Override
-	public void resize(GL gl, IRenderingContext context)
+	public void resize(IRenderingContext context)
 	{
 		// TODO Texture bundles...
 		
 	}
 
 	@Override
-	public void preRender(GL gl, IRenderingContext context)
+	public void preRender(IRenderingContext context)
 	{
 	}
 
 	@Override
-	public void postRender(GL gl, IRenderingContext context)
+	public void postRender(IRenderingContext context)
 	{
 	}
 
 	@Override
-	public void destroy(GL gl)
+	public void destroy(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
 		for(TextureHandle texture : loadedTextures.values())
 			texture.unload(gl);
 	}

@@ -58,30 +58,30 @@ public interface IGraphicsPlugin {
 	 * TODO: should be also invoked on resolution change or window resizing.
 	 * @param gl
 	 */
-	public void init(GL gl, IRenderingContext context);
+	public void init(IRenderingContext context);
 	
 	/**
 	 * Reinitializes plugin; 
 	 * TODO: should be also invoked on resolution change or window resizing.
 	 * @param gl
 	 */
-	public void resize(GL gl, IRenderingContext context);
+	public void resize(IRenderingContext context);
 	
 	/**
 	 * Allows the plugin to perform tasks prior to {@link Scene} frame rendering.
 	 * @param gl
 	 * @param context
 	 */
-	public void preRender(GL gl, IRenderingContext context);
+	public void preRender(IRenderingContext context);
 	
 	/**
 	 * Allows the plugin to perform tasks posterior to {@link Scene} frame rendering.
 	 * @param gl
 	 * @param context
 	 */
-	public void postRender(GL gl, IRenderingContext context);
+	public void postRender(IRenderingContext context);
 	
-	public void destroy(GL gl);
+	public void destroy(IRenderingContext context);
 
 	/**
 	 * @return Array of GL extensions required by this plugin.

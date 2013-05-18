@@ -90,9 +90,9 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	public void renderGrid(GL2 gl, G grid, IRenderingContext context)
 	{
 		// redrawing changed tiles to frame buffer
-		synchronized(pendingTiles) {
+//		synchronized(pendingTiles) {
 			updateFrameBuffer( gl, context, grid );
-		}
+//		}
 // 
 		float minx = grid.getMinX();
 		float maxx = grid.getMaxX();
@@ -103,10 +103,10 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 //		fbo.unbind( gl );
 //		gl.glDisable( GL.GL_DEPTH_TEST );
 		if(veil != null)
-			veil.weave( gl, context );
+			veil.weave( context );
 		fbo.bindTexture(gl);
 			gl.glBegin(GL2.GL_QUADS);
-			gl.glColor4f( 0, 1, 0, 1 );
+			gl.glColor4f( 0, 0, 0, 1 );
 				gl.glTexCoord2f(0,0); gl.glVertex2f( minx, miny );
 				gl.glTexCoord2f(0,1); gl.glVertex2f( minx, maxy );
 				gl.glTexCoord2f(1,1); gl.glVertex2f( maxx, maxy );
@@ -114,7 +114,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 			gl.glEnd();
 		fbo.unbindTexture(gl);
 		if(veil != null)
-			veil.tear( gl );
+			veil.tear( context );
 		
 		assert renderDebug(gl);
 		
@@ -165,17 +165,21 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 */
 	private void updateFrameBuffer(GL2 gl, IRenderingContext context, G grid)
 	{
-		if(pendingTiles != null && pendingTiles.size() > 0)
-		{
-
+		if(pendingTiles == null)
+			return;
+		
+//		synchronized(pendingTiles)
+//		{
+			if(pendingTiles.isEmpty()) 
+				return;
 			beginFrameBufferSpace( gl, grid );
 			// TODO: listen to viewpont changes and draw only the relevant tiles.
 			// This will allow to make sense of scale parameter 
 			int scale = 1;
 			for(Tile<O> tile : pendingTiles)
-				renderTile(gl, context, tile, grid, scale);
+				renderTile(context, tile, grid, scale);
 			endFrameBufferSpace( gl );
-		}
+//		}
 	}
 	
 	/**
@@ -186,7 +190,7 @@ public abstract class TileGridLook <O, G extends IGrid <Tile<O>>> extends GridLo
 	 * @param grid
 	 * @param scale
 	 */
-	protected abstract void renderTile(GL2 gl, IRenderingContext context, Tile<O> tile, G grid, int scale);
+	protected abstract void renderTile(IRenderingContext context, Tile<O> tile, G grid, int scale);
 	
 	public void setDebugOverlay(boolean debug)
 	{

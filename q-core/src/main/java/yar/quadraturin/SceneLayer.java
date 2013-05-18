@@ -1,10 +1,10 @@
 package yar.quadraturin;
 
-import javax.media.opengl.GL;
-
 import yar.quadraturin.objects.Entity;
 import yar.quadraturin.objects.ILayerObject;
 import yar.quadraturin.objects.IVisible;
+import yar.quadraturin.ui.Overlay;
+import yarangi.spatial.Area;
 import yarangi.spatial.SpatialIndexer;
 
 import com.spinn3r.log5j.Logger;
@@ -20,26 +20,20 @@ public abstract class SceneLayer <K extends ILayerObject>
 {
 
 	private final int width, height;
-		
-/*		new TreeSet <K> (
-			new Comparator <K> () {
-				@Override
-				public int compare(K o1, K o2)
-				{
-					return (int)((o1.getLook().getPriority() - o2.getLook().getPriority()) * 1000f);
-				}
-	}); */
+
 	/**
 	 * Indexes the object's locations
 	 */
 	protected SpatialIndexer <K> indexer;
 
+	/**
+	 * Manager for visual components of objects.
+	 */
+	private LookManager looks;
+	
 	
 	private final Logger log = Q.structure;
 	
-	protected IRenderingContext context;
-	
-//	private SetSensor <ISpatialObject> clippingSensor = new SetSensor<ISpatialObject>();
 	/**
 	 * 
 	 */
@@ -47,9 +41,13 @@ public abstract class SceneLayer <K extends ILayerObject>
 	{
 		this.width = width;
 		this.height = height;
+		
+		this.looks = new LookManager();
 	}
 
 	public SpatialIndexer <K> getEntityIndex() { return indexer; }
+	
+	protected LookManager getLooks() { return looks; }
 	
 	protected void setEntityIndex(SpatialIndexer <K> indexer)
 	{
@@ -61,14 +59,14 @@ public abstract class SceneLayer <K extends ILayerObject>
 	 * @param gl
 	 * @throws SceneException
 	 */
-	public void init(GL gl, IRenderingContext context)
+/*	public void init(IRenderingContext context)
 	{
 		this.context = context;
 	}
 	
-	public void destroy(GL gl, IRenderingContext context)
+	public void destroy(IRenderingContext context)
 	{
-	}
+	}*/
 
 	public abstract void animate(double time);
 
@@ -94,7 +92,7 @@ public abstract class SceneLayer <K extends ILayerObject>
 			if(visible.getLook() == null)
 				log.debug("Entity [" + entity + "] have no look.");
 			else
-				context.addVisible(visible);
+				looks.addVisible(visible);
 		}
 		
 		if(entity.isIndexed())
@@ -111,49 +109,15 @@ public abstract class SceneLayer <K extends ILayerObject>
 		if(entity.isIndexed())
 			indexer.remove(entity);
 		if(entity instanceof IVisible)
-			context.removeVisible((IVisible) entity);
+			looks.removeVisible((IVisible) entity);
 	}
 
 
 	public int getWidth() {return width; }
 	public int getHeight() {return height; }
 
-/*	public class ClippingSensor implements ISpatialSensor <K> 
+	protected boolean testEntity(K entity)
 	{
-		private final GL gl;
-
-		private final IRenderingContext context;
-		
-		public ClippingSensor(GL gl, IRenderingContext context)
-		{
-			super();
-			this.gl = gl;
-
-			this.context = context;
-		}
-		@Override
-		public boolean objectFound(K entity)
-		{
-			entity.render(gl,context);
-			
-			return false;
-		}
-		
-		@Override
-		public void clear() {}
-		
-	}*/
-	
-
-	protected boolean testEntity(K entity) 
-	{
-		boolean test = true;
-/*		if(entity.getLook() == null) {
-			log.warn( "Entity [" + entity + "] must define look object." );
-			test = false;
-		}*/
-		
-		return test;
-
+		return true;
 	}
 }

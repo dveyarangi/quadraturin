@@ -9,7 +9,7 @@
 package yar.quadraturin.config;
 
 public class StageConfig {
-   protected String initialScene;
+   protected String initialScene = "q-intro";
     
     private SceneConfig [] scenes;
 

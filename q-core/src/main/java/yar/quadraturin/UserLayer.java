@@ -73,7 +73,7 @@ public class UserLayer extends SceneLayer <Overlay>
 		return basePanel;
 	}
 	
-	public void reshape(GL gl, IRenderingContext context) 
+	public void reshape(IRenderingContext context) 
 	{
 		if(basePanel.getViewPort() == context.getViewPort())
 			return;
@@ -97,25 +97,21 @@ public class UserLayer extends SceneLayer <Overlay>
 //		super.display( gl, context );
 	}
 	
-	@Override
-	public void addEntity(Overlay entity)
-	{
-		Zen.notSupported();
-	}
 	/**
 	 * Adds an entity to the injection queue. The entity will be inserted into scene
 	 * on the next iteration of animation loop.
 	 * @param entity
 	 */
-	public void addOverlay(Overlay overlay) 
-	{	
+	@Override
+	public void addEntity(Overlay overlay)
+	{
 		Preconditions.checkNotNull( overlay, "Overlay cannot be null." );
 		Preconditions.checkNotNull( overlay.getArea(), "Overlay AABB bracket cannot be null.");
 		
 		if(overlay.getLook() == null)
 			log.debug("Overlay [" + overlay + "] have no look.");
 		else
-			context.addOverlay( overlay );
+			getLooks().addVisible( overlay );
 		
 		panels.add( overlay.getParent() );
 
@@ -124,14 +120,15 @@ public class UserLayer extends SceneLayer <Overlay>
 
 	}
 	
-	public void removeOverlay(Overlay overlay)
+	@Override
+	public void removeEntity(Overlay overlay)
 	{
 		Preconditions.checkNotNull( overlay, "Overlay cannot be null." );
 		
 		if(overlay.isIndexed())
 			indexer.remove(overlay);
 		
-		context.removeVisible((IVisible) overlay);
+		getLooks().removeVisible(overlay);
 		
 		panels.remove( overlay.getParent() );
 

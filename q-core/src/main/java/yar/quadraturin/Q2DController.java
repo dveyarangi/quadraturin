@@ -1,16 +1,15 @@
 package yar.quadraturin;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.glu.GLU;
 
 import yar.quadraturin.config.EkranConfig;
 import yar.quadraturin.debug.Debug;
-import yar.quadraturin.objects.ILook;
 import yar.quadraturin.plugin.IGraphicsPlugin;
 import yar.quadraturin.threads.ChainedThreadSkeleton;
 import yar.quadraturin.threads.ThreadChain;
@@ -33,22 +32,23 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 	/**
 	 * Stage controls entities' look and behaviors
 	 */
-	private Scene currScene, prevScene;
+	private Scene currScene;
 	
 	/**
 	 * marks scene transition state.
 	 */
-	private volatile AtomicBoolean isScenePending = new AtomicBoolean(false);
+	
+	private Queue <Scene> pendingScenes = new LinkedList <Scene> ();
+//	private volatile AtomicBoolean isScenePending = new AtomicBoolean(false);
 	
 	/**
 	 * mouse location goes here
 	 */
 	private final IEventManager voices;
 	
-	/**
-	 * Set of rendering environment properties for {@link ILook} to consider. 
-	 */
-	private final DefaultRenderingContext context;
+	private GL2RenderingContext context;
+	
+	private EkranConfig ekranConfig;
 	
 	int viewport[] = new int[4];
 	double mvmatrix[] = new double[16];
@@ -58,9 +58,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 
 		super(moduleName, chain);
 		
-		this.voices = voices;
+		this.ekranConfig = ekranConfig;
 		
-		context = new DefaultRenderingContext(ekranConfig);
+		this.voices = voices;
 	}
 
 	@Override
@@ -83,13 +83,6 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 			log.info("GL core is in debug mode. TODO: not really");
 //			drawable.setGL(new DebugGL(drawable.getGL()));
 		}
-		
-		GL2 gl = drawable.getGL().getGL2();
-		
-		//////////////////////////////////////////////////////////////////
-		// Global settings:
-		log.debug("Setting global GL properties...");
-		context.init(gl);
 		
 		// control buffer swapping:
 		drawable.setAutoSwapBufferMode(false);
@@ -124,8 +117,11 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// gl.glViewport(0, 0, width, height);
 		
 		// resetting context:
-		context.reinit( width, height, gl);
-		currScene.getUILayer().reshape(gl, context);
+		if(context != null)
+			context.reinit( width, height, gl );
+		
+		if( currScene != null )
+			currScene.reshape( context );
 	}
 
 	/**
@@ -145,10 +141,10 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		///////////////////////////////////////////////////////////
 		try { // waiting for our turn:
 			waitForRelease();
-		} catch (InterruptedException e1) {
+		} catch (InterruptedException e) {
 			// TODO: should this interrupt the AWT event thread?
 			// TODO: check for GLContext overriding
-			log.warn("Renderer thread was interrupted.");
+			log.warn("Renderer thread was interrupted.", e);
 			releaseNext();
 			return;
 		}
@@ -157,9 +153,6 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		if(!this.isAlive())
 		{   // terminating GL listener:
-			if(currScene != null)
-				currScene.destroy(gl, context);
-			
 			releaseNext();
 			return;
 		}
@@ -167,21 +160,24 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		///////////////////////////////////////////////////////////
 		// LOADING SCENE IF CHANGED:
 		///////////////////////////////////////////////////////////
-		if(isScenePending.getAndSet(false))
+		if(!pendingScenes.isEmpty())
 		{	// swapping scene:
-			if(prevScene != null)
-				prevScene.destroy(gl, context);
+			currScene = pendingScenes.poll();
 			
-			// initializing new scene:
-			log.debug("Entering '" + currScene.getName() + "' scene...");
+			log.debug( "Preparing to render scene %s", currScene.getName() );
 			// TODO: should not be locked in here, render a placeholder/progress bar instead:
-			currScene.init(gl, context);
 			
-			context.setViewPoint( (Camera2D)currScene.getCamera() );
+			context = new GL2RenderingContext(ekranConfig);
+			
+			context.init(gl);
+			
+			currScene.initContext( context );
+
 		}
 		
 		if(currScene == null)
 		{ 	// nothing to display:
+			log.debug( "No scene to render, idling..." );
 			releaseNext();
 			return;
 		}
@@ -196,11 +192,15 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		// scene preprocessing, in untranslated coordinates:
 		gl.glMatrixMode(GL2.GL_MODELVIEW); gl.glLoadIdentity(); 
 		gl.glMatrixMode(GL2.GL_PROJECTION);  gl.glLoadIdentity(); 
+		
+		currScene.preRender( context );
+		
 		for(IGraphicsPlugin plugin : context.getPlugins()) {
 			gl.glPushAttrib( GL2.GL_ENABLE_BIT );
-				plugin.preRender(gl, context);
+				plugin.preRender(context);
 			gl.glPopAttrib();
 		}
+		
 		
 		Camera2D viewPoint = (Camera2D) currScene.getCamera();
 		context.setViewPoint( viewPoint );
@@ -229,8 +229,8 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		// ////////////////////////////////////////////////////
 		// scene rendering:
-		context.renderEntities(gl);
-		assert Debug.drawWorldLayerOverlay( gl, currScene.getWorldLayer(), context );
+		context.renderEntities();
+		assert Debug.drawWorldLayerOverlay( currScene.getWorldLayer(), context );
 
 		// ////////////////////////////////////////////////////
 		// scene postprocessing:
@@ -241,7 +241,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		
 		for(IGraphicsPlugin plugin : context.getPlugins()) {
 			gl.glPushAttrib( GL2.GL_ENABLE_BIT );
-			plugin.postRender(gl, context);
+			plugin.postRender(context);
 			gl.glPopAttrib();
 		}
 		
@@ -252,7 +252,7 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 		gl.glOrtho(0, context.getViewPort().getWidth(), 0, context.getViewPort().getHeight(), -1, 1);
 		// ////////////////////////////////////////////////////
 		// ui rendering:
-		context.renderOverlays(gl);
+		context.renderOverlays();
 
 		// proceeding to next thread:
 		releaseNext();
@@ -265,19 +265,9 @@ public class Q2DController extends ChainedThreadSkeleton implements GLEventListe
 
 	
 	@Override
-	public void sceneChanged(Scene currScene) 
+	public void sceneChanged(Scene scene) 
 	{
-		this.prevScene = this.currScene;
-		this.currScene = currScene;
-		
-		if(isScenePending.getAndSet(true)) // sanity TODO: estimate harm
-			throw new IllegalStateException("Previous scene was not yet processed.");
-//			log.warn("TODO: Scene is already queued, and  not initialized yet, not gracefull at all.");
-	}
-
-	public IRenderingContext getRenderingContext()
-	{
-		return context;
+		pendingScenes.add( scene );
 	}
 
 	@Override

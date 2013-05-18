@@ -1,36 +1,30 @@
 package yar.quadraturin;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import yar.quadraturin.config.EkranConfig;
-import yar.quadraturin.debug.Debug;
 import yar.quadraturin.objects.ILook;
-import yar.quadraturin.objects.IVisible;
 import yar.quadraturin.plugin.IGraphicsPlugin;
 import yarangi.spatial.AABB;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 import com.spinn3r.log5j.Logger;
 
 /**
  * Wraps rendering properties, tests GL capabilities and aggregates graphical plug-ins.
- * Should also wrap GL object, so it could be more separated from entity definition.
+ * Also wrap GL object, so it could be more separated from entity definition.
  * Aims to be rendering tools class.
  * 
  * @author dveyarangi
  *
  */
-public class DefaultRenderingContext implements IRenderingContext 
+public class GL2RenderingContext implements IRendererAggregate 
 {
 	private ViewPort viewPort;
 	
@@ -46,33 +40,34 @@ public class DefaultRenderingContext implements IRenderingContext
 	private GL2 gl;
 	
 	private float currFrameLength;
-	
-//	private final List <IVisible> entities = new LinkedList <IVisible> ();
-	private final Multimap <ILook<?>, IVisible> entitiesLooks = LinkedListMultimap.<ILook<?>, IVisible>create();
-	
-	private final Multimap <ILook<?>, IVisible> overlayLooks = LinkedListMultimap.<ILook<?>, IVisible>create();
-	
-	private final Set <String> lookClasses = new HashSet <String> ();
-	
-	/**
-	 * Queue of entities waiting to be initialized.
-	 */
-	private final Queue <ILook<?>> bornLooks = new LinkedList<ILook<?>> ();
 
-	/**
-	 * Queue of dead entities to be cleaned up.
-	 */
-	private final Queue <ILook<?>> deadLooks = new LinkedList <ILook<?>> ();
+	
+	private LookManager worldLookManager;
+	private LookManager uiLookManager;
 	
 	/** Camera properties */
 	private Camera2D viewPoint;
 	
-	public DefaultRenderingContext(EkranConfig config)
+	public GL2RenderingContext(EkranConfig config)
 	{
 		this.config = config;
 		plugins = config.createPlugins();
 		
 		this.viewPoint = new Camera2D();
+		
+	}
+	
+	
+	@Override
+	public void setWorldLookManager(LookManager man)
+	{
+		this.worldLookManager = man;
+	}
+	
+	@Override
+	public void setUILookManager(LookManager man)
+	{
+		this.uiLookManager = man;
 	}
 	
 	
@@ -84,7 +79,8 @@ public class DefaultRenderingContext implements IRenderingContext
 		this.viewPort = new ViewPort(refx, refy, width, height);
 	}
 	
-	protected void setViewPoint(Camera2D viewPoint)
+	@Override
+	public void setViewPoint(Camera2D viewPoint)
 	{
 		this.viewPoint = viewPoint;
 	}
@@ -208,7 +204,7 @@ public class DefaultRenderingContext implements IRenderingContext
 			}
 			
 			log.debug("Initializing plugin [" + pluginName + "]...");
-			factory.init(gl, this);
+			factory.init( this );
 		}
 		
 		// clearing off unsupported plugins:
@@ -217,73 +213,6 @@ public class DefaultRenderingContext implements IRenderingContext
 	}
 	
 	
-	/**
-	 * Displays the entirety of entities in this scene for one scene animation frame.
-	 * Also handles the decomposition of newly created and oldly dead entities.
-	 * @param gl
-	 * @param time scene frame time
-	 */
-	protected void renderEntities(GL gl)
-	{
-		// injecting new entities
-		while(!bornLooks.isEmpty())
-		{
-			ILook<?> born = bornLooks.poll();
-			born.init( this );
-		}
-		
-		while(!deadLooks.isEmpty())
-		{
-			ILook<?> dead = deadLooks.poll();
-			dead.destroy( this );
-		}
-		
-	    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-	
-		IVeil veil;
-//		System.out.println(entities.size() + " : " + indexer.size());
-//			ISpatialSensor <SceneEntity> clippingSensor = new ClippingSensor(gl, time, context);
-//			getEntityIndex().query(clippingSensor, new AABB(0, 0, Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()), 0));
-//			System.out.println(Math.max(viewPoint.getPortWidth(), viewPoint.getPortHeight()));
-			// TODO: do the viewport clipping already, you lazy me!
-//			System.out.println("BEGIN ======================================================");
-			for(ILook<?> look : entitiesLooks.keySet())
-			{
-				// TODO: sort by veil, then weave and tear once
-				veil = look.getVeil();
-//				System.out.println(entity + " : " + entity.getLook() + " : " + entity.getLook().getVeil());
-				
-				if(veil != null)
-					veil.weave( gl, this );
-				for(IVisible entity : entitiesLooks.get( look )) {
-//					System.out.println(entity);
-					entity.render( this );
-				}
-				if(veil != null)
-					veil.tear( gl );
-
-				if(Debug.ON)
-				for(IVisible entity : entitiesLooks.get( look ))
-					assert Debug.renderEntityOverlay(gl, entity, this);
-
-			}
-//			System.out.println("Total " + entities.size() + " entities rendered.");
-//			root.display(gl, time, context);
-/*		else
-		{
-			veilEffect.render(gl, time, entities, context);
-		}*/
-	}
-
-	public void renderOverlays(GL gl)
-	{
-		for(ILook look : overlayLooks.keySet()) {
-			for(IVisible entity : overlayLooks.get( look )) {
-//				System.out.println(entity);
-				entity.render( this );
-			}
-		}
-	}
 	
 	/**
 	 * Meant to handle graphics setup changes.
@@ -304,10 +233,26 @@ public class DefaultRenderingContext implements IRenderingContext
 		// reinitializing graphical plugins:
 		for(String pluginName : getPluginsNames())
 		{
-			Q.rendering.debug("Resizing plugin [" + pluginName + "]");
-			IGraphicsPlugin plugin = getPlugin(pluginName);
-			plugin.resize(gl, this);
+//			Q.rendering.debug("Resizing plugin [" + pluginName + "]");
+			IGraphicsPlugin plugin = getPlugin( pluginName );
+			plugin.resize( this );
 		}
+	}
+	
+	/**
+	 * Displays the entirety of entities in this scene for one scene animation frame.
+	 * @param gl
+	 * @param time scene frame time
+	 */
+	protected void renderEntities()
+	{
+		if(worldLookManager != null)
+			worldLookManager.renderEntities( this );
+	}
+	public void renderOverlays()
+	{
+		if(uiLookManager != null)
+			uiLookManager.renderEntities( this );
 	}
 	
 	/**
@@ -329,76 +274,6 @@ public class DefaultRenderingContext implements IRenderingContext
 		return currFrameLength;
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addVisible(IVisible entity)
-	{
-		addVisible( entity, entity.getLook(), entitiesLooks );
-	}
-	
-	@Override
-	public void addOverlay(IVisible overlay) {
-		addVisible( overlay, overlay.getLook(), overlayLooks );
-	}
-	
-	private void addVisible(IVisible entity, ILook look, Multimap queue) {
-//		ILook look = entity.getLook();
-		lookClasses.add(look.getClass().toString());
-		Collection <IVisible> entities = queue.get( look );
-//		System.out.println(entity.getLook());
-		if(entities.size() == 0)
-			bornLooks.add(look);
-
-		queue.put( look, entity );
-		entities.add( entity );
-		
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void removeVisible(IVisible entity)
-	{
-		Collection <IVisible> entities = entitiesLooks.get( entity.getLook() );
-		if(entities.size() == 1) {
-			entitiesLooks.removeAll( entity.getLook() );
-			deadLooks.add( entity.getLook() );
-		}
-		else
-			entitiesLooks.remove( entity.getLook(), entity );
-		
-		entities.remove( entity );
-		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Camera2D getCamera() { return viewPoint; }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <K> K getAssociatedEntity(ILook <K> look)
-	{
-		Collection <IVisible> associatedEntities = entitiesLooks.get( look );
-		if(associatedEntities == null || associatedEntities.isEmpty()) 
-		{
-			associatedEntities = overlayLooks.get( look );
-			if(associatedEntities == null || associatedEntities.isEmpty()) 
-				return null;
-		}
-		
-		return (K)associatedEntities.iterator().next();
-	}
 
 	public static void useEntityCoordinates(GL gl, AABB area, ILook look) {
 		GL2 gl2 = gl.getGL2();
@@ -424,6 +299,12 @@ public class DefaultRenderingContext implements IRenderingContext
 		gl2.glMatrixMode( GL2.GL_MODELVIEW );
 		gl2.glPopMatrix();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Camera2D getCamera() { return viewPoint; }
 
 
 }

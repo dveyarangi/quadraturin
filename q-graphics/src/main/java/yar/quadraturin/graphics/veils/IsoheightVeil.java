@@ -38,28 +38,29 @@ public class IsoheightVeil extends FBOVeilSkeleton
 	
 	
 	@Override
-	public void init(GL gl, IRenderingContext context) 
+	public void init(IRenderingContext context) 
 	{
-		super.init(gl, context);
+		super.init(context);
 		
 		ShaderFactory factory = context.getPlugin( ShaderFactory.NAME );
 		isoheightShader = factory.getShader( "isoheight" );
 	}
 	
 	@Override
-	public void preRender(GL gl, IRenderingContext context)
+	public void preRender(IRenderingContext context)
 	{
+		GL2 gl = context.gl();
 		// just clearing the frame buffer texture:
 		getFBO().bind(gl);
-		gl.glClearColor(0,0,0,0.0f);
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+//		gl.glClearColor(0,0,0,0.0f);
+//		gl.glClearColor(0.0f,0.0f, 0.0f, 1.0f);		
 		getFBO().unbind(gl);
 	}
 	
 	@Override
-	public void postRender(GL gl1, IRenderingContext defaultContext) 
+	public void postRender(IRenderingContext context) 
 	{
-		GL2 gl = gl1.getGL2();
+		GL2 gl = context.gl();
 		isoheightShader.begin( gl );
 		// TODO: parametrize and make more sense of it:
 		
@@ -71,7 +72,7 @@ public class IsoheightVeil extends FBOVeilSkeleton
 		isoheightShader.setFloat4Uniform( gl, "underflow", 0.0f, 0.0f, 0.0f, 0.0f );
 		
 		isoheightShader.setFloat4Uniform( gl, "target", 1f, 0.5f, 0.0f, 1f );
-		renderTexture(gl, defaultContext.getCamera().getMinCoord(), defaultContext.getCamera().getMaxCoord());
+		renderTexture(gl, context.getCamera().getMinCoord(), context.getCamera().getMaxCoord());
 		isoheightShader.end(gl);
 	}
 
